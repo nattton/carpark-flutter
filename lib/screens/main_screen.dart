@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
@@ -18,11 +19,14 @@ import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
+import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -364,6 +368,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           },
         ),
       );
+      widget.add(
+        IconButton(
+          icon: const Icon(Icons.download),
+          tooltip: 'Export Member',
+          onPressed: () {
+            onPressedExportMember(context);
+          },
+        ),
+      );
     }
 
     return widget;
@@ -507,5 +520,78 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }).onError((error, stackTrace) {
       alertError(error.toString());
     });
+  }
+
+  Excel generateExcel() {
+    final members = ref.read(membersProvider);
+    Excel excel = Excel.createExcel();
+    Sheet sheetObject = excel['Sheet1'];
+
+    int currentRow = 0;
+    List<String> columnName = [
+      "id",
+      "name",
+      "telephone",
+      "type",
+      "status",
+      "vehicleId",
+      "plateNumber",
+      "resemble",
+      "plateProvince",
+      "brand",
+      "color",
+      "telephone",
+    ];
+    sheetObject.insertRowIterables(columnName, currentRow);
+    CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
+    for (var i = 0; i < 12; i++) {
+      var cell = sheetObject.cell(
+          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
+      cell.cellStyle = cellStyle;
+    }
+
+    for (var i = 0; i < members.length; i++) {
+      currentRow++;
+      var m = members[i];
+      List<String> dataList = [
+        m.id.toString(),
+        m.name!,
+        m.telephone!,
+        m.type!,
+        m.status!
+      ];
+      sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
+      for (var j = 0; j < m.vehicles!.length; j++) {
+        if (j > 0) {
+          currentRow++;
+        }
+        var v = m.vehicles?[j];
+        List<String> vehicleList = [
+          v!.id.toString(),
+          v.plateNumber!,
+          v.resemble!,
+          v.plateProvince!,
+          v.brand!,
+          v.color!,
+          v.telephone!
+        ];
+        sheetObject.insertRowIterables(vehicleList, currentRow,
+            startingColumn: 5);
+      }
+    }
+    return excel;
+  }
+
+  void onPressedExportMember(BuildContext context) async {
+    String dateTime = DateFormat("yyyy-MM-dd_HH-mm").format(DateTime.now());
+    String? outputFile = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: 'member_list_$dateTime.xlsx',
+    );
+
+    if (outputFile != null) {
+      final file = File(outputFile);
+      file.writeAsBytes(generateExcel().encode()!);
+    }
   }
 }

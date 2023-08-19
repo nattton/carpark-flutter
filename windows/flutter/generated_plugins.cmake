@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   charset_converter
   dart_vlc
+  file_saver
   flutter_pos_printer_platform
   network_info_plus_windows
 )
