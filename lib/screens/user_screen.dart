@@ -1,6 +1,9 @@
+import 'package:carpark/injection_container.dart';
+import 'package:carpark/models/save_user_model.dart';
+import 'package:carpark/models/user_model.dart';
+import 'package:carpark/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/components/user_list_card.dart';
-import 'package:carpark/models/user.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -12,18 +15,14 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  late AppService appService;
-  List<User> userList = [];
+  List<UserModel> userList = [];
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    AppService.getInstance().then((value) {
-      appService = value;
-      getUser();
-    });
+    getUser();
   }
 
   @override
@@ -40,7 +39,7 @@ class _UserScreenState extends State<UserScreen> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return UserListCard(
-            user: User(0, "Username", "Role"),
+            user: UserModel(id: 0, name: "Name", role: "Role"),
             onTap: () {},
           );
         }
@@ -52,25 +51,30 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Future<void> getUser() async {
-    appService.fetchUserList().then((value) {
+    sl<ApiService>().getUserList(sl<AppService>().token).then((value) {
       setState(() {
         userList = value;
       });
     }).catchError((error) {});
   }
 
-  void saveUser(User user) {
-    appService
-        .saveUser(user.id, _usernameController.text, _passwordController.text)
+  void saveUser(UserModel user) {
+    var saveUser = SaveUserModel(
+        id: user.id,
+        username: _usernameController.text,
+        password: _passwordController.text,
+        role: user.role);
+    sl<ApiService>()
+        .updateUser(sl<AppService>().token, saveUser.id, saveUser)
         .then((value) {
       Navigator.pop(context);
       getUser();
-    }).catchError((error) {
-      alertError(error);
+    }).onError((error, stackTrace) {
+      alertError(error.toString());
     });
   }
 
-  void onPressedRow(BuildContext context, User user) {
+  void onPressedRow(BuildContext context, UserModel user) {
     _usernameController.text = user.name;
     _passwordController.text = '';
 

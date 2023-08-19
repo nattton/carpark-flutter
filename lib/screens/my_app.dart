@@ -1,7 +1,7 @@
-import 'package:carpark/models/member.dart';
+// import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/login_screen.dart';
-import 'package:carpark/screens/vehicle_screen.dart';
+import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,10 +20,10 @@ class MyApp extends StatelessWidget {
         },
         onGenerateRoute: (settings) {
           switch (settings.name) {
-            case VehicleScreen.id:
-              final member = settings.arguments as Member;
+            case MemberScreen.id:
+              final memberId = settings.arguments as int;
               return MaterialPageRoute(builder: (context) {
-                return VehicleScreen(member: member);
+                return MemberScreen(memberId: memberId);
               });
           }
           return null;

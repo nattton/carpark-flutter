@@ -1,25 +1,21 @@
-import 'package:carpark/models/member_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carpark/models/visitor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
-class MemberListCard extends StatelessWidget {
-  const MemberListCard({super.key, required this.member, required this.onTap});
+class VisitorListCard extends StatelessWidget {
+  const VisitorListCard(
+      {super.key, required this.visitor, required this.onTap});
 
-  final MemberModel member;
+  final VisitorModel visitor;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    List<String> plates = [];
-    if (member.vehicles != null) {
-      for (var vehicle in member.vehicles!) {
-        plates.add(vehicle.plateNumber!);
-      }
-    }
-
     return GestureDetector(
       onTap: onTap,
-      child: member.id == 0
+      child: visitor.id == 0
           ? Card(
               color: Colors.blue.shade200,
               child: const Padding(
@@ -28,7 +24,7 @@ class MemberListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "ID",
+                        "วันที่ เวลา เข้า",
                         style: TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
@@ -37,7 +33,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Name",
+                        "วันที่ เวลา ออก",
                         style: TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
@@ -46,16 +42,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Tel",
-                        style: TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        "Type",
+                        "ทะเบียน",
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -65,7 +52,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Status",
+                        "ติดต่อ",
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -75,7 +62,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Vehicles",
+                        "ชื่อ",
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -83,7 +70,6 @@ class MemberListCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 30.0),
                   ],
                 ),
               ),
@@ -96,34 +82,34 @@ class MemberListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        member.id!.toString(),
+                        visitor.dateTimeFormat(),
                         style: const TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
+                    visitor.exitTime!.valid!
+                        ? Expanded(
+                            child: Text(
+                              visitor.exitDateTimeFormat(),
+                              style: const TextStyle(
+                                  fontFamily: kDefaultFont,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : Expanded(
+                            child: QrImageView(
+                              data: visitor.dateTimeNanoShortFormat(),
+                              version: QrVersions.auto,
+                              size: 60,
+                              gapless: false,
+                            ),
+                          ),
                     Expanded(
                       child: Text(
-                        member.name!,
-                        style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        member.telephone!,
-                        style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        member.type!,
+                        visitor.plateNumber!,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -133,7 +119,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.status!,
+                        visitor.member!.name!,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -143,7 +129,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        plates.join("\n"),
+                        visitor.thaiName!,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -151,7 +137,6 @@ class MemberListCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Icon(Icons.edit),
                   ],
                 ),
               ),

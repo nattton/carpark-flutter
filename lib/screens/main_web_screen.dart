@@ -1,53 +1,22 @@
 import 'dart:async';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/last_gate_model.dart';
-import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/screens/camera_screen.dart';
-import 'package:carpark/screens/entrance_screen.dart';
-import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/member_list_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
-import 'package:dart_vlc/dart_vlc.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'main_screen.g.dart';
-
-final lastGateProvider =
-    StateNotifierProvider<LastGateNotifier, LastGateModel>((ref) {
-  return LastGateNotifier(
-      LastGateModel(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
+final cameraMapProvider = Provider((ref) {
+  return <String, CameraModel>{};
 });
 
-final cameraMapProvider = Provider((ref) => <String, CameraModel>{});
-
-@riverpod
-CameraPlayer cameraPlayer(CameraPlayerRef ref) {
-  return CameraPlayer(
-    mainPlayer: Player(
-      id: 0,
-      videoDimensions: const VideoDimensions(640, 360),
-    ),
-    sidePlayer: Player(
-      id: 1,
-      videoDimensions: const VideoDimensions(640, 360),
-    ),
-    cardPlayer: Player(
-      id: 2,
-      videoDimensions: const VideoDimensions(640, 360),
-    ),
-  );
-}
-
-class MainScreen extends StatefulHookConsumerWidget {
+class MainScreen extends ConsumerStatefulWidget {
   static const String id = 'main_screen';
 
   const MainScreen({super.key});
@@ -57,48 +26,15 @@ class MainScreen extends StatefulHookConsumerWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  var loadLast = false;
-  late StreamSubscription periodicSub;
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
   @override
   void initState() {
-    getCameraList().then((value) {
-      var camera = value['ENTRANCE'];
-      final player = ref.watch(cameraPlayerProvider);
-      player.setMainPlayer(camera!.toUrl());
-      var cameraSide = value['IN_SIDE'];
-      player.setSidePlayer(cameraSide!.toUrl());
-      var cameraCard = value['CARD'];
-      player.setCardPlayer(cameraCard!.toUrl());
-    });
-    getLastGateIn();
-    periodicSub = Stream.periodic(const Duration(milliseconds: 1000))
-        .listen((_) => getLastGateIn());
-
     sideMenu.addListener((p0) {
       page.jumpToPage(p0);
     });
     super.initState();
-  }
-
-  void alertError(String msg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
   }
 
   Future<Map<String, CameraModel>> getCameraList() async {
@@ -110,69 +46,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return camera;
   }
 
-  Future<void> getLastGateIn() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    sl<ApiService>().getGateIn(sl<AppService>().token).then((value) {
-      lastGate.setGateIn(value.gateLog);
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
-  }
-
-  Future<void> getLastGateOut() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    sl<ApiService>().getGateOut(sl<AppService>().token).then((value) {
-      lastGate.setGateOut(value.gateLog);
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
-  }
-
-  @override
-  void dispose() {
-    periodicSub.cancel();
-    super.dispose();
-  }
-
-  void selectedPage(String page) {
-    final player = ref.watch(cameraPlayerProvider);
-    final camera = ref.watch(cameraMapProvider);
-    switch (page) {
-      case 'ENTRANCE':
-        periodicSub.cancel();
-        periodicSub = Stream.periodic(const Duration(milliseconds: 1000))
-            .listen((_) => getLastGateIn());
-        var cam = camera['ENTRANCE'];
-        if (cam != null) {
-          player.setMainPlayer(cam.toUrl());
-        }
-        var cameraSide = camera['IN_SIDE'];
-        if (cameraSide != null) {
-          player.setSidePlayer(cameraSide.toUrl());
-        }
-        var cameraCard = camera['CARD'];
-        if (cameraCard != null) {
-          player.setCardPlayer(cameraCard.toUrl());
-        }
-        break;
-      case 'EXIT':
-        periodicSub.cancel();
-        periodicSub = Stream.periodic(const Duration(milliseconds: 1000))
-            .listen((_) => getLastGateOut());
-        var cam = camera['EXIT'];
-        if (cam != null) {
-          player.setMainPlayer(cam.toUrl());
-        }
-        var cameraSide = camera['OUT_SIDE'];
-        if (cameraSide != null) {
-          player.setSidePlayer(cameraSide.toUrl());
-        }
-        break;
-      default:
-        periodicSub.cancel();
-        player.stopAll();
-    }
-  }
+  void selectedPage(String page) {}
 
   @override
   Widget build(BuildContext context) {
@@ -198,24 +72,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               selectedIconColor: Colors.white,
             ),
             items: [
-              SideMenuItem(
-                title: 'ทางเข้า',
-                onTap: (page, _) {
-                  selectedPage('ENTRANCE');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.door_front_door_outlined),
-                tooltipContent: "ทางเข้า",
-              ),
-              SideMenuItem(
-                title: 'ทางออก',
-                onTap: (page, _) {
-                  selectedPage('EXIT');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.door_back_door_outlined),
-                tooltipContent: "ทางออก",
-              ),
               SideMenuItem(
                 title: 'ผู้ติดต่อ',
                 onTap: (page, _) {
@@ -272,14 +128,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             child: PageView(
               controller: page,
               children: [
-                Container(
-                  color: Colors.white,
-                  child: const EntranceScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const ExitScreen(),
-                ),
                 Container(
                   color: Colors.white,
                   child: const VisitorScreen(),

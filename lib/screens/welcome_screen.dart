@@ -1,3 +1,4 @@
+import 'package:carpark/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/screens/main_screen.dart';
@@ -22,10 +23,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void checkLogin() async {
-    AppService appService = await AppService.getInstance();
+    var app = sl<AppService>();
     await Future.delayed(const Duration(seconds: 1));
-    if (!appService.isLogIn()) {
-      appService.logout().then((value) {
+    if (!app.isLogIn()) {
+      app.logout().then((value) {
         goLoginPage();
       });
       return;
@@ -50,13 +51,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(gradient: kBackgroundGradiant),
-        child: Column(
+        child: const Column(
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'Car Park',
                     style: TextStyle(

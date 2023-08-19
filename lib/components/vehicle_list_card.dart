@@ -1,4 +1,4 @@
-import 'package:carpark/models/member.dart';
+import 'package:carpark/models/vehicle_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
 
@@ -6,7 +6,7 @@ class VehicleListCard extends StatelessWidget {
   const VehicleListCard(
       {super.key, required this.vehicle, required this.onTap});
 
-  final Vehicle vehicle;
+  final VehicleModel vehicle;
   final VoidCallback onTap;
 
   @override
@@ -16,10 +16,10 @@ class VehicleListCard extends StatelessWidget {
       child: vehicle.id == 0
           ? Card(
               color: Colors.blue.shade200,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Expanded(
                       child: Text(
                         "ID",
@@ -31,7 +31,7 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Plate Number",
+                        "เลขทะเบียน",
                         style: TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
@@ -40,7 +40,7 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Plate Province",
+                        "เลขที่คล้าย",
                         style: TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
@@ -49,7 +49,16 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Brand",
+                        "จังหวัด",
+                        style: TextStyle(
+                            fontFamily: kDefaultFont,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "ยี่ห้อ",
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -59,7 +68,7 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Color",
+                        "สี",
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -69,7 +78,7 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Telephone",
+                        "โทร.",
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -108,6 +117,15 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
+                        vehicle.resemble!,
+                        style: const TextStyle(
+                            fontFamily: kDefaultFont,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
                         vehicle.plateProvince!,
                         style: const TextStyle(
                             fontFamily: kDefaultFont,
@@ -137,7 +155,7 @@ class VehicleListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        vehicle.telephone!.length.toString(),
+                        vehicle.telephone!,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,

@@ -1,3 +1,5 @@
+import 'package:carpark/injection_container.dart';
+import 'package:carpark/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:carpark/constants.dart';
@@ -14,8 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late AppService appService;
-
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -26,12 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    AppService.getInstance().then((value) => appService = value);
   }
 
   @override
@@ -48,9 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(gradient: kBackgroundGradiant),
-                child: Column(
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
+                  children: [
                     SizedBox(
                       height: 48.0,
                     ),
@@ -168,22 +162,41 @@ class _LoginScreenState extends State<LoginScreen> {
       alertLogin("Please fill username and password");
       return;
     }
-    appService
-        .fetchLoginUser(_usernameController.text, _passwordController.text)
-        .then((value) {
+
+    sl<ApiService>()
+        .login(_usernameController.text, _passwordController.text)
+        .then((value) async {
       setState(() {
         _usernameController.text = '';
         _passwordController.text = '';
       });
-
+      await sl<AppService>().saveLogin(value);
       goAdminScreen();
-    }).catchError((error) {
-      alertLogin(error.toString());
+    }).onError((error, stackTrace) {
+      alertError(error.toString());
     });
   }
 
   void goAdminScreen() {
     Navigator.of(context).pushNamed(MainScreen.id);
+  }
+
+  void alertError(String msg) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Alert Message'),
+            content: Text(msg),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Close'))
+            ],
+          );
+        });
   }
 
   void alertLogin(String desc) {

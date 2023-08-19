@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 
+// const kHostUrl = 'http://192.168.1.50:4000';
+const kHostUrl = 'http://localhost:4000';
+
+const kPrinterName = 'EPSON TM-T82 Receipt';
+// const kPrinterName = 'POS-80C';
+
 const kDefaultFont = 'Stidti';
 const kBoldFont = 'Stidti-Bold';
 const kColorTop = Color(0xFF009CDE);
 const kColorBottom = Color(0xFF003C71);
 const kColorTextGrey = Color(0xFF707070);
+const kColorTextBlack = Color.fromARGB(255, 0, 0, 0);
 const kBackgroundGradiant = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
   colors: [kColorTop, kColorBottom],
 );
+
+const kGateStyle = TextStyle(
+    color: kColorTextBlack,
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    fontFamily: kDefaultFont,
+    height: 2);
 
 const kHeaderStyle = TextStyle(
     color: kColorTextGrey,
@@ -26,6 +40,14 @@ const kContentStyle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.normal,
     fontFamily: kDefaultFont);
+
+const kOverdueTextStyle = TextStyle(
+    color: Color.fromARGB(255, 255, 0, 0),
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+    fontFamily: kDefaultFont,
+    height: 2);
+
 const kColorOpened = Color(0xFFE5E5E5);
 const kImageEvent = Image(image: AssetImage('images/event.jpg'));
 
@@ -51,3 +73,15 @@ const kIconPin = Icon(
 const kSpaceTextEvent = SizedBox(
   height: 8.0,
 );
+const kOverdueText = 'ค้างชำระค่าส่วนกลาง';
+const kOverdue2Text = 'กรุณาติดต่อนิติบุคล';
+
+const kColorVisitor = Color.fromARGB(255, 223, 45, 0);
+const kColorResidents = Color.fromARGB(255, 105, 240, 174);
+const kColorOverdue = Color.fromARGB(255, 183, 31, 230);
+
+const vehicleTypeMap = {
+  'car': 'รถยนต์',
+  'taxi': 'แท็กซี่',
+  'motorcycle': 'มอเตอร์ไซค์',
+};

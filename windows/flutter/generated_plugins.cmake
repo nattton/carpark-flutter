@@ -3,7 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  charset_converter
   dart_vlc
+  flutter_pos_printer_platform
+  network_info_plus_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

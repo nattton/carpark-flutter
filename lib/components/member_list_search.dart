@@ -1,28 +1,29 @@
-import 'package:carpark/models/user_model.dart';
+import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
 
-class UserListCard extends StatelessWidget {
-  const UserListCard({super.key, required this.user, required this.onTap});
+class MemberListSearch extends StatelessWidget {
+  const MemberListSearch(
+      {super.key, required this.member, required this.onTap});
 
-  final UserModel user;
+  final MemberModel member;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: user.id == 0
+      child: member.id == 0
           ? Card(
               color: Colors.blue.shade200,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
-                        user.name,
-                        style: const TextStyle(
+                        "Name",
+                        style: TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold),
@@ -30,15 +31,15 @@ class UserListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        user.role,
-                        style: const TextStyle(
+                        "Status",
+                        style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 30.0),
+                    SizedBox(width: 30.0),
                   ],
                 ),
               ),
@@ -51,23 +52,24 @@ class UserListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        user.name,
+                        member.name!,
                         style: const TextStyle(
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0,
-                        ),
+                            fontFamily: kDefaultFont,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     Expanded(
                       child: Text(
-                        user.role,
+                        member.status!,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    const Icon(Icons.edit),
+                    const Icon(Icons.read_more),
                   ],
                 ),
               ),

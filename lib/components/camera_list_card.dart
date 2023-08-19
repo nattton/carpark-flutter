@@ -1,28 +1,28 @@
-import 'package:carpark/models/user_model.dart';
+import 'package:carpark/models/camera_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
 
-class UserListCard extends StatelessWidget {
-  const UserListCard({super.key, required this.user, required this.onTap});
+class CameraListCard extends StatelessWidget {
+  const CameraListCard({super.key, required this.camera, required this.onTap});
 
-  final UserModel user;
+  final CameraModel camera;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: user.id == 0
+      child: camera.id == 0
           ? Card(
               color: Colors.blue.shade200,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
-                        user.name,
-                        style: const TextStyle(
+                        'Name',
+                        style: TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold),
@@ -30,15 +30,15 @@ class UserListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        user.role,
-                        style: const TextStyle(
+                        'IP Address',
+                        style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 30.0),
+                    SizedBox(width: 30.0),
                   ],
                 ),
               ),
@@ -51,7 +51,7 @@ class UserListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        user.name,
+                        camera.name,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -60,7 +60,7 @@ class UserListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        user.role,
+                        camera.ipAddress,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
