@@ -9,6 +9,22 @@ import 'package:carpark/services/app_service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final filterProvider = StateProvider((ref) => "");
+
+final filteredMemberListProvider = Provider<List<MemberModel>>((ref) {
+  final filter = ref.watch(filterProvider);
+  final members = ref.watch(membersProvider);
+
+  if (filter.isEmpty) {
+    return members;
+  }
+  return members.where((member) {
+    return member.name!.contains(filter) ||
+        ((member.vehicles!.indexWhere((e) => e.plateNumber!.contains(filter))) >
+            -1);
+  }).toList();
+});
+
 class MemberListScreen extends ConsumerStatefulWidget {
   const MemberListScreen({Key? key}) : super(key: key);
 
@@ -17,10 +33,7 @@ class MemberListScreen extends ConsumerStatefulWidget {
 }
 
 class _MemberListScreenState extends ConsumerState<MemberListScreen> {
-  List<MemberModel> searchMemberList = [];
-
   final _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -35,6 +48,7 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredMemberList = ref.watch(filteredMemberListProvider);
     return Column(
       children: [
         const SizedBox(
@@ -64,7 +78,7 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: searchMemberList.length + 1,
+            itemCount: filteredMemberList.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return MemberListCard(
@@ -73,9 +87,9 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
                 );
               }
               return MemberListCard(
-                  member: searchMemberList[index - 1],
+                  member: filteredMemberList[index - 1],
                   onTap: () =>
-                      onPressedRow(context, searchMemberList[index - 1]));
+                      onPressedRow(context, filteredMemberList[index - 1]));
             },
           ),
         )
@@ -85,12 +99,10 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
 
   Future<void> getMember() async {
     EasyLoading.show(status: 'loading...');
-    final memberList = ref.read(memberListProvider);
-    sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
+    final memberList = ref.read(membersProvider.notifier);
+    sl<ApiService>().getMemberList(sl<AppService>().token).then((members) {
       setState(() {
-        memberList.clear();
-        memberList.addAll(value);
-        searchMemberList = value;
+        memberList.setState(members);
       });
       EasyLoading.dismiss();
     }).catchError((error) {});
@@ -121,20 +133,6 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
   }
 
   onSearchTextChanged(String text) async {
-    final memberList = ref.read(memberListProvider);
-    if (text.isEmpty) {
-      setState(() {
-        searchMemberList = memberList;
-      });
-    } else {
-      setState(() {
-        searchMemberList = memberList.where((member) {
-          return member.name!.contains(text) ||
-              ((member.vehicles!
-                      .indexWhere((e) => e.plateNumber!.contains(text))) >
-                  -1);
-        }).toList();
-      });
-    }
+    ref.read(filterProvider.notifier).state = text;
   }
 }

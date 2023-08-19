@@ -1,4 +1,5 @@
 import 'package:carpark/components/vehicle_list_card.dart';
+import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
@@ -31,8 +32,6 @@ class MemberScreen extends ConsumerStatefulWidget {
 }
 
 class _MemberScreenState extends ConsumerState<MemberScreen> {
-  List<String> statusList = <String>['active', 'inactive', 'overdue'];
-
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
 
@@ -161,11 +160,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                               member.type = value;
                             },
                             validator: FormBuilderValidators.required(),
-                            options: [
-                              'residents',
-                              'carrier',
-                              'subcontractor',
-                            ]
+                            options: kMemberTypeList
                                 .map((lang) =>
                                     FormBuilderFieldOption(value: lang))
                                 .toList(growable: false),
@@ -187,7 +182,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                               member.status = value;
                             },
                             validator: FormBuilderValidators.required(),
-                            options: statusList
+                            options: kStatusList
                                 .map((lang) =>
                                     FormBuilderFieldOption(value: lang))
                                 .toList(growable: false),

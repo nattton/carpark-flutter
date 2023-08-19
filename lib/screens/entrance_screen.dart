@@ -8,6 +8,7 @@ import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/smard_card_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/screens/member_list_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
@@ -929,7 +930,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildSearchMember() {
-    final memberList = ref.watch(memberListProvider);
+    final memberList = ref.watch(membersProvider);
     return Autocomplete<MemberModel>(
       displayStringForOption: (MemberModel member) {
         return member.name!;

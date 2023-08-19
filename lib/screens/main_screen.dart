@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/last_gate_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/providers/camera_player.dart';
+import 'package:carpark/providers/members_notifier.dart';
 import 'package:carpark/screens/camera_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/member_list_screen.dart';
+import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
@@ -17,7 +20,10 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main_screen.g.dart';
@@ -28,9 +34,11 @@ final lastGateProvider =
       LastGateModel(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
 });
 
-final memberListProvider = Provider<List<MemberModel>>((ref) {
-  return [];
+final membersProvider =
+    StateNotifierProvider<MembersNotifier, List<MemberModel>>((ref) {
+  return MembersNotifier();
 });
+
 final cameraMapProvider =
     Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
 
@@ -68,6 +76,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
+  final MemberModel _memberModel = MemberModel(id: 0, vehicles: []);
+
+  final _nameController = TextEditingController();
+  final _telController = TextEditingController();
+
   @override
   void initState() {
     getMember();
@@ -88,6 +101,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       page.jumpToPage(p0);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _telController.dispose();
+    periodicSub.cancel();
+    super.dispose();
   }
 
   void alertError(String msg) {
@@ -118,10 +139,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Future<void> getMember() async {
-    final memberList = ref.read(memberListProvider);
+    final memberList = ref.read(membersProvider.notifier);
     sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
-      memberList.clear();
-      memberList.addAll(value);
+      memberList.setState(value);
     }).onError((error, stackTrace) {
       alertError(error.toString());
     });
@@ -143,12 +163,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }).onError((error, stackTrace) {
       alertError(error.toString());
     });
-  }
-
-  @override
-  void dispose() {
-    periodicSub.cancel();
-    super.dispose();
   }
 
   void selectedPage(String page) {
@@ -346,13 +360,152 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           icon: const Icon(Icons.person_add),
           tooltip: 'สร้างสมาชิกใหม่',
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('This is a snackbar')));
+            onPressedAddMember(context);
           },
         ),
       );
     }
 
     return widget;
+  }
+
+  void onPressedAddMember(BuildContext context) {
+    _memberModel.name = '';
+    _memberModel.telephone = '';
+    _memberModel.type = 'resident';
+    _memberModel.status = 'active';
+
+    _nameController.text = '';
+    _telController.text = '';
+
+    Alert(
+        context: context,
+        title: "สร้างสมาชิกใหม่",
+        content: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _nameController,
+                onChanged: (value) {
+                  _memberModel.name = value;
+                },
+                autofocus: false,
+                autocorrect: false,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  labelText: 'ชื่อ',
+                  suffixIcon: const Icon(Icons.account_circle),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _telController,
+                onChanged: (value) {
+                  _memberModel.telephone = value;
+                },
+                autofocus: false,
+                autocorrect: false,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: 'โทรศัพท์.',
+                  suffixIcon: const Icon(Icons.phone),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FormBuilderRadioGroup(
+                decoration: InputDecoration(
+                  labelText: 'ประเภท',
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+                initialValue: _memberModel.type,
+                name: 'type',
+                onChanged: (value) {
+                  _memberModel.type = value;
+                },
+                validator: FormBuilderValidators.required(),
+                options: kMemberTypeList
+                    .map((lang) => FormBuilderFieldOption(value: lang))
+                    .toList(growable: false),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FormBuilderRadioGroup(
+                decoration: InputDecoration(
+                  labelText: 'สถานะ',
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+                initialValue: _memberModel.status,
+                name: 'status',
+                onChanged: (value) {
+                  _memberModel.status = value;
+                },
+                validator: FormBuilderValidators.required(),
+                options: kStatusList
+                    .map((lang) => FormBuilderFieldOption(value: lang))
+                    .toList(growable: false),
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () {
+              createMember();
+            },
+            child: const Text(
+              "สร้าง",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]).show();
+  }
+
+  void createMember() {
+    sl<ApiService>()
+        .createMember(sl<AppService>().token, _memberModel)
+        .then((value) {
+      // getMember();
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Create Member'),
+          content: const Text('สร้างข้อมูลสมาชิกเรียบร้อย'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, 'OK');
+                Navigator.pop(context);
+                Navigator.of(context)
+                    .pushNamed(MemberScreen.id, arguments: value.id)
+                    .then((value) => {getMember()});
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+    }).onError((error, stackTrace) {
+      alertError(error.toString());
+    });
   }
 }

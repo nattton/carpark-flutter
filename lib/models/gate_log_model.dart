@@ -60,6 +60,6 @@ class GateLogModel {
     } else if (member?.status == 'overdue') {
       return kColorOverdue;
     }
-    return kColorResidents;
+    return kColorResident;
   }
 }

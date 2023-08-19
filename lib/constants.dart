@@ -6,6 +6,9 @@ const kHostUrl = 'http://localhost:4000';
 const kPrinterName = 'EPSON TM-T82 Receipt';
 // const kPrinterName = 'POS-80C';
 
+const kMemberTypeList = ['resident', 'carrier', 'subcontractor'];
+const kStatusList = ['active', 'inactive', 'overdue'];
+
 const kDefaultFont = 'Stidti';
 const kBoldFont = 'Stidti-Bold';
 const kColorTop = Color(0xFF009CDE);
@@ -77,7 +80,7 @@ const kOverdueText = 'ค้างชำระค่าส่วนกลาง'
 const kOverdue2Text = 'กรุณาติดต่อนิติบุคล';
 
 const kColorVisitor = Color.fromARGB(255, 223, 45, 0);
-const kColorResidents = Color.fromARGB(255, 105, 240, 174);
+const kColorResident = Color.fromARGB(255, 105, 240, 174);
 const kColorOverdue = Color.fromARGB(255, 183, 31, 230);
 
 const vehicleTypeMap = {

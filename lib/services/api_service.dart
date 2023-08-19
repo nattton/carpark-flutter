@@ -52,13 +52,13 @@ abstract class ApiService {
       @Header('Authorization') String token);
 
   @PATCH("/api/admin/cameras/{id}")
-  Future<ResponseModel> updateCamera(@Header('Authorization') String token,
+  Future<CameraModel> updateCamera(@Header('Authorization') String token,
       @Path() int id, @Body() CameraModel camera);
 
   // Member
   @POST("/api/members")
-  Future<ResponseModel> createMember(@Header('Authorization') String token,
-      @Path() int id, @Body() MemberModel member);
+  Future<MemberModel> createMember(
+      @Header('Authorization') String token, @Body() MemberModel member);
 
   @PATCH("/api/members/{id}")
   Future<ResponseModel> updateMember(@Header('Authorization') String token,
