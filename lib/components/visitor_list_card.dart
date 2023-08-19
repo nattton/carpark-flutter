@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
@@ -82,31 +81,24 @@ class VisitorListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        visitor.dateTimeFormat(),
+                        visitor.dateTimeNanoFormat(),
                         style: const TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    visitor.exitTime!.valid!
-                        ? Expanded(
-                            child: Text(
-                              visitor.exitDateTimeFormat(),
-                              style: const TextStyle(
-                                  fontFamily: kDefaultFont,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )
-                        : Expanded(
-                            child: QrImageView(
-                              data: visitor.dateTimeNanoShortFormat(),
-                              version: QrVersions.auto,
-                              size: 60,
-                              gapless: false,
-                            ),
-                          ),
+                    Expanded(
+                      child: Text(
+                        visitor.exitTime!.valid!
+                            ? visitor.exitDateTimeNanoFormat()
+                            : "",
+                        style: const TextStyle(
+                            fontFamily: kDefaultFont,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     Expanded(
                       child: Text(
                         visitor.plateNumber!,

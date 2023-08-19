@@ -36,7 +36,6 @@ class EntranceScreen extends StatefulHookConsumerWidget {
 }
 
 class _EntranceScreenState extends ConsumerState<EntranceScreen> {
-  List<MemberModel> memberList = [];
   final focus = FocusNode();
 
   bool _isShowVisitor = false;
@@ -45,12 +44,11 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   SmartCardModel _smartCard = SmartCardModel.empty();
 
-  TextEditingController controller = TextEditingController();
-  TextEditingController metasController = TextEditingController();
-
   int _selectedGateLogId = 0;
 
   MemberModel? _selectedMember;
+
+  TextEditingController _memberController = TextEditingController();
 
   final _plateNumberController = TextEditingController();
   final _idCardController = TextEditingController();
@@ -65,9 +63,21 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   @override
   void initState() {
     super.initState();
-    if (mounted) {
-      getMember();
-    }
+  }
+
+  @override
+  void dispose() {
+    _memberController.dispose();
+    _plateNumberController.dispose();
+    _idCardController.dispose();
+    _thaiNameController.dispose();
+    _engNameController.dispose();
+    _birthdateController.dispose();
+    _genderController.dispose();
+    _addressNameController.dispose();
+    _ageNameController.dispose();
+    _readDateTimeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -605,16 +615,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     });
   }
 
-  Future<void> getMember() async {
-    sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
-      setState(() {
-        memberList = value;
-      });
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
-  }
-
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
@@ -929,6 +929,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildSearchMember() {
+    final memberList = ref.watch(memberListProvider);
     return Autocomplete<MemberModel>(
       displayStringForOption: (MemberModel member) {
         return member.name!;
@@ -962,7 +963,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                 // title: Text(option.toString()),
                 title: SubstringHighlight(
                   text: option.name!,
-                  term: controller.text,
+                  term: _memberController.text,
                   textStyleHighlight:
                       const TextStyle(fontWeight: FontWeight.w700),
                 ),
@@ -978,7 +979,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         );
       },
       fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
-        this.controller = controller;
+        _memberController = controller;
 
         return TextField(
           controller: controller,
@@ -1007,20 +1008,5 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   void alertError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    // showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return AlertDialog(
-    //         title: const Text('Alert Message'),
-    //         content: Text(msg),
-    //         actions: [
-    //           TextButton(
-    //               onPressed: () {
-    //                 Navigator.pop(context);
-    //               },
-    //               child: const Text('Close'))
-    //         ],
-    //       );
-    //     });
   }
 }

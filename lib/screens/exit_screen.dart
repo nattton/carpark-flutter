@@ -20,7 +20,6 @@ class ExitScreen extends StatefulHookConsumerWidget {
 }
 
 class _ExitScreenState extends ConsumerState<ExitScreen> {
-  TextEditingController controller = TextEditingController();
   final _barcodeController = TextEditingController();
   late FocusNode focusNode;
 

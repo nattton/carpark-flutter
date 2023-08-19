@@ -3,6 +3,7 @@ import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/last_gate_model.dart';
+import 'package:carpark/models/member_model.dart';
 import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/screens/camera_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
@@ -27,7 +28,11 @@ final lastGateProvider =
       LastGateModel(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
 });
 
-final cameraMapProvider = Provider((ref) => <String, CameraModel>{});
+final memberListProvider = Provider<List<MemberModel>>((ref) {
+  return [];
+});
+final cameraMapProvider =
+    Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
 
 @riverpod
 CameraPlayer cameraPlayer(CameraPlayerRef ref) {
@@ -58,12 +63,14 @@ class MainScreen extends StatefulHookConsumerWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   var loadLast = false;
+  var _currentScreen = "";
   late StreamSubscription periodicSub;
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
   @override
   void initState() {
+    getMember();
     getCameraList().then((value) {
       var camera = value['ENTRANCE'];
       final player = ref.watch(cameraPlayerProvider);
@@ -108,6 +115,16 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       camera[cam.name] = cam;
     }
     return camera;
+  }
+
+  Future<void> getMember() async {
+    final memberList = ref.read(memberListProvider);
+    sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
+      memberList.clear();
+      memberList.addAll(value);
+    }).onError((error, stackTrace) {
+      alertError(error.toString());
+    });
   }
 
   Future<void> getLastGateIn() async {
@@ -172,6 +189,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         periodicSub.cancel();
         player.stopAll();
     }
+    setState(() {
+      _currentScreen = page;
+    });
   }
 
   @override
@@ -182,6 +202,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           'Car Park',
         ),
         automaticallyImplyLeading: false,
+        actions: _buildAppBar(),
       ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -315,5 +336,23 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildAppBar() {
+    List<Widget> widget = [];
+    if (_currentScreen == "MEMBER") {
+      widget.add(
+        IconButton(
+          icon: const Icon(Icons.person_add),
+          tooltip: 'สร้างสมาชิกใหม่',
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('This is a snackbar')));
+          },
+        ),
+      );
+    }
+
+    return widget;
   }
 }

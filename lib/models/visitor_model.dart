@@ -79,4 +79,12 @@ class VisitorModel {
     }
     return "";
   }
+
+  String exitDateTimeNanoFormat() {
+    if (exitTime!.valid!) {
+      DateTime dt = exitTime!.time!.add(const Duration(hours: 7));
+      return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
+    }
+    return "";
+  }
 }

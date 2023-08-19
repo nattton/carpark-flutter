@@ -6,6 +6,7 @@ import 'package:carpark/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -50,10 +51,20 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _telController.dispose();
+
+    _plateNumberController.dispose();
+    _resembleController.dispose();
+    _plateProvinceController.dispose();
+    _brandController.dispose();
+    _colorController.dispose();
+    _telephoneController.dispose();
     super.dispose();
   }
 
   void getMember() {
+    EasyLoading.show(status: 'loading...');
     final member = ref.read(memberModelProvider);
     sl<ApiService>()
         .getMember(sl<AppService>().token, widget.memberId)
@@ -63,140 +74,174 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
         _nameController.text = member.name!;
         _telController.text = member.telephone!;
       });
+      EasyLoading.dismiss();
+    }).onError((error, stackTrace) {
+      EasyLoading.dismiss();
+      alertError(error.toString());
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final member = ref.watch(memberModelProvider);
-    return member.id != 0
-        ? Scaffold(
-            appBar: AppBar(),
-            body: Column(
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    TextField(
-                      controller: _nameController,
-                      onChanged: (value) {
-                        member.name = value;
-                      },
-                      autofocus: false,
-                      autocorrect: false,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        suffixIcon: const Icon(Icons.account_circle),
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    TextField(
-                      controller: _telController,
-                      onChanged: (value) {
-                        member.telephone = value;
-                      },
-                      autofocus: false,
-                      autocorrect: false,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Tel.',
-                        suffixIcon: const Icon(Icons.phone),
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    FormBuilderRadioGroup(
-                      decoration: InputDecoration(
-                        labelText: 'Type',
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0)),
-                      ),
-                      initialValue: member.type,
-                      name: 'type',
-                      onChanged: (value) {
-                        member.type = value;
-                      },
-                      validator: FormBuilderValidators.required(),
-                      options: [
-                        'residents',
-                        'carrier',
-                        'subcontractor',
-                      ]
-                          .map((lang) => FormBuilderFieldOption(value: lang))
-                          .toList(growable: false),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    FormBuilderRadioGroup(
-                      decoration: InputDecoration(
-                        labelText: 'Status',
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0)),
-                      ),
-                      initialValue: member.status,
-                      name: 'status',
-                      onChanged: (value) {
-                        member.status = value;
-                      },
-                      validator: FormBuilderValidators.required(),
-                      options: statusList
-                          .map((lang) => FormBuilderFieldOption(value: lang))
-                          .toList(growable: false),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    ElevatedButton(
-                        onPressed: () => onPressedSave(),
-                        child: const Text("บันทึกข้อมูล")),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    ElevatedButton(
-                        onPressed: () => onPressedAdd(context),
-                        child: const Text("สร้างทะเบียนรถ"))
-                  ],
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: member.vehicles!.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return VehicleListCard(
-                          vehicle: VehicleModel(id: 0),
-                          onTap: () {},
-                        );
-                      }
-                      return VehicleListCard(
-                          vehicle: member.vehicles![index - 1],
-                          onTap: () => onPressedEdit(
-                              context, member.vehicles![index - 1]));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("แก้ไขข้อมูลสมาชิก"),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 10.0,
+          ),
+          Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(),
+              1: FlexColumnWidth(),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: <TableRow>[
+              TableRow(children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _nameController,
+                    onChanged: (value) {
+                      member.name = value;
                     },
+                    autofocus: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      suffixIcon: const Icon(Icons.account_circle),
+                      contentPadding:
+                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
                   ),
                 ),
-              ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _telController,
+                    onChanged: (value) {
+                      member.telephone = value;
+                    },
+                    autofocus: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'Tel.',
+                      suffixIcon: const Icon(Icons.phone),
+                      contentPadding:
+                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
+                  ),
+                ),
+              ]),
+              member.id != 0
+                  ? TableRow(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FormBuilderRadioGroup(
+                            decoration: InputDecoration(
+                              labelText: 'Type',
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                  20.0, 20.0, 20.0, 20.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                            ),
+                            initialValue: member.type,
+                            name: 'type',
+                            onChanged: (value) {
+                              member.type = value;
+                            },
+                            validator: FormBuilderValidators.required(),
+                            options: [
+                              'residents',
+                              'carrier',
+                              'subcontractor',
+                            ]
+                                .map((lang) =>
+                                    FormBuilderFieldOption(value: lang))
+                                .toList(growable: false),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FormBuilderRadioGroup(
+                            decoration: InputDecoration(
+                              labelText: 'Status',
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                  20.0, 20.0, 20.0, 20.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                            ),
+                            initialValue: member.status,
+                            name: 'status',
+                            onChanged: (value) {
+                              member.status = value;
+                            },
+                            validator: FormBuilderValidators.required(),
+                            options: statusList
+                                .map((lang) =>
+                                    FormBuilderFieldOption(value: lang))
+                                .toList(growable: false),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const TableRow(children: [SizedBox(), SizedBox()]),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: ElevatedButton(
+                      onPressed: () => onPressedSave(),
+                      child: const Text("บันทึกข้อมูล")),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green, // Background color
+                      ),
+                      onPressed: () => onPressedAdd(context),
+                      child: const Text("สร้างทะเบียนรถ")),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: member.vehicles!.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return VehicleListCard(
+                    vehicle: VehicleModel(id: 0),
+                    onTap: () {},
+                  );
+                }
+                return VehicleListCard(
+                    vehicle: member.vehicles![index - 1],
+                    onTap: () =>
+                        onPressedEdit(context, member.vehicles![index - 1]));
+              },
             ),
-          )
-        : const SizedBox();
+          ),
+        ],
+      ),
+    );
   }
 
   void onPressedAdd(BuildContext context) {

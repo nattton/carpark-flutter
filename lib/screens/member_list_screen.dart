@@ -1,20 +1,22 @@
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
+import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/components/member_list_card.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MemberListScreen extends StatefulWidget {
+class MemberListScreen extends ConsumerStatefulWidget {
   const MemberListScreen({Key? key}) : super(key: key);
 
   @override
-  State<MemberListScreen> createState() => _MemberListScreenState();
+  ConsumerState<MemberListScreen> createState() => _MemberListScreenState();
 }
 
-class _MemberListScreenState extends State<MemberListScreen> {
-  List<MemberModel> memberList = [];
+class _MemberListScreenState extends ConsumerState<MemberListScreen> {
   List<MemberModel> searchMemberList = [];
 
   final _searchController = TextEditingController();
@@ -27,6 +29,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
   @override
   void dispose() {
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -34,21 +37,28 @@ class _MemberListScreenState extends State<MemberListScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.search),
-            title: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                  hintText: 'Search', border: InputBorder.none),
-              onChanged: onSearchTextChanged,
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.cancel),
-              onPressed: () {
-                _searchController.clear();
-                onSearchTextChanged('');
-              },
+        const SizedBox(
+          height: 10.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: _searchController,
+            autofocus: false,
+            autocorrect: false,
+            onChanged: onSearchTextChanged,
+            decoration: InputDecoration(
+              labelText: 'Search',
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  _searchController.clear();
+                  onSearchTextChanged('');
+                },
+                child: const Icon(Icons.clear),
+              ),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
             ),
           ),
         ),
@@ -74,11 +84,15 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   Future<void> getMember() async {
+    EasyLoading.show(status: 'loading...');
+    final memberList = ref.read(memberListProvider);
     sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
       setState(() {
-        memberList = value;
+        memberList.clear();
+        memberList.addAll(value);
         searchMemberList = value;
       });
+      EasyLoading.dismiss();
     }).catchError((error) {});
   }
 
@@ -107,6 +121,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   onSearchTextChanged(String text) async {
+    final memberList = ref.read(memberListProvider);
     if (text.isEmpty) {
       setState(() {
         searchMemberList = memberList;

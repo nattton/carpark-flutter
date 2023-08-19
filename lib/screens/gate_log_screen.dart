@@ -39,6 +39,12 @@ class _GateLogScreenState extends State<GateLogScreen> {
     _selectDate(DateTime(now.year, now.month, now.day));
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   onSearchTextChanged(String text) async {
     if (text.isEmpty) {
       setState(() {
@@ -117,20 +123,26 @@ class _GateLogScreenState extends State<GateLogScreen> {
             ),
           ],
         ),
-        ListTile(
-          leading: const Icon(Icons.search),
-          title: TextField(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
             controller: _searchController,
-            decoration: const InputDecoration(
-                hintText: 'Search', border: InputBorder.none),
+            autofocus: false,
+            autocorrect: false,
             onChanged: onSearchTextChanged,
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.cancel),
-            onPressed: () {
-              _searchController.clear();
-              onSearchTextChanged('');
-            },
+            decoration: InputDecoration(
+              labelText: 'Search',
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  _searchController.clear();
+                  onSearchTextChanged('');
+                },
+                child: const Icon(Icons.clear),
+              ),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+            ),
           ),
         ),
         Expanded(
