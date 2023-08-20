@@ -75,8 +75,9 @@ class MainScreen extends StatefulHookConsumerWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   var loadLast = false;
-  var _currentScreen = "";
   late StreamSubscription periodicSub;
+
+  var _currentScreen = "";
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
@@ -220,7 +221,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           'Car Park',
         ),
         automaticallyImplyLeading: false,
-        actions: _buildAppBar(),
+        actions: _buildActionBar(),
       ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -356,7 +357,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     );
   }
 
-  List<Widget> _buildAppBar() {
+  List<Widget> _buildActionBar() {
     List<Widget> widget = [];
     if (_currentScreen == "MEMBER") {
       widget.add(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-// const kHostUrl = 'http://192.168.1.50:4000';
-const kHostUrl = 'http://localhost:4000';
+const kHostUrl = 'http://192.168.1.50:4000';
+// const kHostUrl = 'http://localhost:4000';
 
 const kPrinterName = 'EPSON TM-T82 Receipt';
 // const kPrinterName = 'POS-80C';

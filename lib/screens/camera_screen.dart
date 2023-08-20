@@ -1,7 +1,7 @@
 import 'package:carpark/components/camera_list_card.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/screens/main_web_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
