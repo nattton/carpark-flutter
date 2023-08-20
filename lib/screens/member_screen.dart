@@ -1,4 +1,3 @@
-import 'package:carpark/components/member_header_card.dart';
 import 'package:carpark/components/vehicle_header_card.dart';
 import 'package:carpark/components/vehicle_list_card.dart';
 import 'package:carpark/constants.dart';
