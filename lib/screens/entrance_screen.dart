@@ -304,8 +304,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                   Container(
                     height: 60,
                     color: Colors.amberAccent,
-                    child: Image.network(
-                        "$kHostUrl/anpr_store/${gateLog.licensePlateImage!}"),
+                    child: Image.network(gateLog.licensePlateImageUrl()),
                   ),
                   Container(
                     height: 60,
@@ -324,7 +323,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
           const SizedBox(
             height: 10.0,
           ),
-          Image.network("$kHostUrl/anpr_store/${gateLog.captureImage!}"),
+          Image.network(gateLog.captureImageUrl()),
         ]),
       ),
     );

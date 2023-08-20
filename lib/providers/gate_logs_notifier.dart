@@ -5,6 +5,6 @@ class GateLogsNotifier extends StateNotifier<List<GateLogModel>> {
   GateLogsNotifier() : super(const []);
 
   void setState(List<GateLogModel> gateLogs) {
-    state = [...gateLogs];
+    state = gateLogs;
   }
 }

@@ -42,7 +42,7 @@ abstract class ApiService {
   @GET("/api/gate_logs/out")
   Future<GateInModel> getGateOut(@Header('Authorization') String token);
 
-  @GET("/api/gate_logs/search")
+  @GET("/api/gate_logs")
   Future<List<GateLogModel>> searchGateLog(
       @Header('Authorization') String token,
       @Query("date") String date,
@@ -101,8 +101,8 @@ abstract class ApiService {
       @Path() int id, @Path() String type, @Part() File file);
 
   @GET("/api/visitors")
-  Future<List<VisitorModel>> listVisitor(
-      @Header('Authorization') String token, @Query("date") String date);
+  Future<List<VisitorModel>> listVisitor(@Header('Authorization') String token,
+      @Query("date") String date, @Query("dateTo") String dateTo);
 
   @GET("/api/visitors/{id}")
   Future<VisitorModel> getVisitor(

@@ -200,7 +200,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                                     height: 70,
                                     color: Colors.amberAccent,
                                     child: Image.network(
-                                        "$kHostUrl/anpr_store/${gateLog.licensePlateImage!}"),
+                                        gateLog.licensePlateImageUrl()),
                                   ),
                                   Container(
                                     height: 70,
@@ -219,8 +219,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                           const SizedBox(
                             height: 10.0,
                           ),
-                          Image.network(
-                              "$kHostUrl/anpr_store/${gateLog.captureImage!}"),
+                          Image.network(gateLog.captureImageUrl()),
                         ]),
                       ),
                     ),

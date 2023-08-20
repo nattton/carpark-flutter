@@ -5,6 +5,6 @@ class MembersNotifier extends StateNotifier<List<MemberModel>> {
   MembersNotifier() : super(const []);
 
   void setState(List<MemberModel> members) {
-    state = [...members];
+    state = members;
   }
 }

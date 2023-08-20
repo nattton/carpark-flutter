@@ -1,3 +1,4 @@
+import 'package:carpark/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'visitor_image_model.g.dart';
@@ -18,4 +19,8 @@ class VisitorImageModel {
       _$VisitorImageModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$VisitorImageModelToJson(this);
+
+  String imageUrl() {
+    return "$kHostUrl/anpr_store/$image";
+  }
 }

@@ -16,16 +16,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-final gateLogProvider =
+final gateLogsProvider =
     StateNotifierProvider<GateLogsNotifier, List<GateLogModel>>((ref) {
   return GateLogsNotifier();
 });
 
 final filterProvider = StateProvider((ref) => "");
 
-final filteredGateLogProvider = Provider<List<GateLogModel>>((ref) {
+final filteredGateLogsProvider = Provider<List<GateLogModel>>((ref) {
   final filter = ref.watch(filterProvider);
-  final gateLogs = ref.watch(gateLogProvider);
+  final gateLogs = ref.watch(gateLogsProvider);
 
   if (filter.isEmpty) {
     return gateLogs;
@@ -56,9 +56,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   void initState() {
     super.initState();
     DateTime now = DateTime.now();
-    _selectDate([
-      DateTime(now.year, now.month, now.day),
-    ]);
+    _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 
   @override
@@ -73,7 +71,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
   Future<void> getGateLogList(List<DateTime?> selectedDate) async {
     EasyLoading.show(status: 'loading...');
-    final gateLogs = ref.read(gateLogProvider.notifier);
+    final gateLogs = ref.read(gateLogsProvider.notifier);
     if (selectedDate.isNotEmpty) {
       var date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
       var dateTo = date;
@@ -98,7 +96,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredGateLogs = ref.watch(filteredGateLogProvider);
+    final filteredGateLogs = ref.watch(filteredGateLogsProvider);
     return Column(
       children: [
         Padding(
@@ -194,20 +192,20 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       title: "Gate Log",
       content: Column(
         children: <Widget>[
-          Image.network("$kHostUrl/anpr_store/${gateLog.captureImage!}"),
+          Image.network(gateLog.captureImageUrl()),
         ],
       ),
     ).show();
   }
 
   Excel generateExcel() {
-    final gateLogs = ref.read(filteredGateLogProvider);
+    final gateLogs = ref.read(filteredGateLogsProvider);
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Sheet1'];
 
     int currentRow = 0;
     List<String> columnName = [
-      "captureTime",
+      "createdAt",
       "gateName",
       "anpr",
       "plateNumber",
@@ -231,7 +229,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
         m.anpr!,
         m.plateNumber!,
         m.member!.name!,
-        m.captureImage!,
+        m.captureImageUrl(),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
     }
@@ -239,25 +237,27 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   }
 
   void onPressedExportGateLog() async {
-    String dateTime = DateFormat("yyyy-MM-dd").format(_dates[0]!);
+    String fileName = "gate_log";
+    String date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
+    fileName = "$fileName$date";
 
     if (_dates.length > 1) {
       String dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
-      dateTime = "$dateTime-$dateTo";
+      fileName = "$fileName-$dateTo";
     }
 
     final filter = ref.read(filterProvider);
     if (filter.isNotEmpty) {
-      dateTime = "$dateTime-$filter";
+      fileName = "$fileName-$filter";
     }
 
     if (kIsWeb) {
       var excel = generateExcel();
-      excel.save(fileName: 'gate_log_$dateTime.xlsx');
+      excel.save(fileName: '$fileName.xlsx');
     } else {
       String? outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Please select an output file:',
-        fileName: 'gate_log_$dateTime.xlsx',
+        fileName: '$fileName.xlsx',
       );
 
       if (outputFile != null) {

@@ -35,25 +35,33 @@ class GateLogModel {
 
   Map<String, dynamic> toJson() => _$GateLogModelToJson(this);
 
+  String captureImageUrl() {
+    return "$kHostUrl/anpr_store/$captureImage";
+  }
+
+  String licensePlateImageUrl() {
+    return "$kHostUrl/anpr_store/$licensePlateImage";
+  }
+
   String dateTimeFormat() {
-    DateTime dt = captureTime!.add(const Duration(hours: 7));
+    DateTime dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
   }
 
   String dateTimeNanoFormat() {
-    DateTime dt = captureTime!.add(const Duration(hours: 7));
+    DateTime dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
   }
 
   String dateFormat() {
-    if (captureTime == null) return '';
-    DateTime dt = captureTime!.add(const Duration(hours: 7));
+    if (createdAt == null) return '';
+    DateTime dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("dd/MM/yyyy").format(dt);
   }
 
   String timeFormat() {
-    if (captureTime == null) return '';
-    DateTime dt = captureTime!.add(const Duration(hours: 7));
+    if (createdAt == null) return '';
+    DateTime dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("HH:mm:ss").format(dt);
   }
 
