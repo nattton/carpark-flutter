@@ -545,7 +545,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
           CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
       cell.cellStyle = cellStyle;

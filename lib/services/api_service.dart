@@ -44,7 +44,9 @@ abstract class ApiService {
 
   @GET("/api/gate_logs/search")
   Future<List<GateLogModel>> searchGateLog(
-      @Header('Authorization') String token, @Query("date") String date);
+      @Header('Authorization') String token,
+      @Query("date") String date,
+      @Query("dateTo") String dateTo);
 
   // Camera
   @GET("/api/cameras")

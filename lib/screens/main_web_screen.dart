@@ -13,7 +13,6 @@ import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:excel/excel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -407,7 +406,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
           CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
       cell.cellStyle = cellStyle;

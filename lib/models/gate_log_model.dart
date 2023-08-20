@@ -11,7 +11,6 @@ class GateLogModel {
   final int id;
   DateTime? createdAt;
   String? gateName;
-  String? ipAddress;
   String? anpr;
   String? plateNumber;
   int? memberId;
@@ -23,7 +22,6 @@ class GateLogModel {
   GateLogModel(this.id,
       {this.createdAt,
       this.gateName,
-      this.ipAddress,
       this.anpr,
       this.plateNumber,
       this.memberId,
@@ -40,6 +38,11 @@ class GateLogModel {
   String dateTimeFormat() {
     DateTime dt = captureTime!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
+  }
+
+  String dateTimeNanoFormat() {
+    DateTime dt = captureTime!.add(const Duration(hours: 7));
+    return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
   }
 
   String dateFormat() {
