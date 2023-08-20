@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/null_time_model.dart';

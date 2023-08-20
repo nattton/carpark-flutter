@@ -1,3 +1,5 @@
+import 'package:carpark/components/member_header_card.dart';
+import 'package:carpark/components/vehicle_header_card.dart';
 import 'package:carpark/components/vehicle_list_card.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
@@ -217,20 +219,15 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
               ),
             ],
           ),
+          const VehicleHeaderCard(),
           Expanded(
             child: ListView.builder(
-              itemCount: member.vehicles!.length + 1,
+              itemCount: member.vehicles!.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return VehicleListCard(
-                    vehicle: VehicleModel(id: 0),
-                    onTap: () {},
-                  );
-                }
                 return VehicleListCard(
-                    vehicle: member.vehicles![index - 1],
+                    vehicle: member.vehicles![index],
                     onTap: () =>
-                        onPressedEdit(context, member.vehicles![index - 1]));
+                        onPressedEdit(context, member.vehicles![index]));
               },
             ),
           ),

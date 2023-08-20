@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:carpark/components/gate_log_header_card.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/components/gate_log_card.dart';
-import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/providers/gate_logs_notifier.dart';
@@ -22,18 +22,62 @@ final gateLogsProvider =
 });
 
 final filterProvider = StateProvider((ref) => "");
+final sortByProvider = StateProvider((ref) => "");
 
 final filteredGateLogsProvider = Provider<List<GateLogModel>>((ref) {
   final filter = ref.watch(filterProvider);
+  final sortBy = ref.watch(sortByProvider);
   final gateLogs = ref.watch(gateLogsProvider);
 
+  List<GateLogModel> filterGateLogs = [];
   if (filter.isEmpty) {
-    return gateLogs;
+    filterGateLogs = gateLogs;
   }
-  return gateLogs.where((gateLog) {
+  if (filter.isEmpty) {
+    filterGateLogs = gateLogs;
+  }
+  filterGateLogs = gateLogs.where((gateLog) {
     return gateLog.plateNumber!.contains(filter) ||
         gateLog.member!.name!.contains(filter);
   }).toList();
+
+  if (sortBy.isNotEmpty) {
+    switch (sortBy) {
+      case "date":
+        filterGateLogs.sort((a, b) {
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
+        break;
+      case "-date":
+        filterGateLogs.sort((b, a) {
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
+        break;
+      case "plateNumber":
+        filterGateLogs.sort((a, b) {
+          return a.plateNumber!.compareTo(b.plateNumber!);
+        });
+        break;
+      case "-plateNumber":
+        filterGateLogs.sort((b, a) {
+          return a.plateNumber!.compareTo(b.plateNumber!);
+        });
+        break;
+      case "memberName":
+        filterGateLogs.sort((a, b) {
+          return a.member!.name!.compareTo(b.member!.name!);
+        });
+        break;
+      case "-memberName":
+        filterGateLogs.sort((b, a) {
+          return a.member!.name!.compareTo(b.member!.name!);
+        });
+        break;
+      default:
+    }
+  }
+
+  return filterGateLogs;
 });
 
 class GateLogScreen extends ConsumerStatefulWidget {
@@ -65,8 +109,15 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     super.dispose();
   }
 
-  onSearchTextChanged(String text) async {
+  void onSearchTextChanged(String text) async {
     ref.read(filterProvider.notifier).state = text;
+  }
+
+  void sortBy(String fieldName) {
+    var sortBy = ref.read(sortByProvider.notifier);
+    sortBy.state == fieldName
+        ? sortBy.state = "-${sortBy.state}"
+        : sortBy.state = fieldName;
   }
 
   Future<void> getGateLogList(List<DateTime?> selectedDate) async {
@@ -166,19 +217,24 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
             ),
           ),
         ),
+        GateLogHeaderCard(
+          onTapDate: () {
+            sortBy("date");
+          },
+          onTapPlateNumber: () {
+            sortBy("plateNumber");
+          },
+          onTapMemberName: () {
+            sortBy("memberName");
+          },
+        ),
         Expanded(
           child: ListView.builder(
-            itemCount: filteredGateLogs.length + 1,
+            itemCount: filteredGateLogs.length,
             itemBuilder: (context, index) {
-              if (index == 0) {
-                return GateLogCard(
-                  gateLog: GateLogModel(0),
-                  onTap: () {},
-                );
-              }
               return GateLogCard(
-                  gateLog: filteredGateLogs[index - 1],
-                  onTap: () => viewDetail(filteredGateLogs[index - 1]));
+                  gateLog: filteredGateLogs[index],
+                  onTap: () => viewDetail(filteredGateLogs[index]));
             },
           ),
         )

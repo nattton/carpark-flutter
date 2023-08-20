@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carpark/components/visitor_header_card.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -24,18 +25,67 @@ final visitorsProvider =
 });
 
 final filterProvider = StateProvider((ref) => "");
+final sortByProvider = StateProvider((ref) => "");
 
 final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
   final filter = ref.watch(filterProvider);
+  final sortBy = ref.watch(sortByProvider);
   final visitors = ref.watch(visitorsProvider);
-
+  List<VisitorModel> filterVisitor = [];
   if (filter.isEmpty) {
-    return visitors;
+    filterVisitor = visitors;
   }
-  return visitors.where((visitor) {
+  filterVisitor = visitors.where((visitor) {
     return visitor.plateNumber!.contains(filter) ||
         visitor.member!.name!.contains(filter);
   }).toList();
+
+  if (sortBy.isNotEmpty) {
+    switch (sortBy) {
+      case "date":
+        filterVisitor.sort((a, b) {
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
+        break;
+      case "-date":
+        filterVisitor.sort((b, a) {
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
+        break;
+      case "exitTime":
+        filterVisitor.sort((a, b) {
+          return a.exitTime!.time!.compareTo(b.createdAt!);
+        });
+        break;
+      case "-exitTime":
+        filterVisitor.sort((b, a) {
+          return a.exitTime!.time!.compareTo(b.createdAt!);
+        });
+        break;
+      case "plateNumber":
+        filterVisitor.sort((a, b) {
+          return a.plateNumber!.compareTo(b.plateNumber!);
+        });
+        break;
+      case "-plateNumber":
+        filterVisitor.sort((b, a) {
+          return a.plateNumber!.compareTo(b.plateNumber!);
+        });
+        break;
+      case "memberName":
+        filterVisitor.sort((a, b) {
+          return a.member!.name!.compareTo(b.member!.name!);
+        });
+        break;
+      case "-memberName":
+        filterVisitor.sort((b, a) {
+          return a.member!.name!.compareTo(b.member!.name!);
+        });
+        break;
+      default:
+    }
+  }
+  return filterVisitor;
 });
 
 class VisitorScreen extends ConsumerStatefulWidget {
@@ -61,8 +111,15 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 
-  onSearchTextChanged(String text) async {
+  void onSearchTextChanged(String text) async {
     ref.read(filterProvider.notifier).state = text;
+  }
+
+  void sortBy(String fieldName) {
+    var sortBy = ref.read(sortByProvider.notifier);
+    sortBy.state == fieldName
+        ? sortBy.state = "-${sortBy.state}"
+        : sortBy.state = fieldName;
   }
 
   Future<void> getVisitorList(List<DateTime?> selectedDate) async {
@@ -162,19 +219,27 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
             ),
           ),
         ),
+        VisitorHeaderCard(
+          onTapDate: () {
+            sortBy("date");
+          },
+          onTapExitTime: () {
+            sortBy("exitTime");
+          },
+          onTapPlateNumber: () {
+            sortBy("plateNumber");
+          },
+          onTapMemberName: () {
+            sortBy("memberName");
+          },
+        ),
         Expanded(
           child: ListView.builder(
-            itemCount: filteredVisitors.length + 1,
+            itemCount: filteredVisitors.length,
             itemBuilder: (context, index) {
-              if (index == 0) {
-                return VisitorListCard(
-                  visitor: VisitorModel.empty(),
-                  onTap: () {},
-                );
-              }
               return VisitorListCard(
-                  visitor: filteredVisitors[index - 1],
-                  onTap: () => viewDetail(filteredVisitors[index - 1]));
+                  visitor: filteredVisitors[index],
+                  onTap: () => viewDetail(filteredVisitors[index]));
             },
           ),
         )

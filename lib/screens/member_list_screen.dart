@@ -1,3 +1,4 @@
+import 'package:carpark/components/member_header_card.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/screens/main_screen.dart';
@@ -76,20 +77,15 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
             ),
           ),
         ),
+        const MemberHeaderCard(),
         Expanded(
           child: ListView.builder(
-            itemCount: filteredMemberList.length + 1,
+            itemCount: filteredMemberList.length,
             itemBuilder: (context, index) {
-              if (index == 0) {
-                return MemberListCard(
-                  member: MemberModel(id: 0),
-                  onTap: () {},
-                );
-              }
               return MemberListCard(
-                  member: filteredMemberList[index - 1],
+                  member: filteredMemberList[index],
                   onTap: () =>
-                      onPressedRow(context, filteredMemberList[index - 1]));
+                      onPressedRow(context, filteredMemberList[index]));
             },
           ),
         )
