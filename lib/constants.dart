@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const kHostUrl = 'http://localhost:4000';
-// const kHostUrl = 'http://192.168.1.50:4000';
+// const kHostUrl = 'http://localhost:4000';
+const kHostUrl = 'http://192.168.1.50:4000';
 // const kHostUrl = 'http://cyptpr.ddns.net';
 
 const kPrinterName = 'EPSON TM-T82 Receipt';
@@ -78,7 +78,7 @@ const kSpaceTextEvent = SizedBox(
   height: 8.0,
 );
 const kOverdueText = 'ค้างชำระค่าส่วนกลาง';
-const kOverdue2Text = 'กรุณาติดต่อนิติบุคล';
+const kOverdue2Text = 'กรุณาติดต่อนิติบุคคล';
 
 const kColorVisitor = Color.fromARGB(255, 223, 45, 0);
 const kColorResident = Color.fromARGB(255, 105, 240, 174);

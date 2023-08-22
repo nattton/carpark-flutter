@@ -2,16 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
 
 class VisitorHeaderCard extends StatelessWidget {
-  const VisitorHeaderCard(
-      {super.key,
-      required this.onTapDate,
-      required this.onTapExitTime,
-      required this.onTapPlateNumber,
-      required this.onTapMemberName});
+  const VisitorHeaderCard({
+    super.key,
+    required this.selectedColumn,
+    required this.onTapDate,
+    required this.onTapExitTime,
+    required this.onTapPlateNumber,
+    required this.onTapMemberName,
+  });
+  final int selectedColumn;
   final VoidCallback onTapDate;
   final VoidCallback onTapExitTime;
   final VoidCallback onTapPlateNumber;
   final VoidCallback onTapMemberName;
+
+  TextStyle _columnStyle(int column) {
+    if (selectedColumn == column) {
+      return const TextStyle(
+          fontFamily: kDefaultFont,
+          fontSize: 22.0,
+          fontWeight: FontWeight.w800);
+    }
+    return const TextStyle(
+        fontFamily: kDefaultFont, fontSize: 16.0, fontWeight: FontWeight.bold);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -22,52 +37,39 @@ class VisitorHeaderCard extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: onTapDate,
-                child: const Text(
+                onTap: (() {
+                  onTapDate();
+                }),
+                child: Text(
                   "วันที่-เวลา เข้า",
-                  style: TextStyle(
-                      fontFamily: kDefaultFont,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
+                  style: _columnStyle(0),
                 ),
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: onTapExitTime,
-                child: const Text(
+                child: Text(
                   "วันที่-เวลา ออก",
-                  style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: _columnStyle(1),
                 ),
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: onTapPlateNumber,
-                child: const Text(
+                child: Text(
                   "ทะเบียน",
-                  style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: _columnStyle(2),
                 ),
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: onTapMemberName,
-                child: const Text(
+                child: Text(
                   "ติดต่อ",
-                  style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: _columnStyle(3),
                 ),
               ),
             ),

@@ -17,6 +17,8 @@ class VisitorModel {
   MemberModel? member;
   int? gateLogId;
   GateLogModel? gateLog;
+  int? gateLogOutId;
+  GateLogModel? gateLogOut;
   String? idCard;
   String? thaiName;
   String? engName;

@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:carpark/components/visitor_header_card.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/components/visitor_list_card.dart';
-import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/providers/visitors_notifier.dart';
@@ -97,7 +95,7 @@ class VisitorScreen extends ConsumerStatefulWidget {
 
 class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   List<DateTime?> _dates = [DateTime.now()];
-
+  int _selectedCol = 0;
   final _searchController = TextEditingController();
 
   void _selectDate(List<DateTime?> newSelectedDate) {
@@ -220,16 +218,21 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
           ),
         ),
         VisitorHeaderCard(
+          selectedColumn: _selectedCol,
           onTapDate: () {
+            _selectedCol = 0;
             sortBy("date");
           },
           onTapExitTime: () {
+            _selectedCol = 1;
             sortBy("exitTime");
           },
           onTapPlateNumber: () {
+            _selectedCol = 2;
             sortBy("plateNumber");
           },
           onTapMemberName: () {
+            _selectedCol = 3;
             sortBy("memberName");
           },
         ),
@@ -260,15 +263,12 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
             height: 10.0,
           ),
           for (var image in visitor.visitorImages!)
-            Image.network("$kHostUrl/anpr_store/${image.image}"),
+            Image.network(image.imageUrl()),
           visitor.gateLog!.captureImage! != ""
-              ? CachedNetworkImage(
-                  imageUrl:
-                      "$kHostUrl/anpr_store/${visitor.gateLog!.captureImage!}",
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                )
+              ? Image.network(visitor.gateLog!.captureImageUrl())
+              : const SizedBox(),
+          visitor.gateLogOut!.captureImage! != ""
+              ? Image.network(visitor.gateLogOut!.captureImageUrl())
               : const SizedBox(),
         ],
       ),

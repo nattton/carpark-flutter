@@ -47,7 +47,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   int _selectedGateLogId = 0;
 
   MemberModel? _selectedMember;
-
   TextEditingController _memberController = TextEditingController();
 
   final _plateNumberController = TextEditingController();
@@ -285,11 +284,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         Container(
                           height: 40,
                           color: gateLog.color(),
-                          child: const Center(
-                              child: Text(
-                            kOverdue2Text,
-                            style: kGateStyle,
-                          )),
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () => showVisitorFromSelect(gateLog),
+                              child: const Text("สร้างบัตรผู้ติดต่อ"),
+                            ),
+                          ),
                         ),
                       ],
                     )
@@ -585,12 +585,18 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   void showVisitorFromSelect(GateLogModel gateLog) {
+    _selectedMember = null;
     _plateNumberController.text = gateLog.plateNumber!;
     _selectedGateLogId = gateLog.id;
+    if (gateLog.memberId != 0 && gateLog.member!.status == "overdue") {
+      _selectedMember = gateLog.member;
+    }
+
     openVisitior();
   }
 
   void showVisitorFromEmpty() {
+    _selectedMember = null;
     _plateNumberController.clear();
     _selectedGateLogId = 0;
     openVisitior();
@@ -815,6 +821,18 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     final imageFrame = img.decodeImage(imgFrameBytes)!;
     bytes += generator.image(imageFrame);
 
+    if (visitor.member!.status! == "overdue") {
+      bytes += generator.textEncoded(
+        await charsetConvert('*$kOverdueText $kOverdue2Text*'),
+        styles: const PosStyles(
+          bold: true,
+          align: PosAlign.center,
+          height: PosTextSize.size1,
+        ),
+        linesAfter: 2,
+      );
+    }
+
     bytes += generator.feed(2);
     bytes += generator.cut();
     return bytes;
@@ -848,7 +866,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     sl<ApiService>()
         .createVisitor(sl<AppService>().token, visitor)
         .then((value) async {
-      printReceipt(value);
+      printTicket(value);
       addImageToVisitor(value);
       setState(() {
         _isShowVisitor = false;
@@ -875,7 +893,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         sl<AppService>().token, visitor.id, "entrance", entranceImage);
   }
 
-  void printReceipt(VisitorModel visitor) async {
+  void printTicket(VisitorModel visitor) async {
     var printerManager = PrinterManager.instance;
     // print(printerManager.currentStatusUSB.toString());
 
@@ -930,6 +948,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   Widget _buildSearchMember() {
     final memberList = ref.watch(membersProvider);
     return Autocomplete<MemberModel>(
+      initialValue:
+          _selectedMember != null && _selectedMember!.status == "overdue"
+              ? TextEditingValue(text: _selectedMember!.name!)
+              : null,
       displayStringForOption: (MemberModel member) {
         return member.name!;
       },

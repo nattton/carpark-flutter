@@ -117,21 +117,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void alertError(String msg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<Map<String, CameraModel>> getCameraList() async {
