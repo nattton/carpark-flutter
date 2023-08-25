@@ -332,14 +332,20 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
   void addImageToVisitor(VisitorModel visitor) async {
     final cameraPlayer = ref.watch(cameraPlayerProvider);
-    File inSideImage = await _tempImage("out_side");
-    File entranceImage = await _tempImage("exit");
-    cameraPlayer.sidePlayer.takeSnapshot(inSideImage, 640, 360);
-    cameraPlayer.mainPlayer.takeSnapshot(entranceImage, 640, 360);
-    await sl<ApiService>().addImageToVisitor(
-        sl<AppService>().token, visitor.id, "out_side", inSideImage);
-    await sl<ApiService>().addImageToVisitor(
-        sl<AppService>().token, visitor.id, "exit", entranceImage);
+    File outSideImage = await _tempImage("out_side");
+    File exitImage = await _tempImage("exit");
+    cameraPlayer.sidePlayer.takeSnapshot(outSideImage, 640, 360);
+    cameraPlayer.mainPlayer.takeSnapshot(exitImage, 640, 360);
+    if (await outSideImage.exists()) {
+      await sl<ApiService>().addImageToVisitor(
+          sl<AppService>().token, visitor.id, "out_side", outSideImage);
+      outSideImage.delete();
+    }
+    if (await exitImage.exists()) {
+      await sl<ApiService>().addImageToVisitor(
+          sl<AppService>().token, visitor.id, "exit", exitImage);
+      exitImage.delete();
+    }
   }
 
   void checkout() {

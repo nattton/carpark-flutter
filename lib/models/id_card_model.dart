@@ -1,3 +1,4 @@
+import 'package:carpark/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'id_card_model.g.dart';
@@ -27,4 +28,15 @@ class IDCardModel {
       _$IDCardModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$IDCardModelToJson(this);
+
+  String genderName() {
+    if (kGenderMap.containsKey(gender)) {
+      return kGenderMap[gender]!;
+    }
+    return gender;
+  }
+
+  String photoUrl() {
+    return "$kSmartCardReaderUrl$photoPath";
+  }
 }

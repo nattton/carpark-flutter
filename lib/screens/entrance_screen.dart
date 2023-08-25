@@ -1,19 +1,17 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/gate_log_model.dart';
+import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/response_model.dart';
-import 'package:carpark/models/smard_card_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
-import 'package:csv/csv.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dio/dio.dart';
 import 'package:esc_pos_printer/esc_pos_printer.dart';
@@ -28,7 +26,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 // import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image/image.dart' as img;
-import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
@@ -46,8 +43,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   bool _isReadCard = false;
   String _vehicleType = 'car';
 
-  SmartCardModel _smartCard = SmartCardModel.empty();
-
+  IDCardModel? _idCardModel;
+  File? _photoFile;
   int _selectedGateLogId = 0;
 
   MemberModel? _selectedMember;
@@ -483,8 +480,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                       children: <Widget>[
                         SizedBox(
                           height: 120.0,
-                          child: _smartCard.cardImage != ""
-                              ? Image.network(_smartCard.cardImage)
+                          child: _photoFile != null
+                              ? Image.file(_photoFile!)
                               : const Icon(size: 120.0, Icons.face),
                         ),
                         TextField(
@@ -640,30 +637,31 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     return directory.path;
   }
 
-  Future<File> get _siamIdFile async {
-    final path = await _localPath;
-    return File('$path/SIAM-ID/Data.txt');
-  }
+  // Future<File> get _siamIdFile async {
+  //   final path = await _localPath;
+  //   return File('$path/SIAM-ID/Data.txt');
+  // }
 
-  Future<dynamic> readData() async {
-    try {
-      final file = await _siamIdFile;
+  // Future<dynamic> readData() async {
+  //   try {
+  //     final file = await _siamIdFile;
 
-      // Read the file
-      final input = File(file.path).openRead();
-      final fields = await input
-          .transform(utf8.decoder)
-          .transform(const CsvToListConverter())
-          .toList();
-      return fields;
-    } catch (e) {
-      // If encountering an error, return 0
-      return '';
-    }
-  }
+  //     // Read the file
+  //     final input = File(file.path).openRead();
+  //     final fields = await input
+  //         .transform(utf8.decoder)
+  //         .transform(const CsvToListConverter())
+  //         .toList();
+  //     return fields;
+  //   } catch (e) {
+  //     // If encountering an error, return 0
+  //     return '';
+  //   }
+  // }
 
   void clearForm() {
-    _smartCard = SmartCardModel.empty();
+    _idCardModel = null;
+    _photoFile = null;
     _idCardController.clear();
     _thaiNameController.clear();
     _engNameController.clear();
@@ -673,38 +671,38 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     setState(() {});
   }
 
-  void readSmartCard() async {
-    _isReadCard = true;
-    try {
-      final listCSV = await readData() as List;
-      final cardData = listCSV.last;
-      _smartCard = SmartCardModel.fromArray(cardData);
-      _idCardController.text = _smartCard.idCard;
-      _thaiNameController.text = _smartCard.thaiName;
-      _engNameController.text = _smartCard.engName;
-      _birthdateController.text = _smartCard.birthdate;
-      _genderController.text = _smartCard.gender;
-      _addressNameController.text = _smartCard.address;
-      setState(() {});
-    } catch (error) {
-      Logger().e(error);
-    }
-  }
+  // void readSmartCard() async {
+  //   _isReadCard = true;
+  //   try {
+  //     final listCSV = await readData() as List;
+  //     final cardData = listCSV.last;
+  //     _smartCard = SmartCardModel.fromArray(cardData);
+  //     _idCardController.text = _smartCard.idCard;
+  //     _thaiNameController.text = _smartCard.thaiName;
+  //     _engNameController.text = _smartCard.engName;
+  //     _birthdateController.text = _smartCard.birthdate;
+  //     _genderController.text = _smartCard.gender;
+  //     _addressNameController.text = _smartCard.address;
+  //     setState(() {});
+  //   } catch (error) {
+  //     Logger().e(error);
+  //   }
+  // }
 
   void readSmartCardFromService() async {
     clearForm();
     EasyLoading.show();
     _isReadCard = true;
     sl<ApiService>().smartCardReader().then((card) async {
-      File photoFile = await _tempImage(card.id);
-      await photoFile.writeAsBytes(card.photoByte.codeUnits);
-      _smartCard = SmartCardModel.fromIDCard(card);
-      _idCardController.text = _smartCard.idCard;
-      _thaiNameController.text = _smartCard.thaiName;
-      _engNameController.text = _smartCard.engName;
-      _birthdateController.text = _smartCard.birthdate;
-      _genderController.text = _smartCard.gender;
-      _addressNameController.text = _smartCard.address;
+      _idCardModel = card;
+      _photoFile = await _tempImage(card.id);
+      await sl<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
+      _idCardController.text = card.id;
+      _thaiNameController.text = card.thaiName;
+      _engNameController.text = card.engName;
+      _birthdateController.text = card.birthdate;
+      _genderController.text = card.genderName();
+      _addressNameController.text = card.address;
       EasyLoading.dismiss();
       setState(() {});
     }).catchError((Object obj) {
@@ -893,14 +891,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   void addPhotoToVisitor(VisitorModel visitor) async {
-    final path = await _localPath;
-    String photoFile = '$path/SIAM-ID/${visitor.idCard}.jpg';
-    var exists = await File(photoFile).exists();
-    if (exists) {
-      File? photo = File(photoFile);
-      sl<ApiService>()
-          .addPhotoVisitor(sl<AppService>().token, visitor.id, photo)
-          .then((value) => {});
+    if (_idCardModel != null && _photoFile != null) {
+      if (await _photoFile!.exists()) {
+        sl<ApiService>()
+            .addPhotoVisitor(sl<AppService>().token, visitor.id, _photoFile!)
+            .then((value) => {});
+      }
     }
   }
 
@@ -912,12 +908,21 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     cameraPlayer.cardPlayer.takeSnapshot(cardImage, 640, 360);
     cameraPlayer.sidePlayer.takeSnapshot(inSideImage, 640, 360);
     cameraPlayer.mainPlayer.takeSnapshot(entranceImage, 640, 360);
-    await sl<ApiService>().addImageToVisitor(
-        sl<AppService>().token, visitor.id, "card", cardImage);
-    await sl<ApiService>().addImageToVisitor(
-        sl<AppService>().token, visitor.id, "in_side", inSideImage);
-    await sl<ApiService>().addImageToVisitor(
-        sl<AppService>().token, visitor.id, "entrance", entranceImage);
+    if (await cardImage.exists()) {
+      await sl<ApiService>().addImageToVisitor(
+          sl<AppService>().token, visitor.id, "card", cardImage);
+      cardImage.delete();
+    }
+    if (await inSideImage.exists()) {
+      await sl<ApiService>().addImageToVisitor(
+          sl<AppService>().token, visitor.id, "in_side", inSideImage);
+      inSideImage.delete();
+    }
+    if (await entranceImage.exists()) {
+      await sl<ApiService>().addImageToVisitor(
+          sl<AppService>().token, visitor.id, "entrance", entranceImage);
+      entranceImage.delete();
+    }
   }
 
   void printTicket(VisitorModel visitor) async {
