@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
+import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/smard_card_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
@@ -13,11 +15,13 @@ import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:csv/csv.dart';
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:dio/dio.dart';
 import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 // import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -56,8 +60,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   final _birthdateController = TextEditingController();
   final _genderController = TextEditingController();
   final _addressNameController = TextEditingController();
-  final _ageNameController = TextEditingController();
-  final _readDateTimeController = TextEditingController();
 
   @override
   void initState() {
@@ -74,8 +76,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     _birthdateController.dispose();
     _genderController.dispose();
     _addressNameController.dispose();
-    _ageNameController.dispose();
-    _readDateTimeController.dispose();
     super.dispose();
   }
 
@@ -365,7 +365,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         _vehicleType = value!;
                       },
                       validator: FormBuilderValidators.required(),
-                      options: vehicleTypeMap.entries
+                      options: kVehicleTypeMap.entries
                           .map((e) => FormBuilderFieldOption(
                                 value: e.key,
                                 child: Text(e.value),
@@ -423,10 +423,16 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // ElevatedButton(
+                //   style:
+                //       ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                //   onPressed: () => readSmartCard(),
+                //   child: const Text("อ่านข้อมูลจากบัตร"),
+                // ),
                 ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  onPressed: () => readSmartCard(),
+                  onPressed: () => readSmartCardFromService(),
                   child: const Text("อ่านข้อมูลจากบัตร"),
                 ),
                 ElevatedButton(
@@ -450,18 +456,28 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                   children: [
                     TableRow(
                       children: <Widget>[
+                        SizedBox(
+                          height: 120.0,
+                          child: _smartCard.cardImage != ""
+                              ? Image.network(_smartCard.cardImage)
+                              : const Icon(size: 120.0, Icons.face),
+                        ),
                         TextField(
                           controller: _idCardController,
-                          autofocus: true,
+                          autofocus: false,
                           autocorrect: false,
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.name,
                           decoration: const InputDecoration(
                             labelText: 'เลขประจำตัวประชาชน',
-                            suffixIcon: Icon(Icons.numbers),
+                            suffixIcon: Icon(Icons.text_fields),
                             contentPadding:
                                 EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                           ),
                         ),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
                         TextField(
                           controller: _thaiNameController,
                           autofocus: false,
@@ -474,10 +490,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                                 EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                           ),
                         ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
                         TextField(
                           controller: _engNameController,
                           autofocus: false,
@@ -491,6 +503,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                           ),
                           textInputAction: TextInputAction.next,
                         ),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
                         TextField(
                           controller: _birthdateController,
                           autofocus: false,
@@ -503,10 +519,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                                 EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                           ),
                         ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
                         TextField(
                           controller: _genderController,
                           autofocus: false,
@@ -520,6 +532,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                                 EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                           ),
                         ),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
                         TextField(
                           controller: _addressNameController,
                           autofocus: false,
@@ -533,34 +549,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                           ),
                           textInputAction: TextInputAction.next,
                         ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        TextField(
-                          controller: _ageNameController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'อายุ',
-                            suffixIcon: Icon(Icons.calendar_month),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                        ),
-                        TextField(
-                          controller: _readDateTimeController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.text,
-                          decoration: const InputDecoration(
-                            labelText: 'วันที่อ่าน',
-                            suffixIcon: Icon(Icons.calendar_today),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                        ),
+                        Container(),
                       ],
                     ),
                   ],
@@ -626,14 +615,14 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     return directory.path;
   }
 
-  Future<File> get _localFile async {
+  Future<File> get _siamIdFile async {
     final path = await _localPath;
     return File('$path/SIAM-ID/Data.txt');
   }
 
   Future<dynamic> readData() async {
     try {
-      final file = await _localFile;
+      final file = await _siamIdFile;
 
       // Read the file
       final input = File(file.path).openRead();
@@ -656,8 +645,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     _birthdateController.clear();
     _genderController.clear();
     _addressNameController.clear();
-    _ageNameController.clear();
-    _readDateTimeController.clear();
+    setState(() {});
   }
 
   void readSmartCard() async {
@@ -672,29 +660,40 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       _birthdateController.text = _smartCard.birthdate;
       _genderController.text = _smartCard.gender;
       _addressNameController.text = _smartCard.address;
-      _ageNameController.text = _smartCard.age;
-      _readDateTimeController.text = _smartCard.readDateTime;
       setState(() {});
     } catch (error) {
       Logger().e(error);
     }
   }
 
-  Future<List<int>> testPrint() async {
-    List<int> bytes = [];
-    // Using default profile
-    final profile = await CapabilityProfile.load();
-
-    final generator = Generator(PaperSize.mm80, profile, spaceBetweenRows: 8);
-    bytes += generator.setGlobalCodeTable('Thai');
-
-    for (var charset in await CharsetConverter.availableCharsets()) {
-      print(charset);
-    }
-
-    bytes += generator.feed(2);
-    bytes += generator.cut();
-    return bytes;
+  void readSmartCardFromService() async {
+    clearForm();
+    EasyLoading.show();
+    _isReadCard = true;
+    sl<ApiService>().smartCardReader().then((card) async {
+      File photoFile = await _tempImage(card.id);
+      await photoFile.writeAsBytes(card.photoByte.codeUnits);
+      _smartCard = SmartCardModel.fromIDCard(card);
+      _idCardController.text = _smartCard.idCard;
+      _thaiNameController.text = _smartCard.thaiName;
+      _engNameController.text = _smartCard.engName;
+      _birthdateController.text = _smartCard.birthdate;
+      _genderController.text = _smartCard.gender;
+      _addressNameController.text = _smartCard.address;
+      EasyLoading.dismiss();
+      setState(() {});
+    }).catchError((Object obj) {
+      EasyLoading.dismiss();
+      switch (obj.runtimeType) {
+        case DioException:
+          final res = (obj as DioException).response;
+          final response = ResponseModel.fromJson(res!.data);
+          alertError(response.message);
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   Future<Uint8List> charsetConvert(String s) async {
@@ -712,13 +711,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       spaceBetweenRows: 8,
     );
     bytes += generator.setGlobalCodeTable('CP874');
-    bytes += generator.textEncoded(
-        await charsetConvert('บัตรจอดรถ\nParking Ticket'),
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-            fontType: PosFontType.fontA));
+    // bytes += generator.textEncoded(await charsetConvert('บัตรจอดรถ'),
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1,
+    //         fontType: PosFontType.fontA));
 
     // Print image:
     final ByteData data = await rootBundle.load('images/logo.png');
@@ -728,8 +726,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
     bytes += generator.qrcode(visitor.dateTimeNanoShortFormat());
 
-    if (vehicleTypeMap.containsKey(visitor.type)) {
-      var vehicleType = vehicleTypeMap[visitor.type];
+    if (kVehicleTypeMap.containsKey(visitor.type)) {
+      var vehicleType = kVehicleTypeMap[visitor.type];
       bytes +=
           generator.textEncoded(await charsetConvert("ประเภท : $vehicleType"),
               styles: const PosStyles(
@@ -739,7 +737,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
               ));
     }
     bytes += generator.textEncoded(
-        await charsetConvert("ทะเบียน : ${visitor.plateNumber!}"),
+        await charsetConvert("ทะเบียนรถ : ${visitor.plateNumber!}"),
         styles: const PosStyles(
           align: PosAlign.left,
           height: PosTextSize.size1,
@@ -776,14 +774,13 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         ),
       ),
     ]);
-    bytes += generator.feed(2);
     bytes += generator.textEncoded(
       await charsetConvert('เวลาออก _______________'),
       styles: const PosStyles(
         align: PosAlign.left,
         height: PosTextSize.size1,
       ),
-      linesAfter: 2,
+      linesAfter: 1,
     );
 
     if (_selectedMember != null) {
@@ -805,16 +802,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         linesAfter: 1,
       );
     }
-
-    bytes += generator.textEncoded(
-      await charsetConvert('ตราประทับ'),
-      styles: const PosStyles(
-        bold: true,
-        align: PosAlign.center,
-        height: PosTextSize.size1,
-      ),
-      linesAfter: 1,
-    );
 
     final ByteData dataFrame = await rootBundle.load('images/frame_stamp.png');
     final Uint8List imgFrameBytes = dataFrame.buffer.asUint8List();
@@ -855,19 +842,22 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         plateNumber: _plateNumberController.text,
         memberId: _selectedMember?.id,
         gateLogId: _selectedGateLogId,
-        idCard: _idCardController.text,
+        idCard: _idCardController.text.replaceAll(" ", ""),
         thaiName: _thaiNameController.text,
         engName: _engNameController.text,
         birthdate: _birthdateController.text,
         gender: _genderController.text,
         address: _addressNameController.text,
-        age: _ageNameController.text,
         visitorImages: []);
+
     sl<ApiService>()
         .createVisitor(sl<AppService>().token, visitor)
         .then((value) async {
-      printTicket(value);
+      if (value.idCard != "") {
+        addPhotoToVisitor(value);
+      }
       addImageToVisitor(value);
+      printTicket(value);
       setState(() {
         _isShowVisitor = false;
         _isReadCard = false;
@@ -875,6 +865,18 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     }).onError((error, stackTrace) {
       alertError(error.toString());
     });
+  }
+
+  void addPhotoToVisitor(VisitorModel visitor) async {
+    final path = await _localPath;
+    String photoFile = '$path/SIAM-ID/${visitor.idCard}.jpg';
+    var exists = await File(photoFile).exists();
+    if (exists) {
+      File? photo = File(photoFile);
+      sl<ApiService>()
+          .addPhotoVisitor(sl<AppService>().token, visitor.id, photo)
+          .then((value) => {});
+    }
   }
 
   void addImageToVisitor(VisitorModel visitor) async {
@@ -910,7 +912,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     // }
 
     // _scan(PrinterType.usb);
-
     printerManager.connect(
         type: PrinterType.usb,
         model: UsbPrinterInput(

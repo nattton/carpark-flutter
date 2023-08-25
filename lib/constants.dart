@@ -7,8 +7,20 @@ const kHostUrl = 'http://192.168.1.50:4000';
 const kPrinterName = 'EPSON TM-T82 Receipt';
 // const kPrinterName = 'POS-80C';
 
+const kSmartCardReaderUrl = 'http://localhost:3000';
+
 const kMemberTypeList = ['resident', 'carrier', 'subcontractor'];
 const kStatusList = ['active', 'inactive', 'overdue'];
+const kVehicleTypeMap = {
+  'car': 'รถยนต์',
+  'taxi': 'แท็กซี่',
+  'motorcycle': 'มอเตอร์ไซค์',
+};
+
+const kGenderMap = {
+  '1': 'ชาย',
+  '2': 'หญิง',
+};
 
 const kDefaultFont = 'Stidti';
 const kBoldFont = 'Stidti-Bold';
@@ -83,9 +95,3 @@ const kOverdue2Text = 'กรุณาติดต่อนิติบุคค
 const kColorVisitor = Color.fromARGB(255, 223, 45, 0);
 const kColorResident = Color.fromARGB(255, 105, 240, 174);
 const kColorOverdue = Color.fromARGB(255, 183, 31, 230);
-
-const vehicleTypeMap = {
-  'car': 'รถยนต์',
-  'taxi': 'แท็กซี่',
-  'motorcycle': 'มอเตอร์ไซค์',
-};

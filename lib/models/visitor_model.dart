@@ -1,3 +1,4 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/null_time_model.dart';
@@ -26,6 +27,7 @@ class VisitorModel {
   String? gender;
   String? address;
   String? age;
+  String? photo;
   NullTimeModel? exitTime;
   List<VisitorImageModel>? visitorImages;
 
@@ -45,6 +47,7 @@ class VisitorModel {
     this.gender,
     this.address,
     this.age,
+    this.photo,
     this.exitTime,
     this.visitorImages,
   });
@@ -57,6 +60,13 @@ class VisitorModel {
       _$VisitorModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$VisitorModelToJson(this);
+
+  String photoUrl() {
+    if (photo != null && photo != "") {
+      return "$kHostUrl/anpr_store/$photo";
+    }
+    return "";
+  }
 
   String dateTimeFormat() {
     DateTime dt = createdAt!.add(const Duration(hours: 7));

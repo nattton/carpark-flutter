@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
@@ -17,12 +18,12 @@ import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
+import 'package:carpark/services/app_service.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -74,7 +75,7 @@ class MainScreen extends StatefulHookConsumerWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  var loadLast = false;
+  bool loadingLastGate = false;
   late StreamSubscription periodicSub;
 
   var _currentScreen = "";
@@ -98,8 +99,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       var cameraCard = value['CARD'];
       player.setCardPlayer(cameraCard!.toUrl());
     });
-    getLastGateIn();
-    periodicSub = Stream.periodic(const Duration(milliseconds: 1000))
+    periodicSub = Stream.periodic(const Duration(milliseconds: 500))
         .listen((_) => getLastGateIn());
 
     sideMenu.addListener((p0) {
@@ -139,21 +139,31 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Future<void> getLastGateIn() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    sl<ApiService>().getGateIn(sl<AppService>().token).then((value) {
-      lastGate.setGateIn(value.gateLog);
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+    if (!loadingLastGate) {
+      loadingLastGate = true;
+      final lastGate = ref.read(lastGateProvider.notifier);
+      sl<ApiService>().getGateIn(sl<AppService>().token).then((value) {
+        lastGate.setGateIn(value.gateLog);
+        loadingLastGate = false;
+      }).onError((error, stackTrace) {
+        alertError(error.toString());
+        loadingLastGate = false;
+      });
+    }
   }
 
   Future<void> getLastGateOut() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    sl<ApiService>().getGateOut(sl<AppService>().token).then((value) {
-      lastGate.setGateOut(value.gateLog);
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+    if (!loadingLastGate) {
+      loadingLastGate = true;
+      final lastGate = ref.read(lastGateProvider.notifier);
+      sl<ApiService>().getGateOut(sl<AppService>().token).then((value) {
+        lastGate.setGateOut(value.gateLog);
+        loadingLastGate = false;
+      }).onError((error, stackTrace) {
+        alertError(error.toString());
+        loadingLastGate = false;
+      });
+    }
   }
 
   void selectedPage(String page) {
@@ -162,7 +172,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     switch (page) {
       case 'ENTRANCE':
         periodicSub.cancel();
-        periodicSub = Stream.periodic(const Duration(milliseconds: 1000))
+        periodicSub = Stream.periodic(const Duration(milliseconds: 500))
             .listen((_) => getLastGateIn());
         var cam = camera['ENTRANCE'];
         if (cam != null) {
@@ -179,7 +189,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         break;
       case 'EXIT':
         periodicSub.cancel();
-        periodicSub = Stream.periodic(const Duration(milliseconds: 1000))
+        periodicSub = Stream.periodic(const Duration(milliseconds: 500))
             .listen((_) => getLastGateOut());
         var cam = camera['EXIT'];
         if (cam != null) {

@@ -5,6 +5,7 @@ import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
+import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/response_model.dart';
@@ -14,6 +15,7 @@ import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
+
 part 'api_service.g.dart';
 
 @RestApi(baseUrl: kHostUrl)
@@ -96,6 +98,10 @@ abstract class ApiService {
   Future<VisitorModel> createVisitor(
       @Header('Authorization') String token, @Body() VisitorModel visitor);
 
+  @POST("/api/visitors/{id}/photo")
+  Future<VisitorModel> addPhotoVisitor(@Header('Authorization') String token,
+      @Path() int id, @Part() File photo);
+
   @POST("/api/visitors/{id}/images/{type}")
   Future<VisitorModel> addImageToVisitor(@Header('Authorization') String token,
       @Path() int id, @Path() String type, @Part() File file);
@@ -111,4 +117,7 @@ abstract class ApiService {
   @PATCH("/api/visitors/checkout")
   Future<VisitorModel> checkoutVisitor(
       @Header('Authorization') String token, @Body() CheckoutModel checkout);
+
+  @GET("$kSmartCardReaderUrl/smartcardreader")
+  Future<IDCardModel> smartCardReader();
 }

@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:carpark/components/visitor_header_card.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/components/visitor_header_card.dart';
 import 'package:carpark/components/visitor_list_card.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/visitor_model.dart';
@@ -11,6 +9,8 @@ import 'package:carpark/providers/visitors_notifier.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -256,8 +256,14 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
       title: "ผู้ติดต่อ เวลาเข้า : ${visitor.dateTimeFormat()}",
       content: Column(
         children: <Widget>[
+          visitor.photoUrl() != ""
+              ? Image.network(visitor.photoUrl())
+              : const SizedBox(),
           Text("เลขประจำตัวประชาชน : ${visitor.idCard!}"),
-          Text("ชื่อ : ${visitor.thaiName!}"),
+          Text("ชื่อไทย : ${visitor.thaiName!}"),
+          Text("English Name : ${visitor.engName!}"),
+          Text("เพศ : ${visitor.gender!}"),
+          Text("วันเกิด : ${visitor.birthdate!}"),
           Text("ที่อยู่ : ${visitor.address!}"),
           const SizedBox(
             height: 10.0,

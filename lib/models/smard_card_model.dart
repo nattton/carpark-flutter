@@ -1,3 +1,6 @@
+import 'package:carpark/constants.dart';
+import 'package:carpark/models/id_card_model.dart';
+
 class SmartCardModel {
   final String idCard;
   final String thaiName;
@@ -5,8 +8,6 @@ class SmartCardModel {
   final String birthdate;
   final String gender;
   final String address;
-  final String age;
-  final String readDateTime;
   final String cardImage;
 
   SmartCardModel({
@@ -16,8 +17,6 @@ class SmartCardModel {
     required this.birthdate,
     required this.gender,
     required this.address,
-    required this.age,
-    required this.readDateTime,
     required this.cardImage,
   });
 
@@ -29,8 +28,6 @@ class SmartCardModel {
       birthdate: "",
       gender: "",
       address: "",
-      age: "",
-      readDateTime: "",
       cardImage: "",
     );
   }
@@ -43,8 +40,21 @@ class SmartCardModel {
         birthdate: data[3],
         gender: data[4],
         address: data[5],
-        age: data[6],
-        readDateTime: data[7] + ' ' + data[8],
-        cardImage: data[9]);
+        cardImage: "");
+  }
+
+  factory SmartCardModel.fromIDCard(IDCardModel card) {
+    var gender = card.gender;
+    if (kGenderMap.containsKey(card.gender)) {
+      gender = kGenderMap[card.gender]!;
+    }
+    return SmartCardModel(
+        idCard: card.id,
+        thaiName: card.thaiName,
+        engName: card.engName,
+        birthdate: card.birthdate,
+        gender: gender,
+        address: card.address,
+        cardImage: "$kSmartCardReaderUrl/${card.photoPath}");
   }
 }
