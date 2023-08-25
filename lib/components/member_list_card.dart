@@ -1,6 +1,6 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:carpark/constants.dart';
 
 class MemberListCard extends StatelessWidget {
   const MemberListCard({super.key, required this.member, required this.onTap});
@@ -30,27 +30,27 @@ class MemberListCard extends StatelessWidget {
                       child: Text(
                         "ID",
                         style: TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         "Name",
                         style: TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         "Tel",
                         style: TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     Expanded(
@@ -59,7 +59,6 @@ class MemberListCard extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -69,7 +68,6 @@ class MemberListCard extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -79,7 +77,6 @@ class MemberListCard extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -98,27 +95,27 @@ class MemberListCard extends StatelessWidget {
                       child: Text(
                         member.id!.toString(),
                         style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         member.name!,
                         style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         member.telephone!,
                         style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     Expanded(
@@ -127,7 +124,6 @@ class MemberListCard extends StatelessWidget {
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -137,7 +133,6 @@ class MemberListCard extends StatelessWidget {
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -147,7 +142,6 @@ class MemberListCard extends StatelessWidget {
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

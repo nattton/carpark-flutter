@@ -22,8 +22,8 @@ const kGenderMap = {
   '2': 'หญิง',
 };
 
-const kDefaultFont = 'Stidti';
-const kBoldFont = 'Stidti-Bold';
+const kDefaultFont = 'NotoSerif';
+const kBoldFont = 'NotoSerif-Bold';
 const kColorTop = Color(0xFF009CDE);
 const kColorBottom = Color(0xFF003C71);
 const kColorTextGrey = Color(0xFF707070);
@@ -52,10 +52,23 @@ const kContentStyleHeader = TextStyle(
     fontWeight: FontWeight.w700,
     fontFamily: kDefaultFont);
 const kContentStyle = TextStyle(
-    color: Color(0xff999999),
-    fontSize: 14,
+    color: kColorTextBlack,
+    fontSize: 18,
     fontWeight: FontWeight.normal,
     fontFamily: kDefaultFont);
+
+const kButtonStyle = TextStyle(
+    color: kColorTextBlack,
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    fontFamily: kDefaultFont,
+    height: 2);
+const kButton2Style = TextStyle(
+    color: kColorTop,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    fontFamily: kDefaultFont,
+    height: 2);
 
 const kOverdueTextStyle = TextStyle(
     color: Color.fromARGB(255, 255, 0, 0),

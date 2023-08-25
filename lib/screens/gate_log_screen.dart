@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:carpark/components/gate_log_header_card.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/components/gate_log_card.dart';
+import 'package:carpark/components/gate_log_header_card.dart';
+import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/providers/gate_logs_notifier.dart';
@@ -10,6 +11,7 @@ import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -172,9 +174,12 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                     });
                   }
                 },
-                child: Text(_dates.length > 1
-                    ? 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year} - ${_dates[1]!.day}/${_dates[1]!.month}/${_dates[1]!.year}'
-                    : 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year}'),
+                child: Text(
+                  _dates.length > 1
+                      ? 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year} - ${_dates[1]!.day}/${_dates[1]!.month}/${_dates[1]!.year}'
+                      : 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year}',
+                  style: kButton2Style,
+                ),
               ),
               const SizedBox(
                 width: 10.0,
@@ -183,14 +188,20 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                 onPressed: () {
                   _selectDate(_dates);
                 },
-                child: const Text('Refresh'),
+                child: const Text(
+                  'Refresh',
+                  style: kButton2Style,
+                ),
               ),
               Expanded(child: Container()),
               OutlinedButton(
                 onPressed: () {
                   onPressedExportGateLog();
                 },
-                child: const Text('Export to Excel'),
+                child: const Text(
+                  'Export to Excel',
+                  style: kButton2Style,
+                ),
               ),
             ],
           ),

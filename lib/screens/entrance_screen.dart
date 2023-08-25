@@ -98,7 +98,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                       children: [
                         ElevatedButton(
                           onPressed: () => openDoor("in"),
-                          child: const Text("เปิดประตู ขาเข้า"),
+                          child: const Text(
+                            "เปิดประตู ขาเข้า",
+                            style: kButtonStyle,
+                          ),
                         ),
                         _isShowVisitor
                             ? ElevatedButton(
@@ -107,11 +110,17 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                                   backgroundColor:
                                       Colors.red, // Background color
                                 ),
-                                child: const Text("ยกเลิก"),
+                                child: const Text(
+                                  "ยกเลิก",
+                                  style: kButtonStyle,
+                                ),
                               )
                             : ElevatedButton(
                                 onPressed: () => showVisitorFromEmpty(),
-                                child: const Text("สร้างผู้ติดต่อ"),
+                                child: const Text(
+                                  "สร้างผู้ติดต่อ",
+                                  style: kButtonStyle,
+                                ),
                               ),
                       ],
                     ),
@@ -238,7 +247,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () => showVisitorFromSelect(gateLog),
-                              child: const Text("สร้างผู้ติดต่อจากรถคันนี้"),
+                              child: const Text(
+                                "สร้างผู้ติดต่อจากรถคันนี้",
+                                style: kButtonStyle,
+                              ),
                             ),
                           ),
                         ),
@@ -287,7 +299,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () => showVisitorFromSelect(gateLog),
-                              child: const Text("สร้างบัตรผู้ติดต่อ"),
+                              child: const Text(
+                                "สร้างบัตรผู้ติดต่อ",
+                                style: kButtonStyle,
+                              ),
                             ),
                           ),
                         ),
@@ -427,22 +442,32 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                 //   style:
                 //       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 //   onPressed: () => readSmartCard(),
-                //   child: const Text("อ่านข้อมูลจากบัตร"),
+                //   child: const Text("อ่านข้อมูลจากบัตร",
+                //   style: kButtonStyle,),
                 // ),
                 ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () => readSmartCardFromService(),
-                  child: const Text("อ่านข้อมูลจากบัตร"),
+                  child: const Text(
+                    "อ่านข้อมูลจากบัตร",
+                    style: kButtonStyle,
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () => clearForm(),
-                  child: const Text("ล้างข้อมูล"),
+                  child: const Text(
+                    "ล้างข้อมูล",
+                    style: kButtonStyle,
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () => saveAndPrint(),
-                  child: const Text("บันทึกและพิมพ์"),
+                  child: const Text(
+                    "บันทึกและพิมพ์",
+                    style: kButtonStyle,
+                  ),
                 ),
               ],
             ),

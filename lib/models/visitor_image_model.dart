@@ -21,6 +21,6 @@ class VisitorImageModel {
   Map<String, dynamic> toJson() => _$VisitorImageModelToJson(this);
 
   String imageUrl() {
-    return "$kHostUrl/anpr_store/$image";
+    return "$kHostUrl/anpr_store$image";
   }
 }

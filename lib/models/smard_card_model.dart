@@ -55,6 +55,6 @@ class SmartCardModel {
         birthdate: card.birthdate,
         gender: gender,
         address: card.address,
-        cardImage: "$kSmartCardReaderUrl/${card.photoPath}");
+        cardImage: "$kSmartCardReaderUrl${card.photoPath}");
   }
 }

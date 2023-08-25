@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/checkout_model.dart';
@@ -52,7 +53,10 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () => openGateOut(),
-                      child: const Text("เปิดประตู ขาออก"),
+                      child: const Text(
+                        "เปิดประตู ขาออก",
+                        style: kButtonStyle,
+                      ),
                     ),
                     const SizedBox(
                       height: 10,
@@ -114,7 +118,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                                     color: Colors.grey,
                                     child: Center(
                                       child: Text(
-                                        "Time: ${gateLog.timeFormat()}",
+                                        "เวลา: ${gateLog.timeFormat()}",
                                         style: kGateStyle,
                                       ),
                                     ),

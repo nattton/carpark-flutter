@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/components/visitor_header_card.dart';
 import 'package:carpark/components/visitor_list_card.dart';
+import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/providers/visitors_notifier.dart';
@@ -172,9 +173,12 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                     });
                   }
                 },
-                child: Text(_dates.length > 1
-                    ? 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year} - ${_dates[1]!.day}/${_dates[1]!.month}/${_dates[1]!.year}'
-                    : 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year}'),
+                child: Text(
+                  _dates.length > 1
+                      ? 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year} - ${_dates[1]!.day}/${_dates[1]!.month}/${_dates[1]!.year}'
+                      : 'เลือกวันที่ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year}',
+                  style: kButton2Style,
+                ),
               ),
               const SizedBox(
                 width: 10.0,
@@ -183,14 +187,20 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                 onPressed: () {
                   _selectDate(_dates);
                 },
-                child: const Text('Refresh'),
+                child: const Text(
+                  'Refresh',
+                  style: kButton2Style,
+                ),
               ),
               Expanded(child: Container()),
               OutlinedButton(
                 onPressed: () {
                   onPressedExportVisitor();
                 },
-                child: const Text('Export to Excel'),
+                child: const Text(
+                  'Export to Excel',
+                  style: kButton2Style,
+                ),
               ),
             ],
           ),
@@ -259,12 +269,30 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
           visitor.photoUrl() != ""
               ? Image.network(visitor.photoUrl())
               : const SizedBox(),
-          Text("เลขประจำตัวประชาชน : ${visitor.idCard!}"),
-          Text("ชื่อไทย : ${visitor.thaiName!}"),
-          Text("English Name : ${visitor.engName!}"),
-          Text("เพศ : ${visitor.gender!}"),
-          Text("วันเกิด : ${visitor.birthdate!}"),
-          Text("ที่อยู่ : ${visitor.address!}"),
+          Text(
+            "เลขประจำตัวประชาชน : ${visitor.idCard!}",
+            style: kContentStyle,
+          ),
+          Text(
+            "ชื่อไทย : ${visitor.thaiName!}",
+            style: kContentStyle,
+          ),
+          Text(
+            "English Name : ${visitor.engName!}",
+            style: kContentStyle,
+          ),
+          Text(
+            "เพศ : ${visitor.gender!}",
+            style: kContentStyle,
+          ),
+          Text(
+            "วันเกิด : ${visitor.birthdate!}",
+            style: kContentStyle,
+          ),
+          Text(
+            "ที่อยู่ : ${visitor.address!}",
+            style: kContentStyle,
+          ),
           const SizedBox(
             height: 10.0,
           ),

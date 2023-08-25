@@ -1,9 +1,11 @@
 // ignore: depend_on_referenced_packages
 import "dart:ui";
+
 import "package:carpark/constants.dart";
 import "package:carpark/models/member_model.dart";
 import "package:intl/intl.dart";
 import 'package:json_annotation/json_annotation.dart';
+
 part 'gate_log_model.g.dart';
 
 @JsonSerializable()
@@ -36,11 +38,11 @@ class GateLogModel {
   Map<String, dynamic> toJson() => _$GateLogModelToJson(this);
 
   String captureImageUrl() {
-    return "$kHostUrl/anpr_store/$captureImage";
+    return "$kHostUrl/anpr_store$captureImage";
   }
 
   String licensePlateImageUrl() {
-    return "$kHostUrl/anpr_store/$licensePlateImage";
+    return "$kHostUrl/anpr_store$licensePlateImage";
   }
 
   String dateTimeFormat() {

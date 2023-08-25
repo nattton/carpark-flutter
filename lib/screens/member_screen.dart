@@ -5,9 +5,9 @@ import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/services/api_service.dart';
+import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -354,6 +354,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
 
   void onPressedEdit(BuildContext context, VehicleModel vehicle) {
     _plateNumberController.text = vehicle.plateNumber!;
+    _resembleController.text = vehicle.resemble!;
     _plateProvinceController.text = vehicle.plateProvince!;
     _brandController.text = vehicle.brand!;
     _colorController.text = vehicle.color!;

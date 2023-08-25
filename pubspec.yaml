@@ -81,3 +81,12 @@ flutter:
   uses-material-design: true
   assets:
     - images/
+  fonts:
+    - family: Stidti
+      fonts:
+        - asset: fonts/Stidti-Regular.otf
+        - asset: fonts/Stidti-Bold.otf
+    - family: NotoSerif
+      fonts:
+        - asset: fonts/NotoSerifThai-Regular.ttf
+        - asset: fonts/NotoSerifThai-Bold.ttf

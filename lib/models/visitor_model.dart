@@ -63,7 +63,7 @@ class VisitorModel {
 
   String photoUrl() {
     if (photo != null && photo != "") {
-      return "$kHostUrl/anpr_store/$photo";
+      return "$kHostUrl/anpr_store$photo";
     }
     return "";
   }
