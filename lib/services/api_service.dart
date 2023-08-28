@@ -8,6 +8,7 @@ import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/member_model.dart';
+import 'package:carpark/models/member_traffic_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/save_user_model.dart';
 import 'package:carpark/models/user_model.dart';
@@ -117,6 +118,19 @@ abstract class ApiService {
   @PATCH("/api/visitors/checkout")
   Future<VisitorModel> checkoutVisitor(
       @Header('Authorization') String token, @Body() CheckoutModel checkout);
+
+  @GET("/api/report/member_traffic")
+  Future<List<MemberTrafficModel>> reportMemberTraffic(
+      @Header('Authorization') String token,
+      @Query("date") String date,
+      @Query("dateTo") String dateTo);
+
+  @GET("/api/report/{type}")
+  Future<List<MemberTrafficModel>> reportTraffic(
+      @Header('Authorization') String token,
+      @Path() String type,
+      @Query("date") String date,
+      @Query("dateTo") String dateTo);
 
   @GET("$kSmartCardReaderUrl/smartcardreader")
   Future<IDCardModel> smartCardReader();

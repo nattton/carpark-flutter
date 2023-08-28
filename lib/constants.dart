@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-// const kHostUrl = 'http://localhost:4000';
-const kHostUrl = 'http://192.168.1.50:4000';
+const kHostUrl = 'http://localhost:4000';
+// const kHostUrl = 'http://192.168.1.50:4000';
 // const kHostUrl = 'http://cyptpr.ddns.net';
 
 const kPrinterName = 'EPSON TM-T82 Receipt';
@@ -15,6 +15,10 @@ const kVehicleTypeMap = {
   'car': 'รถยนต์',
   'taxi': 'แท็กซี่',
   'motorcycle': 'มอเตอร์ไซค์',
+};
+const kReportTypeMap = {
+  'never_seen': 'รถที่ไม่เคยเข้า-ออก',
+  'member_traffic': 'จำนวนการเข้าออก',
 };
 
 const kGenderMap = {

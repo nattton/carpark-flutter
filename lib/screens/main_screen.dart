@@ -15,6 +15,7 @@ import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/member_list_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
+import 'package:carpark/screens/report_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
@@ -277,6 +278,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 icon: const Icon(Icons.person_search),
               ),
               SideMenuItem(
+                title: 'รายงาน',
+                onTap: (page, _) {
+                  selectedPage('REPORT');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.summarize),
+              ),
+              SideMenuItem(
                 title: 'ตั้งค่ากล้อง',
                 onTap: (page, _) {
                   selectedPage('CAMERA');
@@ -327,6 +336,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 Container(
                   color: Colors.white,
                   child: const MemberListScreen(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: const ReportScreen(),
                 ),
                 Container(
                   color: Colors.white,
