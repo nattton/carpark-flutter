@@ -6,7 +6,7 @@ part 'report_traffic_model.g.dart';
 class ReportTrafficModel {
   final int id;
   final String name;
-  final String vehicleId;
+  final int vehicleId;
   final String plateNumber;
   final int traffic;
 

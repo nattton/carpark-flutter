@@ -22,7 +22,7 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   List<DateTime?> _dates = [DateTime.now()];
-  String _reportType = 'never_seen';
+  String _reportType = 'member_traffic';
 
   void _selectDate(List<DateTime?> newSelectedDate) {
     // _dates
@@ -76,10 +76,10 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               OutlinedButton(
                 onPressed: () {
-                  _selectDate(_dates);
+                  downloadMemberTrafficExcel();
                 },
                 child: const Text(
-                  'Refresh',
+                  'Export to Excel',
                   style: kButton2Style,
                 ),
               ),
@@ -100,15 +100,6 @@ class _ReportScreenState extends State<ReportScreen> {
                     child: Text(e.value),
                   ))
               .toList(growable: false),
-        ),
-        OutlinedButton(
-          onPressed: () {
-            downloadMemberTrafficExcel();
-          },
-          child: const Text(
-            'Export to Excel',
-            style: kButton2Style,
-          ),
         ),
       ],
     );
@@ -141,6 +132,7 @@ class _ReportScreenState extends State<ReportScreen> {
       List<String> columnName = [
         "ID",
         "Name",
+        "Vehicle ID",
         "PlateNumber",
         "Traffic",
       ];
@@ -159,6 +151,7 @@ class _ReportScreenState extends State<ReportScreen> {
         List<String> dataList = [
           m.id.toString(),
           m.name,
+          m.vehicleId.toString(),
           m.plateNumber,
           m.traffic.toString(),
         ];

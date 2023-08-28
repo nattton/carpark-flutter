@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const kHostUrl = 'http://localhost:4000';
-// const kHostUrl = 'http://192.168.1.50:4000';
+// const kHostUrl = 'http://localhost:4000';
+const kHostUrl = 'http://192.168.1.50:4000';
 // const kHostUrl = 'http://cyptpr.ddns.net';
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
@@ -15,7 +15,7 @@ const kVehicleTypeMap = {
 };
 const kReportTypeMap = {
   'member_traffic': 'รถสมาชิกเข้า-ออก',
-  'visitor_traffic': 'รถผู้ติดต่อสมาชิกเข้า-ออก',
+  'visitor_traffic': 'จำนวนผู้ติดต่อสมาชิก',
 };
 
 const kGenderMap = {
