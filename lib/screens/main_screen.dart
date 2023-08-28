@@ -20,7 +20,6 @@ import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
-import 'package:dart_vlc/dart_vlc.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -50,20 +49,7 @@ final cameraMapProvider =
 
 @riverpod
 CameraPlayer cameraPlayer(CameraPlayerRef ref) {
-  return CameraPlayer(
-    mainPlayer: Player(
-      id: 0,
-      videoDimensions: const VideoDimensions(640, 360),
-    ),
-    sidePlayer: Player(
-      id: 1,
-      videoDimensions: const VideoDimensions(640, 360),
-    ),
-    cardPlayer: Player(
-      id: 2,
-      videoDimensions: const VideoDimensions(640, 360),
-    ),
-  );
+  return CameraPlayer.initialize();
 }
 
 class MainScreen extends StatefulHookConsumerWidget {
@@ -93,11 +79,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     getMember();
     getCameraList().then((value) {
       var camera = value['ENTRANCE'];
+      var cameraSide = value['IN_SIDE'];
+      var cameraCard = value['CARD'];
       final player = ref.watch(cameraPlayerProvider);
       player.setMainPlayer(camera!.toUrl());
-      var cameraSide = value['IN_SIDE'];
       player.setSidePlayer(cameraSide!.toUrl());
-      var cameraCard = value['CARD'];
       player.setCardPlayer(cameraCard!.toUrl());
     });
     periodicSub = Stream.periodic(const Duration(milliseconds: 500))

@@ -1,24 +1,49 @@
-import 'package:dart_vlc/dart_vlc.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 class CameraPlayer {
   final Player mainPlayer;
+  final VideoController mainController;
   final Player sidePlayer;
+  final VideoController sideController;
   final Player cardPlayer;
-  const CameraPlayer(
+  final VideoController cardController;
+
+  CameraPlayer(
       {required this.mainPlayer,
+      required this.mainController,
       required this.sidePlayer,
-      required this.cardPlayer});
+      required this.sideController,
+      required this.cardPlayer,
+      required this.cardController});
+
+  factory CameraPlayer.initialize() {
+    final Player mainPlayer = Player();
+    final VideoController mainController = VideoController(mainPlayer);
+    final Player sidePlayer = Player();
+    final VideoController sideController = VideoController(sidePlayer);
+    final Player cardPlayer = Player();
+    final VideoController cardController = VideoController(cardPlayer);
+    return CameraPlayer(
+      mainPlayer: mainPlayer,
+      mainController: mainController,
+      sidePlayer: sidePlayer,
+      sideController: sideController,
+      cardPlayer: cardPlayer,
+      cardController: cardController,
+    );
+  }
 
   void setMainPlayer(String url) {
-    mainPlayer.open(Media.network(url));
+    mainPlayer.open(Media(url));
   }
 
   void setSidePlayer(String url) {
-    sidePlayer.open(Media.network(url));
+    sidePlayer.open(Media(url));
   }
 
   void setCardPlayer(String url) {
-    cardPlayer.open(Media.network(url));
+    cardPlayer.open(Media(url));
   }
 
   void stopAll() {

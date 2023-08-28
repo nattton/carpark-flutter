@@ -1,11 +1,12 @@
 import 'package:carpark/injection_container.dart';
-import 'package:dart_vlc/dart_vlc.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/screens/my_app.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {
-  DartVLC.initialize();
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   await initializeDependencies();
   runApp(const ProviderScope(child: MyApp()));
 }
