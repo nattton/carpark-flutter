@@ -8,9 +8,10 @@ import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
-import 'package:dart_vlc/dart_vlc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ExitScreen extends StatefulHookConsumerWidget {
@@ -239,39 +240,25 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 2 - 60,
-                          maxHeight:
-                              (MediaQuery.of(context).size.width / 2 - 60) /
-                                  16 *
-                                  9,
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0)),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 2 - 60,
+                        height: ((MediaQuery.of(context).size.width / 2 - 60) *
+                            9.0 /
+                            16.0),
                         child: Video(
-                          player: player.mainPlayer,
-                          scale: 1.0, // default
-                          showControls: false, // default
+                          controller: player.mainController,
                         ),
                       ),
                       const SizedBox(
                         height: 4.0,
                       ),
-                      Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 2 - 60,
-                          maxHeight:
-                              (MediaQuery.of(context).size.width / 2 - 60) /
-                                  16 *
-                                  9,
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0)),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 2 - 60,
+                        height: ((MediaQuery.of(context).size.width / 2 - 60) *
+                            9.0 /
+                            16.0),
                         child: Video(
-                          player: player.sidePlayer,
-                          scale: 1.0, // default
-                          showControls: false, // default
+                          controller: player.sideController,
                         ),
                       ),
                       gateLog.member?.status == 'overdue'
@@ -331,11 +318,22 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   }
 
   void addImageToVisitor(VisitorModel visitor) async {
-    final cameraPlayer = ref.watch(cameraPlayerProvider);
+    final cameraPlayer = ref.read(cameraPlayerProvider);
     File outSideImage = await _tempImage("out_side");
     File exitImage = await _tempImage("exit");
-    cameraPlayer.sidePlayer.takeSnapshot(outSideImage, 640, 360);
-    cameraPlayer.mainPlayer.takeSnapshot(exitImage, 640, 360);
+
+    final Uint8List? sideScreenshot =
+        await cameraPlayer.sidePlayer.screenshot();
+    final Uint8List? mainScreenshot =
+        await cameraPlayer.mainPlayer.screenshot();
+
+    if (sideScreenshot != null) {
+      outSideImage.writeAsBytes(sideScreenshot);
+    }
+    if (mainScreenshot != null) {
+      exitImage.writeAsBytes(mainScreenshot);
+    }
+
     if (await outSideImage.exists()) {
       await sl<ApiService>().addImageToVisitor(
           sl<AppService>().token, visitor.id, "out_side", outSideImage);

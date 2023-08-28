@@ -41,16 +41,13 @@ dependencies:
   rflutter_alert: ^2.0.7
   path_provider: ^2.0.15
   csv: ^5.0.2
-  flutter_esc_pos_utils: ^0.1.8
-  flutter_pos_printer_platform: ^1.4.1
-  esc_pos_utils: ^1.1.0
-  image: ^3.3.0
-  esc_pos_utils_plus: ^2.0.1+6
+  flutter_esc_pos_utils: ^1.0.0
+  # flutter_pos_printer_platform: ^1.4.1
+  flutter_usb_printer: ^0.1.0+1
+  image: ^4.0.17
   charset_converter: ^2.1.1
-  dart_vlc: ^0.4.0
   hooks_riverpod: ^2.3.7
   flutter_screenutil: ^5.8.4
-  esc_pos_printer: ^4.1.0
   searchfield: ^0.8.4
   substring_highlight: ^1.0.33
   retrofit: '>=4.0.0 <5.0.0'
@@ -67,15 +64,20 @@ dependencies:
   file_saver: ^0.2.8
   excel: ^2.1.0 
   file_picker: ^5.3.3
+  media_kit: ^1.1.7
+  media_kit_video: ^1.1.8
+  media_kit_libs_video: ^1.0.1
+  freezed_annotation: ^2.4.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  retrofit_generator: '>=5.0.0 <6.0.0'
+  retrofit_generator: ^7.0.8
   build_runner: '>=2.3.0 <4.0.0'
   json_serializable: ^6.7.1
   flutter_lints: ^2.0.0
   riverpod_generator: ^2.2.4
+  freezed: ^2.4.2
 
 flutter:
   uses-material-design: true
