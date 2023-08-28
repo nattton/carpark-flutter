@@ -1,10 +1,12 @@
 import 'dart:convert';
-import 'package:carpark/models/user_model.dart';
+
 import 'package:carpark/models/login_user_model.dart';
+import 'package:carpark/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const kTokenKey = 'TOKEN_KEY';
 const kUserKey = 'USER_KEY';
+const kPrinterKey = 'PRINTER_KEY';
 
 class AppService {
   final SharedPreferences prefs;
@@ -12,10 +14,15 @@ class AppService {
   AppService({required this.prefs});
 
   get token => prefs.getString(kTokenKey) ?? '';
+  get printer => prefs.getString(kPrinterKey) ?? '';
 
   Future<void> saveLogin(LoginUserModel login) async {
     await prefs.setString(kTokenKey, login.token);
     await prefs.setString(kUserKey, jsonEncode(login.user.toJson()));
+  }
+
+  Future<void> savePrinter(String printerName) async {
+    await prefs.setString(kPrinterKey, printerName);
   }
 
   bool isLogIn() {
@@ -35,6 +42,7 @@ class AppService {
   }
 
   Future<void> logout() async {
-    await prefs.clear();
+    await prefs.remove(kUserKey);
+    await prefs.remove(kTokenKey);
   }
 }

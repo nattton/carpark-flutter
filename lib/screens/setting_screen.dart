@@ -1,21 +1,24 @@
 import 'package:carpark/components/camera_list_card.dart';
+import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
-import 'package:flutter/material.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class CameraScreen extends ConsumerStatefulWidget {
-  const CameraScreen({Key? key}) : super(key: key);
+class SettingScreen extends ConsumerStatefulWidget {
+  const SettingScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<CameraScreen> createState() => _CameraScreenState();
+  ConsumerState<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _CameraScreenState extends ConsumerState<CameraScreen> {
+class _SettingScreenState extends ConsumerState<SettingScreen> {
+  List<String> devices = ["Select Printer..."];
   List<CameraModel> cameraList = [];
   final _ipAddressController = TextEditingController();
   final _portController = TextEditingController();
@@ -26,6 +29,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
   @override
   void initState() {
     super.initState();
+    _scan(PrinterType.usb);
     getCamera();
   }
 
@@ -45,6 +49,47 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
       itemCount: cameraList.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
+          return Card(
+            child: Row(children: [
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Printer : ',
+                  style: TextStyle(
+                      fontFamily: kDefaultFont,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              DropdownButton<String>(
+                value: sl<AppService>().printer.isEmpty ||
+                        !devices.contains(sl<AppService>().printer)
+                    ? devices.first
+                    : sl<AppService>().printer,
+                icon: const Icon(Icons.print),
+                elevation: 16,
+                style: const TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String? value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    sl<AppService>().savePrinter(value!);
+                  });
+                },
+                items: devices.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ]),
+          );
+        }
+        if (index == 1) {
           return CameraListCard(
             camera: CameraModel(
                 id: 0,
@@ -58,10 +103,23 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
           );
         }
         return CameraListCard(
-            camera: cameraList[index - 1],
-            onTap: () => onPressedRow(context, cameraList[index - 1]));
+            camera: cameraList[index - 2],
+            onTap: () => onPressedRow(context, cameraList[index - 2]));
       },
     );
+  }
+
+  void _scan(PrinterType type, {bool isBle = false}) {
+    // Find printers
+    var printerManager = PrinterManager.instance;
+    printerManager.discovery(type: type, isBle: isBle).listen((device) {
+      if (device.name != null && !devices.contains(device.name)) {
+        devices.add(device.name!);
+        print(
+            'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}');
+        setState(() {});
+      }
+    });
   }
 
   Future<void> getCamera() async {

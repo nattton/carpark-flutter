@@ -5,8 +5,10 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   charset_converter
   file_saver
+  flutter_pos_printer_platform
   media_kit_libs_windows_video
   media_kit_video
+  network_info_plus
   screen_brightness_windows
 )
 

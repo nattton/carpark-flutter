@@ -13,17 +13,13 @@ import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:dio/dio.dart';
-// import 'package:esc_pos_printer/esc_pos_printer.dart';
-// import 'package:esc_pos_utils/esc_pos_utils.dart';
-// import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-// import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
-import 'package:flutter_usb_printer/flutter_usb_printer.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:media_kit_video/media_kit_video.dart';
@@ -59,15 +55,9 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   final _genderController = TextEditingController();
   final _addressNameController = TextEditingController();
 
-  List<Map<String, dynamic>> devices = [];
-  int selectedDevice = 0;
-  FlutterUsbPrinter flutterUsbPrinter = FlutterUsbPrinter();
-  bool connected = false;
-
   @override
   void initState() {
     super.initState();
-    _getDevicelist();
   }
 
   @override
@@ -95,10 +85,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
                           onPressed: () => openDoor("in"),
@@ -129,7 +119,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                       ],
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 6.0,
                     ),
                     _isShowVisitor ? _buildVisitorForm() : _buildViewer(),
                   ],
@@ -149,6 +139,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                           16.0),
                       child: Video(
                         controller: player.mainController,
+                        controls: null,
                       ),
                     ),
                     const SizedBox(
@@ -161,6 +152,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                           16.0),
                       child: Video(
                         controller: player.sideController,
+                        controls: null,
                       ),
                     ),
                   ],
@@ -181,11 +173,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         ),
       ),
       child: Container(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(6.0),
         child: Column(children: [
-          const SizedBox(
-            height: 10.0,
-          ),
           Table(
             border: TableBorder.all(),
             columnWidths: const <int, TableColumnWidth>{
@@ -338,11 +327,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     final player = ref.watch(cameraPlayerProvider);
     return Card(
       child: Container(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(6.0),
         child: Column(children: [
-          const SizedBox(
-            height: 10.0,
-          ),
           Table(
             border: TableBorder.all(),
             columnWidths: const <int, TableColumnWidth>{
@@ -428,13 +414,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // ElevatedButton(
-                //   style:
-                //       ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                //   onPressed: () => readSmartCard(),
-                //   child: const Text("อ่านข้อมูลจากบัตร",
-                //   style: kButtonStyle,),
-                // ),
                 ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
@@ -576,6 +555,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                       16.0),
                   child: Video(
                     controller: player.cardController,
+                    controls: null,
                   ),
                 ),
         ]),
@@ -755,36 +735,21 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
           width: PosTextSize.size1,
         ));
 
-    bytes += generator.row([
-      PosColumn(
-        width: 6,
-        styles: const PosStyles(underline: true),
-        textEncoded: await charsetConvert('วันที่'),
-      ),
-      PosColumn(
-        width: 6,
-        styles: const PosStyles(underline: true),
-        textEncoded: await charsetConvert('เวลา'),
-      ),
-    ]);
-    bytes += generator.row([
-      PosColumn(
-        text: gateLog.dateFormat(),
-        width: 6,
+    bytes += generator.textEncoded(
+        await charsetConvert("วันที่ : ${gateLog.dateFormat()}"),
         styles: const PosStyles(
           align: PosAlign.left,
-          bold: true,
-        ),
-      ),
-      PosColumn(
-        text: gateLog.timeFormat(),
-        width: 6,
+          height: PosTextSize.size1,
+          width: PosTextSize.size1,
+        ));
+    bytes += generator.textEncoded(
+        await charsetConvert("เวลา : ${gateLog.timeFormat()}"),
         styles: const PosStyles(
           align: PosAlign.left,
-          bold: true,
-        ),
-      ),
-    ]);
+          height: PosTextSize.size1,
+          width: PosTextSize.size1,
+        ));
+
     bytes += generator.textEncoded(
       await charsetConvert('เวลาออก _______________'),
       styles: const PosStyles(
@@ -928,72 +893,18 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     }
   }
 
-  _getDevicelist() async {
-    List<Map<String, dynamic>> results = [];
-    results = await FlutterUsbPrinter.getUSBDeviceList();
-
-    print(" length: ${results.length}");
-    setState(() {
-      devices = results;
-    });
-  }
-
-  _connect(int vendorId, int productId) async {
-    bool? returned = false;
-    try {
-      returned = await flutterUsbPrinter.connect(vendorId, productId);
-    } on PlatformException {
-      //response = 'Failed to get platform version.';
-    }
-    if (returned!) {
-      setState(() {
-        connected = true;
-      });
-    }
-  }
-
   void printTicket(VisitorModel visitor) async {
-    if (devices.isNotEmpty) {
-      var device = devices[selectedDevice];
-      _connect(int.parse(device['vendorId']), int.parse(device['productId']));
-      try {
-        // var data = Uint8List.fromList(
-        //     utf8.encode(" Hello world Testing ESC POS printer..."));
-        var data = await _generateTicket(visitor);
-        await flutterUsbPrinter.write(Uint8List.fromList(data));
-        // await FlutterUsbPrinter.printRawData("text");
-        // await FlutterUsbPrinter.printText("Testing ESC POS printer...");
-      } on PlatformException {
-        //response = 'Failed to get platform version.';
-      }
-    }
+    var printerManager = PrinterManager.instance;
+    // print(printerManager.currentStatusUSB.toString());
+    print(sl<AppService>().printer);
+    printerManager.connect(
+        type: PrinterType.usb,
+        model: UsbPrinterInput(
+            name: sl<AppService>().printer, productId: null, vendorId: null));
+    await printerManager.send(
+        type: PrinterType.usb, bytes: await _generateTicket(visitor));
+    await printerManager.disconnect(type: PrinterType.usb);
   }
-
-  // void printTicket(VisitorModel visitor) async {
-  //   var printerManager = PrinterManager.instance;
-  //   // print(printerManager.currentStatusUSB.toString());
-
-  //   // var devices = [];
-  //   // _scan(PrinterType type, {bool isBle = false}) {
-  //   //   // Find printers
-  //   //   printerManager.discovery(type: type, isBle: isBle).listen((device) {
-  //   //     devices.add(device);
-  //   //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //   //       content:
-  //   //           Text('${device.name} | ${device.productId} | ${device.vendorId}'),
-  //   //     ));
-  //   //   });
-  //   // }
-
-  //   // _scan(PrinterType.usb);
-  //   printerManager.connect(
-  //       type: PrinterType.usb,
-  //       model: UsbPrinterInput(
-  //           name: kPrinterName, productId: null, vendorId: null));
-  //   await printerManager.send(
-  //       type: PrinterType.usb, bytes: await _generateTicket(visitor));
-  //   await printerManager.disconnect(type: PrinterType.usb);
-  // }
 
   // void printNetwork() async {
   //   const PaperSize paper = PaperSize.mm80;

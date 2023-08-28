@@ -247,6 +247,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                             16.0),
                         child: Video(
                           controller: player.mainController,
+                          controls: null,
                         ),
                       ),
                       const SizedBox(
@@ -259,6 +260,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                             16.0),
                         child: Video(
                           controller: player.sideController,
+                          controls: null,
                         ),
                       ),
                       gateLog.member?.status == 'overdue'

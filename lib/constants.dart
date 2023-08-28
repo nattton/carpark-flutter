@@ -4,9 +4,6 @@ const kHostUrl = 'http://localhost:4000';
 // const kHostUrl = 'http://192.168.1.50:4000';
 // const kHostUrl = 'http://cyptpr.ddns.net';
 
-const kPrinterName = 'EPSON TM-T82 Receipt';
-// const kPrinterName = 'POS-80C';
-
 const kSmartCardReaderUrl = 'http://localhost:3000';
 
 const kMemberTypeList = ['resident', 'carrier', 'subcontractor'];
@@ -17,8 +14,8 @@ const kVehicleTypeMap = {
   'motorcycle': 'มอเตอร์ไซค์',
 };
 const kReportTypeMap = {
-  'never_seen': 'รถที่ไม่เคยเข้า-ออก',
-  'member_traffic': 'จำนวนการเข้าออก',
+  'member_traffic': 'รถสมาชิกเข้า-ออก',
+  'visitor_traffic': 'รถผู้ติดต่อสมาชิกเข้า-ออก',
 };
 
 const kGenderMap = {

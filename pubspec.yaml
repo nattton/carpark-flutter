@@ -42,8 +42,7 @@ dependencies:
   path_provider: ^2.0.15
   csv: ^5.0.2
   flutter_esc_pos_utils: ^1.0.0
-  # flutter_pos_printer_platform: ^1.4.1
-  flutter_usb_printer: ^0.1.0+1
+  flutter_pos_printer_platform: ^1.4.1
   image: ^4.0.17
   charset_converter: ^2.1.1
   hooks_riverpod: ^2.3.7
@@ -68,6 +67,8 @@ dependencies:
   media_kit_video: ^1.1.8
   media_kit_libs_video: ^1.0.1
   freezed_annotation: ^2.4.1
+  
+  
 
 dev_dependencies:
   flutter_test:
