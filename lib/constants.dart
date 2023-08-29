@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-// const kHostUrl = 'http://localhost:4000';
-const kHostUrl = 'http://192.168.1.50:4000';
-// const kHostUrl = 'http://cyptpr.ddns.net';
+// const kHost = 'localhost:4000';
+const kHost = '192.168.1.50:4000';
+// const kHost = 'cyptpr.ddns.net';
+
+const kHostUrl = 'http://$kHost';
+const kHostWS = 'ws://$kHost';
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 

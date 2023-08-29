@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -26,14 +28,19 @@ class LastGateNotifier extends StateNotifier<LastGateModel> {
   LastGateNotifier(super.state);
 
   void setGateIn(GateLogModel log) {
-    if (state.gateIn.id != log.id) {
-      state = state.copyWith(gateIn: log);
-    }
+    state = state.copyWith(gateIn: log);
   }
 
   void setGateOut(GateLogModel log) {
-    if (state.gateOut.id != log.id) {
-      state = state.copyWith(gateOut: log);
+    state = state.copyWith(gateOut: log);
+  }
+
+  void setFromJson(dynamic data) {
+    var gateLog = GateLogModel.fromJson(jsonDecode(data));
+    if (gateLog.gateName == "in") {
+      setGateIn(gateLog);
+    } else if (gateLog.gateName == "out") {
+      setGateOut(gateLog);
     }
   }
 }

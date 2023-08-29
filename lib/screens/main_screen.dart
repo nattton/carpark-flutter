@@ -62,8 +62,9 @@ class MainScreen extends StatefulHookConsumerWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
+  final wsUrl = '$kHostWS/ws';
+  late WebSocket channel;
   bool loadingLastGate = false;
-  late StreamSubscription periodicSub;
 
   var _currentScreen = "";
   PageController page = PageController();
@@ -74,8 +75,49 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
 
+  initWebSocketConnection() async {
+    print("conecting...");
+    channel = await connectWs();
+    print("socket connection initializied");
+    channel.done.then((dynamic _) => _onDisconnected());
+    broadcastNotifications();
+  }
+
+  broadcastNotifications() {
+    final lastGate = ref.read(lastGateProvider.notifier);
+    channel.listen((streamData) {
+      print(streamData);
+      lastGate.setFromJson(streamData);
+    }, onDone: () {
+      print("conecting aborted");
+      initWebSocketConnection();
+    }, onError: (e) {
+      print('Server error: $e');
+      initWebSocketConnection();
+    });
+  }
+
+  connectWs() async {
+    try {
+      return await WebSocket.connect(wsUrl);
+    } catch (e) {
+      print("Error! can not connect WS connectWs $e");
+      await Future.delayed(const Duration(milliseconds: 5000));
+      return await connectWs();
+    }
+  }
+
+  void _onDisconnected() {
+    initWebSocketConnection();
+  }
+
   @override
   void initState() {
+    super.initState();
+    initWebSocketConnection();
+
+    getLastGateIn();
+    getLastGateOut();
     getMember();
     getCameraList().then((value) {
       var camera = value['ENTRANCE'];
@@ -86,20 +128,17 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       player.setSidePlayer(cameraSide!.toUrl());
       player.setCardPlayer(cameraCard!.toUrl());
     });
-    periodicSub = Stream.periodic(const Duration(milliseconds: 500))
-        .listen((_) => getLastGateIn());
 
     sideMenu.addListener((p0) {
       page.jumpToPage(p0);
     });
-    super.initState();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _telController.dispose();
-    periodicSub.cancel();
+    // periodicSub.cancel();
     super.dispose();
   }
 
@@ -158,9 +197,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final camera = ref.watch(cameraMapProvider);
     switch (page) {
       case 'ENTRANCE':
-        periodicSub.cancel();
-        periodicSub = Stream.periodic(const Duration(milliseconds: 500))
-            .listen((_) => getLastGateIn());
+        getLastGateIn();
         var cam = camera['ENTRANCE'];
         if (cam != null) {
           player.setMainPlayer(cam.toUrl());
@@ -175,9 +212,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         }
         break;
       case 'EXIT':
-        periodicSub.cancel();
-        periodicSub = Stream.periodic(const Duration(milliseconds: 500))
-            .listen((_) => getLastGateOut());
+        getLastGateOut();
         var cam = camera['EXIT'];
         if (cam != null) {
           player.setMainPlayer(cam.toUrl());
@@ -188,7 +223,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         }
         break;
       default:
-        periodicSub.cancel();
         player.stopAll();
     }
     setState(() {
