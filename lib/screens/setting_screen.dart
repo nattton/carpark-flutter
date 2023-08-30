@@ -5,6 +5,7 @@ import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,7 +30,9 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   @override
   void initState() {
     super.initState();
-    _scan(PrinterType.usb);
+    if (!kIsWeb) {
+      _scan(PrinterType.usb);
+    }
     getCamera();
   }
 
@@ -46,7 +49,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: cameraList.length + 1,
+      itemCount: cameraList.length + 2,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Card(

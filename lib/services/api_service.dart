@@ -6,6 +6,7 @@ import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/id_card_model.dart';
+import 'package:carpark/models/last_gate_log.dart';
 import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/report_traffic_model.dart';
@@ -39,6 +40,9 @@ abstract class ApiService {
       @Header('Authorization') String token, @Path() String name);
 
   // Gate Log
+  @GET("/api/gate_logs/last")
+  Future<LastGateLog> getLastGate(@Header('Authorization') String token);
+
   @GET("/api/gate_logs/in")
   Future<GateInModel> getGateIn(@Header('Authorization') String token);
 

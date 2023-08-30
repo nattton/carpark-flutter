@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carpark/components/exit_card.dart';
+import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/checkout_model.dart';
@@ -8,10 +10,10 @@ import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ExitScreen extends StatefulHookConsumerWidget {
@@ -43,270 +45,81 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     final gateLog = ref.watch(lastGateProvider).gateOut;
     final player = ref.watch(cameraPlayerProvider);
     return gateLog.id != 0
-        ? Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () => openGateOut(),
-                      child: const Text(
-                        "เปิดประตู ขาออก",
-                        style: kButtonStyle,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      controller: _barcodeController,
-                      autofocus: true,
-                      autocorrect: false,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                          onTap: () => checkout(),
-                          child: const Icon(Icons.barcode_reader),
-                        ),
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(0.0)),
-                      ),
-                      onSubmitted: (value) => checkout(),
-                      focusNode: focusNode,
-                    ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: gateLog.color(),
-                          width: 4.0,
-                        ),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(children: [
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          Table(
-                            border: TableBorder.all(),
-                            columnWidths: const <int, TableColumnWidth>{
-                              0: FlexColumnWidth(),
-                              1: FlexColumnWidth(),
-                            },
-                            defaultVerticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            children: <TableRow>[
-                              TableRow(
-                                children: <Widget>[
-                                  Container(
-                                    height: 40,
-                                    color: Colors.grey,
-                                    child: Center(
-                                      child: Text(
-                                        "วันที่: ${gateLog.dateFormat()}",
-                                        style: kGateStyle,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 40,
-                                    color: Colors.grey,
-                                    child: Center(
-                                      child: Text(
-                                        "เวลา: ${gateLog.timeFormat()}",
-                                        style: kGateStyle,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              gateLog.memberId! == 0
-                                  ? TableRow(
-                                      children: <Widget>[
-                                        Container(
-                                          height: 40,
-                                          color: Colors.red,
-                                          child: const Center(
-                                            child: Text(
-                                              "Visitor",
-                                              style: kGateStyle,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 40,
-                                          color: Colors.red,
-                                        ),
-                                      ],
-                                    )
-                                  : TableRow(
-                                      children: <Widget>[
-                                        Container(
-                                          height: 40,
-                                          color: Colors.green,
-                                          child: Center(
-                                            child: Text(
-                                              "ชื่อ : ${gateLog.member!.name!}",
-                                              style: kGateStyle,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 40,
-                                          color: Colors.green,
-                                          child: Center(
-                                            child: Text(
-                                              gateLog.plateNumber!,
-                                              style: kGateStyle,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                              gateLog.member?.status == 'overdue'
-                                  ? TableRow(
-                                      children: <Widget>[
-                                        Container(
-                                          height: 40,
-                                          color: gateLog.color(),
-                                          child: const Center(
-                                            child: Text(
-                                              kOverdueText,
-                                              style: kGateStyle,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 40,
-                                          color: gateLog.color(),
-                                          child: const Center(
-                                              child: Text(
-                                            kOverdue2Text,
-                                            style: kGateStyle,
-                                          )),
-                                        ),
-                                      ],
-                                    )
-                                  : TableRow(
-                                      children: <Widget>[
-                                        Container(),
-                                        Container(),
-                                      ],
-                                    ),
-                              TableRow(
-                                children: <Widget>[
-                                  Container(
-                                    height: 70,
-                                    color: Colors.amberAccent,
-                                    child: Image.network(
-                                        gateLog.licensePlateImageUrl()),
-                                  ),
-                                  Container(
-                                    height: 70,
-                                    color: Colors.amberAccent,
-                                    child: Center(
-                                      child: Text(
-                                        gateLog.anpr!,
-                                        style: kGateStyle,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          Image.network(gateLog.captureImageUrl()),
-                        ]),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2 - 60,
-                        height: ((MediaQuery.of(context).size.width / 2 - 60) *
-                            9.0 /
-                            16.0),
-                        child: Video(
-                          controller: player.mainController,
-                          controls: null,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 4.0,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2 - 60,
-                        height: ((MediaQuery.of(context).size.width / 2 - 60) *
-                            9.0 /
-                            16.0),
-                        child: Video(
-                          controller: player.sideController,
-                          controls: null,
-                        ),
-                      ),
-                      gateLog.member?.status == 'overdue'
-                          ? Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: gateLog.color(),
-                                  width: 4.0,
-                                ),
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.all(10.0),
-                                child: const Text(
-                                  kOverdueText,
-                                  style: kOverdueTextStyle,
-                                ),
+                      !kIsWeb
+                          ? ElevatedButton(
+                              onPressed: () => openGateOut(),
+                              child: const Text(
+                                "เปิดประตู ขาออก",
+                                style: kButtonStyle,
                               ),
                             )
-                          : Container(),
+                          : const SizedBox(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: _barcodeController,
+                        autofocus: true,
+                        autocorrect: false,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          suffixIcon: GestureDetector(
+                            onTap: () => checkout(),
+                            child: const Icon(Icons.barcode_reader),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(0.0)),
+                        ),
+                        onSubmitted: (value) => checkout(),
+                        focusNode: focusNode,
+                      ),
+                      ExitCard(gateLog: gateLog),
                     ],
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: !kIsWeb
+                      ? LivePlayerSection(
+                          mainController: player.mainController,
+                          sideController: player.sideController)
+                      : const SizedBox(),
+                ),
+              ],
+            ),
           )
         : Container();
   }
 
-  void alertError(String msg) {
+  void alertMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
 
-    // showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return AlertDialog(
-    //         title: const Text('Alert Message'),
-    //         content: Text(msg),
-    //         actions: [
-    //           TextButton(
-    //               onPressed: () {
-    //                 Navigator.pop(context);
-    //               },
-    //               child: const Text('Close'))
-    //         ],
-    //       );
-    //     });
+  void alertError(String msg) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error Message'),
+            content: Text(msg),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Close'))
+            ],
+          );
+        });
   }
 
   Future<void> openGateOut() async {
@@ -358,11 +171,24 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
           .checkoutVisitor(sl<AppService>().token,
               CheckoutModel(barcode: barcode, gateLogId: gateLog.id))
           .then((value) {
-        alertError('ลงเวลาออก ทะเบียน : ${value.plateNumber}');
+        alertMessage('ลงเวลาออก ทะเบียน : ${value.plateNumber}');
         addImageToVisitor(value);
-        // openGateOut();
-      }).onError((error, stackTrace) {
-        alertError(error.toString());
+      }).catchError((Object obj) {
+        switch (obj.runtimeType) {
+          case DioException:
+            final res = (obj as DioException).response;
+            if (res != null) {
+              if (res.statusCode == HttpStatus.badRequest) {
+                alertError(
+                    "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ");
+              } else if (res.statusCode == HttpStatus.notFound) {
+                alertError("ไม่พบข้อมูล");
+              }
+            }
+            break;
+          default:
+            break;
+        }
       });
     }
   }

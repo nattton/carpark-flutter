@@ -5,26 +5,26 @@ import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 @immutable
-class LastGateModel {
+class LastGate {
   final GateLogModel gateIn;
   final GateLogModel gateOut;
-  const LastGateModel({
+  const LastGate({
     required this.gateIn,
     required this.gateOut,
   });
 
-  LastGateModel copyWith({
+  LastGate copyWith({
     GateLogModel? gateIn,
     GateLogModel? gateOut,
   }) {
-    return LastGateModel(
+    return LastGate(
       gateIn: gateIn ?? this.gateIn,
       gateOut: gateOut ?? this.gateOut,
     );
   }
 }
 
-class LastGateNotifier extends StateNotifier<LastGateModel> {
+class LastGateNotifier extends StateNotifier<LastGate> {
   LastGateNotifier(super.state);
 
   void setGateIn(GateLogModel log) {

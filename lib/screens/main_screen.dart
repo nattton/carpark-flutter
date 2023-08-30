@@ -5,7 +5,7 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/last_gate_model.dart';
+import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/providers/members_notifier.dart';
@@ -23,6 +23,7 @@ import 'package:carpark/services/app_service.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -30,13 +31,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 part 'main_screen.g.dart';
 
 final lastGateProvider =
-    StateNotifierProvider<LastGateNotifier, LastGateModel>((ref) {
+    StateNotifierProvider<LastGateNotifier, LastGate>((ref) {
   return LastGateNotifier(
-      LastGateModel(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
+      LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
 });
 
 final membersProvider =
@@ -74,6 +76,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
+
+  initWebSocketChannelConnection() async {
+    final lastGate = ref.read(lastGateProvider.notifier);
+    var channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+    channel.stream.listen((streamData) {
+      print(streamData);
+      lastGate.setFromJson(streamData);
+    });
+  }
 
   initWebSocketConnection() async {
     print("conecting...");
@@ -114,19 +125,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    initWebSocketConnection();
+    if (kIsWeb) {
+      initWebSocketChannelConnection();
+    } else {
+      initWebSocketConnection();
+    }
 
-    getLastGateIn();
-    getLastGateOut();
+    getLastGate();
     getMember();
     getCameraList().then((value) {
-      var camera = value['ENTRANCE'];
-      var cameraSide = value['IN_SIDE'];
-      var cameraCard = value['CARD'];
-      final player = ref.watch(cameraPlayerProvider);
-      player.setMainPlayer(camera!.toUrl());
-      player.setSidePlayer(cameraSide!.toUrl());
-      player.setCardPlayer(cameraCard!.toUrl());
+      if (!kIsWeb) {
+        var camera = value['ENTRANCE'];
+        var cameraSide = value['IN_SIDE'];
+        var cameraCard = value['CARD'];
+        final player = ref.watch(cameraPlayerProvider);
+        player.setMainPlayer(camera!.toUrl());
+        player.setSidePlayer(cameraSide!.toUrl());
+        player.setCardPlayer(cameraCard!.toUrl());
+      }
     });
 
     sideMenu.addListener((p0) {
@@ -138,7 +154,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   void dispose() {
     _nameController.dispose();
     _telController.dispose();
-    // periodicSub.cancel();
     super.dispose();
   }
 
@@ -162,6 +177,21 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }).onError((error, stackTrace) {
       alertError(error.toString());
     });
+  }
+
+  Future<void> getLastGate() async {
+    if (!loadingLastGate) {
+      loadingLastGate = true;
+      final lastGate = ref.read(lastGateProvider.notifier);
+      sl<ApiService>().getLastGate(sl<AppService>().token).then((value) {
+        lastGate.setGateIn(value.gateIn);
+        lastGate.setGateOut(value.gateOut);
+        loadingLastGate = false;
+      }).onError((error, stackTrace) {
+        alertError(error.toString());
+        loadingLastGate = false;
+      });
+    }
   }
 
   Future<void> getLastGateIn() async {
@@ -198,28 +228,32 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     switch (page) {
       case 'ENTRANCE':
         getLastGateIn();
-        var cam = camera['ENTRANCE'];
-        if (cam != null) {
-          player.setMainPlayer(cam.toUrl());
-        }
-        var cameraSide = camera['IN_SIDE'];
-        if (cameraSide != null) {
-          player.setSidePlayer(cameraSide.toUrl());
-        }
-        var cameraCard = camera['CARD'];
-        if (cameraCard != null) {
-          player.setCardPlayer(cameraCard.toUrl());
+        if (!kIsWeb) {
+          var cam = camera['ENTRANCE'];
+          if (cam != null) {
+            player.setMainPlayer(cam.toUrl());
+          }
+          var cameraSide = camera['IN_SIDE'];
+          if (cameraSide != null) {
+            player.setSidePlayer(cameraSide.toUrl());
+          }
+          var cameraCard = camera['CARD'];
+          if (cameraCard != null) {
+            player.setCardPlayer(cameraCard.toUrl());
+          }
         }
         break;
       case 'EXIT':
         getLastGateOut();
-        var cam = camera['EXIT'];
-        if (cam != null) {
-          player.setMainPlayer(cam.toUrl());
-        }
-        var cameraSide = camera['OUT_SIDE'];
-        if (cameraSide != null) {
-          player.setSidePlayer(cameraSide.toUrl());
+        if (!kIsWeb) {
+          var cam = camera['EXIT'];
+          if (cam != null) {
+            player.setMainPlayer(cam.toUrl());
+          }
+          var cameraSide = camera['OUT_SIDE'];
+          if (cameraSide != null) {
+            player.setSidePlayer(cameraSide.toUrl());
+          }
         }
         break;
       default:

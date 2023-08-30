@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carpark/components/entrance_card.dart';
+import 'package:carpark/components/exit_card.dart';
+import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/gate_log_model.dart';
@@ -13,6 +16,7 @@ import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -62,7 +66,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   @override
   void dispose() {
-    // _memberController.dispose();
     _plateNumberController.dispose();
     _idCardController.dispose();
     _thaiNameController.dispose();
@@ -76,251 +79,75 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   @override
   Widget build(BuildContext context) {
     final gateLog = ref.watch(lastGateProvider).gateIn;
+    final gateLogOut = ref.watch(lastGateProvider).gateOut;
     final player = ref.watch(cameraPlayerProvider);
     return gateLog.id != 0
-        ? Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => openDoor("in"),
-                          child: const Text(
-                            "เปิดประตู ขาเข้า",
-                            style: kButtonStyle,
-                          ),
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      !kIsWeb
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () => openDoor("in"),
+                                  child: const Text(
+                                    "เปิดประตู ขาเข้า",
+                                    style: kButtonStyle,
+                                  ),
+                                ),
+                                _isShowVisitor
+                                    ? ElevatedButton(
+                                        onPressed: () => openVisitior(),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Colors.red, // Background color
+                                        ),
+                                        child: const Text(
+                                          "ยกเลิก",
+                                          style: kButtonStyle,
+                                        ),
+                                      )
+                                    : ElevatedButton(
+                                        onPressed: () => showVisitorFromEmpty(),
+                                        child: const Text(
+                                          "สร้างผู้ติดต่อ",
+                                          style: kButtonStyle,
+                                        ),
+                                      ),
+                              ],
+                            )
+                          : const SizedBox(),
+                      _isShowVisitor ? _buildVisitorForm() : _buildViewer(),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: !kIsWeb
+                      ? LivePlayerSection(
+                          mainController: player.mainController,
+                          sideController: player.sideController)
+                      : Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [ExitCard(gateLog: gateLogOut)],
                         ),
-                        _isShowVisitor
-                            ? ElevatedButton(
-                                onPressed: () => openVisitior(),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Colors.red, // Background color
-                                ),
-                                child: const Text(
-                                  "ยกเลิก",
-                                  style: kButtonStyle,
-                                ),
-                              )
-                            : ElevatedButton(
-                                onPressed: () => showVisitorFromEmpty(),
-                                child: const Text(
-                                  "สร้างผู้ติดต่อ",
-                                  style: kButtonStyle,
-                                ),
-                              ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 6.0,
-                    ),
-                    _isShowVisitor ? _buildVisitorForm() : _buildViewer(),
-                  ],
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 2 - 60,
-                      height: ((MediaQuery.of(context).size.width / 2 - 60) *
-                          9.0 /
-                          16.0),
-                      child: Video(
-                        controller: player.mainController,
-                        controls: null,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 2 - 60,
-                      height: ((MediaQuery.of(context).size.width / 2 - 60) *
-                          9.0 /
-                          16.0),
-                      child: Video(
-                        controller: player.sideController,
-                        controls: null,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           )
         : Container();
   }
 
   Widget _buildViewer() {
     final gateLog = ref.watch(lastGateProvider).gateIn;
-    return Card(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: gateLog.color(),
-          width: 4.0,
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(6.0),
-        child: Column(children: [
-          Table(
-            border: TableBorder.all(),
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(),
-              1: FlexColumnWidth(),
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: <TableRow>[
-              TableRow(
-                children: <Widget>[
-                  Container(
-                    height: 40,
-                    color: Colors.grey,
-                    child: Center(
-                      child: Text(
-                        "วันที่: ${gateLog.dateFormat()}",
-                        style: kGateStyle,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 40,
-                    color: Colors.grey,
-                    child: Center(
-                      child: Text(
-                        "เวลา: ${gateLog.timeFormat()}",
-                        style: kGateStyle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              gateLog.memberId! == 0
-                  ? TableRow(
-                      children: [
-                        Container(
-                          height: 50,
-                          color: Colors.red,
-                          child: const Center(
-                            child: Text(
-                              "ผู้ติดต่อ",
-                              style: kGateStyle,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 50,
-                          color: Colors.red,
-                          child: Center(
-                            child: ElevatedButton(
-                              onPressed: () => showVisitorFromSelect(gateLog),
-                              child: const Text(
-                                "สร้างผู้ติดต่อจากรถคันนี้",
-                                style: kButtonStyle,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : TableRow(
-                      children: <Widget>[
-                        Container(
-                          height: 40,
-                          color: Colors.green,
-                          child: Center(
-                            child: Text(
-                              "ชื่อ : ${gateLog.member!.name}",
-                              style: kGateStyle,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 40,
-                          color: Colors.green,
-                          child: Center(
-                            child: Text(
-                              gateLog.plateNumber!,
-                              style: kGateStyle,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-              gateLog.member?.status == 'overdue'
-                  ? TableRow(
-                      children: <Widget>[
-                        Container(
-                          height: 40,
-                          color: gateLog.color(),
-                          child: const Center(
-                            child: Text(
-                              kOverdueText,
-                              style: kGateStyle,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 40,
-                          color: gateLog.color(),
-                          child: Center(
-                            child: ElevatedButton(
-                              onPressed: () => showVisitorFromSelect(gateLog),
-                              child: const Text(
-                                "สร้างบัตรผู้ติดต่อ",
-                                style: kButtonStyle,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : TableRow(
-                      children: <Widget>[
-                        Container(),
-                        Container(),
-                      ],
-                    ),
-              TableRow(
-                children: <Widget>[
-                  Container(
-                    height: 60,
-                    color: Colors.amberAccent,
-                    child: Image.network(gateLog.licensePlateImageUrl()),
-                  ),
-                  Container(
-                    height: 60,
-                    color: Colors.amberAccent,
-                    child: Center(
-                      child: Text(
-                        gateLog.anpr!,
-                        style: kGateStyle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Image.network(gateLog.captureImageUrl()),
-        ]),
-      ),
-    );
+    return EntranceCard(
+        gateLog: gateLog,
+        onTapSelectGateLog: () => showVisitorFromSelect(gateLog));
   }
 
   Widget _buildVisitorForm() {
@@ -599,34 +426,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     });
   }
 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
-  }
-
-  // Future<File> get _siamIdFile async {
-  //   final path = await _localPath;
-  //   return File('$path/SIAM-ID/Data.txt');
-  // }
-
-  // Future<dynamic> readData() async {
-  //   try {
-  //     final file = await _siamIdFile;
-
-  //     // Read the file
-  //     final input = File(file.path).openRead();
-  //     final fields = await input
-  //         .transform(utf8.decoder)
-  //         .transform(const CsvToListConverter())
-  //         .toList();
-  //     return fields;
-  //   } catch (e) {
-  //     // If encountering an error, return 0
-  //     return '';
-  //   }
-  // }
-
   void clearForm() {
     _idCardModel = null;
     _photoFile = null;
@@ -638,24 +437,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     _addressNameController.clear();
     setState(() {});
   }
-
-  // void readSmartCard() async {
-  //   _isReadCard = true;
-  //   try {
-  //     final listCSV = await readData() as List;
-  //     final cardData = listCSV.last;
-  //     _smartCard = SmartCardModel.fromArray(cardData);
-  //     _idCardController.text = _smartCard.idCard;
-  //     _thaiNameController.text = _smartCard.thaiName;
-  //     _engNameController.text = _smartCard.engName;
-  //     _birthdateController.text = _smartCard.birthdate;
-  //     _genderController.text = _smartCard.gender;
-  //     _addressNameController.text = _smartCard.address;
-  //     setState(() {});
-  //   } catch (error) {
-  //     Logger().e(error);
-  //   }
-  // }
 
   void readSmartCardFromService() async {
     clearForm();
@@ -702,12 +483,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       spaceBetweenRows: 8,
     );
     bytes += generator.setGlobalCodeTable('CP874');
-    // bytes += generator.textEncoded(await charsetConvert('บัตรจอดรถ'),
-    //     styles: const PosStyles(
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size1,
-    //         width: PosTextSize.size1,
-    //         fontType: PosFontType.fontA));
 
     // Print image:
     final ByteData data = await rootBundle.load('images/logo.png');
@@ -920,15 +695,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   //   }
 
   //   print('Print result: ${res.msg}');
-  // }
-
-  // Future testReceipt(NetworkPrinter printer) async {
-  //   printer.setGlobalCodeTable('CP874');
-  //   // printer.printCodeTable();
-  //   Uint8List encoded = await CharsetConverter.encode("windows-874", "ทดสอบ");
-  //   printer.textEncoded(encoded);
-  //   printer.feed(2);
-  //   printer.cut();
   // }
 
   Widget _buildSearchMember() {
