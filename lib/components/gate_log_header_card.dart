@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
+import 'package:flutter/material.dart';
 
 class GateLogHeaderCard extends StatelessWidget {
   const GateLogHeaderCard(
@@ -70,7 +70,20 @@ class GateLogHeaderCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: onTapMemberName,
                 child: const Text(
-                  "ชื่อ",
+                  "ชื่อสมาชิก",
+                  style: TextStyle(
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: onTapMemberName,
+                child: const Text(
+                  "ติดต่อ",
                   style: TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

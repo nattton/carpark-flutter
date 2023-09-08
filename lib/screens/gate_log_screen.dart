@@ -5,8 +5,9 @@ import 'package:carpark/components/gate_log_card.dart';
 import 'package:carpark/components/gate_log_header_card.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
-import 'package:carpark/models/gate_log_model.dart';
+import 'package:carpark/models/gate_log_result.dart';
 import 'package:carpark/providers/gate_logs_notifier.dart';
+import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
@@ -19,19 +20,19 @@ import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 final gateLogsProvider =
-    StateNotifierProvider<GateLogsNotifier, List<GateLogModel>>((ref) {
+    StateNotifierProvider<GateLogsNotifier, List<GateLogResult>>((ref) {
   return GateLogsNotifier();
 });
 
 final filterProvider = StateProvider((ref) => "");
 final sortByProvider = StateProvider((ref) => "");
 
-final filteredGateLogsProvider = Provider<List<GateLogModel>>((ref) {
+final filteredGateLogsProvider = Provider<List<GateLogResult>>((ref) {
   final filter = ref.watch(filterProvider);
   final sortBy = ref.watch(sortByProvider);
   final gateLogs = ref.watch(gateLogsProvider);
 
-  List<GateLogModel> filterGateLogs = [];
+  List<GateLogResult> filterGateLogs = [];
   if (filter.isEmpty) {
     filterGateLogs = gateLogs;
   }
@@ -39,40 +40,40 @@ final filteredGateLogsProvider = Provider<List<GateLogModel>>((ref) {
     filterGateLogs = gateLogs;
   }
   filterGateLogs = gateLogs.where((gateLog) {
-    return gateLog.plateNumber!.contains(filter) ||
-        gateLog.member!.name!.contains(filter);
+    return gateLog.plateNumber.contains(filter) ||
+        gateLog.memberName.contains(filter);
   }).toList();
 
   if (sortBy.isNotEmpty) {
     switch (sortBy) {
       case "date":
         filterGateLogs.sort((a, b) {
-          return a.createdAt!.compareTo(b.createdAt!);
+          return a.createdAt.compareTo(b.createdAt);
         });
         break;
       case "-date":
         filterGateLogs.sort((b, a) {
-          return a.createdAt!.compareTo(b.createdAt!);
+          return a.createdAt.compareTo(b.createdAt);
         });
         break;
       case "plateNumber":
         filterGateLogs.sort((a, b) {
-          return a.plateNumber!.compareTo(b.plateNumber!);
+          return a.plateNumber.compareTo(b.plateNumber);
         });
         break;
       case "-plateNumber":
         filterGateLogs.sort((b, a) {
-          return a.plateNumber!.compareTo(b.plateNumber!);
+          return a.plateNumber.compareTo(b.plateNumber);
         });
         break;
       case "memberName":
         filterGateLogs.sort((a, b) {
-          return a.member!.name!.compareTo(b.member!.name!);
+          return a.memberName.compareTo(b.memberName);
         });
         break;
       case "-memberName":
         filterGateLogs.sort((b, a) {
-          return a.member!.name!.compareTo(b.member!.name!);
+          return a.memberName.compareTo(b.memberName);
         });
         break;
       default:
@@ -253,16 +254,21 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     );
   }
 
-  void viewDetail(GateLogModel gateLog) {
-    Alert(
-      context: context,
-      title: "Gate Log",
-      content: Column(
-        children: <Widget>[
-          Image.network(gateLog.captureImageUrl()),
-        ],
-      ),
-    ).show();
+  void viewDetail(GateLogResult gateLog) {
+    if (gateLog.visitorMemberId > 0) {
+      Navigator.of(context)
+          .pushNamed(VisitorDetailScreen.id, arguments: gateLog.visitorId);
+    } else {
+      Alert(
+        context: context,
+        title: "Gate Log",
+        content: Column(
+          children: <Widget>[
+            Image.network(gateLog.captureImageUrl()),
+          ],
+        ),
+      ).show();
+    }
   }
 
   Excel generateExcel() {
@@ -276,7 +282,8 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       "gateName",
       "anpr",
       "plateNumber",
-      "member.name",
+      "member_name",
+      "visitor_member_name",
       "captureImage",
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
@@ -292,10 +299,11 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       var m = gateLogs[i];
       List<String> dataList = [
         m.dateTimeFormat(),
-        m.gateName!,
-        m.anpr!,
-        m.plateNumber!,
-        m.member!.name!,
+        m.gateName,
+        m.anpr,
+        m.plateNumber,
+        m.memberName,
+        m.visitorMemberName,
         m.captureImageUrl(),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);

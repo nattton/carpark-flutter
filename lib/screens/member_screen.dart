@@ -74,11 +74,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
         _nameController.text = member.name!;
         _telController.text = member.telephone!;
       });
-      EasyLoading.dismiss();
     }).onError((error, stackTrace) {
-      EasyLoading.dismiss();
       alertError(error.toString());
-    });
+    }).whenComplete(() => EasyLoading.dismiss());
   }
 
   @override

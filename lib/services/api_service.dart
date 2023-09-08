@@ -4,7 +4,7 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';
-import 'package:carpark/models/gate_log_model.dart';
+import 'package:carpark/models/gate_log_result.dart';
 import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/login_user_model.dart';
@@ -50,7 +50,7 @@ abstract class ApiService {
   Future<GateInModel> getGateOut(@Header('Authorization') String token);
 
   @GET("/api/gate_logs")
-  Future<List<GateLogModel>> searchGateLog(
+  Future<List<GateLogResult>> searchGateLog(
       @Header('Authorization') String token,
       @Query("date") String date,
       @Query("dateTo") String dateTo);
@@ -103,6 +103,14 @@ abstract class ApiService {
   Future<VisitorModel> createVisitor(
       @Header('Authorization') String token, @Body() VisitorModel visitor);
 
+  @GET("/api/visitors")
+  Future<List<VisitorModel>> listVisitor(@Header('Authorization') String token,
+      @Query("date") String date, @Query("dateTo") String dateTo);
+
+  @GET("/api/visitors/{id}")
+  Future<VisitorModel> getVisitor(
+      @Header('Authorization') String token, @Path() int id);
+
   @POST("/api/visitors/{id}/photo")
   Future<VisitorModel> addPhotoVisitor(@Header('Authorization') String token,
       @Path() int id, @Part() File photo);
@@ -110,14 +118,6 @@ abstract class ApiService {
   @POST("/api/visitors/{id}/images/{type}")
   Future<VisitorModel> addImageToVisitor(@Header('Authorization') String token,
       @Path() int id, @Path() String type, @Part() File file);
-
-  @GET("/api/visitors")
-  Future<List<VisitorModel>> listVisitor(@Header('Authorization') String token,
-      @Query("date") String date, @Query("dateTo") String dateTo);
-
-  @GET("/api/visitors/{id}")
-  Future<VisitorModel> getVisitor(
-      @Header('Authorization') String token, @Path() String id);
 
   @PATCH("/api/visitors/checkout")
   Future<VisitorModel> checkoutVisitor(

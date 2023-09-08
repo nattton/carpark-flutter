@@ -7,6 +7,7 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/providers/visitors_notifier.dart';
+import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
@@ -16,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 final visitorsProvider =
     StateNotifierProvider<VisitorsNotifier, List<VisitorModel>>((ref) {
@@ -261,52 +261,8 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   void viewDetail(VisitorModel visitor) {
-    Alert(
-      context: context,
-      title: "ผู้ติดต่อ เวลาเข้า : ${visitor.dateTimeFormat()}",
-      content: Column(
-        children: <Widget>[
-          visitor.photoUrl() != ""
-              ? Image.network(visitor.photoUrl())
-              : const SizedBox(),
-          Text(
-            "เลขประจำตัวประชาชน : ${visitor.idCard!}",
-            style: kContentStyle,
-          ),
-          Text(
-            "ชื่อไทย : ${visitor.thaiName!}",
-            style: kContentStyle,
-          ),
-          Text(
-            "English Name : ${visitor.engName!}",
-            style: kContentStyle,
-          ),
-          Text(
-            "เพศ : ${visitor.gender!}",
-            style: kContentStyle,
-          ),
-          Text(
-            "วันเกิด : ${visitor.birthdate!}",
-            style: kContentStyle,
-          ),
-          Text(
-            "ที่อยู่ : ${visitor.address!}",
-            style: kContentStyle,
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          for (var image in visitor.visitorImages!)
-            Image.network(image.imageUrl()),
-          visitor.gateLog!.captureImage! != ""
-              ? Image.network(visitor.gateLog!.captureImageUrl())
-              : const SizedBox(),
-          visitor.gateLogOut!.captureImage! != ""
-              ? Image.network(visitor.gateLogOut!.captureImageUrl())
-              : const SizedBox(),
-        ],
-      ),
-    ).show();
+    Navigator.of(context)
+        .pushNamed(VisitorDetailScreen.id, arguments: visitor.id);
   }
 
   Excel generateExcel() {

@@ -1,6 +1,7 @@
-import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/login_screen.dart';
+import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
+import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,6 +26,11 @@ class MyApp extends StatelessWidget {
             final memberId = settings.arguments as int;
             return MaterialPageRoute(builder: (context) {
               return MemberScreen(memberId: memberId);
+            });
+          case VisitorDetailScreen.id:
+            final visitorId = settings.arguments as int;
+            return MaterialPageRoute(builder: (context) {
+              return VisitorDetailScreen(visitorId: visitorId);
             });
         }
         return null;
