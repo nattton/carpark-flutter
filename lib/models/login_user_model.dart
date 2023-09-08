@@ -1,13 +1,14 @@
 import 'package:carpark/models/user_model.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'login_user_model.g.dart';
 
 @JsonSerializable()
 class LoginUserModel {
-  String token;
-  UserModel user;
+  final String token;
+  final UserModel user;
 
-  LoginUserModel({
+  const LoginUserModel({
     required this.token,
     required this.user,
   });

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'checkout_model.g.dart';
 
 @JsonSerializable()
@@ -6,7 +7,7 @@ class CheckoutModel {
   final int gateLogId;
   final String barcode;
 
-  CheckoutModel({
+  const CheckoutModel({
     required this.barcode,
     required this.gateLogId,
   });

@@ -14,7 +14,7 @@ class IDCardModel {
   final String photoPath;
   final String photoByte;
 
-  IDCardModel(
+  const IDCardModel(
       {required this.id,
       required this.engName,
       required this.thaiName,

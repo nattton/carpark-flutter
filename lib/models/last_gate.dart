@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'last_gate.g.dart';
+
+@JsonSerializable()
 @immutable
 class LastGate {
   final GateLogModel gateIn;
@@ -22,6 +26,11 @@ class LastGate {
       gateOut: gateOut ?? this.gateOut,
     );
   }
+
+  factory LastGate.fromJson(Map<String, dynamic> json) =>
+      _$LastGateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LastGateToJson(this);
 }
 
 class LastGateNotifier extends StateNotifier<LastGate> {

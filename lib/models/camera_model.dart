@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'camera_model.g.dart';
 
 @JsonSerializable()
 class CameraModel {
-  int id;
-  String name;
+  final int id;
+  final String name;
   String ipAddress;
   String port;
   String username;

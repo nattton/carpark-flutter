@@ -561,7 +561,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     sl<ApiService>()
         .createMember(sl<AppService>().token, _memberModel)
         .then((value) {
-      // getMember();
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(

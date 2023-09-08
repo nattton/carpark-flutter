@@ -11,15 +11,15 @@ part 'gate_log_model.g.dart';
 @JsonSerializable()
 class GateLogModel {
   final int id;
-  DateTime? createdAt;
-  String? gateName;
-  String? anpr;
-  String? plateNumber;
-  int? memberId;
-  MemberModel? member;
-  DateTime? captureTime;
-  String? captureImage;
-  String? licensePlateImage;
+  final DateTime? createdAt;
+  final String? gateName;
+  final String? anpr;
+  final String? plateNumber;
+  final int? memberId;
+  final MemberModel? member;
+  final DateTime? captureTime;
+  final String? captureImage;
+  final String? licensePlateImage;
 
   GateLogModel(this.id,
       {this.createdAt,
