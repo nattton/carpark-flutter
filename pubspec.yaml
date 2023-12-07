@@ -61,8 +61,8 @@ dependencies:
   qr_flutter: ^4.1.0
   flutter_easyloading: ^3.0.5
   file_saver: ^0.2.8
-  excel: ^2.1.0 
-  file_picker: ^5.3.3
+  excel: ^4.0.0 
+  file_picker: ^6.0.0
   media_kit: ^1.1.7
   media_kit_video: ^1.1.8
   media_kit_libs_video: ^1.0.1
@@ -74,10 +74,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  retrofit_generator: ^7.0.8
+  retrofit_generator: ^8.0.3
   build_runner: '>=2.3.0 <4.0.0'
   json_serializable: ^6.7.1
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
   riverpod_generator: ^2.2.4
   freezed: ^2.4.2
 

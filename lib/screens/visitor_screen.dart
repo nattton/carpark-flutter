@@ -271,21 +271,21 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     Sheet sheetObject = excel['Sheet1'];
 
     int currentRow = 0;
-    List<String> columnName = [
-      "createdAt",
-      "type",
-      "plateNumber",
-      "member.name",
-      "idCard",
-      "thaiName",
-      "engName",
-      "birthdate",
-      "gender",
-      "address",
-      "age",
-      "exitTime",
-      "image.type",
-      "image",
+    List<CellValue> columnName = [
+      const TextCellValue("createdAt"),
+      const TextCellValue("type"),
+      const TextCellValue("plateNumber"),
+      const TextCellValue("member.name"),
+      const TextCellValue("idCard"),
+      const TextCellValue("thaiName"),
+      const TextCellValue("engName"),
+      const TextCellValue("birthdate"),
+      const TextCellValue("gender"),
+      const TextCellValue("address"),
+      const TextCellValue("age"),
+      const TextCellValue("exitTime"),
+      const TextCellValue("image.type"),
+      const TextCellValue("image"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
@@ -298,19 +298,20 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     for (var i = 0; i < visitors.length; i++) {
       currentRow++;
       var v = visitors[i];
-      List<String> dataList = [
-        v.dateTimeFormat(),
-        v.type!,
-        v.plateNumber!,
-        v.member!.name!,
-        v.idCard!,
-        v.thaiName!,
-        v.engName!,
-        v.birthdate!,
-        v.gender!,
-        v.address!,
-        v.age!,
-        v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : "",
+      List<CellValue> dataList = [
+        TextCellValue(v.dateTimeFormat()),
+        TextCellValue(v.type!),
+        TextCellValue(v.plateNumber!),
+        TextCellValue(v.member!.name!),
+        TextCellValue(v.idCard!),
+        TextCellValue(v.thaiName!),
+        TextCellValue(v.engName!),
+        TextCellValue(v.birthdate!),
+        TextCellValue(v.gender!),
+        TextCellValue(v.address!),
+        TextCellValue(v.age!),
+        TextCellValue(
+            v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : ""),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
       for (var j = 0; j < v.visitorImages!.length; j++) {
@@ -318,9 +319,9 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
           currentRow++;
         }
         var image = v.visitorImages?[j];
-        List<String> vehicleList = [
-          image!.type,
-          image.imageUrl(),
+        List<CellValue> vehicleList = [
+          TextCellValue(image!.type),
+          TextCellValue(image.imageUrl()),
         ];
         sheetObject.insertRowIterables(vehicleList, currentRow,
             startingColumn: 12);

@@ -8,7 +8,7 @@ import 'package:carpark/services/app_service.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class UserScreen extends StatefulWidget {
-  const UserScreen({Key? key}) : super(key: key);
+  const UserScreen({super.key});
 
   @override
   State<UserScreen> createState() => _UserScreenState();

@@ -129,12 +129,12 @@ class _ReportScreenState extends State<ReportScreen> {
       Sheet sheetObject = excel['Sheet1'];
 
       int currentRow = 0;
-      List<String> columnName = [
-        "ID",
-        "Name",
-        "Vehicle ID",
-        "PlateNumber",
-        "Traffic",
+      List<CellValue> columnName = [
+        const TextCellValue("ID"),
+        const TextCellValue("Name"),
+        const TextCellValue("Vehicle ID"),
+        const TextCellValue("PlateNumber"),
+        const TextCellValue("Traffic"),
       ];
       sheetObject.insertRowIterables(columnName, currentRow);
       CellStyle cellStyle =
@@ -148,12 +148,12 @@ class _ReportScreenState extends State<ReportScreen> {
       for (var i = 0; i < report.length; i++) {
         currentRow++;
         var m = report[i];
-        List<String> dataList = [
-          m.id.toString(),
-          m.name,
-          m.vehicleId.toString(),
-          m.plateNumber,
-          m.traffic.toString(),
+        List<CellValue> dataList = [
+          TextCellValue(m.id.toString()),
+          TextCellValue(m.name),
+          TextCellValue(m.vehicleId.toString()),
+          TextCellValue(m.plateNumber),
+          TextCellValue(m.traffic.toString()),
         ];
         sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
       }

@@ -268,8 +268,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kColorPrimary,
         title: const Text(
           'Car Park',
+          style: TextStyle(color: Colors.white),
         ),
         automaticallyImplyLeading: false,
         actions: _buildActionBar(),
@@ -591,19 +593,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     Sheet sheetObject = excel['Sheet1'];
 
     int currentRow = 0;
-    List<String> columnName = [
-      "id",
-      "name",
-      "telephone",
-      "type",
-      "status",
-      "vehicleId",
-      "plateNumber",
-      "resemble",
-      "plateProvince",
-      "brand",
-      "color",
-      "telephone",
+    List<CellValue> columnName = [
+      const TextCellValue("id"),
+      const TextCellValue("name"),
+      const TextCellValue("telephone"),
+      const TextCellValue("type"),
+      const TextCellValue("status"),
+      const TextCellValue("vehicleId"),
+      const TextCellValue("plateNumber"),
+      const TextCellValue("resemble"),
+      const TextCellValue("plateProvince"),
+      const TextCellValue("brand"),
+      const TextCellValue("color"),
+      const TextCellValue("telephone"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
@@ -616,12 +618,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     for (var i = 0; i < members.length; i++) {
       currentRow++;
       var m = members[i];
-      List<String> dataList = [
-        m.id.toString(),
-        m.name!,
-        m.telephone!,
-        m.type!,
-        m.status!
+      List<CellValue> dataList = [
+        TextCellValue(m.id.toString()),
+        TextCellValue(m.name!),
+        TextCellValue(m.telephone!),
+        TextCellValue(m.type!),
+        TextCellValue(m.status!),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
       for (var j = 0; j < m.vehicles!.length; j++) {
@@ -629,14 +631,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           currentRow++;
         }
         var v = m.vehicles?[j];
-        List<String> vehicleList = [
-          v!.id.toString(),
-          v.plateNumber!,
-          v.resemble!,
-          v.plateProvince!,
-          v.brand!,
-          v.color!,
-          v.telephone!
+        List<CellValue> vehicleList = [
+          TextCellValue(v!.id.toString()),
+          TextCellValue(v.plateNumber!),
+          TextCellValue(v.resemble!),
+          TextCellValue(v.plateProvince!),
+          TextCellValue(v.brand!),
+          TextCellValue(v.color!),
+          TextCellValue(v.telephone!),
         ];
         sheetObject.insertRowIterables(vehicleList, currentRow,
             startingColumn: 5);

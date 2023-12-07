@@ -1,12 +1,12 @@
 import 'package:carpark/components/member_header_card.dart';
+import 'package:carpark/components/member_list_card.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/services/api_service.dart';
-import 'package:flutter/material.dart';
-import 'package:carpark/components/member_list_card.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -27,7 +27,7 @@ final filteredMemberListProvider = Provider<List<MemberModel>>((ref) {
 });
 
 class MemberListScreen extends ConsumerStatefulWidget {
-  const MemberListScreen({Key? key}) : super(key: key);
+  const MemberListScreen({super.key});
 
   @override
   ConsumerState<MemberListScreen> createState() => _MemberListScreenState();

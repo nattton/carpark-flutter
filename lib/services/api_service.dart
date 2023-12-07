@@ -39,6 +39,10 @@ abstract class ApiService {
   Future<void> openDoor(
       @Header('Authorization') String token, @Path() String name);
 
+  @GET("/api/manualCapture/{name}")
+  Future<void> manualCapture(
+      @Header('Authorization') String token, @Path() String name);
+
   // Gate Log
   @GET("/api/gate_logs/last")
   Future<LastGate> getLastGate(@Header('Authorization') String token);

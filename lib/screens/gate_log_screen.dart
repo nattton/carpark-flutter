@@ -277,14 +277,14 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     Sheet sheetObject = excel['Sheet1'];
 
     int currentRow = 0;
-    List<String> columnName = [
-      "createdAt",
-      "gateName",
-      "anpr",
-      "plateNumber",
-      "member_name",
-      "visitor_member_name",
-      "captureImage",
+    List<CellValue> columnName = [
+      const TextCellValue("createdAt"),
+      const TextCellValue("gateName"),
+      const TextCellValue("anpr"),
+      const TextCellValue("plateNumber"),
+      const TextCellValue("member_name"),
+      const TextCellValue("visitor_member_name"),
+      const TextCellValue("captureImage"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
@@ -297,14 +297,14 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     for (var i = 0; i < gateLogs.length; i++) {
       currentRow++;
       var m = gateLogs[i];
-      List<String> dataList = [
-        m.dateTimeFormat(),
-        m.gateName,
-        m.anpr,
-        m.plateNumber,
-        m.memberName,
-        m.visitorMemberName,
-        m.captureImageUrl(),
+      List<CellValue> dataList = [
+        TextCellValue(m.dateTimeFormat()),
+        TextCellValue(m.gateName),
+        TextCellValue(m.anpr),
+        TextCellValue(m.plateNumber),
+        TextCellValue(m.memberName),
+        TextCellValue(m.visitorMemberName),
+        TextCellValue(m.captureImageUrl()),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
     }

@@ -70,6 +70,8 @@ class EntranceCard extends StatelessWidget {
                         child: Center(
                           child: ElevatedButton(
                             onPressed: onTapSelectGateLog,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: kColorButtonPrimary),
                             child: const Text(
                               "สร้างผู้ติดต่อจากรถคันนี้",
                               style: kButtonStyle,

@@ -15,6 +15,7 @@ const kVehicleTypeMap = {
   'car': 'รถยนต์',
   'taxi': 'แท็กซี่',
   'motorcycle': 'มอเตอร์ไซค์',
+  'transport': 'ขนส่ง',
 };
 const kReportTypeMap = {
   'member_traffic': 'รถสมาชิกเข้า-ออก',
@@ -28,6 +29,8 @@ const kGenderMap = {
 
 const kDefaultFont = 'NotoSerif';
 const kBoldFont = 'NotoSerif-Bold';
+const kColorPrimary = Color(0xFF009CDE);
+const kColorButtonPrimary = Color.fromARGB(255, 68, 138, 255);
 const kColorTop = Color(0xFF009CDE);
 const kColorBottom = Color(0xFF003C71);
 const kColorTextGrey = Color(0xFF707070);

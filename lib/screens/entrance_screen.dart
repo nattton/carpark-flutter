@@ -38,9 +38,10 @@ class EntranceScreen extends StatefulHookConsumerWidget {
 }
 
 class _EntranceScreenState extends ConsumerState<EntranceScreen> {
-  final focus = FocusNode();
+  late FocusNode focusNode;
 
   bool _isShowVisitor = false;
+  bool _isReadDrivingLicence = false;
   bool _isReadCard = false;
   String _vehicleType = 'car';
 
@@ -50,6 +51,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   MemberModel? _selectedMember;
   TextEditingController _memberController = TextEditingController();
+
+  final _drivingLicenceController = TextEditingController();
 
   final _plateNumberController = TextEditingController();
   final _idCardController = TextEditingController();
@@ -62,10 +65,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   @override
   void initState() {
     super.initState();
+    focusNode = FocusNode();
   }
 
   @override
   void dispose() {
+    focusNode.dispose();
     _plateNumberController.dispose();
     _idCardController.dispose();
     _thaiNameController.dispose();
@@ -96,11 +101,22 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () => openDoor("in"),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: kColorButtonPrimary),
                                   child: const Text(
                                     "เปิดประตู ขาเข้า",
                                     style: kButtonStyle,
                                   ),
                                 ),
+                                // ElevatedButton(
+                                //   onPressed: () => openDoor("in"),
+                                //   style: ElevatedButton.styleFrom(
+                                //       backgroundColor: Colors.lightGreen),
+                                //   child: const Text(
+                                //     "อ่านป้ายทะเบียนอีกครั้ง",
+                                //     style: kButtonStyle,
+                                //   ),
+                                // ),
                                 _isShowVisitor
                                     ? ElevatedButton(
                                         onPressed: () => openVisitior(),
@@ -115,6 +131,9 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                                       )
                                     : ElevatedButton(
                                         onPressed: () => showVisitorFromEmpty(),
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                kColorButtonPrimary),
                                         child: const Text(
                                           "สร้างผู้ติดต่อ",
                                           style: kButtonStyle,
@@ -246,7 +265,16 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () => readSmartCardFromService(),
                   child: const Text(
-                    "อ่านข้อมูลจากบัตร",
+                    "อ่านบัตรปชช.",
+                    style: kButtonStyle,
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 161, 80, 175)),
+                  onPressed: () => inputDrivingLicence(),
+                  child: const Text(
+                    "อ่านใบขับขี่",
                     style: kButtonStyle,
                   ),
                 ),
@@ -260,6 +288,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () => saveAndPrint(),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: kColorButtonPrimary),
                   child: const Text(
                     "บันทึกและพิมพ์",
                     style: kButtonStyle,
@@ -268,123 +298,143 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
               ],
             ),
           ),
-          _isReadCard
-              ? Table(
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FlexColumnWidth(),
-                    1: FlexColumnWidth(),
-                  },
-                  children: [
-                    TableRow(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 120.0,
-                          child: _photoFile != null
-                              ? Image.file(_photoFile!)
-                              : const Icon(size: 120.0, Icons.face),
+          Visibility(
+            visible: _isReadDrivingLicence,
+            child: TextField(
+              controller: _drivingLicenceController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.multiline,
+              minLines: 7,
+              maxLines: 7,
+              decoration: const InputDecoration(
+                labelText: 'ข้อมูลใบขับขี่',
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              onChanged: (value) => readDrivingLicence(value),
+              focusNode: focusNode,
+            ),
+          ),
+          Visibility(
+              visible: _isReadCard,
+              child: Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FlexColumnWidth(),
+                  1: FlexColumnWidth(),
+                },
+                children: [
+                  TableRow(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 120.0,
+                        child: _photoFile != null
+                            ? Image.file(_photoFile!)
+                            : const Icon(size: 120.0, Icons.face),
+                      ),
+                      TextField(
+                        controller: _idCardController,
+                        autofocus: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          labelText: 'เลขประจำตัวประชาชน',
+                          suffixIcon: Icon(Icons.text_fields),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                         ),
-                        TextField(
-                          controller: _idCardController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            labelText: 'เลขประจำตัวประชาชน',
-                            suffixIcon: Icon(Icons.text_fields),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        TextField(
-                          controller: _thaiNameController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            labelText: 'ชื่อไทย',
-                            suffixIcon: Icon(Icons.text_fields),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                        ),
-                        TextField(
-                          controller: _engNameController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            labelText: 'ชื่ออังกฤษ',
-                            suffixIcon: Icon(Icons.text_fields),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                          textInputAction: TextInputAction.next,
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        TextField(
-                          controller: _birthdateController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.text,
-                          decoration: const InputDecoration(
-                            labelText: 'วันเกิด',
-                            suffixIcon: Icon(Icons.cake),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                        ),
-                        TextField(
-                          controller: _genderController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'เพศ',
-                            suffixIcon: Icon(Icons.wc),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        TextField(
-                          controller: _addressNameController,
-                          autofocus: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.streetAddress,
-                          decoration: const InputDecoration(
-                            labelText: 'ที่อยู่',
-                            suffixIcon: Icon(Icons.location_city),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          ),
-                          textInputAction: TextInputAction.next,
-                        ),
-                        Container(),
-                      ],
-                    ),
-                  ],
-                )
-              : SizedBox(
-                  width: MediaQuery.of(context).size.width / 2 - 60,
-                  height: ((MediaQuery.of(context).size.width / 2 - 60) *
-                      9.0 /
-                      16.0),
-                  child: Video(
-                    controller: player.cardController,
-                    controls: null,
+                      ),
+                    ],
                   ),
-                ),
+                  TableRow(
+                    children: <Widget>[
+                      TextField(
+                        controller: _thaiNameController,
+                        autofocus: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          labelText: 'ชื่อไทย',
+                          suffixIcon: Icon(Icons.text_fields),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                        ),
+                      ),
+                      TextField(
+                        controller: _engNameController,
+                        autofocus: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          labelText: 'ชื่ออังกฤษ',
+                          suffixIcon: Icon(Icons.text_fields),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                        ),
+                        textInputAction: TextInputAction.next,
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: <Widget>[
+                      TextField(
+                        controller: _birthdateController,
+                        autofocus: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.text,
+                        decoration: const InputDecoration(
+                          labelText: 'วันเกิด',
+                          suffixIcon: Icon(Icons.cake),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                        ),
+                      ),
+                      TextField(
+                        controller: _genderController,
+                        autofocus: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          labelText: 'เพศ',
+                          suffixIcon: Icon(Icons.wc),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: <Widget>[
+                      TextField(
+                        controller: _addressNameController,
+                        autofocus: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.streetAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'ที่อยู่',
+                          suffixIcon: Icon(Icons.location_city),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                        ),
+                        textInputAction: TextInputAction.next,
+                      ),
+                      Container(),
+                    ],
+                  ),
+                ],
+              )),
+          Visibility(
+            visible: !_isReadDrivingLicence && !_isReadCard,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width / 2 - 60,
+              height:
+                  ((MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0),
+              child: Video(
+                controller: player.cardController,
+                controls: null,
+              ),
+            ),
+          ),
         ]),
       ),
     );
@@ -414,6 +464,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       _vehicleType = "car";
       _isShowVisitor = !_isShowVisitor;
       _isReadCard = false;
+      _isReadDrivingLicence = false;
     });
   }
 
@@ -426,7 +477,17 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     });
   }
 
+  Future<void> manualCapture(String door) async {
+    sl<ApiService>()
+        .manualCapture(sl<AppService>().token, door)
+        .then((value) {})
+        .onError((error, stackTrace) {
+      alertError(error.toString());
+    });
+  }
+
   void clearForm() {
+    _drivingLicenceController.clear();
     _idCardModel = null;
     _photoFile = null;
     _idCardController.clear();
@@ -438,9 +499,45 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     setState(() {});
   }
 
+  void inputDrivingLicence() async {
+    focusNode.requestFocus();
+    clearForm();
+    _drivingLicenceController.text = "";
+    _isReadDrivingLicence = true;
+    _isReadCard = false;
+  }
+
+  void readDrivingLicence(String value) {
+    int count = '\n'.allMatches(value).length;
+    print('count: $count');
+    if (count == 6) {
+      final lines = value.split("\n");
+      // for (var i = 0; i < lines.length; i++) {
+      //   print(" $i = ${lines[i]} ");
+      // }
+
+      final name = lines[0];
+      final idNumber = lines[2];
+      final licenceNumber = lines[4];
+
+      print("Name : $name");
+      print("idNumber : $idNumber");
+      print("licenceNumber : $licenceNumber");
+
+      var nameList = name.split("\$").reversed.toList();
+      for (var i = 0; i < nameList.length; i++) {
+        nameList[i] = nameList[i].replaceAll("\n", " ");
+        print(nameList[i]);
+      }
+      final nameEng = nameList.join(" ");
+      print("NameEng : $nameEng");
+    }
+  }
+
   void readSmartCardFromService() async {
     clearForm();
     EasyLoading.show();
+    _isReadDrivingLicence = false;
     _isReadCard = true;
     sl<ApiService>().smartCardReader().then((card) async {
       _idCardModel = card;
@@ -498,38 +595,39 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
           generator.textEncoded(await charsetConvert("ประเภท : $vehicleType"),
               styles: const PosStyles(
                 align: PosAlign.left,
-                height: PosTextSize.size1,
-                width: PosTextSize.size1,
+                height: PosTextSize.size2,
+                width: PosTextSize.size2,
               ));
     }
     bytes += generator.textEncoded(
         await charsetConvert("ทะเบียนรถ : ${visitor.plateNumber!}"),
         styles: const PosStyles(
           align: PosAlign.left,
-          height: PosTextSize.size1,
-          width: PosTextSize.size1,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
         ));
 
     bytes += generator.textEncoded(
         await charsetConvert("วันที่ : ${gateLog.dateFormat()}"),
         styles: const PosStyles(
           align: PosAlign.left,
-          height: PosTextSize.size1,
-          width: PosTextSize.size1,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
         ));
     bytes += generator.textEncoded(
         await charsetConvert("เวลา : ${gateLog.timeFormat()}"),
         styles: const PosStyles(
           align: PosAlign.left,
-          height: PosTextSize.size1,
-          width: PosTextSize.size1,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
         ));
 
     bytes += generator.textEncoded(
       await charsetConvert('เวลาออก _______________'),
       styles: const PosStyles(
         align: PosAlign.left,
-        height: PosTextSize.size1,
+        height: PosTextSize.size2,
+        width: PosTextSize.size2,
       ),
       linesAfter: 1,
     );
@@ -539,7 +637,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         await charsetConvert("ติดต่อ : ${_selectedMember?.name}"),
         styles: const PosStyles(
           align: PosAlign.left,
-          height: PosTextSize.size1,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
         ),
         linesAfter: 1,
       );
@@ -548,7 +647,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         await charsetConvert('ติดต่อ _______________'),
         styles: const PosStyles(
           align: PosAlign.left,
-          height: PosTextSize.size1,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
         ),
         linesAfter: 1,
       );
@@ -565,7 +665,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         styles: const PosStyles(
           bold: true,
           align: PosAlign.center,
-          height: PosTextSize.size1,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
         ),
         linesAfter: 2,
       );

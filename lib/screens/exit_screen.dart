@@ -56,6 +56,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                       !kIsWeb
                           ? ElevatedButton(
                               onPressed: () => openGateOut(),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: kColorButtonPrimary),
                               child: const Text(
                                 "เปิดประตู ขาออก",
                                 style: kButtonStyle,
