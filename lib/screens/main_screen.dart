@@ -284,7 +284,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             style: SideMenuStyle(
               displayMode: SideMenuDisplayMode.compact,
               openSideMenuWidth: 200,
-              compactSideMenuWidth: 50,
+              compactSideMenuWidth: 60,
               hoverColor: Colors.blue[100],
               selectedColor: Colors.lightBlue,
               selectedTitleTextStyle: const TextStyle(color: Colors.white),
@@ -608,7 +608,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       const TextCellValue("telephone"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
+    CellStyle cellStyle = CellStyle(
+        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
     for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
           CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));

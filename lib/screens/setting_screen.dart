@@ -7,9 +7,9 @@ import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_pos_printer_platform/flutter_pos_printer_platform.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:thermal_printer/thermal_printer.dart';
 
 class SettingScreen extends ConsumerStatefulWidget {
   const SettingScreen({super.key});
@@ -116,8 +116,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     // Find printers
     var printerManager = PrinterManager.instance;
     printerManager.discovery(type: type, isBle: isBle).listen((device) {
-      if (device.name != null && !devices.contains(device.name)) {
-        devices.add(device.name!);
+      if (!devices.contains(device.name)) {
+        devices.add(device.name);
         print(
             'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}');
         setState(() {});

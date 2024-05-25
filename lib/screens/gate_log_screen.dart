@@ -287,7 +287,8 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       const TextCellValue("captureImage"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(backgroundColorHex: '#C4D9C3', bold: true);
+    CellStyle cellStyle = CellStyle(
+        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
     for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
           CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
