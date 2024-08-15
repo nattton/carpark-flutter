@@ -16,7 +16,7 @@ import 'package:carpark/models/user_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:dio/dio.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'api_service.g.dart';
 
