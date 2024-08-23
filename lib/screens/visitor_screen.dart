@@ -272,20 +272,20 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
 
     int currentRow = 0;
     List<CellValue> columnName = [
-      const TextCellValue("createdAt"),
-      const TextCellValue("type"),
-      const TextCellValue("plateNumber"),
-      const TextCellValue("member.name"),
-      const TextCellValue("idCard"),
-      const TextCellValue("thaiName"),
-      const TextCellValue("engName"),
-      const TextCellValue("birthdate"),
-      const TextCellValue("gender"),
-      const TextCellValue("address"),
-      const TextCellValue("age"),
-      const TextCellValue("exitTime"),
-      const TextCellValue("image.type"),
-      const TextCellValue("image"),
+      TextCellValue("createdAt"),
+      TextCellValue("type"),
+      TextCellValue("plateNumber"),
+      TextCellValue("member.name"),
+      TextCellValue("idCard"),
+      TextCellValue("thaiName"),
+      TextCellValue("engName"),
+      TextCellValue("birthdate"),
+      TextCellValue("gender"),
+      TextCellValue("address"),
+      TextCellValue("age"),
+      TextCellValue("exitTime"),
+      TextCellValue("image.type"),
+      TextCellValue("image"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(

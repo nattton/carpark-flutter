@@ -3,9 +3,9 @@ part 'response_model.g.dart';
 
 @JsonSerializable()
 class ResponseModel {
-  final String message;
+  final String error;
 
-  ResponseModel(this.message);
+  ResponseModel(this.error);
 
   factory ResponseModel.fromJson(Map<String, dynamic> json) =>
       _$ResponseModelFromJson(json);

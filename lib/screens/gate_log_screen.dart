@@ -278,13 +278,13 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
     int currentRow = 0;
     List<CellValue> columnName = [
-      const TextCellValue("createdAt"),
-      const TextCellValue("gateName"),
-      const TextCellValue("anpr"),
-      const TextCellValue("plateNumber"),
-      const TextCellValue("member_name"),
-      const TextCellValue("visitor_member_name"),
-      const TextCellValue("captureImage"),
+      TextCellValue("createdAt"),
+      TextCellValue("gateName"),
+      TextCellValue("anpr"),
+      TextCellValue("plateNumber"),
+      TextCellValue("member_name"),
+      TextCellValue("visitor_member_name"),
+      TextCellValue("captureImage"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(

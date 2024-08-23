@@ -3,13 +3,14 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'member_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MemberModel {
   int? id;
   String? name;
   String? telephone;
   String? type;
   String? status;
+  String? stringVehicles;
   List<VehicleModel>? vehicles;
 
   MemberModel(
@@ -18,6 +19,7 @@ class MemberModel {
       this.telephone,
       this.type,
       this.status,
+      this.stringVehicles,
       this.vehicles});
 
   factory MemberModel.fromJson(Map<String, dynamic> json) =>
@@ -31,6 +33,7 @@ class MemberModel {
     telephone = member.telephone;
     type = member.type;
     status = member.status;
+    stringVehicles = member.stringVehicles;
     vehicles = member.vehicles;
   }
 }

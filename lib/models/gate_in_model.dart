@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'gate_in_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class GateInModel {
   final GateLogModel gateLog;
 

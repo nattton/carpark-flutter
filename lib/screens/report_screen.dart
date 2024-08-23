@@ -130,11 +130,11 @@ class _ReportScreenState extends State<ReportScreen> {
 
       int currentRow = 0;
       List<CellValue> columnName = [
-        const TextCellValue("ID"),
-        const TextCellValue("Name"),
-        const TextCellValue("Vehicle ID"),
-        const TextCellValue("PlateNumber"),
-        const TextCellValue("Traffic"),
+        TextCellValue("ID"),
+        TextCellValue("Name"),
+        TextCellValue("Vehicle ID"),
+        TextCellValue("PlateNumber"),
+        TextCellValue("Traffic"),
       ];
       sheetObject.insertRowIterables(columnName, currentRow);
       CellStyle cellStyle = CellStyle(

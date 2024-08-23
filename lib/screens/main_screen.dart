@@ -9,6 +9,7 @@ import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/providers/members_notifier.dart';
+import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
@@ -342,6 +343,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 icon: const Icon(Icons.summarize),
               ),
               SideMenuItem(
+                title: 'จอทางเข้า',
+                onTap: (page, _) {
+                  Navigator.of(context).pushNamed(DisplayScreen.id,
+                      arguments: DisplayScreen.gateIn);
+                },
+                icon: const Icon(Icons.turn_right),
+                tooltipContent: "จอทางเข้า",
+              ),
+              SideMenuItem(
+                title: 'จอทางออก',
+                onTap: (page, _) {
+                  Navigator.of(context).pushNamed(DisplayScreen.id,
+                      arguments: DisplayScreen.gateOut);
+                },
+                icon: const Icon(Icons.turn_left),
+                tooltipContent: "จอทางออก",
+              ),
+              SideMenuItem(
                 title: 'ตั้งค่า',
                 onTap: (page, _) {
                   selectedPage('SETTING');
@@ -399,6 +418,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 ),
                 Container(
                   color: Colors.white,
+                  child: Container(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: Container(),
+                ),
+                Container(
+                  color: Colors.white,
                   child: const SettingScreen(),
                 ),
                 Container(
@@ -424,25 +451,28 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   List<Widget> _buildActionBar() {
     List<Widget> widget = [];
-    if (_currentScreen == "MEMBER") {
-      widget.add(
-        IconButton(
-          icon: const Icon(Icons.person_add),
-          tooltip: 'สร้างสมาชิกใหม่',
-          onPressed: () {
-            onPressedAddMember(context);
-          },
-        ),
-      );
-      widget.add(
-        IconButton(
-          icon: const Icon(Icons.download),
-          tooltip: 'Export Member',
-          onPressed: () {
-            onPressedExportMember(context);
-          },
-        ),
-      );
+    switch (_currentScreen) {
+      case "MEMBER":
+        widget.add(
+          IconButton(
+            icon: const Icon(Icons.person_add),
+            tooltip: 'สร้างสมาชิกใหม่',
+            onPressed: () {
+              onPressedAddMember(context);
+            },
+          ),
+        );
+        widget.add(
+          IconButton(
+            icon: const Icon(Icons.download),
+            tooltip: 'Export Member',
+            onPressed: () {
+              onPressedExportMember(context);
+            },
+          ),
+        );
+        break;
+      default:
     }
 
     return widget;
@@ -594,18 +624,18 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     int currentRow = 0;
     List<CellValue> columnName = [
-      const TextCellValue("id"),
-      const TextCellValue("name"),
-      const TextCellValue("telephone"),
-      const TextCellValue("type"),
-      const TextCellValue("status"),
-      const TextCellValue("vehicleId"),
-      const TextCellValue("plateNumber"),
-      const TextCellValue("resemble"),
-      const TextCellValue("plateProvince"),
-      const TextCellValue("brand"),
-      const TextCellValue("color"),
-      const TextCellValue("telephone"),
+      TextCellValue("id"),
+      TextCellValue("name"),
+      TextCellValue("telephone"),
+      TextCellValue("type"),
+      TextCellValue("status"),
+      TextCellValue("vehicleId"),
+      TextCellValue("plateNumber"),
+      TextCellValue("resemble"),
+      TextCellValue("plateProvince"),
+      TextCellValue("brand"),
+      TextCellValue("color"),
+      TextCellValue("telephone"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(

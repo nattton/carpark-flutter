@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'save_user_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class SaveUserModel {
   final int id;
   final String username;

@@ -21,7 +21,7 @@ class UserListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        user.name,
+                        user.username,
                         style: const TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
@@ -51,7 +51,7 @@ class UserListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        user.name,
+                        user.username,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,

@@ -3,13 +3,21 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'login_user_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class LoginUserModel {
-  final String token;
+  final String sessionId;
+  final String accessToken;
+  final DateTime accessTokenExpiresAt;
+  final String refreshToken;
+  final DateTime refreshTokenExpiresAt;
   final UserModel user;
 
   const LoginUserModel({
-    required this.token,
+    required this.sessionId,
+    required this.accessToken,
+    required this.accessTokenExpiresAt,
+    required this.refreshToken,
+    required this.refreshTokenExpiresAt,
     required this.user,
   });
 

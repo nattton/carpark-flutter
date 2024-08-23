@@ -21,8 +21,7 @@ final filteredMemberListProvider = Provider<List<MemberModel>>((ref) {
   }
   return members.where((member) {
     return member.name!.contains(filter) ||
-        ((member.vehicles!.indexWhere((e) => e.plateNumber!.contains(filter))) >
-            -1);
+        member.stringVehicles!.contains(filter);
   }).toList();
 });
 

@@ -39,7 +39,7 @@ class _UserScreenState extends State<UserScreen> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return UserListCard(
-            user: UserModel(id: 0, name: "Name", role: "Role"),
+            user: UserModel(id: 0, username: "Name", role: "Role"),
             onTap: () {},
           );
         }
@@ -75,7 +75,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void onPressedRow(BuildContext context, UserModel user) {
-    _usernameController.text = user.name;
+    _usernameController.text = user.username;
     _passwordController.text = '';
 
     Alert(

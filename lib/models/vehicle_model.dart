@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'vehicle_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class VehicleModel {
   int? id;
   int? memberId;

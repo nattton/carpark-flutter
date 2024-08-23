@@ -8,7 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'visitor_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class VisitorModel {
   int id;
   DateTime? createdAt;

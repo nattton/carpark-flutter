@@ -557,7 +557,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         case DioException:
           final res = (obj as DioException).response;
           final response = ResponseModel.fromJson(res!.data);
-          alertError(response.message);
+          alertError(response.error);
           break;
         default:
           break;
@@ -827,12 +827,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
               final option = options.elementAt(index);
-              List<String> plates = [];
-              if (option.vehicles != null) {
-                for (var vehicle in option.vehicles!) {
-                  plates.add(vehicle.plateNumber!);
-                }
-              }
+              // List<String> plates = [];
+              // if (option.vehicles != null) {
+              //   for (var vehicle in option.vehicles!) {
+              //     plates.add(vehicle.plateNumber!);
+              //   }
+              // }
               return ListTile(
                 title: SubstringHighlight(
                   text: option.name!,
@@ -840,7 +840,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                   textStyleHighlight:
                       const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                subtitle: Text(plates.join(" | ")),
+                subtitle: Text(option.stringVehicles!),
                 onTap: () {
                   onSelected(option);
                 },

@@ -10,12 +10,12 @@ class MemberListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> plates = [];
-    if (member.vehicles != null) {
-      for (var vehicle in member.vehicles!) {
-        plates.add(vehicle.plateNumber!);
-      }
-    }
+    // List<String> plates = [];
+    // if (member.vehicles != null) {
+    //   for (var vehicle in member.vehicles!) {
+    //     plates.add(vehicle.plateNumber!);
+    //   }
+    // }
 
     return GestureDetector(
       onTap: onTap,
@@ -138,7 +138,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        plates.join("\n"),
+                        member.stringVehicles!,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,

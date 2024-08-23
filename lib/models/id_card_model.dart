@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'id_card_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class IDCardModel {
   final String id;
   final String engName;
