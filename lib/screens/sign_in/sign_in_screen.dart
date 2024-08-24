@@ -1,41 +1,34 @@
-import 'package:carpark/injection_container.dart';
-import 'package:carpark/services/api_service.dart';
+import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
+import 'package:carpark/screens/sign_in/bloc/sign_in_controller.dart';
+import 'package:carpark/screens/sign_in/bloc/sign_in_event.dart';
 import 'package:flutter/material.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/app_service.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoginScreen extends StatefulWidget {
-  static const String id = 'login_screen';
+class SignInScreen extends StatefulWidget {
+  static const String id = 'sign_in_screen';
 
-  const LoginScreen({super.key});
+  const SignInScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _SignInScreenState extends State<SignInScreen> {
   bool _obscurePassword = true;
-  bool examineeForm = true;
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SizedBox(
-        height: height,
-        width: width,
+        width: 800.w,
+        height: 600.h,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -74,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.all(20.0),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxWidth: 400,
+                    maxWidth: 400.0,
                   ),
                   child: Column(
                     children: [
@@ -91,7 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30.0,
                       ),
                       TextField(
-                        controller: _usernameController,
+                        onChanged: (value) => context
+                            .read<SignInBloc>()
+                            .add(UsernameEvent(value)),
                         autofocus: false,
                         autocorrect: false,
                         keyboardType: TextInputType.emailAddress,
@@ -106,7 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 8.0),
                       TextField(
-                        controller: _passwordController,
+                        onChanged: (value) => context
+                            .read<SignInBloc>()
+                            .add(PasswordEvent(value)),
                         autofocus: false,
                         autocorrect: false,
                         obscureText: _obscurePassword,
@@ -125,7 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0)),
                         ),
-                        onSubmitted: (_) => loginUser(),
+                        onSubmitted: (_) =>
+                            SignInController(context: context).handleSignIn(),
                       ),
                       const SizedBox(height: 18.0),
                       Container(
@@ -138,7 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                           shape: const StadiumBorder(),
-                          onPressed: loginUser,
+                          onPressed: () =>
+                              SignInController(context: context).handleSignIn(),
                           child: const Text(
                             '   Login   ',
                             style: TextStyle(color: Colors.white, fontSize: 20),
@@ -154,87 +153,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  void loginUser() async {
-    if (_usernameController.text.length < 3 ||
-        _passwordController.text.length < 3) {
-      alertLogin("Please fill username and password");
-      return;
-    }
-
-    sl<ApiService>()
-        .login(_usernameController.text, _passwordController.text)
-        .then((value) async {
-      setState(() {
-        _usernameController.text = '';
-        _passwordController.text = '';
-      });
-      await sl<AppService>().saveLogin(value);
-      goAdminScreen();
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
-  }
-
-  void goAdminScreen() {
-    Navigator.of(context).pushNamed(MainScreen.id);
-  }
-
-  void alertError(String msg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
-  }
-
-  void alertLogin(String desc) {
-    var alertStyle = AlertStyle(
-      animationType: AnimationType.fromTop,
-      isCloseButton: false,
-      isOverlayTapDismiss: true,
-      descStyle: const TextStyle(fontWeight: FontWeight.bold),
-      descTextAlign: TextAlign.start,
-      animationDuration: const Duration(milliseconds: 400),
-      alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0.0),
-        side: const BorderSide(
-          color: Colors.grey,
-        ),
-      ),
-      titleStyle: const TextStyle(
-        color: Colors.red,
-      ),
-      alertAlignment: Alignment.center,
-    );
-    Alert(
-      context: context,
-      style: alertStyle,
-      type: AlertType.error,
-      title: "Login Failed",
-      desc: desc,
-      buttons: [
-        DialogButton(
-          onPressed: () => Navigator.pop(context),
-          color: const Color.fromRGBO(0, 179, 134, 1.0),
-          radius: BorderRadius.circular(0.0),
-          child: const Text(
-            "Close",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ],
-    ).show();
   }
 }

@@ -17,6 +17,7 @@ import 'package:carpark/screens/member_list_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/report_screen.dart';
 import 'package:carpark/screens/setting_screen.dart';
+import 'package:carpark/screens/sign_in/sign_in_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
@@ -382,7 +383,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 onTap: (page, _) {
                   selectedPage('LOGOUT');
                   sl<AppService>().logout().then((value) {
-                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacement(_createRouteSignIn());
                   });
                 },
               ),
@@ -446,6 +447,16 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Route _createRouteSignIn() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const SignInScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
     );
   }
 

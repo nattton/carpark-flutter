@@ -2,7 +2,7 @@ import 'package:carpark/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/screens/login_screen.dart';
+import 'package:carpark/screens/sign_in/sign_in_screen.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
@@ -35,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void goLoginPage() {
-    Navigator.of(context).pushNamed(LoginScreen.id);
+    Navigator.of(context).pushNamed(SignInScreen.id);
   }
 
   void goAdminScreen() {
