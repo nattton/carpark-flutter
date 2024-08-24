@@ -1,9 +1,6 @@
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/screens/welcome/welcome_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/screens/sign_in/sign_in_screen.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
 class WelcomeScreen extends StatefulWidget {
@@ -19,29 +16,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkLogin();
-  }
-
-  void checkLogin() async {
-    var app = sl<AppService>();
-    await Future.delayed(const Duration(seconds: 1));
-    if (!app.isLogIn()) {
-      app.logout().then((value) {
-        goLoginPage();
-      });
-      return;
-    }
-    goAdminScreen();
-  }
-
-  void goLoginPage() {
-    Navigator.of(context).pushNamed(SignInScreen.id);
-  }
-
-  void goAdminScreen() {
-    Navigator.of(context).pushNamed(MainScreen.id).then((value) {
-      goLoginPage();
-    });
+    WelcomeController(context: context).handleUserState();
   }
 
   @override

@@ -4,7 +4,7 @@ import 'package:carpark/screens/sign_in/sign_in_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
-import 'package:carpark/screens/welcome_screen.dart';
+import 'package:carpark/screens/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
