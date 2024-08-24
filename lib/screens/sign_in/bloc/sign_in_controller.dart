@@ -24,15 +24,15 @@ class SignInController {
 
     sl<ApiService>().login(username, password).then((value) async {
       await sl<AppService>().saveLogin(value);
-
       goToMainScreen();
     }).catchError((error, stackTrace) {
       if (error.runtimeType == DioException) {
         final res = (error as DioException).response;
         final response = ResponseModel.fromJson(res!.data);
         alertError(context, response.error);
+      } else {
+        alertError(context, error.toString());
       }
-      // alertError(context, error.toString());
       return;
     });
   }
