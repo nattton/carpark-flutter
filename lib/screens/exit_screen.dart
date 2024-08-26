@@ -7,7 +7,7 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';

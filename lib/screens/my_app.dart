@@ -1,7 +1,7 @@
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/screens/sign_in/sign_in_screen.dart';
-import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome/welcome_screen.dart';

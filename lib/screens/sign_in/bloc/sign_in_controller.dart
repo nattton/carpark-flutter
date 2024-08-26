@@ -1,7 +1,7 @@
 import 'package:carpark/common/widgets/flutter_alert.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/response_model.dart';
-import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
@@ -29,12 +29,16 @@ class SignInController {
       if (error.runtimeType == DioException) {
         final res = (error as DioException).response;
         final response = ResponseModel.fromJson(res!.data);
-        alertError(context, response.error);
+        alert(response.error);
       } else {
-        alertError(context, error.toString());
+        alert(error.toString());
       }
       return;
     });
+  }
+
+  void alert(String message) {
+    alertError(context, message);
   }
 
   void goToMainScreen() {

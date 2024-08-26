@@ -1,13 +1,11 @@
-sealed class SignInEvent {
-  const SignInEvent();
-}
+part of 'sign_in_bloc.dart';
 
-class UsernameEvent extends SignInEvent {
-  final String username;
-  const UsernameEvent(this.username);
-}
-
-class PasswordEvent extends SignInEvent {
-  final String password;
-  const PasswordEvent(this.password);
+@freezed
+class SignInEvent with _$SignInEvent {
+  const factory SignInEvent.loginRequested({
+    required String username,
+    required String password,
+  }) = LoginRequested;
+  const factory SignInEvent.usernameChanged(String username) = UsernameChanged;
+  const factory SignInEvent.passwordChanged(String password) = PasswordChanged;
 }

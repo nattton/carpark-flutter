@@ -1,13 +1,9 @@
-class SignInState {
-  final String username;
-  final String password;
+part of 'sign_in_bloc.dart';
 
-  SignInState({this.username = "", this.password = ""});
-
-  SignInState copyWith({String? username, String? password}) {
-    return SignInState(
-      username: username ?? this.username,
-      password: password ?? this.password,
-    );
-  }
+@freezed
+class SignInState with _$SignInState {
+  const factory SignInState({
+    @Default("") String username,
+    @Default("") String password,
+  }) = _SignInState;
 }

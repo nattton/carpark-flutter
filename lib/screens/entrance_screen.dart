@@ -11,7 +11,7 @@ import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';

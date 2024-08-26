@@ -1,6 +1,5 @@
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_controller.dart';
-import 'package:carpark/screens/sign_in/bloc/sign_in_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carpark/constants.dart';
@@ -86,7 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextField(
                         onChanged: (value) => context
                             .read<SignInBloc>()
-                            .add(UsernameEvent(value)),
+                            .add(SignInEvent.usernameChanged(value)),
                         autofocus: false,
                         autocorrect: false,
                         keyboardType: TextInputType.emailAddress,
@@ -103,7 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextField(
                         onChanged: (value) => context
                             .read<SignInBloc>()
-                            .add(PasswordEvent(value)),
+                            .add(SignInEvent.passwordChanged(value)),
                         autofocus: false,
                         autocorrect: false,
                         obscureText: _obscurePassword,
