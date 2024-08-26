@@ -3,7 +3,7 @@ import 'package:carpark/components/member_list_card.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/screens/main/main_screen.dart';
-import 'package:carpark/screens/member_screen.dart';
+import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';

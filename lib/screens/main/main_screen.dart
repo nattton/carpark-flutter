@@ -27,7 +27,7 @@ import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/member_list_screen.dart';
-import 'package:carpark/screens/member_screen.dart';
+import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/screens/report_screen.dart';
 import 'package:carpark/screens/setting_screen.dart';
 import 'package:carpark/screens/sign_in/sign_in_screen.dart';

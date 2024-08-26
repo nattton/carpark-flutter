@@ -1,8 +1,9 @@
 import 'package:carpark/screens/display_screen.dart';
+import 'package:carpark/screens/member/bloc/member_bloc.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/screens/sign_in/sign_in_screen.dart';
 import 'package:carpark/screens/main/main_screen.dart';
-import 'package:carpark/screens/member_screen.dart';
+import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => SignInBloc()),
+          BlocProvider(create: (_) => SignInBloc()),
+          BlocProvider(create: (_) => MemberBloc()),
         ],
         child: ScreenUtilInit(
           builder: (context, child) => MaterialApp(
