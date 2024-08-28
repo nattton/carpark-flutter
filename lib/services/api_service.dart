@@ -74,11 +74,11 @@ abstract class ApiService {
       @Header('authorization') String token, @Body() MemberModel member);
 
   @PATCH("/api/members/{id}")
-  Future<MemberModel> updateMember(@Header('authorization') String token,
+  Future<void> updateMember(@Header('authorization') String token,
       @Path() int id, @Body() MemberModel member);
 
   @DELETE("/api/members/{id}")
-  Future<ResponseModel> deleteMember(@Header('authorization') String token,
+  Future<void> deleteMember(@Header('authorization') String token,
       @Path() int id, @Body() MemberModel member);
 
   @GET("/api/members/{id}")
@@ -91,15 +91,15 @@ abstract class ApiService {
 
   // Vehicle
   @POST("/api/members/{memberId}/vehicles")
-  Future<MemberModel> createVehicle(@Header('authorization') String token,
+  Future<void> createVehicle(@Header('authorization') String token,
       @Path() int memberId, @Body() VehicleModel vehicle);
 
   @PATCH("/api/vehicles/{id}")
-  Future<MemberModel> updateVehicle(@Header('authorization') String token,
+  Future<void> updateVehicle(@Header('authorization') String token,
       @Path() int id, @Body() VehicleModel member);
 
   @DELETE("/api/vehicles/{id}")
-  Future<MemberModel> deleteVehicle(
+  Future<void> deleteVehicle(
       @Header('authorization') String token, @Path() int id);
 
   // Visitor

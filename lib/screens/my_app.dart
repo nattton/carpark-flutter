@@ -1,5 +1,6 @@
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/member/bloc/member_bloc.dart';
+import 'package:carpark/screens/member/bloc/vehicle_bloc.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/screens/sign_in/sign_in_screen.dart';
 import 'package:carpark/screens/main/main_screen.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => SignInBloc()),
           BlocProvider(create: (_) => MemberBloc()),
+          BlocProvider(create: (_) => VehicleBloc()),
         ],
         child: ScreenUtilInit(
           builder: (context, child) => MaterialApp(

@@ -5,6 +5,7 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/screens/member/bloc/member_bloc.dart';
+import 'package:carpark/screens/member/bloc/vehicle_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -58,40 +59,57 @@ class _MemberScreenState extends State<MemberScreen> {
     context.read<MemberBloc>().add(MemberEvent.getMember(widget.memberId));
   }
 
+  void _memberListener(BuildContext context, MemberState state) {
+    switch (state) {
+      case UpdateSuccess():
+        showSnackBar(context, "Update member success.");
+        getMember();
+      case Error():
+        showSnackBar(context, state.message);
+      default:
+    }
+  }
+
+  void _vehicleListener(BuildContext context, VehicleState state) {
+    switch (state) {
+      case CreateVehicleSuccess():
+        showSnackBar(context, "Create vehicle success.");
+        getMember();
+      case UpdateVehicleSuccess():
+        showSnackBar(context, "Update vehicle success.");
+        getMember();
+      case DeleteVehicleSuccess():
+        showSnackBar(context, "Delete vehicle success.");
+        getMember();
+      case ErrorVehicle():
+        showSnackBar(context, state.message);
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("แก้ไขข้อมูลสมาชิก"),
-      ),
-      body: BlocConsumer<MemberBloc, MemberState>(
-        listener: (context, state) {
-          if (state is UpdateSuccess) {
-            showSnackBar(context, "Update member success.");
-          } else if (state is CreateVehicleSuccess) {
-            showSnackBar(context, "Create vehicle success.");
-          } else if (state is UpdateVehicleSuccess) {
-            showSnackBar(context, "Update vehicle success.");
-          } else if (state is DeleteVehicleSuccess) {
-            showSnackBar(context, "Delete vehicle success.");
-          } else if (state is Error) {
-            showSnackBar(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          return state.when(
-            initial: () => const CircularProgressIndicator(),
-            loading: () => const CircularProgressIndicator(),
-            error: (message) => Text(message),
-            updateSuccess: (member) => _body(member),
-            success: (member) => _body(member),
-            createVehicleSuccess: (member) => _body(member),
-            updateVehicleSuccess: (member) => _body(member),
-            deleteVehicleSuccess: (member) => _body(member),
-          );
-        },
-      ),
-    );
+        appBar: AppBar(
+          title: const Text("แก้ไขข้อมูลสมาชิก"),
+        ),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<VehicleBloc, VehicleState>(listener: _vehicleListener),
+            BlocListener<MemberBloc, MemberState>(listener: _memberListener),
+          ],
+          child: BlocBuilder<MemberBloc, MemberState>(
+            buildWhen: (previous, current) {
+              return current is Success;
+            },
+            builder: (context, state) {
+              if (state is Success) {
+                return _body(state.member);
+              }
+              return Container();
+            },
+          ),
+        ));
   }
 
   Widget _body(MemberModel member) {
@@ -260,11 +278,11 @@ class _MemberScreenState extends State<MemberScreen> {
             _textDialog(_brandController, TextInputType.name, 'ยี่ห้อ',
                 const Icon(Icons.text_format)),
             const SizedBox(height: 8.0),
+            _textDialog(_colorController, TextInputType.name, 'สี',
+                const Icon(Icons.text_format)),
+            const SizedBox(height: 8.0),
             _textDialog(_telephoneController, TextInputType.phone, 'โทร',
                 const Icon(Icons.phone)),
-            const SizedBox(height: 8.0),
-            _textDialog(_resembleController, TextInputType.name,
-                'เลขทะเบียนที่คล้าย', const Icon(Icons.text_format)),
           ],
         ),
         buttons: [
@@ -304,11 +322,11 @@ class _MemberScreenState extends State<MemberScreen> {
             _textDialog(_brandController, TextInputType.name, 'ยี่ห้อ',
                 const Icon(Icons.text_format)),
             const SizedBox(height: 8.0),
+            _textDialog(_colorController, TextInputType.name, 'สี',
+                const Icon(Icons.text_format)),
+            const SizedBox(height: 8.0),
             _textDialog(_telephoneController, TextInputType.phone, 'โทร',
                 const Icon(Icons.phone)),
-            const SizedBox(height: 8.0),
-            _textDialog(_resembleController, TextInputType.name,
-                'เลขทะเบียนที่คล้าย', const Icon(Icons.text_format)),
           ],
         ),
         buttons: [
@@ -388,7 +406,7 @@ class _MemberScreenState extends State<MemberScreen> {
       telephone: _telephoneController.text,
       resemble: _resembleController.text,
     );
-    context.read<MemberBloc>().add(MemberEvent.createVehicle(vehicle));
+    context.read<VehicleBloc>().add(VehicleEvent.createVehicle(vehicle));
     Navigator.pop(context);
   }
 
@@ -401,7 +419,7 @@ class _MemberScreenState extends State<MemberScreen> {
     vehicle.telephone = _telephoneController.text;
     vehicle.resemble = _resembleController.text;
 
-    context.read<MemberBloc>().add(MemberEvent.updateVehicle(vehicle));
+    context.read<VehicleBloc>().add(VehicleEvent.updateVehicle(vehicle));
     Navigator.pop(context);
   }
 
@@ -435,7 +453,7 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void deleteVehicle(VehicleModel vehicle) {
-    context.read<MemberBloc>().add(MemberEvent.deleteVehicle(vehicle));
+    context.read<VehicleBloc>().add(VehicleEvent.deleteVehicle(vehicle));
     Navigator.pop(context);
   }
 
