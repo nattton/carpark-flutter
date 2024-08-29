@@ -1,38 +1,19 @@
 import 'package:carpark/components/member_header_card.dart';
 import 'package:carpark/components/member_list_card.dart';
-import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
-import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/screens/member/member_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
+import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-final filterProvider = StateProvider((ref) => "");
-
-final filteredMemberListProvider = Provider<List<MemberModel>>((ref) {
-  final filter = ref.watch(filterProvider);
-  final members = ref.watch(membersProvider);
-
-  if (filter.isEmpty) {
-    return members;
-  }
-  return members.where((member) {
-    return member.name!.contains(filter) ||
-        member.stringVehicles!.contains(filter);
-  }).toList();
-});
-
-class MemberListScreen extends ConsumerStatefulWidget {
+class MemberListScreen extends StatefulWidget {
   const MemberListScreen({super.key});
 
   @override
-  ConsumerState<MemberListScreen> createState() => _MemberListScreenState();
+  State<MemberListScreen> createState() => _MemberListScreenState();
 }
 
-class _MemberListScreenState extends ConsumerState<MemberListScreen> {
+class _MemberListScreenState extends State<MemberListScreen> {
   final _searchController = TextEditingController();
   @override
   void initState() {
@@ -48,7 +29,6 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredMemberList = ref.watch(filteredMemberListProvider);
     return Column(
       children: [
         const SizedBox(
@@ -77,30 +57,28 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
           ),
         ),
         const MemberHeaderCard(),
-        Expanded(
-          child: ListView.builder(
-            itemCount: filteredMemberList.length,
-            itemBuilder: (context, index) {
-              return MemberListCard(
-                  member: filteredMemberList[index],
-                  onTap: () =>
-                      onPressedRow(context, filteredMemberList[index]));
-            },
-          ),
+        BlocBuilder<MemberListCubit, MemberListState>(
+          builder: (context, state) {
+            final filteredMemberList = state.filteredMembers;
+            return Expanded(
+              child: ListView.builder(
+                itemCount: filteredMemberList.length,
+                itemBuilder: (context, index) {
+                  return MemberListCard(
+                      member: filteredMemberList[index],
+                      onTap: () =>
+                          onPressedRow(context, filteredMemberList[index]));
+                },
+              ),
+            );
+          },
         )
       ],
     );
   }
 
   Future<void> getMember() async {
-    EasyLoading.show(status: 'loading...');
-    final memberList = ref.read(membersProvider.notifier);
-    sl<ApiService>().getMemberList(sl<AppService>().token).then((members) {
-      setState(() {
-        memberList.setState(members);
-      });
-      EasyLoading.dismiss();
-    }).catchError((error) {});
+    context.read<MemberListCubit>().listMembers();
   }
 
   void onPressedRow(BuildContext context, MemberModel member) async {
@@ -127,7 +105,7 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
         });
   }
 
-  onSearchTextChanged(String text) async {
-    ref.read(filterProvider.notifier).state = text;
+  onSearchTextChanged(String term) async {
+    context.read<MemberListCubit>().filter(term);
   }
 }
