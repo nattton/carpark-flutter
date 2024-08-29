@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import "dart:ui";
 
 import "package:carpark/constants.dart";

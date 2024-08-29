@@ -11,7 +11,9 @@ import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/visitor_model.dart';
+import 'package:carpark/screens/main/cubit/player_cubit.dart';
 import 'package:carpark/screens/main/main_screen.dart';
+import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
@@ -19,6 +21,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -85,7 +88,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   Widget build(BuildContext context) {
     final gateLog = ref.watch(lastGateProvider).gateIn;
     final gateLogOut = ref.watch(lastGateProvider).gateOut;
-    final player = ref.watch(cameraPlayerProvider);
     return gateLog.id != 0
         ? Padding(
             padding: const EdgeInsets.all(8.0),
@@ -148,9 +150,14 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                 ),
                 Expanded(
                   child: !kIsWeb
-                      ? LivePlayerSection(
-                          mainController: player.mainController,
-                          sideController: player.sideController)
+                      ? BlocBuilder<PlayerCubit, PlayerState>(
+                          builder: (context, player) {
+                          return LivePlayerSection(
+                              mainController:
+                                  VideoController(player.mainPlayer),
+                              sideController:
+                                  VideoController(player.sidePlayer));
+                        })
                       : Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [ExitCard(gateLog: gateLogOut)],
@@ -170,7 +177,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildVisitorForm() {
-    final player = ref.watch(cameraPlayerProvider);
+    // final player = ref.watch(cameraPlayerProvider);
     return Card(
       child: Container(
         padding: const EdgeInsets.all(6.0),
@@ -429,9 +436,13 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
               width: MediaQuery.of(context).size.width / 2 - 60,
               height:
                   ((MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0),
-              child: Video(
-                controller: player.cardController,
-                controls: null,
+              child: BlocBuilder<PlayerCubit, PlayerState>(
+                builder: (context, player) {
+                  return Video(
+                    controller: VideoController(player.cardPlayer),
+                    controls: null,
+                  );
+                },
               ),
             ),
           ),
@@ -730,7 +741,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   void addImageToVisitor(VisitorModel visitor) async {
-    final cameraPlayer = ref.watch(cameraPlayerProvider);
+    final cameraPlayer = context.read<PlayerCubit>().state;
     File cardImage = await _tempImage("card");
     File inSideImage = await _tempImage("in_side");
     File entranceImage = await _tempImage("entrance");
@@ -799,7 +810,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   // }
 
   Widget _buildSearchMember() {
-    final memberList = ref.watch(membersProvider);
+    // final memberList = ref.watch(membersProvider);
+    final memberList = context.read<MemberListCubit>().state.members;
     return Autocomplete<MemberModel>(
       initialValue:
           _selectedMember != null && _selectedMember!.status == "overdue"

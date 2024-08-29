@@ -22,7 +22,7 @@ part 'api_service.g.dart';
 
 @RestApi(baseUrl: kHostUrl)
 abstract class ApiService {
-  factory ApiService(Dio dio) = _ApiService;
+  factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
   @POST("/api/login")
   Future<LoginUserModel> login(
@@ -89,6 +89,10 @@ abstract class ApiService {
   Future<List<MemberModel>> getMemberList(
       @Header('authorization') String token);
 
+  @GET("/api/export/members")
+  @DioResponseType(ResponseType.bytes)
+  Future<List<int>> getExportMembers(@Header('authorization') String token);
+
   // Vehicle
   @POST("/api/members/{memberId}/vehicles")
   Future<void> createVehicle(@Header('authorization') String token,
@@ -120,7 +124,7 @@ abstract class ApiService {
       @Path() int id, @Part() File photo);
 
   @POST("/api/visitors/{id}/images/{type}")
-  Future<VisitorModel> addImageToVisitor(@Header('authorization') String token,
+  Future<void> addImageToVisitor(@Header('authorization') String token,
       @Path() int id, @Path() String type, @Part() File file);
 
   @PATCH("/api/visitors/checkout")

@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carpark/screens/main/cubit/player_cubit.dart';
+import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:carpark/constants.dart';
@@ -20,7 +22,6 @@ import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
-import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/providers/members_notifier.dart';
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
@@ -36,26 +37,19 @@ import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 
-part 'main_screen.g.dart';
-
 final lastGateProvider =
     StateNotifierProvider<LastGateNotifier, LastGate>((ref) {
   return LastGateNotifier(
       LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
 });
 
-final membersProvider =
-    StateNotifierProvider<MembersNotifier, List<MemberModel>>((ref) {
-  return MembersNotifier();
-});
+// final membersProvider =
+//     StateNotifierProvider<MembersNotifier, List<MemberModel>>((ref) {
+//   return MembersNotifier();
+// });
 
 final cameraMapProvider =
     Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
-
-@riverpod
-CameraPlayer cameraPlayer(CameraPlayerRef ref) {
-  return CameraPlayer.initialize();
-}
 
 class MainScreen extends StatefulHookConsumerWidget {
   static const String id = 'main_screen';
@@ -138,13 +132,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     getMember();
     getCameraList().then((value) {
       if (!kIsWeb) {
-        var camera = value['ENTRANCE'];
-        var cameraSide = value['IN_SIDE'];
-        var cameraCard = value['CARD'];
-        final player = ref.watch(cameraPlayerProvider);
-        player.setMainPlayer(camera!.toUrl());
-        player.setSidePlayer(cameraSide!.toUrl());
-        player.setCardPlayer(cameraCard!.toUrl());
+        setPlayer(value);
       }
     });
 
@@ -173,13 +161,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return camera;
   }
 
-  Future<void> getMember() async {
-    final memberList = ref.read(membersProvider.notifier);
-    sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
-      memberList.setState(value);
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+  void getMember() {
+    context.read<MemberListCubit>().listMembers();
   }
 
   Future<void> getLastGate() async {
@@ -226,45 +209,61 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void selectedPage(String page) {
-    final player = ref.watch(cameraPlayerProvider);
     final camera = ref.watch(cameraMapProvider);
     switch (page) {
       case 'ENTRANCE':
         getLastGateIn();
-        if (!kIsWeb) {
-          var cam = camera['ENTRANCE'];
-          if (cam != null) {
-            player.setMainPlayer(cam.toUrl());
-          }
-          var cameraSide = camera['IN_SIDE'];
-          if (cameraSide != null) {
-            player.setSidePlayer(cameraSide.toUrl());
-          }
-          var cameraCard = camera['CARD'];
-          if (cameraCard != null) {
-            player.setCardPlayer(cameraCard.toUrl());
-          }
-        }
+        setPlayer(camera);
         break;
       case 'EXIT':
         getLastGateOut();
-        if (!kIsWeb) {
-          var cam = camera['EXIT'];
-          if (cam != null) {
-            player.setMainPlayer(cam.toUrl());
-          }
-          var cameraSide = camera['OUT_SIDE'];
-          if (cameraSide != null) {
-            player.setSidePlayer(cameraSide.toUrl());
-          }
-        }
+        setExitPlayer(camera);
         break;
       default:
-        player.stopAll();
+        stopAll();
     }
     setState(() {
       _currentScreen = page;
     });
+  }
+
+  void setPlayer(Map<String, CameraModel> camera) {
+    if (!kIsWeb) {
+      var cam = camera['ENTRANCE'];
+      if (cam != null) {
+        context.read<PlayerCubit>().setMainPlayer(cam.toUrl());
+        // player.setMainPlayer(cam.toUrl());
+      }
+      var cameraSide = camera['IN_SIDE'];
+      if (cameraSide != null) {
+        context.read<PlayerCubit>().setSidePlayer(cameraSide.toUrl());
+        // player.setSidePlayer(cameraSide.toUrl());
+      }
+      var cameraCard = camera['CARD'];
+      if (cameraCard != null) {
+        context.read<PlayerCubit>().setCardPlayer(cameraCard.toUrl());
+        // player.setCardPlayer(cameraCard.toUrl());
+      }
+    }
+  }
+
+  void setExitPlayer(Map<String, CameraModel> camera) {
+    if (!kIsWeb) {
+      var cam = camera['EXIT'];
+      if (cam != null) {
+        context.read<PlayerCubit>().setMainPlayer(cam.toUrl());
+        // player.setMainPlayer(cam.toUrl());
+      }
+      var cameraSide = camera['OUT_SIDE'];
+      if (cameraSide != null) {
+        context.read<PlayerCubit>().setSidePlayer(cameraSide.toUrl());
+        // player.setSidePlayer(cameraSide.toUrl());
+      }
+    }
+  }
+
+  void stopAll() {
+    context.read<PlayerCubit>().stopAll();
   }
 
   @override
@@ -629,67 +628,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
   }
 
-  Excel generateExcel() {
-    final members = ref.read(membersProvider);
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Sheet1'];
-
-    int currentRow = 0;
-    List<CellValue> columnName = [
-      TextCellValue("id"),
-      TextCellValue("name"),
-      TextCellValue("telephone"),
-      TextCellValue("type"),
-      TextCellValue("status"),
-      TextCellValue("vehicleId"),
-      TextCellValue("plateNumber"),
-      TextCellValue("resemble"),
-      TextCellValue("plateProvince"),
-      TextCellValue("brand"),
-      TextCellValue("color"),
-      TextCellValue("telephone"),
-    ];
-    sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(
-        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
-    for (var i = 0; i < columnName.length; i++) {
-      var cell = sheetObject.cell(
-          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
-      cell.cellStyle = cellStyle;
-    }
-
-    for (var i = 0; i < members.length; i++) {
-      currentRow++;
-      var m = members[i];
-      List<CellValue> dataList = [
-        TextCellValue(m.id.toString()),
-        TextCellValue(m.name!),
-        TextCellValue(m.telephone!),
-        TextCellValue(m.type!),
-        TextCellValue(m.status!),
-      ];
-      sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
-      for (var j = 0; j < m.vehicles!.length; j++) {
-        if (j > 0) {
-          currentRow++;
-        }
-        var v = m.vehicles?[j];
-        List<CellValue> vehicleList = [
-          TextCellValue(v!.id.toString()),
-          TextCellValue(v.plateNumber!),
-          TextCellValue(v.resemble!),
-          TextCellValue(v.plateProvince!),
-          TextCellValue(v.brand!),
-          TextCellValue(v.color!),
-          TextCellValue(v.telephone!),
-        ];
-        sheetObject.insertRowIterables(vehicleList, currentRow,
-            startingColumn: 5);
-      }
-    }
-    return excel;
-  }
-
   void onPressedExportMember(BuildContext context) async {
     String dateTime = DateFormat("yyyy-MM-dd_HH-mm").format(DateTime.now());
     String? outputFile = await FilePicker.platform.saveFile(
@@ -699,7 +637,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     if (outputFile != null) {
       final file = File(outputFile);
-      file.writeAsBytes(generateExcel().encode()!);
+
+      sl<ApiService>().getExportMembers(sl<AppService>().token).then((value) {
+        file.writeAsBytes(value);
+      });
     }
   }
 }

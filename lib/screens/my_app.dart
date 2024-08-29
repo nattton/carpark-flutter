@@ -1,4 +1,5 @@
 import 'package:carpark/screens/display_screen.dart';
+import 'package:carpark/screens/main/cubit/player_cubit.dart';
 import 'package:carpark/screens/member/bloc/member_bloc.dart';
 import 'package:carpark/screens/member/bloc/vehicle_bloc.dart';
 import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => SignInBloc()),
+          BlocProvider(create: (_) => PlayerCubit()),
           BlocProvider(create: (_) => MemberListCubit()),
           BlocProvider(create: (_) => MemberBloc()),
           BlocProvider(create: (_) => VehicleBloc()),

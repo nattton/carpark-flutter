@@ -7,13 +7,16 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/visitor_model.dart';
+import 'package:carpark/screens/main/cubit/player_cubit.dart';
 import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ExitScreen extends StatefulHookConsumerWidget {
@@ -43,7 +46,6 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   @override
   Widget build(BuildContext context) {
     final gateLog = ref.watch(lastGateProvider).gateOut;
-    final player = ref.watch(cameraPlayerProvider);
     return gateLog.id != 0
         ? Padding(
             padding: const EdgeInsets.all(8.0),
@@ -91,9 +93,14 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                 ),
                 Expanded(
                   child: !kIsWeb
-                      ? LivePlayerSection(
-                          mainController: player.mainController,
-                          sideController: player.sideController)
+                      ? BlocBuilder<PlayerCubit, PlayerState>(
+                          builder: (context, player) {
+                          return LivePlayerSection(
+                              mainController:
+                                  VideoController(player.mainPlayer),
+                              sideController:
+                                  VideoController(player.sidePlayer));
+                        })
                       : const SizedBox(),
                 ),
               ],
@@ -135,7 +142,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   }
 
   void addImageToVisitor(VisitorModel visitor) async {
-    final cameraPlayer = ref.read(cameraPlayerProvider);
+    final cameraPlayer = context.read<PlayerCubit>().state;
     File outSideImage = await _tempImage("out_side");
     File exitImage = await _tempImage("exit");
 
