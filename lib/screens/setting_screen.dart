@@ -26,6 +26,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _pathController = TextEditingController();
+  final _controlPortController = TextEditingController();
+  final _controlGateController = TextEditingController();
 
   @override
   void initState() {
@@ -43,6 +45,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
     _pathController.dispose();
+    _controlPortController.dispose();
+    _controlGateController.dispose();
     super.dispose();
   }
 
@@ -94,14 +98,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
         }
         if (index == 1) {
           return CameraListCard(
-            camera: CameraModel(
-                id: 0,
-                name: '',
-                ipAddress: '',
-                port: '',
-                username: '',
-                password: '',
-                path: ''),
+            camera: const CameraModel(),
             onTap: () {},
           );
         }
@@ -140,11 +137,16 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   }
 
   void saveCamera(CameraModel camera) {
-    camera.ipAddress = _ipAddressController.text;
-    camera.port = _portController.text;
-    camera.username = _usernameController.text;
-    camera.password = _passwordController.text;
-    camera.path = _pathController.text;
+    camera = camera.copyWith(
+      ipAddress: _ipAddressController.text,
+      port: _portController.text,
+      username: _usernameController.text,
+      password: _passwordController.text,
+      path: _pathController.text,
+      controlPort: _controlPortController.text,
+      controlGate: _controlGateController.text,
+    );
+
     sl<ApiService>()
         .updateCamera(sl<AppService>().token, camera.id, camera)
         .then((value) {
@@ -161,6 +163,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     _usernameController.text = camera.username;
     _passwordController.text = camera.password;
     _pathController.text = camera.path;
+    _controlPortController.text = camera.controlPort;
+    _controlGateController.text = camera.controlGate;
 
     Alert(
         context: context,
@@ -237,6 +241,36 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
               decoration: InputDecoration(
                 labelText: 'Path',
                 suffixIcon: const Icon(Icons.account_circle),
+                contentPadding:
+                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            TextField(
+              controller: _controlPortController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Control Port',
+                suffixIcon: const Icon(Icons.numbers),
+                contentPadding:
+                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            TextField(
+              controller: _controlGateController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'Control Gate',
+                suffixIcon: const Icon(Icons.door_front_door),
                 contentPadding:
                     const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
                 border: OutlineInputBorder(

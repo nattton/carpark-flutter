@@ -7,8 +7,10 @@ import 'package:carpark/models/gate_in_model.dart';
 import 'package:carpark/models/gate_log_result.dart';
 import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/last_gate.dart';
+import 'package:carpark/models/login_request_model.dart';
 import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/member_model.dart';
+import 'package:carpark/models/person_model.dart';
 import 'package:carpark/models/report_traffic_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/save_user_model.dart';
@@ -20,13 +22,12 @@ import 'package:retrofit/retrofit.dart';
 
 part 'api_service.g.dart';
 
-@RestApi(baseUrl: kHostUrl)
+@RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
   @POST("/api/login")
-  Future<LoginUserModel> login(
-      @Field() String username, @Field() String password);
+  Future<LoginUserModel> login(@Body() LoginRequestModel login);
 
   @GET("/api/admin/users")
   Future<List<UserModel>> getUserList(@Header('authorization') String token);
@@ -130,6 +131,10 @@ abstract class ApiService {
   @PATCH("/api/visitors/checkout")
   Future<VisitorModel> checkoutVisitor(
       @Header('authorization') String token, @Body() CheckoutModel checkout);
+
+// People
+  @GET("/api/people")
+  Future<List<PersonModel>> listPeople(@Header('authorization') String token);
 
   @GET("/api/report/{type}")
   Future<List<ReportTrafficModel>> reportTraffic(

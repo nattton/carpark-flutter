@@ -50,7 +50,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.member!.name!,
+                  visitor.member!.name,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

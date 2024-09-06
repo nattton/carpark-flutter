@@ -93,7 +93,7 @@ class MemberListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        member.id!.toString(),
+                        member.id.toString(),
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -102,7 +102,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.name!,
+                        member.name,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -111,7 +111,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.telephone!,
+                        member.telephone,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -120,7 +120,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.type!,
+                        member.type,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -129,7 +129,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.status!,
+                        member.status,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,
@@ -138,7 +138,7 @@ class MemberListCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.stringVehicles!,
+                        member.plateVehicles,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,

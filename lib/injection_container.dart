@@ -1,3 +1,4 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
@@ -8,7 +9,10 @@ final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
   // Dio
-  sl.registerSingleton<Dio>(Dio());
+  final dio = Dio();
+  dio.options.baseUrl = kHostUrl;
+  dio.options.headers['Content-Type'] = 'application/json';
+  sl.registerSingleton<Dio>(dio);
 
   sl.registerLazySingletonAsync<SharedPreferences>(
     () => SharedPreferences.getInstance(),

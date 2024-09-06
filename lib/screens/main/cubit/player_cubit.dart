@@ -7,20 +7,18 @@ class PlayerCubit extends Cubit<PlayerState> {
   PlayerCubit() : super(PlayerState.initialize());
 
   void setMainPlayer(String url) {
-    state.mainPlayer.open(Media(url));
+    state.setMainPlayer(url);
   }
 
   void setSidePlayer(String url) {
-    state.sidePlayer.open(Media(url));
+    state.setSidePlayer(url);
   }
 
   void setCardPlayer(String url) {
-    state.cardPlayer.open(Media(url));
+    state.setCardPlayer(url);
   }
 
   void stopAll() {
-    state.mainPlayer.stop();
-    state.sidePlayer.stop();
-    state.cardPlayer.stop();
+    state.stopAll();
   }
 }

@@ -1,36 +1,22 @@
 import 'dart:convert';
 
 import 'package:carpark/models/gate_log_model.dart';
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'last_gate.g.dart';
+part 'last_gate.freezed.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-@immutable
-class LastGate {
-  final GateLogModel gateIn;
-  final GateLogModel gateOut;
-  const LastGate({
-    required this.gateIn,
-    required this.gateOut,
-  });
-
-  LastGate copyWith({
-    GateLogModel? gateIn,
-    GateLogModel? gateOut,
-  }) {
-    return LastGate(
-      gateIn: gateIn ?? this.gateIn,
-      gateOut: gateOut ?? this.gateOut,
-    );
-  }
+@freezed
+class LastGate with _$LastGate {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LastGate({
+    required GateLogModel gateIn,
+    required GateLogModel gateOut,
+  }) = _LastGate;
 
   factory LastGate.fromJson(Map<String, dynamic> json) =>
       _$LastGateFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LastGateToJson(this);
 }
 
 class LastGateNotifier extends StateNotifier<LastGate> {

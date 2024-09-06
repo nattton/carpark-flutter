@@ -1,5 +1,6 @@
 import 'package:carpark/common/widgets/flutter_alert.dart';
 import 'package:carpark/injection_container.dart';
+import 'package:carpark/models/login_request_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
@@ -22,7 +23,9 @@ class SignInController {
       return;
     }
 
-    sl<ApiService>().login(username, password).then((value) async {
+    sl<ApiService>()
+        .login(LoginRequestModel(username: username, password: password))
+        .then((value) async {
       await sl<AppService>().saveLogin(value);
       goToMainScreen();
     }).catchError((error, stackTrace) {

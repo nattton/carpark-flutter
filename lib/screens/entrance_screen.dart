@@ -553,6 +553,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     sl<ApiService>().smartCardReader().then((card) async {
       _idCardModel = card;
       _photoFile = await _tempImage(card.id);
+      print(_idCardModel!.photoUrl());
       await sl<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
       _idCardController.text = card.id;
       _thaiNameController.text = card.thaiName;
@@ -670,7 +671,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     final imageFrame = img.decodeImage(imgFrameBytes)!;
     bytes += generator.image(imageFrame);
 
-    if (visitor.member!.status! == "overdue") {
+    if (visitor.member!.status == "overdue") {
       bytes += generator.textEncoded(
         await charsetConvert('*$kOverdueText $kOverdue2Text*'),
         styles: const PosStyles(
@@ -783,14 +784,17 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   void printTicket(VisitorModel visitor) async {
     var printerManager = PrinterManager.instance;
     // print(printerManager.currentStatusUSB.toString());
-    print(sl<AppService>().printer);
-    printerManager.connect(
-        type: PrinterType.usb,
-        model: UsbPrinterInput(
-            name: sl<AppService>().printer, productId: null, vendorId: null));
-    await printerManager.send(
-        type: PrinterType.usb, bytes: await _generateTicket(visitor));
-    await printerManager.disconnect(type: PrinterType.usb);
+
+    String printer = sl<AppService>().printer;
+    if (printer.isNotEmpty && printer != "Select Printer...") {
+      printerManager.connect(
+          type: PrinterType.usb,
+          model:
+              UsbPrinterInput(name: printer, productId: null, vendorId: null));
+      await printerManager.send(
+          type: PrinterType.usb, bytes: await _generateTicket(visitor));
+      await printerManager.disconnect(type: PrinterType.usb);
+    }
   }
 
   // void printNetwork() async {
@@ -815,21 +819,21 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     return Autocomplete<MemberModel>(
       initialValue:
           _selectedMember != null && _selectedMember!.status == "overdue"
-              ? TextEditingValue(text: _selectedMember!.name!)
+              ? TextEditingValue(text: _selectedMember!.name)
               : null,
       displayStringForOption: (MemberModel member) {
-        return member.name!;
+        return member.name;
       },
       optionsBuilder: (TextEditingValue textEditingValue) {
         if (textEditingValue.text.isEmpty) {
           return const Iterable.empty();
         }
         return memberList.where((MemberModel member) =>
-            member.name!.contains(textEditingValue.text));
+            member.name.contains(textEditingValue.text));
       },
       onSelected: (MemberModel member) {
         _selectedMember = member;
-        debugPrint(member.name!);
+        debugPrint(member.name);
       },
       optionsViewBuilder: (context, onSelected, options) {
         return Material(
@@ -847,12 +851,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
               // }
               return ListTile(
                 title: SubstringHighlight(
-                  text: option.name!,
+                  text: option.name,
                   term: _memberController.text,
                   textStyleHighlight:
                       const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                subtitle: Text(option.stringVehicles!),
+                subtitle: Text(option.plateVehicles),
                 onTap: () {
                   onSelected(option);
                 },

@@ -40,8 +40,9 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
   FutureOr<void> onUpdateMember(
       UpdateMember event, Emitter<MemberState> emit) async {
     emit(const MemberState.loading());
+    print(event.member.toJson());
     await sl<ApiService>()
-        .updateMember(sl<AppService>().token, event.member.id!, event.member)
+        .updateMember(sl<AppService>().token, event.member.id, event.member)
         .then((value) {
       emit(const MemberState.updateSuccess());
     }).onError((error, stackTrace) {

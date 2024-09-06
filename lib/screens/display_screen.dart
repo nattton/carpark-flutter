@@ -23,11 +23,11 @@ class DisplayScreen extends HookConsumerWidget {
 
   Widget _buildEntranceView(WidgetRef ref) {
     final gateLog = ref.watch(lastGateProvider).gateIn;
-    return EntranceDisplay(gateLog: gateLog);
+    return EntranceDisplay(title: "ทางเข้า", gateLog: gateLog);
   }
 
   Widget _buildExitView(WidgetRef ref) {
     final gateLog = ref.watch(lastGateProvider).gateOut;
-    return EntranceDisplay(gateLog: gateLog);
+    return EntranceDisplay(title: "ทางออก", gateLog: gateLog);
   }
 }

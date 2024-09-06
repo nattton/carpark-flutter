@@ -25,8 +25,9 @@ class MemberScreen extends StatefulWidget {
 class _MemberScreenState extends State<MemberScreen> {
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
-  String? _status;
-  String? _type;
+  final _addressController = TextEditingController();
+  String _status = "";
+  String _type = "";
 
   final _plateNumberController = TextEditingController();
   final _resembleController = TextEditingController();
@@ -45,6 +46,7 @@ class _MemberScreenState extends State<MemberScreen> {
   void dispose() {
     _nameController.dispose();
     _telController.dispose();
+    _addressController.dispose();
 
     _plateNumberController.dispose();
     _resembleController.dispose();
@@ -113,8 +115,9 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   Widget _body(MemberModel member) {
-    _nameController.text = member.name!;
-    _telController.text = member.telephone!;
+    _nameController.text = member.name;
+    _telController.text = member.telephone;
+    _addressController.text = member.address;
     _status = member.status;
     _type = member.type;
     return Column(
@@ -128,8 +131,8 @@ class _MemberScreenState extends State<MemberScreen> {
             1: FlexColumnWidth(),
           },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: <TableRow>[
-            TableRow(children: <Widget>[
+          children: [
+            TableRow(children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -169,6 +172,28 @@ class _MemberScreenState extends State<MemberScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _addressController,
+                    autofocus: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.streetAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Address',
+                      suffixIcon: const Icon(Icons.home),
+                      contentPadding:
+                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
+                  ),
+                ),
+                Container(),
+              ],
+            ),
+            TableRow(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: FormBuilderRadioGroup(
                     decoration: InputDecoration(
                       labelText: 'Type',
@@ -180,7 +205,7 @@ class _MemberScreenState extends State<MemberScreen> {
                     initialValue: _type,
                     name: 'type',
                     onChanged: (value) {
-                      _type = value;
+                      _type = value!;
                     },
                     validator: FormBuilderValidators.required(),
                     options: kMemberTypeList
@@ -201,7 +226,7 @@ class _MemberScreenState extends State<MemberScreen> {
                     initialValue: _status,
                     name: 'status',
                     onChanged: (value) {
-                      _status = value;
+                      _status = value!;
                     },
                     validator: FormBuilderValidators.required(),
                     options: kStatusList
@@ -389,6 +414,7 @@ class _MemberScreenState extends State<MemberScreen> {
         id: widget.memberId,
         name: _nameController.text,
         telephone: _telController.text,
+        address: _addressController.text,
         type: _type,
         status: _status,
         vehicles: []);

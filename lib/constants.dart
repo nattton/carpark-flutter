@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-// const kHost = 'localhost:4000';
-const kHost = '192.168.50.170:4000';
+const kHost = 'localhost:4000';
+// const kHost = '192.168.50.170:4000';
 // const kHost = '192.168.1.50:4000';
 // const kHost = 'cyptpr.ddns.net';
 

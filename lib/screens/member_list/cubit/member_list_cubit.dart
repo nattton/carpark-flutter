@@ -22,8 +22,7 @@ class MemberListCubit extends Cubit<MemberListState> {
       return;
     }
     var filtered = state.members.where((member) {
-      return member.name!.contains(term) ||
-          member.stringVehicles!.contains(term);
+      return member.name.contains(term) || member.plateVehicles.contains(term);
     }).toList();
     emit(state.copyWith(filteredMembers: filtered));
     return;

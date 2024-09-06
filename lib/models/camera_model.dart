@@ -1,30 +1,27 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'camera_model.freezed.dart';
 part 'camera_model.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class CameraModel {
-  final int id;
-  final String name;
-  String ipAddress;
-  String port;
-  String username;
-  String password;
-  String path;
+@freezed
+class CameraModel with _$CameraModel {
+  const CameraModel._();
 
-  CameraModel(
-      {required this.id,
-      required this.name,
-      required this.ipAddress,
-      required this.port,
-      required this.username,
-      required this.password,
-      required this.path});
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory CameraModel({
+    @Default(0) int id,
+    @Default("") String name,
+    @Default("") String ipAddress,
+    @Default("") String port,
+    @Default("") String username,
+    @Default("") String password,
+    @Default("") String path,
+    @Default("") String controlPort,
+    @Default("") String controlGate,
+  }) = _CameraModel;
 
   factory CameraModel.fromJson(Map<String, dynamic> json) =>
       _$CameraModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CameraModelToJson(this);
 
   String toUrl() {
     return "rtsp://$username:$password@$ipAddress:$port$path";

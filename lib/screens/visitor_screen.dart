@@ -36,7 +36,7 @@ final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
   }
   filterVisitor = visitors.where((visitor) {
     return visitor.plateNumber!.contains(filter) ||
-        visitor.member!.name!.contains(filter);
+        visitor.member!.name.contains(filter);
   }).toList();
 
   if (sortBy.isNotEmpty) {
@@ -73,12 +73,12 @@ final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
         break;
       case "memberName":
         filterVisitor.sort((a, b) {
-          return a.member!.name!.compareTo(b.member!.name!);
+          return a.member!.name.compareTo(b.member!.name);
         });
         break;
       case "-memberName":
         filterVisitor.sort((b, a) {
-          return a.member!.name!.compareTo(b.member!.name!);
+          return a.member!.name.compareTo(b.member!.name);
         });
         break;
       default:
@@ -282,7 +282,6 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
       TextCellValue("birthdate"),
       TextCellValue("gender"),
       TextCellValue("address"),
-      TextCellValue("age"),
       TextCellValue("exitTime"),
       TextCellValue("image.type"),
       TextCellValue("image"),
@@ -303,14 +302,13 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         TextCellValue(v.dateTimeFormat()),
         TextCellValue(v.type!),
         TextCellValue(v.plateNumber!),
-        TextCellValue(v.member!.name!),
+        TextCellValue(v.member!.name),
         TextCellValue(v.idCard!),
         TextCellValue(v.thaiName!),
         TextCellValue(v.engName!),
         TextCellValue(v.birthdate!),
         TextCellValue(v.gender!),
         TextCellValue(v.address!),
-        TextCellValue(v.age!),
         TextCellValue(
             v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : ""),
       ];

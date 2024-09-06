@@ -52,7 +52,7 @@ class MemberListSearch extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        member.name!,
+                        member.name,
                         style: const TextStyle(
                             fontFamily: kDefaultFont,
                             fontSize: 16.0,
@@ -61,7 +61,7 @@ class MemberListSearch extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        member.status!,
+                        member.status,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,

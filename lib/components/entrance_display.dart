@@ -5,8 +5,10 @@ import 'package:text_marquee/text_marquee.dart';
 const double fontSize = 600;
 
 class EntranceDisplay extends StatelessWidget {
-  const EntranceDisplay({super.key, required this.gateLog});
+  const EntranceDisplay(
+      {super.key, required this.title, required this.gateLog});
 
+  final String title;
   final GateLogModel gateLog;
 
   @override
@@ -14,37 +16,40 @@ class EntranceDisplay extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("ทางเข้า"),
+          title: Text(title),
           backgroundColor: Colors.blue[800],
         ),
         backgroundColor: Colors.blue,
         body: Container(
           width: double.infinity,
           color: Colors.blue[300],
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              gateLog.memberId! == 0
-                  ? const FittedBox(
-                      fit: BoxFit.fill,
-                      child: Text(
-                        "Visitor กรุณาลงทะเบียน",
-                        style: TextStyle(fontSize: fontSize),
-                      ))
-                  : const FittedBox(
-                      fit: BoxFit.fill,
-                      child: TextMarquee(
-                        "Welcome ยินดีต้อนรับ",
-                        style: TextStyle(fontSize: fontSize),
-                      )),
-              FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    gateLog.plateNumber!,
-                    style: const TextStyle(fontSize: fontSize),
-                  )),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                gateLog.memberId! == 0
+                    ? const FittedBox(
+                        fit: BoxFit.fill,
+                        child: Text(
+                          "Visitor กรุณาลงทะเบียน",
+                          style: TextStyle(fontSize: fontSize),
+                        ))
+                    : const FittedBox(
+                        fit: BoxFit.fill,
+                        child: TextMarquee(
+                          "Welcome ยินดีต้อนรับ",
+                          style: TextStyle(fontSize: fontSize),
+                        )),
+                FittedBox(
+                    fit: BoxFit.fill,
+                    child: Text(
+                      gateLog.plateNumber!,
+                      style: const TextStyle(fontSize: fontSize),
+                    )),
+              ],
+            ),
           ),
         ));
   }

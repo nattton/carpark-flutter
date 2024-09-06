@@ -75,7 +75,7 @@ class ExitCard extends StatelessWidget {
                         color: Colors.green,
                         child: Center(
                           child: Text(
-                            "ชื่อ : ${gateLog.member!.name!}",
+                            "ชื่อ : ${gateLog.member!.name}",
                             style: kGateStyle,
                           ),
                         ),

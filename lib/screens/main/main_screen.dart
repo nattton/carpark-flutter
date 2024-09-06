@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:carpark/screens/main/cubit/player_cubit.dart';
 import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
-import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -22,7 +21,6 @@ import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
-import 'package:carpark/providers/members_notifier.dart';
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
@@ -42,11 +40,6 @@ final lastGateProvider =
   return LastGateNotifier(
       LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
 });
-
-// final membersProvider =
-//     StateNotifierProvider<MembersNotifier, List<MemberModel>>((ref) {
-//   return MembersNotifier();
-// });
 
 final cameraMapProvider =
     Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
@@ -69,10 +62,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
-  final MemberModel _memberModel = MemberModel(id: 0, vehicles: []);
+  MemberModel _memberModel = MemberModel();
 
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
+  final _addressController = TextEditingController();
 
   initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
@@ -180,19 +174,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }
   }
 
-  Future<void> getLastGateIn() async {
-    if (!loadingLastGate) {
-      loadingLastGate = true;
-      final lastGate = ref.read(lastGateProvider.notifier);
-      sl<ApiService>().getGateIn(sl<AppService>().token).then((value) {
-        lastGate.setGateIn(value.gateLog);
-        loadingLastGate = false;
-      }).onError((error, stackTrace) {
-        alertError(error.toString());
-        loadingLastGate = false;
-      });
-    }
-  }
+  // Future<void> getLastGateIn() async {
+  //   if (!loadingLastGate) {
+  //     loadingLastGate = true;
+  //     final lastGate = ref.read(lastGateProvider.notifier);
+  //     sl<ApiService>().getGateIn(sl<AppService>().token).then((value) {
+  //       lastGate.setGateIn(value.gateLog);
+  //       loadingLastGate = false;
+  //     }).onError((error, stackTrace) {
+  //       alertError(error.toString());
+  //       loadingLastGate = false;
+  //     });
+  //   }
+  // }
 
   Future<void> getLastGateOut() async {
     if (!loadingLastGate) {
@@ -212,11 +206,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final camera = ref.watch(cameraMapProvider);
     switch (page) {
       case 'ENTRANCE':
-        getLastGateIn();
+        getLastGate();
         setPlayer(camera);
         break;
       case 'EXIT':
-        getLastGateOut();
+        getLastGate();
         setExitPlayer(camera);
         break;
       default:
@@ -232,17 +226,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       var cam = camera['ENTRANCE'];
       if (cam != null) {
         context.read<PlayerCubit>().setMainPlayer(cam.toUrl());
-        // player.setMainPlayer(cam.toUrl());
       }
       var cameraSide = camera['IN_SIDE'];
       if (cameraSide != null) {
         context.read<PlayerCubit>().setSidePlayer(cameraSide.toUrl());
-        // player.setSidePlayer(cameraSide.toUrl());
       }
       var cameraCard = camera['CARD'];
       if (cameraCard != null) {
         context.read<PlayerCubit>().setCardPlayer(cameraCard.toUrl());
-        // player.setCardPlayer(cameraCard.toUrl());
       }
     }
   }
@@ -252,12 +243,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       var cam = camera['EXIT'];
       if (cam != null) {
         context.read<PlayerCubit>().setMainPlayer(cam.toUrl());
-        // player.setMainPlayer(cam.toUrl());
       }
       var cameraSide = camera['OUT_SIDE'];
       if (cameraSide != null) {
         context.read<PlayerCubit>().setSidePlayer(cameraSide.toUrl());
-        // player.setSidePlayer(cameraSide.toUrl());
       }
     }
   }
@@ -344,24 +333,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 icon: const Icon(Icons.summarize),
               ),
               SideMenuItem(
-                title: 'จอทางเข้า',
-                onTap: (page, _) {
-                  Navigator.of(context).pushNamed(DisplayScreen.id,
-                      arguments: DisplayScreen.gateIn);
-                },
-                icon: const Icon(Icons.turn_right),
-                tooltipContent: "จอทางเข้า",
-              ),
-              SideMenuItem(
-                title: 'จอทางออก',
-                onTap: (page, _) {
-                  Navigator.of(context).pushNamed(DisplayScreen.id,
-                      arguments: DisplayScreen.gateOut);
-                },
-                icon: const Icon(Icons.turn_left),
-                tooltipContent: "จอทางออก",
-              ),
-              SideMenuItem(
                 title: 'ตั้งค่า',
                 onTap: (page, _) {
                   selectedPage('SETTING');
@@ -419,14 +390,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 ),
                 Container(
                   color: Colors.white,
-                  child: Container(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: Container(),
-                ),
-                Container(
-                  color: Colors.white,
                   child: const SettingScreen(),
                 ),
                 Container(
@@ -463,6 +426,39 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   List<Widget> _buildActionBar() {
     List<Widget> widget = [];
     switch (_currentScreen) {
+      case "ENTRANCE":
+        widget.add(
+          IconButton(
+            icon: const Icon(Icons.turn_left),
+            tooltip: 'จอทางเข้า',
+            onPressed: () {
+              stopAll();
+              Navigator.of(context)
+                  .pushNamed(DisplayScreen.id, arguments: DisplayScreen.gateIn)
+                  .then((value) {
+                getLastGate();
+                final camera = ref.watch(cameraMapProvider);
+                setPlayer(camera);
+              });
+            },
+          ),
+        );
+        widget.add(
+          IconButton(
+            icon: const Icon(Icons.turn_right),
+            tooltip: 'จอทางออก',
+            onPressed: () {
+              stopAll();
+              Navigator.of(context)
+                  .pushNamed(DisplayScreen.id, arguments: DisplayScreen.gateOut)
+                  .then((value) {
+                getLastGate();
+                final camera = ref.watch(cameraMapProvider);
+                setPlayer(camera);
+              });
+            },
+          ),
+        );
       case "MEMBER":
         widget.add(
           IconButton(
@@ -490,13 +486,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void onPressedAddMember(BuildContext context) {
-    _memberModel.name = '';
-    _memberModel.telephone = '';
-    _memberModel.type = 'resident';
-    _memberModel.status = 'active';
-
+    _memberModel = MemberModel();
     _nameController.text = '';
     _telController.text = '';
+    _addressController.text = '';
 
     Alert(
         context: context,
@@ -508,7 +501,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               child: TextField(
                 controller: _nameController,
                 onChanged: (value) {
-                  _memberModel.name = value;
+                  _memberModel = _memberModel.copyWith(name: value);
                 },
                 autofocus: false,
                 autocorrect: false,
@@ -528,7 +521,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               child: TextField(
                 controller: _telController,
                 onChanged: (value) {
-                  _memberModel.telephone = value;
+                  _memberModel = _memberModel.copyWith(telephone: value);
                 },
                 autofocus: false,
                 autocorrect: false,
@@ -536,6 +529,26 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 decoration: InputDecoration(
                   labelText: 'โทรศัพท์.',
                   suffixIcon: const Icon(Icons.phone),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _addressController,
+                onChanged: (value) {
+                  _memberModel = _memberModel.copyWith(address: value);
+                },
+                autofocus: false,
+                autocorrect: false,
+                keyboardType: TextInputType.streetAddress,
+                decoration: InputDecoration(
+                  labelText: 'Address',
+                  suffixIcon: const Icon(Icons.home),
                   contentPadding:
                       const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
                   border: OutlineInputBorder(
@@ -556,7 +569,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 initialValue: _memberModel.type,
                 name: 'type',
                 onChanged: (value) {
-                  _memberModel.type = value;
+                  _memberModel = _memberModel.copyWith(type: value!);
                 },
                 validator: FormBuilderValidators.required(),
                 options: kMemberTypeList
@@ -577,7 +590,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 initialValue: _memberModel.status,
                 name: 'status',
                 onChanged: (value) {
-                  _memberModel.status = value;
+                  _memberModel = _memberModel.copyWith(status: value!);
                 },
                 validator: FormBuilderValidators.required(),
                 options: kStatusList
