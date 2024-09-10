@@ -10,8 +10,20 @@ const kHostWS = 'ws://$kHost';
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 
+const kLimitList = [100, 500, 1000, 0];
 const kMemberTypeList = ['resident', 'carrier', 'subcontractor'];
 const kStatusList = ['active', 'inactive', 'overdue'];
+const kPeopleQueryActiveList = ['', 'active', 'inactive'];
+const kPeopleQueryTypeList = [
+  '',
+  'visitor',
+  'rider',
+  'transportor',
+  'subcontractor'
+];
+const kVehicleQueryConditionList = ['', 'still_here'];
+const kVehicleQueryIsMemberList = ['', 'member_only', 'not_member'];
+
 const kVehicleTypeMap = {
   'car': 'รถยนต์',
   'taxi': 'แท็กซี่',

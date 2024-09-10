@@ -6,7 +6,7 @@ import 'package:carpark/components/visitor_list_card.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/providers/visitors_notifier.dart';
+import '/providers/visitors_notifier.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';

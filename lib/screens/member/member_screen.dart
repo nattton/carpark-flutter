@@ -1,4 +1,4 @@
-import 'package:carpark/common/widgets/show_snackbar.dart';
+import '/common/widgets/show_snackbar.dart';
 import 'package:carpark/components/vehicle_header_card.dart';
 import 'package:carpark/components/vehicle_list_card.dart';
 import 'package:carpark/constants.dart';
@@ -322,12 +322,12 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void onPressedEdit(BuildContext context, VehicleModel vehicle) {
-    _plateNumberController.text = vehicle.plateNumber!;
-    _resembleController.text = vehicle.resemble!;
-    _plateProvinceController.text = vehicle.plateProvince!;
-    _brandController.text = vehicle.brand!;
-    _colorController.text = vehicle.color!;
-    _telephoneController.text = vehicle.telephone!;
+    _plateNumberController.text = vehicle.plateNumber;
+    _resembleController.text = vehicle.resemble;
+    _plateProvinceController.text = vehicle.plateProvince;
+    _brandController.text = vehicle.brand;
+    _colorController.text = vehicle.color;
+    _telephoneController.text = vehicle.telephone;
 
     Alert(
         context: context,
@@ -437,13 +437,15 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void updateVehicle(VehicleModel vehicle) {
-    vehicle.memberId = widget.memberId;
-    vehicle.plateNumber = _plateNumberController.text;
-    vehicle.plateProvince = _plateProvinceController.text;
-    vehicle.brand = _brandController.text;
-    vehicle.color = _colorController.text;
-    vehicle.telephone = _telephoneController.text;
-    vehicle.resemble = _resembleController.text;
+    vehicle = vehicle.copyWith(
+      memberId: widget.memberId,
+      plateNumber: _plateNumberController.text,
+      plateProvince: _plateProvinceController.text,
+      brand: _brandController.text,
+      color: _colorController.text,
+      telephone: _telephoneController.text,
+      resemble: _resembleController.text,
+    );
 
     context.read<VehicleBloc>().add(VehicleEvent.updateVehicle(vehicle));
     Navigator.pop(context);

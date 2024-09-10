@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carpark/screens/vehicles/vehicles_screen.dart';
+
 import 'package:carpark/screens/main/cubit/player_cubit.dart';
 import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
+import 'package:carpark/screens/people/people_screen.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -28,7 +31,7 @@ import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/member_list/member_list_screen.dart';
 import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/screens/report_screen.dart';
-import 'package:carpark/screens/setting_screen.dart';
+import 'package:carpark/screens/setting/setting_screen.dart';
 import 'package:carpark/screens/sign_in/sign_in_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
@@ -156,7 +159,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void getMember() {
-    context.read<MemberListCubit>().listMembers();
+    context.read<MemberListCubit>().fetchMember();
   }
 
   Future<void> getLastGate() async {
@@ -325,6 +328,22 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 icon: const Icon(Icons.person_search),
               ),
               SideMenuItem(
+                title: 'บุคคล',
+                onTap: (page, _) {
+                  selectedPage('PEOPLE');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.people),
+              ),
+              SideMenuItem(
+                title: 'ยานพาหนะ',
+                onTap: (page, _) {
+                  selectedPage('VEHICLES');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.car_crash),
+              ),
+              SideMenuItem(
                 title: 'รายงาน',
                 onTap: (page, _) {
                   selectedPage('REPORT');
@@ -383,6 +402,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 Container(
                   color: Colors.white,
                   child: const MemberListScreen(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: const PeopleScreen(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: const VehiclesScreen(),
                 ),
                 Container(
                   color: Colors.white,

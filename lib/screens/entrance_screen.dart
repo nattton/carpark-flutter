@@ -566,7 +566,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     }).catchError((Object obj) {
       EasyLoading.dismiss();
       switch (obj.runtimeType) {
-        case DioException:
+        case DioException _:
           final res = (obj as DioException).response;
           final response = ResponseModel.fromJson(res!.data);
           alertError(response.error);

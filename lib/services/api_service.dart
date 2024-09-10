@@ -87,8 +87,7 @@ abstract class ApiService {
       @Header('authorization') String token, @Path() int id);
 
   @GET("/api/members")
-  Future<List<MemberModel>> getMemberList(
-      @Header('authorization') String token);
+  Future<List<MemberModel>> fetchMember(@Header('authorization') String token);
 
   @GET("/api/export/members")
   @DioResponseType(ResponseType.bytes)
@@ -98,6 +97,16 @@ abstract class ApiService {
   @POST("/api/members/{memberId}/vehicles")
   Future<void> createVehicle(@Header('authorization') String token,
       @Path() int memberId, @Body() VehicleModel vehicle);
+
+  @GET("/api/vehicles")
+  Future<List<VehicleModel>> fetchVehicle(
+    @Header('authorization') String token,
+    @Query("offset") int offset,
+    @Query("limit") int limit,
+    @Query("term") String term,
+    @Query("condition") String condition,
+    @Query("is_member") String isMember,
+  );
 
   @PATCH("/api/vehicles/{id}")
   Future<void> updateVehicle(@Header('authorization') String token,
@@ -134,7 +143,14 @@ abstract class ApiService {
 
 // People
   @GET("/api/people")
-  Future<List<PersonModel>> listPeople(@Header('authorization') String token);
+  Future<List<PersonModel>> listPeople(
+    @Header('authorization') String token,
+    @Query("offset") int offset,
+    @Query("limit") int limit,
+    @Query("term") String term,
+    @Query("type") String type,
+    @Query("active") String active,
+  );
 
   @GET("/api/report/{type}")
   Future<List<ReportTrafficModel>> reportTraffic(

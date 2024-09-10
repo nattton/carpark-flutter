@@ -1,10 +1,10 @@
-import 'package:carpark/constants.dart';
 import 'package:carpark/models/vehicle_model.dart';
+
+import 'package:carpark/constants.dart';
 import 'package:flutter/material.dart';
 
-class VehicleListCard extends StatelessWidget {
-  const VehicleListCard(
-      {super.key, required this.vehicle, required this.onTap});
+class VehiclesCard extends StatelessWidget {
+  const VehiclesCard({super.key, required this.vehicle, required this.onTap});
 
   final VehicleModel vehicle;
   final VoidCallback onTap;
@@ -21,15 +21,6 @@ class VehicleListCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  vehicle.id.toString(),
-                  style: const TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Text(
                   vehicle.plateNumber,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
@@ -39,7 +30,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.resemble,
+                  vehicle.inTimeFormat(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -48,7 +39,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.plateProvince,
+                  vehicle.outTimeFormat(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -57,16 +48,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.brand,
-                  style: const TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  vehicle.color,
+                  vehicle.member != null ? vehicle.member!.name : "",
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

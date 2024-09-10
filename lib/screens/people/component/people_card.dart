@@ -1,12 +1,11 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/models/vehicle_model.dart';
+import 'package:carpark/models/person_model.dart';
 import 'package:flutter/material.dart';
 
-class VehicleListCard extends StatelessWidget {
-  const VehicleListCard(
-      {super.key, required this.vehicle, required this.onTap});
+class PeopleCard extends StatelessWidget {
+  const PeopleCard({super.key, required this.person, required this.onTap});
 
-  final VehicleModel vehicle;
+  final PersonModel person;
   final VoidCallback onTap;
 
   @override
@@ -21,7 +20,7 @@ class VehicleListCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  vehicle.id.toString(),
+                  person.idCard,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -30,7 +29,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.plateNumber,
+                  person.thaiName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -39,7 +38,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.resemble,
+                  person.engName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -48,7 +47,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.plateProvince,
+                  person.type,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -57,7 +56,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.brand,
+                  person.expiresAt != null ? person.expiresAt.toString() : "",
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -66,16 +65,7 @@ class VehicleListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  vehicle.color,
-                  style: const TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  vehicle.telephone,
+                  person.telephone,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

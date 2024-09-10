@@ -1,4 +1,5 @@
-import 'package:carpark/components/camera_list_card.dart';
+import 'package:carpark/screens/setting/camera_header_card.dart';
+import 'package:carpark/screens/setting/camera_list_card.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
@@ -97,10 +98,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
           );
         }
         if (index == 1) {
-          return CameraListCard(
-            camera: const CameraModel(),
-            onTap: () {},
-          );
+          return const CameraHeaderCard();
         }
         return CameraListCard(
             camera: cameraList[index - 2],

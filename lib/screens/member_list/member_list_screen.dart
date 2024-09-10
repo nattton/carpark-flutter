@@ -1,5 +1,6 @@
 import 'package:carpark/components/member_header_card.dart';
 import 'package:carpark/components/member_list_card.dart';
+import 'package:carpark/constants.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
@@ -15,10 +16,15 @@ class MemberListScreen extends StatefulWidget {
 
 class _MemberListScreenState extends State<MemberListScreen> {
   final _searchController = TextEditingController();
+  final List<String> _listStatus = ["status", ...kStatusList];
+  final List<String> _listMemberType = ["type", ...kMemberTypeList];
+  String _filterStatus = "";
+  String _filterMemberType = "";
+
   @override
   void initState() {
     super.initState();
-    getMember();
+    fetchMember();
   }
 
   @override
@@ -36,24 +42,74 @@ class _MemberListScreenState extends State<MemberListScreen> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: _searchController,
-            autofocus: false,
-            autocorrect: false,
-            onChanged: onSearchTextChanged,
-            decoration: InputDecoration(
-              labelText: 'Search',
-              suffixIcon: GestureDetector(
-                onTap: () {
-                  _searchController.clear();
-                  onSearchTextChanged('');
-                },
-                child: const Icon(Icons.clear),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: false,
+                  autocorrect: false,
+                  onChanged: (_) => filterChanged(),
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        _searchController.clear();
+                        filterChanged();
+                      },
+                      child: const Icon(Icons.clear),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                  ),
+                ),
               ),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-            ),
+              const SizedBox(
+                width: 10.0,
+              ),
+              Flexible(
+                child: DropdownButton(
+                    value: _filterMemberType,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _filterMemberType = value!;
+                      });
+                      filterChanged();
+                    },
+                    items: _listMemberType
+                        .map<DropdownMenuItem<String>>((String selectValue) {
+                      String value = selectValue == "type" ? "" : selectValue;
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(selectValue),
+                      );
+                    }).toList()),
+              ),
+              const SizedBox(
+                width: 10.0,
+              ),
+              Flexible(
+                child: DropdownButton(
+                    value: _filterStatus,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _filterStatus = value!;
+                      });
+                      filterChanged();
+                    },
+                    items: _listStatus
+                        .map<DropdownMenuItem<String>>((String selectValue) {
+                      String value = selectValue == "status" ? "" : selectValue;
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(selectValue),
+                      );
+                    }).toList()),
+              )
+            ],
           ),
         ),
         const MemberHeaderCard(),
@@ -77,14 +133,14 @@ class _MemberListScreenState extends State<MemberListScreen> {
     );
   }
 
-  Future<void> getMember() async {
-    context.read<MemberListCubit>().listMembers();
+  Future<void> fetchMember() async {
+    context.read<MemberListCubit>().fetchMember();
   }
 
   void onPressedRow(BuildContext context, MemberModel member) async {
     Navigator.of(context)
         .pushNamed(MemberScreen.id, arguments: member.id)
-        .then((value) => {getMember()});
+        .then((value) => {fetchMember()});
   }
 
   void alertError(String msg) {
@@ -105,7 +161,9 @@ class _MemberListScreenState extends State<MemberListScreen> {
         });
   }
 
-  onSearchTextChanged(String term) async {
-    context.read<MemberListCubit>().filter(term);
+  filterChanged() async {
+    context
+        .read<MemberListCubit>()
+        .filter(_searchController.text, _filterMemberType, _filterStatus);
   }
 }

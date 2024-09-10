@@ -9,10 +9,7 @@ class NullTimeModel {
   @JsonKey(name: "Valid")
   bool? valid;
 
-  NullTimeModel(
-    this.time, {
-    this.valid,
-  });
+  NullTimeModel(this.time, this.valid);
 
   factory NullTimeModel.fromJson(Map<String, dynamic> json) =>
       _$NullTimeModelFromJson(json);

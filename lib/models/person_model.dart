@@ -4,8 +4,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'person_model.freezed.dart';
 part 'person_model.g.dart';
 
-@unfreezed
-class PersonModel with _$PersonModel {
+@freezed
+sealed class PersonModel with _$PersonModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory PersonModel({
     @Default("") String id,
@@ -16,10 +16,11 @@ class PersonModel with _$PersonModel {
     @Default("") String gender,
     @Default("") String address,
     @Default("") String photo,
-    @Default("") String status,
+    @Default("") String telephone,
+    @Default("") String type,
     @Default("") String updatedAt,
-    @Default([]) List<VisitorModel>? visitors,
-    String? expiresAt,
+    DateTime? expiresAt,
+    List<VisitorModel>? visitors,
   }) = _PersonModel;
 
   factory PersonModel.fromJson(Map<String, dynamic> json) =>

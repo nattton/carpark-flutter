@@ -43,7 +43,7 @@ class VehicleBloc extends Bloc<VehicleEvent, VehicleState> {
       UpdateVehicle event, Emitter<VehicleState> emit) async {
     emit(const VehicleState.loading());
     await sl<ApiService>()
-        .updateVehicle(sl<AppService>().token, event.vehicle.id!, event.vehicle)
+        .updateVehicle(sl<AppService>().token, event.vehicle.id, event.vehicle)
         .then((value) {
       emit(const VehicleState.updateVehicle());
     }).onError((error, stackTrace) {
@@ -61,7 +61,7 @@ class VehicleBloc extends Bloc<VehicleEvent, VehicleState> {
       DeleteVehicle event, Emitter<VehicleState> emit) async {
     emit(const VehicleState.loading());
     await sl<ApiService>()
-        .deleteVehicle(sl<AppService>().token, event.vehicle.id!)
+        .deleteVehicle(sl<AppService>().token, event.vehicle.id)
         .then((value) {
       emit(const VehicleState.deleteVehicle());
     }).onError((error, stackTrace) {
