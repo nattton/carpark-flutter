@@ -1,6 +1,6 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:flutter/material.dart';
-import 'package:carpark/constants.dart';
 
 class CameraListCard extends StatelessWidget {
   const CameraListCard({super.key, required this.camera, required this.onTap});

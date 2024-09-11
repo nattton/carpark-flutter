@@ -1,8 +1,8 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:carpark/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignInScreen extends StatefulWidget {

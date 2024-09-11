@@ -1,11 +1,29 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carpark/screens/vehicles/vehicles_screen.dart';
-
+import 'package:carpark/constants.dart';
+import 'package:carpark/injection_container.dart';
+import 'package:carpark/models/camera_model.dart';
+import 'package:carpark/models/gate_log_model.dart';
+import 'package:carpark/models/last_gate.dart';
+import 'package:carpark/models/member_model.dart';
+import 'package:carpark/screens/display_screen.dart';
+import 'package:carpark/screens/entrance_screen.dart';
+import 'package:carpark/screens/exit_screen.dart';
+import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/main/cubit/player_cubit.dart';
+import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
+import 'package:carpark/screens/member_list/member_list_screen.dart';
 import 'package:carpark/screens/people/people_screen.dart';
+import 'package:carpark/screens/report_screen.dart';
+import 'package:carpark/screens/setting/setting_screen.dart';
+import 'package:carpark/screens/sign_in/sign_in_screen.dart';
+import 'package:carpark/screens/user_screen.dart';
+import 'package:carpark/screens/vehicles/vehicles_screen.dart';
+import 'package:carpark/screens/visitor_screen.dart';
+import 'package:carpark/services/api_service.dart';
+import 'package:carpark/services/app_service.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -17,26 +35,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
-import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
-import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/last_gate.dart';
-import 'package:carpark/models/member_model.dart';
-import 'package:carpark/screens/display_screen.dart';
-import 'package:carpark/screens/entrance_screen.dart';
-import 'package:carpark/screens/exit_screen.dart';
-import 'package:carpark/screens/gate_log_screen.dart';
-import 'package:carpark/screens/member_list/member_list_screen.dart';
-import 'package:carpark/screens/member/member_screen.dart';
-import 'package:carpark/screens/report_screen.dart';
-import 'package:carpark/screens/setting/setting_screen.dart';
-import 'package:carpark/screens/sign_in/sign_in_screen.dart';
-import 'package:carpark/screens/user_screen.dart';
-import 'package:carpark/screens/visitor_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 
 final lastGateProvider =
     StateNotifierProvider<LastGateNotifier, LastGate>((ref) {

@@ -14,6 +14,7 @@ import 'package:carpark/models/person_model.dart';
 import 'package:carpark/models/report_traffic_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/save_user_model.dart';
+import 'package:carpark/models/update_person_model.dart';
 import 'package:carpark/models/user_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/models/visitor_model.dart';
@@ -151,6 +152,14 @@ abstract class ApiService {
     @Query("type") String type,
     @Query("active") String active,
   );
+
+  @GET("/api/people/{id}")
+  Future<PersonModel> getPerson(
+      @Header('authorization') String token, @Path() String id);
+
+  @PATCH("/api/people/{id}")
+  Future<PersonModel> updatePerson(@Header('authorization') String token,
+      @Path() String id, @Body() UpdatePersonModel person);
 
   @GET("/api/report/{type}")
   Future<List<ReportTrafficModel>> reportTraffic(

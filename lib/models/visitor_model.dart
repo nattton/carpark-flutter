@@ -1,11 +1,10 @@
-import 'package:intl/intl.dart';
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:carpark/constants.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/null_time_model.dart';
 import 'package:carpark/models/visitor_image_model.dart';
+import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'visitor_model.g.dart';
 

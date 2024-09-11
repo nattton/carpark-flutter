@@ -1,3 +1,4 @@
+import 'package:carpark/models/null_time_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -19,7 +20,8 @@ sealed class PersonModel with _$PersonModel {
     @Default("") String telephone,
     @Default("") String type,
     @Default("") String updatedAt,
-    DateTime? expiresAt,
+    @Default(false) bool isActive,
+    NullTimeModel? expiresAt,
     List<VisitorModel>? visitors,
   }) = _PersonModel;
 

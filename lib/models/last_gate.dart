@@ -4,8 +4,8 @@ import 'package:carpark/models/gate_log_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-part 'last_gate.g.dart';
 part 'last_gate.freezed.dart';
+part 'last_gate.g.dart';
 
 @freezed
 class LastGate with _$LastGate {

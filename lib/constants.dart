@@ -13,6 +13,7 @@ const kSmartCardReaderUrl = 'http://localhost:3000';
 const kLimitList = [100, 500, 1000, 0];
 const kMemberTypeList = ['resident', 'carrier', 'subcontractor'];
 const kStatusList = ['active', 'inactive', 'overdue'];
+const kPeopleActiveList = ['active', 'inactive'];
 const kPeopleQueryActiveList = ['', 'active', 'inactive'];
 const kPeopleQueryTypeList = [
   '',

@@ -1,11 +1,12 @@
 import 'package:carpark/constants.dart';
+import 'package:carpark/models/person_model.dart';
+import 'package:carpark/screens/people/bloc/people_bloc.dart';
+import 'package:carpark/screens/people/person_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'component/people_card.dart';
 import 'component/people_header_card.dart';
-import 'package:carpark/models/person_model.dart';
-import 'package:carpark/screens/people/cubit/people_cubit.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PeopleScreen extends StatefulWidget {
   const PeopleScreen({super.key});
@@ -15,6 +16,7 @@ class PeopleScreen extends StatefulWidget {
 }
 
 class _PeopleScreenState extends State<PeopleScreen> {
+  List<PersonModel> _people = [];
   final _searchController = TextEditingController();
   int _filterLimit = 100;
   String _filterType = '';
@@ -145,23 +147,43 @@ class _PeopleScreenState extends State<PeopleScreen> {
           ),
         ),
         const PeopleHeaderCard(),
-        BlocBuilder<PeopleCubit, PeopleState>(
+        BlocBuilder<PeopleBloc, PeopleState>(
           builder: (context, state) {
-            final filteredPeople = state.filteredPeople;
-            return Expanded(
-              child: ListView.builder(
-                itemCount: filteredPeople.length,
-                itemBuilder: (context, index) {
-                  if (index == filteredPeople.length - 1) {
-                    fetchPeople(index);
+            return state.when(
+                initial: () => Container(),
+                success: (offset, people) {
+                  if (offset == 0) {
+                    _people = people;
+                  } else {
+                    _people = [..._people, ...people];
                   }
-                  return PeopleCard(
-                      person: filteredPeople[index],
-                      onTap: () =>
-                          onPressedRow(context, filteredPeople[index]));
+
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: _people.length,
+                      itemBuilder: (context, index) {
+                        if (index == _people.length - 1) {
+                          fetchPeople(index + 1);
+                        }
+                        return PeopleCard(
+                            person: _people[index],
+                            onTap: () => onPressedRow(context, _people[index]));
+                      },
+                    ),
+                  );
                 },
-              ),
-            );
+                endOfList: () {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: _people.length,
+                      itemBuilder: (context, index) {
+                        return PeopleCard(
+                            person: _people[index],
+                            onTap: () => onPressedRow(context, _people[index]));
+                      },
+                    ),
+                  );
+                });
           },
         )
       ],
@@ -169,14 +191,14 @@ class _PeopleScreenState extends State<PeopleScreen> {
   }
 
   Future<void> fetchPeople(int offset) async {
-    context.read<PeopleCubit>().fetch(offset, _filterLimit,
-        _searchController.text, _filterType, _filterActive);
+    context.read<PeopleBloc>().add(Fetch(offset, _filterLimit,
+        _searchController.text, _filterType, _filterActive));
   }
 
   void onPressedRow(BuildContext context, PersonModel person) async {
-    // Navigator.of(context)
-    //     .pushNamed(MemberScreen.id, arguments: person.id)
-    //     .then((value) => {getMember()});
+    Navigator.of(context)
+        .pushNamed(PersonScreen.id, arguments: person.id)
+        .then((value) => {fetchPeople(0)});
   }
 
   void alertError(String msg) {
@@ -195,9 +217,5 @@ class _PeopleScreenState extends State<PeopleScreen> {
             ],
           );
         });
-  }
-
-  onSearchTextChanged(String term) async {
-    context.read<PeopleCubit>().filter(term);
   }
 }

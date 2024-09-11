@@ -1,14 +1,16 @@
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/main/cubit/player_cubit.dart';
+import 'package:carpark/screens/main/main_screen.dart';
 import 'package:carpark/screens/member/bloc/member_bloc.dart';
 import 'package:carpark/screens/member/bloc/vehicle_bloc.dart';
+import 'package:carpark/screens/member/member_screen.dart';
 import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
-import 'package:carpark/screens/people/cubit/people_cubit.dart';
+import 'package:carpark/screens/people/bloc/people_bloc.dart';
+import 'package:carpark/screens/people/bloc/person_bloc.dart';
+import 'package:carpark/screens/people/person_screen.dart';
 import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
 import 'package:carpark/screens/sign_in/sign_in_screen.dart';
-import 'package:carpark/screens/main/main_screen.dart';
-import 'package:carpark/screens/member/member_screen.dart';
-import 'vehicles/cubit/vehicles_cubit.dart';
+import 'package:carpark/screens/vehicles/bloc/vehicles_bloc.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +30,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (_) => MemberListCubit()),
           BlocProvider(create: (_) => MemberBloc()),
           BlocProvider(create: (_) => VehicleBloc()),
-          BlocProvider(create: (_) => PeopleCubit()),
-          BlocProvider(create: (_) => VehiclesCubit()),
+          BlocProvider(create: (_) => PeopleBloc()),
+          BlocProvider(create: (_) => PersonBloc()),
+          BlocProvider(create: (_) => VehiclesBloc()),
         ],
         child: ScreenUtilInit(
           builder: (context, child) => MaterialApp(
@@ -52,6 +55,13 @@ class MyApp extends StatelessWidget {
                   final visitorId = settings.arguments as int;
                   return MaterialPageRoute(builder: (context) {
                     return VisitorDetailScreen(visitorId: visitorId);
+                  });
+                case PersonScreen.id:
+                  final personId = settings.arguments as String;
+                  return MaterialPageRoute(builder: (context) {
+                    return PersonScreen(
+                      personId: personId,
+                    );
                   });
                 case DisplayScreen.id:
                   final screenId = settings.arguments as int;

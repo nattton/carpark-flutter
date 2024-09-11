@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:carpark/constants.dart';
 import 'package:carpark/models/vehicle_model.dart';
+import 'package:carpark/screens/vehicles/bloc/vehicles_bloc.dart';
 import 'package:carpark/screens/vehicles/component/vehicles_card.dart';
 import 'package:carpark/screens/vehicles/component/vehicles_header_card.dart';
-import 'package:carpark/screens/vehicles/cubit/vehicles_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VehiclesScreen extends StatefulWidget {
   const VehiclesScreen({super.key});
@@ -15,6 +14,7 @@ class VehiclesScreen extends StatefulWidget {
 }
 
 class _VehiclesScreenState extends State<VehiclesScreen> {
+  List<VehicleModel> _vehicles = [];
   final _searchController = TextEditingController();
   int _filterLimit = 100;
   String _filterCondition = "";
@@ -146,23 +146,44 @@ class _VehiclesScreenState extends State<VehiclesScreen> {
           ),
         ),
         const VehiclesHeaderCard(),
-        BlocBuilder<VehiclesCubit, VehiclesState>(
+        BlocBuilder<VehiclesBloc, VehiclesState>(
           builder: (context, state) {
-            final filteredVehicles = state.filteredVehicles;
-            return Expanded(
-              child: ListView.builder(
-                itemCount: filteredVehicles.length,
-                itemBuilder: (context, index) {
-                  if (index == filteredVehicles.length - 1) {
-                    fetchVehicles(index);
+            return state.when(
+                initial: () => Container(),
+                success: (offset, vehicles) {
+                  if (offset == 0) {
+                    _vehicles = vehicles;
+                  } else {
+                    _vehicles = [..._vehicles, ...vehicles];
                   }
-                  return VehiclesCard(
-                      vehicle: filteredVehicles[index],
-                      onTap: () =>
-                          onPressedRow(context, filteredVehicles[index]));
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: _vehicles.length,
+                      itemBuilder: (context, index) {
+                        if (index == _vehicles.length - 1) {
+                          fetchVehicles(index + 1);
+                        }
+                        return VehiclesCard(
+                            vehicle: _vehicles[index],
+                            onTap: () =>
+                                onPressedRow(context, _vehicles[index]));
+                      },
+                    ),
+                  );
                 },
-              ),
-            );
+                endOfList: () {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: _vehicles.length,
+                      itemBuilder: (context, index) {
+                        return VehiclesCard(
+                            vehicle: _vehicles[index],
+                            onTap: () =>
+                                onPressedRow(context, _vehicles[index]));
+                      },
+                    ),
+                  );
+                });
           },
         )
       ],
@@ -170,8 +191,8 @@ class _VehiclesScreenState extends State<VehiclesScreen> {
   }
 
   Future<void> fetchVehicles(int offset) async {
-    context.read<VehiclesCubit>().fetch(offset, _filterLimit,
-        _searchController.text, _filterCondition, _filterIsMember);
+    context.read<VehiclesBloc>().add(VehiclesEvent.fetch(offset, _filterLimit,
+        _searchController.text, _filterCondition, _filterIsMember));
   }
 
   void onPressedRow(BuildContext context, VehicleModel vehicle) async {
