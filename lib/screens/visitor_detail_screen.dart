@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/visitor_model.dart';
@@ -38,8 +39,14 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
-                    visitor.photoUrl() != ""
-                        ? Image.network(visitor.photoUrl())
+                    visitor.photoUrl().isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: visitor.photoUrl(),
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          )
                         : const SizedBox(),
                     Text(
                       "เลขประจำตัวประชาชน : ${visitor.idCard!}",
@@ -69,12 +76,30 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
                       height: 10.0,
                     ),
                     for (var image in visitor.visitorImages!)
-                      Image.network(image.imageUrl()),
-                    visitor.gateLog!.captureImage! != ""
-                        ? Image.network(visitor.gateLog!.captureImageUrl())
+                      CachedNetworkImage(
+                        imageUrl: image.imageUrl(),
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
+                    visitor.gateLog!.captureImage!.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: visitor.gateLog!.captureImage!,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          )
                         : const SizedBox(),
-                    visitor.gateLogOut!.captureImage! != ""
-                        ? Image.network(visitor.gateLogOut!.captureImageUrl())
+                    visitor.gateLogOut!.captureImage!.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: visitor.gateLogOut!.captureImage!,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          )
                         : const SizedBox(),
                   ],
                 ),

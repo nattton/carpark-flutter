@@ -28,16 +28,16 @@ sealed class VehicleModel with _$VehicleModel {
       _$VehicleModelFromJson(json);
 
   String inTimeFormat() {
-    if (inTime!.valid!) {
-      DateTime dt = inTime!.time!.add(const Duration(hours: 7));
+    if (inTime!.valid) {
+      DateTime dt = inTime!.time.add(const Duration(hours: 7));
       return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
     }
     return "";
   }
 
   String outTimeFormat() {
-    if (outTime!.valid!) {
-      DateTime dt = outTime!.time!.add(const Duration(hours: 7));
+    if (outTime!.valid) {
+      DateTime dt = outTime!.time.add(const Duration(hours: 7));
       return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
     }
     return "";

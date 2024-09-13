@@ -53,12 +53,12 @@ final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
         break;
       case "exitTime":
         filterVisitor.sort((a, b) {
-          return a.exitTime!.time!.compareTo(b.createdAt!);
+          return a.exitTime!.time.compareTo(b.createdAt!);
         });
         break;
       case "-exitTime":
         filterVisitor.sort((b, a) {
-          return a.exitTime!.time!.compareTo(b.createdAt!);
+          return a.exitTime!.time.compareTo(b.createdAt!);
         });
         break;
       case "plateNumber":
@@ -310,7 +310,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         TextCellValue(v.gender!),
         TextCellValue(v.address!),
         TextCellValue(
-            v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : ""),
+            v.exitTime!.valid ? v.exitTime!.time.toIso8601String() : ""),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
       for (var j = 0; j < v.visitorImages!.length; j++) {

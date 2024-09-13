@@ -1,9 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/common/widgets/show_snackbar.dart';
+import 'package:carpark/components/visitor_header_card.dart';
+import 'package:carpark/components/visitor_list_card.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/models/person_model.dart';
 import 'package:carpark/models/update_person_model.dart';
+import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/people/bloc/person_bloc.dart';
+import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -278,19 +282,30 @@ class _PersonScreenState extends State<PersonScreen> {
             ),
           ],
         ),
-        // const PersonHeaderCard(),
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemCount: member.vehicles!.length,
-        //     itemBuilder: (context, index) {
-        //       return PersonListCard(
-        //           vehicle: member.vehicles![index],
-        //           onTap: () => onPressedEdit(context, member.vehicles![index]));
-        //     },
-        //   ),
-        // ),
+        VisitorHeaderCard(
+          selectedColumn: 0,
+          onTapDate: () {},
+          onTapExitTime: () {},
+          onTapPlateNumber: () {},
+          onTapMemberName: () {},
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: person.visitors!.length,
+            itemBuilder: (context, index) {
+              return VisitorListCard(
+                  visitor: person.visitors![index],
+                  onTap: () => viewDetail(person.visitors![index]));
+            },
+          ),
+        )
       ],
     );
+  }
+
+  void viewDetail(VisitorModel visitor) {
+    Navigator.of(context)
+        .pushNamed(VisitorDetailScreen.id, arguments: visitor.id);
   }
 
   Future openDatePicker() async {

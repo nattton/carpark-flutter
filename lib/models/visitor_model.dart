@@ -82,16 +82,16 @@ class VisitorModel {
   }
 
   String exitDateTimeFormat() {
-    if (exitTime!.valid!) {
-      DateTime dt = exitTime!.time!.add(const Duration(hours: 7));
+    if (exitTime!.valid) {
+      DateTime dt = exitTime!.time.add(const Duration(hours: 7));
       return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
     }
     return "";
   }
 
   String exitDateTimeNanoFormat() {
-    if (exitTime!.valid!) {
-      DateTime dt = exitTime!.time!.add(const Duration(hours: 7));
+    if (exitTime!.valid) {
+      DateTime dt = exitTime!.time.add(const Duration(hours: 7));
       return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
     }
     return "";

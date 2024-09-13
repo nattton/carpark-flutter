@@ -30,7 +30,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.exitTime!.valid!
+                  visitor.exitTime!.valid
                       ? visitor.exitDateTimeNanoFormat()
                       : "",
                   style: const TextStyle(
