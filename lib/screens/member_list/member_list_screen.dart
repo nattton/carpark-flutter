@@ -16,8 +16,8 @@ class MemberListScreen extends StatefulWidget {
 
 class _MemberListScreenState extends State<MemberListScreen> {
   final _searchController = TextEditingController();
-  final List<String> _listStatus = ["status", ...kStatusList];
-  final List<String> _listMemberType = ["type", ...kMemberTypeList];
+  final List<String> _listStatus = ["", ...kStatusList];
+  final List<String> _listMemberType = ["", ...kMemberTypeList];
   String _filterStatus = "";
   String _filterMemberType = "";
 
@@ -70,6 +70,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
               const SizedBox(
                 width: 10.0,
               ),
+              const Text("Type:"),
+              const SizedBox(
+                width: 10.0,
+              ),
               Flexible(
                 child: DropdownButton(
                     value: _filterMemberType,
@@ -80,14 +84,17 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       filterChanged();
                     },
                     items: _listMemberType
-                        .map<DropdownMenuItem<String>>((String selectValue) {
-                      String value = selectValue == "type" ? "" : selectValue;
+                        .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(selectValue),
+                        child: Text(value),
                       );
                     }).toList()),
               ),
+              const SizedBox(
+                width: 10.0,
+              ),
+              const Text("Status:"),
               const SizedBox(
                 width: 10.0,
               ),
@@ -101,11 +108,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       filterChanged();
                     },
                     items: _listStatus
-                        .map<DropdownMenuItem<String>>((String selectValue) {
-                      String value = selectValue == "status" ? "" : selectValue;
+                        .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(selectValue),
+                        child: Text(value),
                       );
                     }).toList()),
               )

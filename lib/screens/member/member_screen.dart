@@ -101,9 +101,7 @@ class _MemberScreenState extends State<MemberScreen> {
             BlocListener<MemberBloc, MemberState>(listener: _memberListener),
           ],
           child: BlocBuilder<MemberBloc, MemberState>(
-            buildWhen: (previous, current) {
-              return current is Success;
-            },
+            buildWhen: (previous, current) => current is Success,
             builder: (context, state) {
               if (state is Success) {
                 return _body(state.member);

@@ -16,7 +16,6 @@ const kStatusList = ['active', 'inactive', 'overdue'];
 const kPeopleActiveList = ['active', 'inactive'];
 const kPeopleQueryActiveList = ['', 'active', 'inactive'];
 const kPeopleQueryTypeList = [
-  '',
   'visitor',
   'rider',
   'transportor',

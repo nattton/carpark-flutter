@@ -21,15 +21,12 @@ class PersonScreen extends StatefulWidget {
 }
 
 class _PersonScreenState extends State<PersonScreen> {
-  List<DateTime?> _expiresDates = [DateTime.now()];
-
   final _idCardController = TextEditingController();
   final _thaiNameController = TextEditingController();
   final _engNameController = TextEditingController();
   final _telController = TextEditingController();
   final _addressController = TextEditingController();
-  bool _isActive = false;
-  String _type = "";
+  final _expiresAtController = TextEditingController();
 
   @override
   void initState() {
@@ -49,18 +46,7 @@ class _PersonScreenState extends State<PersonScreen> {
   }
 
   void getPerson() {
-    context.read<PersonBloc>().add(PersonEvent.getPerson(widget.personId));
-  }
-
-  void _personListener(BuildContext context, PersonState state) {
-    switch (state) {
-      case UpdateSuccess():
-        showSnackBar(context, "Update success.");
-        getPerson();
-      case Error():
-        showSnackBar(context, state.message);
-      default:
-    }
+    context.read<PersonBloc>().add(PersonEvent.get(widget.personId));
   }
 
   @override
@@ -70,17 +56,22 @@ class _PersonScreenState extends State<PersonScreen> {
         title: const Text("ข้อมูลผู้ติดต่อ"),
       ),
       body: BlocConsumer<PersonBloc, PersonState>(
-        buildWhen: (previous, current) {
-          return current is Success;
-        },
-        builder: (context, state) {
-          if (state is Success) {
-            return _body(state.person);
-          }
-          return Container();
-        },
-        listener: _personListener,
-      ),
+          listener: (context, state) {
+            switch (state) {
+              case UpdateSucess():
+                showSnackBar(context, "บันทึกข้อมูลเรียบร้อย");
+              case Error():
+                showSnackBar(context, state.message);
+              default:
+            }
+          },
+          buildWhen: (previous, current) => current is Success,
+          builder: (context, state) {
+            if (state is Success) {
+              return _body(state.person);
+            }
+            return const SizedBox();
+          }),
     );
   }
 
@@ -90,11 +81,12 @@ class _PersonScreenState extends State<PersonScreen> {
     _engNameController.text = person.engName;
     _telController.text = person.telephone;
     _addressController.text = person.address;
-    _isActive = person.isActive;
-    _type = person.type;
 
-    if (person.expiresAt!.valid!) {
-      _expiresDates = [person.expiresAt!.time!];
+    if (_expiresAtController.text.isEmpty &&
+        person.expiresAt != null &&
+        person.expiresAt!.valid) {
+      _expiresAtController.text =
+          DateFormat('yyyy-MM-dd').format(person.expiresAt!.time);
     }
 
     return Column(
@@ -119,7 +111,7 @@ class _PersonScreenState extends State<PersonScreen> {
                   readOnly: true,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: 'ID Card',
+                    labelText: 'รหัสประจำตัวประชาชน',
                     suffixIcon: const Icon(Icons.card_membership),
                     contentPadding:
                         const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -136,7 +128,7 @@ class _PersonScreenState extends State<PersonScreen> {
                   autocorrect: false,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: 'Tel.',
+                    labelText: 'เบอร์โทรศัพท์',
                     suffixIcon: const Icon(Icons.phone),
                     contentPadding:
                         const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -155,7 +147,7 @@ class _PersonScreenState extends State<PersonScreen> {
                   autocorrect: false,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    labelText: 'Thai Name',
+                    labelText: 'ชื่อไทย',
                     suffixIcon: const Icon(Icons.account_circle),
                     contentPadding:
                         const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -172,7 +164,7 @@ class _PersonScreenState extends State<PersonScreen> {
                   autocorrect: false,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    labelText: 'Eng Name',
+                    labelText: 'English Name',
                     suffixIcon: const Icon(Icons.account_circle),
                     contentPadding:
                         const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -192,7 +184,7 @@ class _PersonScreenState extends State<PersonScreen> {
                     autocorrect: false,
                     keyboardType: TextInputType.streetAddress,
                     decoration: InputDecoration(
-                      labelText: 'Address',
+                      labelText: 'ที่อยู่',
                       suffixIcon: const Icon(Icons.home),
                       contentPadding:
                           const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -205,16 +197,17 @@ class _PersonScreenState extends State<PersonScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: FormBuilderRadioGroup(
                     decoration: InputDecoration(
-                      labelText: 'Type',
+                      labelText: 'ประเภท',
                       contentPadding:
                           const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0)),
                     ),
-                    initialValue: _type,
+                    initialValue: person.type,
                     name: 'type',
                     onChanged: (value) {
-                      _type = value!;
+                      person = person.copyWith(type: value!);
+                      context.read<PersonBloc>().add(Edit(person));
                     },
                     validator: FormBuilderValidators.required(),
                     options: kPeopleQueryTypeList
@@ -227,51 +220,40 @@ class _PersonScreenState extends State<PersonScreen> {
             TableRow(
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () async {
-                            var results = await showCalendarDatePicker2Dialog(
-                              context: context,
-                              config:
-                                  CalendarDatePicker2WithActionButtonsConfig(
-                                      calendarType:
-                                          CalendarDatePicker2Type.single),
-                              dialogSize: const Size(325, 400),
-                              value: _expiresDates,
-                              borderRadius: BorderRadius.circular(15),
-                            );
-
-                            if (results != null) {
-                              setState(() {
-                                _expiresDates = results;
-                              });
-                            }
-                          },
-                          child: Text(
-                            'เลือกวันที่หมดอายุ : ${_expiresDates[0]!.day}/${_expiresDates[0]!.month}/${_expiresDates[0]!.year}',
-                            style: kButton2Style,
-                          ),
-                        ),
-                      ],
-                    )),
-                Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: FormBuilderRadioGroup(
+                  child: TextField(
+                    controller: _expiresAtController,
+                    autofocus: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.name,
                     decoration: InputDecoration(
-                      labelText: 'Active',
+                      labelText: 'ผ่านประตูได้ถึงวันที่',
+                      suffixIcon: GestureDetector(
+                        child: const Icon(Icons.calendar_today),
+                        onTap: () => openDatePicker(),
+                      ),
                       contentPadding:
                           const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0)),
                     ),
-                    initialValue: _isActive,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FormBuilderRadioGroup(
+                    decoration: InputDecoration(
+                      labelText: 'สถานะ',
+                      contentPadding:
+                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
+                    initialValue: person.isActive,
                     name: 'active',
                     onChanged: (value) {
-                      setState(() {
-                        _isActive = value!;
-                      });
+                      person = person.copyWith(isActive: value!);
+                      context.read<PersonBloc>().add(Edit(person));
                     },
                     validator: FormBuilderValidators.required(),
                     options: [true, false]
@@ -311,6 +293,29 @@ class _PersonScreenState extends State<PersonScreen> {
     );
   }
 
+  Future openDatePicker() async {
+    DateTime expiresAt = DateTime.now();
+    try {
+      expiresAt = DateTime.parse(_expiresAtController.text);
+    } catch (_) {}
+
+    var results = await showCalendarDatePicker2Dialog(
+      context: context,
+      config: CalendarDatePicker2WithActionButtonsConfig(
+          calendarType: CalendarDatePicker2Type.single),
+      dialogSize: const Size(325, 400),
+      value: [expiresAt],
+      borderRadius: BorderRadius.circular(15),
+    );
+
+    if (results != null) {
+      setState(() {
+        _expiresAtController.text =
+            DateFormat('yyyy-MM-dd').format(results[0]!);
+      });
+    }
+  }
+
   void alertError(String msg) {
     showDialog(
         context: context,
@@ -346,18 +351,17 @@ class _PersonScreenState extends State<PersonScreen> {
   }
 
   void onPressedSave(PersonModel person) {
-    var expiresDate = DateFormat('yyyy-MM-dd').format(_expiresDates[0]!);
     var updatePerson = UpdatePersonModel(
       id: person.id,
       thaiName: _thaiNameController.text,
       engName: _engNameController.text,
       address: _addressController.text,
       telephone: _telController.text,
-      type: _type,
-      expiresAt: expiresDate,
-      isActive: _isActive,
+      type: person.type,
+      expiresAt: _expiresAtController.text,
+      isActive: person.isActive,
     );
 
-    context.read<PersonBloc>().add(PersonEvent.updatePerson(updatePerson));
+    context.read<PersonBloc>().add(PersonEvent.update(updatePerson));
   }
 }

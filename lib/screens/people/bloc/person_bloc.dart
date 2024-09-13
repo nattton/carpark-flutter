@@ -18,42 +18,41 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   PersonBloc() : super(const _Initial()) {
     on<PersonEvent>((event, emit) {});
 
-    on<GetPerson>(onGetPerson);
-
-    on<UpdatePerson>(onUpdatePerson);
+    on<Get>(onGet);
+    on<Update>(onUpdate);
   }
 
-  Future<void> onGetPerson(GetPerson event, Emitter<PersonState> emit) async {
+  Future<void> onGet(Get event, Emitter<PersonState> emit) async {
     await sl<ApiService>()
         .getPerson(sl<AppService>().token, event.id)
         .then((person) {
       emit(PersonState.success(person: person));
-    }).catchError((error) {
-      if (error.runtimeType == DioException) {
-        final res = (error as DioException).response;
-        final response = ResponseModel.fromJson(res!.data);
+    }).onError((error, stackTrace) {
+      final res = (error as DioException).response;
+      if (res != null) {
+        final response = ResponseModel.fromJson(res.data);
         emit(PersonState.error(message: response.error));
-      } else {
-        emit(PersonState.error(message: error.toString()));
+        return;
       }
+      emit(PersonState.error(message: error.toString()));
     });
   }
 
-  Future<void> onUpdatePerson(
-      UpdatePerson event, Emitter<PersonState> emit) async {
+  Future<void> onUpdate(Update event, Emitter<PersonState> emit) async {
     await sl<ApiService>()
         .updatePerson(
             sl<AppService>().token, event.updatePerson.id, event.updatePerson)
         .then((person) {
       emit(PersonState.success(person: person));
-    }).catchError((error) {
-      if (error.runtimeType == DioException) {
-        final res = (error as DioException).response;
-        final response = ResponseModel.fromJson(res!.data);
+      emit(const PersonState.updateSuccess());
+    }).onError((error, stackTrace) {
+      final res = (error as DioException).response;
+      if (res != null) {
+        final response = ResponseModel.fromJson(res.data);
         emit(PersonState.error(message: response.error));
-      } else {
-        emit(PersonState.error(message: error.toString()));
+        return;
       }
+      emit(PersonState.error(message: error.toString()));
     });
   }
 }

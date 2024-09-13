@@ -16,6 +16,7 @@ class PeopleScreen extends StatefulWidget {
 }
 
 class _PeopleScreenState extends State<PeopleScreen> {
+  List<String> listPeopleType = ['', ...kPeopleQueryTypeList];
   List<PersonModel> _people = [];
   final _searchController = TextEditingController();
   int _filterLimit = 100;
@@ -135,7 +136,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                       });
                       fetchPeople(0);
                     },
-                    items: kPeopleQueryTypeList
+                    items: listPeopleType
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,

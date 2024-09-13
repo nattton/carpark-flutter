@@ -56,9 +56,7 @@ class PeopleCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  person.expiresAt != null && person.expiresAt!.valid!
-                      ? person.expiresAt!.time!.toString()
-                      : "",
+                  person.isActive ? "active" : "",
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -67,7 +65,7 @@ class PeopleCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  person.telephone,
+                  person.expiresAt!.toDate(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

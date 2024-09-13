@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
+import 'package:flutter/material.dart';
 
 class PeopleHeaderCard extends StatelessWidget {
   const PeopleHeaderCard({super.key});
@@ -52,6 +52,16 @@ class PeopleHeaderCard extends StatelessWidget {
             Expanded(
               child: Text(
                 "สถานะ",
+                style: TextStyle(
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                "วันหมดอายุ",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
