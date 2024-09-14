@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/common/widgets/show_snackbar.dart';
 import 'package:carpark/components/visitor_header_card.dart';
@@ -8,11 +11,13 @@ import 'package:carpark/models/update_person_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/people/bloc/person_bloc.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class PersonScreen extends StatefulWidget {
   static const String id = "person_screen";
@@ -280,6 +285,14 @@ class _PersonScreenState extends State<PersonScreen> {
                     child: const Text("บันทึกข้อมูล")),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: ElevatedButton(
+                    onPressed: () => onDownloadQR(person),
+                    child: const Text("Download QR Code")),
+              ),
+            ),
           ],
         ),
         VisitorHeaderCard(
@@ -289,16 +302,18 @@ class _PersonScreenState extends State<PersonScreen> {
           onTapPlateNumber: () {},
           onTapMemberName: () {},
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: person.visitors!.length,
-            itemBuilder: (context, index) {
-              return VisitorListCard(
-                  visitor: person.visitors![index],
-                  onTap: () => viewDetail(person.visitors![index]));
-            },
-          ),
-        )
+        person.visitors != null
+            ? Expanded(
+                child: ListView.builder(
+                  itemCount: person.visitors!.length,
+                  itemBuilder: (context, index) {
+                    return VisitorListCard(
+                        visitor: person.visitors![index],
+                        onTap: () => viewDetail(person.visitors![index]));
+                  },
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }
@@ -378,5 +393,30 @@ class _PersonScreenState extends State<PersonScreen> {
     );
 
     context.read<PersonBloc>().add(PersonEvent.update(updatePerson));
+  }
+
+  onDownloadQR(PersonModel person) async {
+    String filename =
+        "${person.idCard}_${person.thaiName}_${person.engName}.png"
+            .replaceAll(" ", "_");
+
+    String? outputFile = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: filename,
+    );
+
+    if (outputFile != null) {
+      final file = File(outputFile);
+      ByteData? qrBytes = await QrPainter(
+        data: person.id,
+        gapless: true,
+        version: QrVersions.auto,
+      ).toImageData(878);
+      if (qrBytes != null) {
+        final buffer = qrBytes.buffer;
+        file.writeAsBytes(
+            buffer.asUint8List(qrBytes.offsetInBytes, qrBytes.lengthInBytes));
+      }
+    }
   }
 }

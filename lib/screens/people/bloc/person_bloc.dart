@@ -43,8 +43,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
         .updatePerson(
             sl<AppService>().token, event.updatePerson.id, event.updatePerson)
         .then((person) {
-      emit(PersonState.success(person: person));
       emit(const PersonState.updateSuccess());
+      Get(person.id);
     }).onError((error, stackTrace) {
       final res = (error as DioException).response;
       if (res != null) {
