@@ -113,8 +113,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     printerManager.discovery(type: type, isBle: isBle).listen((device) {
       if (!devices.contains(device.name)) {
         devices.add(device.name);
-        print(
-            'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}');
+        // print(
+        //     'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}');
         setState(() {});
       }
     });

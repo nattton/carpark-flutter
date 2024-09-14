@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:carpark/models/response_model.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/member_model.dart';
+import 'package:carpark/models/response_model.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'member_bloc.freezed.dart';
 part 'member_event.dart';
 part 'member_state.dart';
-part 'member_bloc.freezed.dart';
 
 class MemberBloc extends Bloc<MemberEvent, MemberState> {
   MemberBloc() : super(const MemberState.initial()) {
@@ -40,7 +40,6 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
   FutureOr<void> onUpdateMember(
       UpdateMember event, Emitter<MemberState> emit) async {
     emit(const MemberState.loading());
-    print(event.member.toJson());
     await sl<ApiService>()
         .updateMember(sl<AppService>().token, event.member.id, event.member)
         .then((value) {

@@ -520,7 +520,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   void readDrivingLicence(String value) {
     int count = '\n'.allMatches(value).length;
-    print('count: $count');
     if (count == 6) {
       final lines = value.split("\n");
       // for (var i = 0; i < lines.length; i++) {
@@ -531,9 +530,9 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       final idNumber = lines[2];
       final licenceNumber = lines[4];
 
-      print("Name : $name");
-      print("idNumber : $idNumber");
-      print("licenceNumber : $licenceNumber");
+      // print("Name : $name");
+      // print("idNumber : $idNumber");
+      // print("licenceNumber : $licenceNumber");
 
       var nameList = name.split("\$").reversed.toList();
       for (var i = 0; i < nameList.length; i++) {
@@ -553,7 +552,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     sl<ApiService>().smartCardReader().then((card) async {
       _idCardModel = card;
       _photoFile = await _tempImage(card.id);
-      print(_idCardModel!.photoUrl());
       await sl<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
       _idCardController.text = card.id;
       _thaiNameController.text = card.thaiName;

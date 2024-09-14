@@ -183,20 +183,14 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
         alertMessage('ลงเวลาออก ทะเบียน : ${value.plateNumber}');
         addImageToVisitor(value);
       }).catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioException:
-            final res = (obj as DioException).response;
-            if (res != null) {
-              if (res.statusCode == HttpStatus.badRequest) {
-                alertError(
-                    "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ");
-              } else if (res.statusCode == HttpStatus.notFound) {
-                alertError("ไม่พบข้อมูล");
-              }
-            }
-            break;
-          default:
-            break;
+        final res = (obj as DioException).response;
+        if (res != null) {
+          if (res.statusCode == HttpStatus.badRequest) {
+            alertError(
+                "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ");
+          } else if (res.statusCode == HttpStatus.notFound) {
+            alertError("ไม่พบข้อมูล");
+          }
         }
       });
     }
