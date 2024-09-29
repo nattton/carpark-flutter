@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:carpark/models/login_user_model.dart';
-import 'package:carpark/models/user_model.dart';
+import 'package:carpark/features/auth/data/models/user_login_model.dart';
+import 'package:carpark/features/auth/data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const kTokenKey = 'TOKEN_KEY';
@@ -16,7 +16,7 @@ class AppService {
   get token => prefs.getString(kTokenKey) ?? '';
   get printer => prefs.getString(kPrinterKey) ?? '';
 
-  Future<void> saveLogin(LoginUserModel login) async {
+  Future<void> saveLogin(UserLoginModel login) async {
     await prefs.setString(kTokenKey, "bearer ${login.refreshToken}");
     await prefs.setString(kUserKey, jsonEncode(login.user.toJson()));
   }

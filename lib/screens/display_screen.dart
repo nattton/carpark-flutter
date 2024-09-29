@@ -1,5 +1,5 @@
 import 'package:carpark/components/entrance_display.dart';
-import 'package:carpark/screens/main/main_screen.dart';
+import 'package:carpark/features/main/presention/pages/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

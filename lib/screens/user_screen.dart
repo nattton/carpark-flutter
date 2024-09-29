@@ -1,7 +1,7 @@
 import 'package:carpark/components/user_list_card.dart';
+import 'package:carpark/features/auth/data/models/user_model.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/save_user_model.dart';
-import 'package:carpark/models/user_model.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +60,10 @@ class _UserScreenState extends State<UserScreen> {
 
   void saveUser(UserModel user) {
     var saveUser = SaveUserModel(
-        id: user.id,
+        id: user.id!,
         username: _usernameController.text,
         password: _passwordController.text,
-        role: user.role);
+        role: user.role!);
     sl<ApiService>()
         .updateUser(sl<AppService>().token, saveUser.id, saveUser)
         .then((value) {
@@ -75,7 +75,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void onPressedRow(BuildContext context, UserModel user) {
-    _usernameController.text = user.username;
+    _usernameController.text = user.username!;
     _passwordController.text = '';
 
     Alert(

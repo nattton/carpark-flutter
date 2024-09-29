@@ -1,21 +1,21 @@
 import 'dart:io';
 
 import 'package:carpark/constants.dart';
+import 'package:carpark/features/auth/data/models/login_request_model.dart';
+import 'package:carpark/features/auth/data/models/user_login_model.dart';
+import 'package:carpark/features/auth/data/models/user_model.dart';
+import 'package:carpark/features/people/data/models/person_model.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';
 import 'package:carpark/models/gate_log_result.dart';
 import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/last_gate.dart';
-import 'package:carpark/models/login_request_model.dart';
-import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/member_model.dart';
-import 'package:carpark/models/person_model.dart';
 import 'package:carpark/models/report_traffic_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/save_user_model.dart';
 import 'package:carpark/models/update_person_model.dart';
-import 'package:carpark/models/user_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:dio/dio.dart';
@@ -28,7 +28,7 @@ abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
   @POST("/api/login")
-  Future<LoginUserModel> login(@Body() LoginRequestModel login);
+  Future<UserLoginModel> login(@Body() LoginRequestModel login);
 
   @GET("/api/admin/users")
   Future<List<UserModel>> getUserList(@Header('authorization') String token);

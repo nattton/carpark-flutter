@@ -1,16 +1,9 @@
+import 'package:carpark/core/cubit/app_user_cubit.dart';
+import 'package:carpark/features/auth/presention/pages/sign_in_screen.dart';
+import 'package:carpark/features/main/presention/pages/main_screen.dart';
+import 'package:carpark/features/member/presention/pages/member_screen.dart';
+import 'package:carpark/features/people/presention/pages/person_screen.dart';
 import 'package:carpark/screens/display_screen.dart';
-import 'package:carpark/screens/main/cubit/player_cubit.dart';
-import 'package:carpark/screens/main/main_screen.dart';
-import 'package:carpark/screens/member/bloc/member_bloc.dart';
-import 'package:carpark/screens/member/bloc/vehicle_bloc.dart';
-import 'package:carpark/screens/member/member_screen.dart';
-import 'package:carpark/screens/member_list/cubit/member_list_cubit.dart';
-import 'package:carpark/screens/people/bloc/people_bloc.dart';
-import 'package:carpark/screens/people/bloc/person_bloc.dart';
-import 'package:carpark/screens/people/person_screen.dart';
-import 'package:carpark/screens/sign_in/bloc/sign_in_bloc.dart';
-import 'package:carpark/screens/sign_in/sign_in_screen.dart';
-import 'package:carpark/screens/vehicles/bloc/vehicles_bloc.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,56 +16,53 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => SignInBloc()),
-          BlocProvider(create: (_) => PlayerCubit()),
-          BlocProvider(create: (_) => MemberListCubit()),
-          BlocProvider(create: (_) => MemberBloc()),
-          BlocProvider(create: (_) => VehicleBloc()),
-          BlocProvider(create: (_) => PeopleBloc()),
-          BlocProvider(create: (_) => PersonBloc()),
-          BlocProvider(create: (_) => VehiclesBloc()),
-        ],
-        child: ScreenUtilInit(
-          builder: (context, child) => MaterialApp(
-            title: 'Car Park',
-            initialRoute: WelcomeScreen.id,
-            debugShowCheckedModeBanner: false,
-            routes: {
-              WelcomeScreen.id: (context) => const WelcomeScreen(),
-              SignInScreen.id: (context) => const SignInScreen(),
-              MainScreen.id: (context) => const MainScreen(),
-            },
-            onGenerateRoute: (settings) {
-              switch (settings.name) {
-                case MemberScreen.id:
-                  final memberId = settings.arguments as int;
-                  return MaterialPageRoute(builder: (context) {
-                    return MemberScreen(memberId: memberId);
-                  });
-                case VisitorDetailScreen.id:
-                  final visitorId = settings.arguments as int;
-                  return MaterialPageRoute(builder: (context) {
-                    return VisitorDetailScreen(visitorId: visitorId);
-                  });
-                case PersonScreen.id:
-                  final personId = settings.arguments as String;
-                  return MaterialPageRoute(builder: (context) {
-                    return PersonScreen(
-                      personId: personId,
-                    );
-                  });
-                case DisplayScreen.id:
-                  final screenId = settings.arguments as int;
-                  return MaterialPageRoute(builder: (context) {
-                    return DisplayScreen(screenId: screenId);
-                  });
-              }
-              return null;
-            },
-            builder: EasyLoading.init(),
-          ),
-        ));
+    return ScreenUtilInit(
+      builder: (context, child) => MaterialApp(
+        title: 'Car Park',
+        initialRoute: WelcomeScreen.id,
+        home: BlocSelector<AppUserCubit, AppUserState, bool>(selector: (state) {
+          return state is LoggedIn;
+        }, builder: (context, isLoggedIn) {
+          if (isLoggedIn) {
+            return const MainScreen();
+          }
+          return const SignInScreen();
+        }),
+        debugShowCheckedModeBanner: false,
+        routes: {
+          WelcomeScreen.id: (context) => const WelcomeScreen(),
+          SignInScreen.id: (context) => const SignInScreen(),
+          MainScreen.id: (context) => const MainScreen(),
+        },
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case MemberScreen.id:
+              final memberId = settings.arguments as int;
+              return MaterialPageRoute(builder: (context) {
+                return MemberScreen(memberId: memberId);
+              });
+            case VisitorDetailScreen.id:
+              final visitorId = settings.arguments as int;
+              return MaterialPageRoute(builder: (context) {
+                return VisitorDetailScreen(visitorId: visitorId);
+              });
+            case PersonScreen.id:
+              final personId = settings.arguments as String;
+              return MaterialPageRoute(builder: (context) {
+                return PersonScreen(
+                  personId: personId,
+                );
+              });
+            case DisplayScreen.id:
+              final screenId = settings.arguments as int;
+              return MaterialPageRoute(builder: (context) {
+                return DisplayScreen(screenId: screenId);
+              });
+          }
+          return null;
+        },
+        builder: EasyLoading.init(),
+      ),
+    );
   }
 }
