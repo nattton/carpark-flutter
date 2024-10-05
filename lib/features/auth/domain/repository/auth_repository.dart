@@ -1,5 +1,6 @@
 import 'package:carpark/core/error/failures.dart';
 import 'package:carpark/features/auth/data/models/user_login_model.dart';
+import 'package:carpark/features/auth/data/models/user_model.dart';
 import 'package:fpdart/fpdart.dart';
 
 abstract class AuthRepository {
@@ -7,4 +8,6 @@ abstract class AuthRepository {
     required String username,
     required String password,
   });
+
+  Future<Either<Failure, UserModel>> currentUser();
 }

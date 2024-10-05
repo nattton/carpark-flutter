@@ -1,5 +1,5 @@
-import 'package:carpark/features/auth/presention/pages/sign_in_screen.dart';
-import 'package:carpark/features/main/presention/pages/main_screen.dart';
+import 'package:carpark/features/auth/presentation/pages/sign_in_screen.dart';
+import 'package:carpark/features/main/presentation/pages/main_screen.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
 import 'package:carpark/core/cubit/app_user_cubit.dart';
-import 'package:carpark/features/auth/presention/pages/sign_in_screen.dart';
-import 'package:carpark/features/main/presention/pages/main_screen.dart';
-import 'package:carpark/features/member/presention/pages/member_screen.dart';
-import 'package:carpark/features/people/presention/pages/person_screen.dart';
+import 'package:carpark/features/auth/presentation/pages/sign_in_screen.dart';
+import 'package:carpark/features/main/presentation/pages/main_screen.dart';
+import 'package:carpark/features/member/presentation/pages/member_screen.dart';
+import 'package:carpark/features/people/presentation/pages/person_screen.dart';
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome/welcome_screen.dart';

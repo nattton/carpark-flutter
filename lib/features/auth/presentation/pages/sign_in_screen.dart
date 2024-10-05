@@ -1,7 +1,7 @@
 import 'package:carpark/common/widgets/flutter_alert.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/features/auth/presention/bloc/auth_bloc.dart';
-import 'package:carpark/features/main/presention/pages/main_screen.dart';
+import 'package:carpark/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:carpark/features/main/presentation/pages/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

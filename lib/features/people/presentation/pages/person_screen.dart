@@ -7,7 +7,7 @@ import 'package:carpark/components/visitor_header_card.dart';
 import 'package:carpark/components/visitor_list_card.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/people/data/models/person_model.dart';
-import 'package:carpark/features/people/presention/bloc/person_bloc.dart';
+import 'package:carpark/features/people/presentation/bloc/person_bloc.dart';
 import 'package:carpark/models/update_person_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';

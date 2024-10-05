@@ -1,7 +1,7 @@
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/people/data/models/person_model.dart';
-import 'package:carpark/features/people/presention/bloc/people_bloc.dart';
-import 'package:carpark/features/people/presention/pages/person_screen.dart';
+import 'package:carpark/features/people/presentation/bloc/people_bloc.dart';
+import 'package:carpark/features/people/presentation/pages/person_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

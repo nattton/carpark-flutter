@@ -44,17 +44,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       sl<AppService>().saveLogin(userLogin);
       emit(const AuthState.success());
     });
-
-    // await sl<ApiService>()
-    //     .login(LoginRequestModel(username: username, password: password))
-    //     .then((value) async {
-    //   await sl<AppService>().saveLogin(value);
-    //   // goToMainScreen();
-
-    //   emit(const AuthState.success());
-    // }).catchError((error, stackTrace) {
-    //   emit(AuthState.error(message: error.toString()));
-    // });
   }
 
   FutureOr<void> _onIsUserLoggedIn(

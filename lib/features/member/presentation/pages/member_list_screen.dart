@@ -1,8 +1,8 @@
 import 'package:carpark/components/member_header_card.dart';
 import 'package:carpark/components/member_list_card.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/features/member/presention/cubit/member_list_cubit.dart';
-import 'package:carpark/features/member/presention/pages/member_screen.dart';
+import 'package:carpark/features/member/presentation/cubit/member_list_cubit.dart';
+import 'package:carpark/features/member/presentation/pages/member_screen.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

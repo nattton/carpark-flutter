@@ -1,7 +1,7 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/features/vehicle/presention/bloc/vehicles_bloc.dart';
-import 'package:carpark/features/vehicle/presention/widget/vehicles_card.dart';
-import 'package:carpark/features/vehicle/presention/widget/vehicles_header_card.dart';
+import 'package:carpark/features/vehicle/presentation/bloc/vehicles_bloc.dart';
+import 'package:carpark/features/vehicle/presentation/widget/vehicles_card.dart';
+import 'package:carpark/features/vehicle/presentation/widget/vehicles_header_card.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
