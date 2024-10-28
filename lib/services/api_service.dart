@@ -14,7 +14,6 @@ import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/report_traffic_model.dart';
-import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/update_person_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/models/visitor_model.dart';
@@ -34,7 +33,7 @@ abstract class ApiService {
   Future<List<UserModel>> getUserList(@Header('Authorization') String token);
 
   @PATCH("/api/admin/users/{id}")
-  Future<ResponseModel> updateUser(@Header('Authorization') String token,
+  Future<UserModel> updateUser(@Header('Authorization') String token,
       @Path() int id, @Body() SaveUserModel user);
 
   @GET("/api/open_door/{name}")

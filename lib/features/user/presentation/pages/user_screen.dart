@@ -1,11 +1,7 @@
 import 'package:carpark/features/auth/data/models/user_model.dart';
-import 'package:carpark/features/user/data/models/save_user_model.dart';
 import 'package:carpark/features/user/presentation/bloc/user_bloc.dart';
 import 'package:carpark/features/user/presentation/widget/user_list_card.dart';
 import 'package:carpark/features/user/presentation/widget/user_list_header.dart';
-import 'package:carpark/injection_container.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -47,6 +43,14 @@ class _UserScreenState extends State<UserScreen> {
             ),
           );
         }
+        if (state.loadingResult.value != null) {
+          _userBloc.add(const ClearError());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.loadingResult.value!),
+            ),
+          );
+        }
       },
       builder: (context, state) {
         return ListView.builder(
@@ -62,22 +66,6 @@ class _UserScreenState extends State<UserScreen> {
         );
       },
     );
-  }
-
-  void saveUser(UserModel user) {
-    var saveUser = SaveUserModel(
-        id: user.id,
-        username: _usernameController.text,
-        password: _passwordController.text,
-        role: user.role);
-    sl<ApiService>()
-        .updateUser(sl<AppService>().token, saveUser.id, saveUser)
-        .then((value) {
-      Navigator.pop(context);
-      _userBloc.add(const Load());
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
   }
 
   void onPressedRow(BuildContext context, UserModel user) {
@@ -125,7 +113,18 @@ class _UserScreenState extends State<UserScreen> {
         buttons: [
           DialogButton(
             onPressed: () {
-              saveUser(user);
+              _userBloc.add(
+                Update(
+                  id: user.id,
+                  username: _usernameController.text,
+                  password: _passwordController.text,
+                  role: user.role,
+                ),
+              );
+              if (Navigator.canPop(context)) {
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => Navigator.pop(context));
+              }
             },
             child: const Text(
               "Save",
@@ -133,23 +132,5 @@ class _UserScreenState extends State<UserScreen> {
             ),
           )
         ]).show();
-  }
-
-  void alertError(String msg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
   }
 }

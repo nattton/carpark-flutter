@@ -2,7 +2,7 @@ part of 'user_bloc.dart';
 
 class UserState extends Equatable {
   final List<UserModel> users;
-  final DelayedResult<void> loadingResult;
+  final DelayedResult<String> loadingResult;
 
   const UserState({
     required this.users,
@@ -11,7 +11,7 @@ class UserState extends Equatable {
 
   UserState copyWith({
     List<UserModel>? users,
-    DelayedResult<void>? loadingResult,
+    DelayedResult<String>? loadingResult,
   }) {
     return UserState(
       users: users ?? this.users,
