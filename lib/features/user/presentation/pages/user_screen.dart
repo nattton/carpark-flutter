@@ -1,10 +1,13 @@
-import 'package:carpark/components/user_list_card.dart';
 import 'package:carpark/features/auth/data/models/user_model.dart';
+import 'package:carpark/features/user/data/models/save_user_model.dart';
+import 'package:carpark/features/user/presentation/bloc/user_bloc.dart';
+import 'package:carpark/features/user/presentation/widget/user_list_card.dart';
+import 'package:carpark/features/user/presentation/widget/user_list_header.dart';
 import 'package:carpark/injection_container.dart';
-import 'package:carpark/models/save_user_model.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class UserScreen extends StatefulWidget {
@@ -15,14 +18,14 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  List<UserModel> userList = [];
+  late final UserBloc _userBloc;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    getUser();
+    _userBloc = context.read<UserBloc>()..add(const Load());
   }
 
   @override
@@ -34,48 +37,51 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: userList.length + 1,
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          return UserListCard(
-            user: const UserModel(id: 0, username: "Name", role: "Role"),
-            onTap: () {},
+    return BlocConsumer<UserBloc, UserState>(
+      listener: (context, state) {
+        if (state.loadingResult.error != null) {
+          _userBloc.add(const ClearError());
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to perform this action'),
+            ),
           );
         }
-        return UserListCard(
-            user: userList[index - 1],
-            onTap: () => onPressedRow(context, userList[index - 1]));
+      },
+      builder: (context, state) {
+        return ListView.builder(
+          itemCount: state.users.length + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return const UserListHeader();
+            }
+            return UserListCard(
+                user: state.users[index - 1],
+                onTap: () => onPressedRow(context, state.users[index - 1]));
+          },
+        );
       },
     );
   }
 
-  Future<void> getUser() async {
-    sl<ApiService>().getUserList(sl<AppService>().token).then((value) {
-      setState(() {
-        userList = value;
-      });
-    }).catchError((error) {});
-  }
-
   void saveUser(UserModel user) {
     var saveUser = SaveUserModel(
-        id: user.id!,
+        id: user.id,
         username: _usernameController.text,
         password: _passwordController.text,
-        role: user.role!);
+        role: user.role);
     sl<ApiService>()
         .updateUser(sl<AppService>().token, saveUser.id, saveUser)
         .then((value) {
       Navigator.pop(context);
-      getUser();
+      _userBloc.add(const Load());
     }).onError((error, stackTrace) {
       alertError(error.toString());
     });
   }
 
   void onPressedRow(BuildContext context, UserModel user) {
-    _usernameController.text = user.username!;
+    _usernameController.text = user.username;
     _passwordController.text = '';
 
     Alert(

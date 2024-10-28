@@ -3,7 +3,6 @@ import 'package:carpark/core/cubit/app_user_cubit.dart';
 import 'package:carpark/features/auth/data/data_sources/auth_api_service.dart';
 import 'package:carpark/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:carpark/features/auth/domain/repository/auth_repository.dart';
-import 'package:carpark/features/auth/domain/usecases/user_login.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
@@ -45,8 +44,5 @@ void _initAuth() {
   sl.registerFactory<AuthRepository>(
       () => AuthRepositoryImpl(authApiService: sl()));
 
-  sl.registerFactory<UserLogin>(() => UserLogin(sl()));
-
-  sl.registerFactory<AuthBloc>(
-      () => AuthBloc(userLogin: sl(), appUserCubit: sl()));
+  sl.registerFactory<AuthBloc>(() => AuthBloc(appUserCubit: sl()));
 }

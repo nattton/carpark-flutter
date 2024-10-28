@@ -1,7 +1,9 @@
 import 'package:carpark/core/cubit/app_user_cubit.dart';
 import 'package:carpark/features/auth/presentation/pages/sign_in_screen.dart';
 import 'package:carpark/features/main/presentation/pages/main_screen.dart';
+import 'package:carpark/features/member/presentation/bloc/member_bloc.dart';
 import 'package:carpark/features/member/presentation/pages/member_screen.dart';
+import 'package:carpark/features/people/presentation/bloc/person_bloc.dart';
 import 'package:carpark/features/people/presentation/pages/person_screen.dart';
 import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (context, child) => MaterialApp(
         title: 'Car Park',
-        initialRoute: WelcomeScreen.id,
+        // initialRoute: WelcomeScreen.id,
         home: BlocSelector<AppUserCubit, AppUserState, bool>(selector: (state) {
           return state is LoggedIn;
         }, builder: (context, isLoggedIn) {
@@ -39,7 +41,10 @@ class MyApp extends StatelessWidget {
             case MemberScreen.id:
               final memberId = settings.arguments as int;
               return MaterialPageRoute(builder: (context) {
-                return MemberScreen(memberId: memberId);
+                return BlocProvider(
+                  create: (context) => MemberBloc(),
+                  child: MemberScreen(memberId: memberId),
+                );
               });
             case VisitorDetailScreen.id:
               final visitorId = settings.arguments as int;
@@ -49,8 +54,11 @@ class MyApp extends StatelessWidget {
             case PersonScreen.id:
               final personId = settings.arguments as String;
               return MaterialPageRoute(builder: (context) {
-                return PersonScreen(
-                  personId: personId,
+                return BlocProvider(
+                  create: (context) => PersonBloc(),
+                  child: PersonScreen(
+                    personId: personId,
+                  ),
                 );
               });
             case DisplayScreen.id:

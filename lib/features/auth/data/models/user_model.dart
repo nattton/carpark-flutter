@@ -1,18 +1,29 @@
-import 'package:carpark/features/auth/domain/entities/user_entity.dart';
-import 'package:json_annotation/json_annotation.dart';
+class UserModel {
+  final int id;
+  final String username;
+  final String role;
 
-part 'user_model.g.dart';
-
-@JsonSerializable(fieldRename: FieldRename.snake)
-class UserModel extends UserEntity {
   const UserModel({
-    int? id,
-    String? username,
-    String? role,
+    required this.id,
+    required this.username,
+    required this.role,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+        'id': int id,
+        'username': String username,
+        'role': String role,
+      } =>
+        UserModel(id: id, username: username, role: role),
+      _ => throw const FormatException(),
+    };
+  }
 
-  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'username': username,
+        'role': role,
+      };
 }

@@ -8,6 +8,8 @@ import 'package:carpark/features/member/presentation/cubit/member_list_cubit.dar
 import 'package:carpark/features/member/presentation/pages/member_list_screen.dart';
 import 'package:carpark/features/member/presentation/pages/member_screen.dart';
 import 'package:carpark/features/people/presentation/pages/people_screen.dart';
+import 'package:carpark/features/setting/presentation/pages/setting_screen.dart';
+import 'package:carpark/features/user/presentation/pages/user_screen.dart';
 import 'package:carpark/features/vehicle/presentation/pages/vehicles_screen.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
@@ -19,8 +21,6 @@ import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/report_screen.dart';
-import 'package:carpark/features/setting/presentation/pages/setting_screen.dart';
-import 'package:carpark/screens/user_screen.dart';
 import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
