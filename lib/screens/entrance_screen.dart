@@ -519,29 +519,29 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   void readDrivingLicence(String value) {
-    int count = '\n'.allMatches(value).length;
-    if (count == 6) {
-      final lines = value.split("\n");
-      // for (var i = 0; i < lines.length; i++) {
-      //   print(" $i = ${lines[i]} ");
-      // }
+    // int count = '\n'.allMatches(value).length;
+    // if (count == 6) {
+    //   final lines = value.split("\n");
+    //   // for (var i = 0; i < lines.length; i++) {
+    //   //   print(" $i = ${lines[i]} ");
+    //   // }
 
-      final name = lines[0];
-      final idNumber = lines[2];
-      final licenceNumber = lines[4];
+    //   final name = lines[0];
+    //   final idNumber = lines[2];
+    //   final licenceNumber = lines[4];
 
-      // print("Name : $name");
-      // print("idNumber : $idNumber");
-      // print("licenceNumber : $licenceNumber");
+    //   // print("Name : $name");
+    //   // print("idNumber : $idNumber");
+    //   // print("licenceNumber : $licenceNumber");
 
-      var nameList = name.split("\$").reversed.toList();
-      for (var i = 0; i < nameList.length; i++) {
-        nameList[i] = nameList[i].replaceAll("\n", " ");
-        print(nameList[i]);
-      }
-      final nameEng = nameList.join(" ");
-      print("NameEng : $nameEng");
-    }
+    //   var nameList = name.split("\$").reversed.toList();
+    //   for (var i = 0; i < nameList.length; i++) {
+    //     nameList[i] = nameList[i].replaceAll("\n", " ");
+    //     print(nameList[i]);
+    //   }
+    //   final nameEng = nameList.join(" ");
+    //   print("NameEng : $nameEng");
+    // }
   }
 
   void readSmartCardFromService() async {

@@ -16,7 +16,6 @@ import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
-import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
@@ -189,19 +188,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   //   }
   // }
 
-  Future<void> getLastGateOut() async {
-    if (!loadingLastGate) {
-      loadingLastGate = true;
-      final lastGate = ref.read(lastGateProvider.notifier);
-      sl<ApiService>().getGateOut(sl<AppService>().token).then((value) {
-        lastGate.setGateOut(value.gateLog);
-        loadingLastGate = false;
-      }).onError((error, stackTrace) {
-        alertError(error.toString());
-        loadingLastGate = false;
-      });
-    }
-  }
+  // Future<void> getLastGateOut() async {
+  //   if (!loadingLastGate) {
+  //     loadingLastGate = true;
+  //     final lastGate = ref.read(lastGateProvider.notifier);
+  //     sl<ApiService>().getGateOut(sl<AppService>().token).then((value) {
+  //       lastGate.setGateOut(value.gateLog);
+  //       loadingLastGate = false;
+  //     }).onError((error, stackTrace) {
+  //       alertError(error.toString());
+  //       loadingLastGate = false;
+  //     });
+  //   }
+  // }
 
   void selectedPage(String page) {
     final camera = ref.watch(cameraMapProvider);
@@ -451,39 +450,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   List<Widget> _buildActionBar() {
     List<Widget> widget = [];
     switch (_currentScreen) {
-      case "ENTRANCE":
-        widget.add(
-          IconButton(
-            icon: const Icon(Icons.turn_left),
-            tooltip: 'จอทางเข้า',
-            onPressed: () {
-              stopAll();
-              Navigator.of(context)
-                  .pushNamed(DisplayScreen.id, arguments: DisplayScreen.gateIn)
-                  .then((value) {
-                getLastGate();
-                final camera = ref.watch(cameraMapProvider);
-                setPlayer(camera);
-              });
-            },
-          ),
-        );
-        widget.add(
-          IconButton(
-            icon: const Icon(Icons.turn_right),
-            tooltip: 'จอทางออก',
-            onPressed: () {
-              stopAll();
-              Navigator.of(context)
-                  .pushNamed(DisplayScreen.id, arguments: DisplayScreen.gateOut)
-                  .then((value) {
-                getLastGate();
-                final camera = ref.watch(cameraMapProvider);
-                setPlayer(camera);
-              });
-            },
-          ),
-        );
       case "MEMBER":
         widget.add(
           IconButton(
