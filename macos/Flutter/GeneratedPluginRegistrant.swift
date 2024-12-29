@@ -14,7 +14,7 @@ import package_info_plus
 import path_provider_foundation
 import screen_brightness_macos
 import shared_preferences_foundation
-import sqflite
+import sqflite_darwin
 import wakelock_plus
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
