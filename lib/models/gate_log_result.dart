@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'gate_log_result.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 class GateLogResult {
   final int id;
   final DateTime createdAt;

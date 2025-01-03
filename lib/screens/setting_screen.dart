@@ -140,11 +140,13 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   }
 
   void saveCamera(CameraModel camera) {
-    camera.ipAddress = _ipAddressController.text;
-    camera.port = _portController.text;
-    camera.username = _usernameController.text;
-    camera.password = _passwordController.text;
-    camera.path = _pathController.text;
+    camera = camera.copyWith(
+      ipAddress: _ipAddressController.text,
+      port: _portController.text,
+      username: _usernameController.text,
+      password: _passwordController.text,
+      path: _pathController.text,
+    );
     sl<ApiService>()
         .updateCamera(sl<AppService>().token, camera.id, camera)
         .then((value) {

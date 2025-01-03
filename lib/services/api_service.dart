@@ -29,107 +29,107 @@ abstract class ApiService {
       @Field() String username, @Field() String password);
 
   @GET("/api/admin/users")
-  Future<List<UserModel>> getUserList(@Header('authorization') String token);
+  Future<List<UserModel>> getUserList(@Header('Authorization') String token);
 
   @PATCH("/api/admin/users/{id}")
-  Future<ResponseModel> updateUser(@Header('authorization') String token,
+  Future<ResponseModel> updateUser(@Header('Authorization') String token,
       @Path() int id, @Body() SaveUserModel user);
 
   @GET("/api/open_door/{name}")
   Future<void> openDoor(
-      @Header('authorization') String token, @Path() String name);
+      @Header('Authorization') String token, @Path() String name);
 
   @GET("/api/manualCapture/{name}")
   Future<void> manualCapture(
-      @Header('authorization') String token, @Path() String name);
+      @Header('Authorization') String token, @Path() String name);
 
   // Gate Log
   @GET("/api/gate_logs/last")
-  Future<LastGate> getLastGate(@Header('authorization') String token);
+  Future<LastGate> getLastGate(@Header('Authorization') String token);
 
   @GET("/api/gate_logs/in")
-  Future<GateInModel> getGateIn(@Header('authorization') String token);
+  Future<GateInModel> getGateIn(@Header('Authorization') String token);
 
   @GET("/api/gate_logs/out")
-  Future<GateInModel> getGateOut(@Header('authorization') String token);
+  Future<GateInModel> getGateOut(@Header('Authorization') String token);
 
   @GET("/api/gate_logs")
   Future<List<GateLogResult>> searchGateLog(
-      @Header('authorization') String token,
+      @Header('Authorization') String token,
       @Query("date") String date,
       @Query("dateTo") String dateTo);
 
   // Camera
   @GET("/api/cameras")
   Future<List<CameraModel>> getCameraList(
-      @Header('authorization') String token);
+      @Header('Authorization') String token);
 
   @PATCH("/api/admin/cameras/{id}")
-  Future<CameraModel> updateCamera(@Header('authorization') String token,
+  Future<CameraModel> updateCamera(@Header('Authorization') String token,
       @Path() int id, @Body() CameraModel camera);
 
   // Member
   @POST("/api/members")
   Future<MemberModel> createMember(
-      @Header('authorization') String token, @Body() MemberModel member);
+      @Header('Authorization') String token, @Body() MemberModel member);
 
   @PATCH("/api/members/{id}")
-  Future<ResponseModel> updateMember(@Header('authorization') String token,
+  Future<ResponseModel> updateMember(@Header('Authorization') String token,
       @Path() int id, @Body() MemberModel member);
 
   @DELETE("/api/members/{id}")
-  Future<ResponseModel> deleteMember(@Header('authorization') String token,
+  Future<ResponseModel> deleteMember(@Header('Authorization') String token,
       @Path() int id, @Body() MemberModel member);
 
   @GET("/api/members/{id}")
   Future<MemberModel> getMember(
-      @Header('authorization') String token, @Path() int id);
+      @Header('Authorization') String token, @Path() int id);
 
   @GET("/api/members")
   Future<List<MemberModel>> getMemberList(
-      @Header('authorization') String token);
+      @Header('Authorization') String token);
 
   // Vehicle
   @POST("/api/members/{memberId}/vehicles")
-  Future<ResponseModel> createVehicle(@Header('authorization') String token,
+  Future<ResponseModel> createVehicle(@Header('Authorization') String token,
       @Path() int memberId, @Body() VehicleModel vehicle);
 
   @PATCH("/api/vehicles/{id}")
-  Future<ResponseModel> updateVehicle(@Header('authorization') String token,
+  Future<ResponseModel> updateVehicle(@Header('Authorization') String token,
       @Path() int id, @Body() VehicleModel member);
 
   @DELETE("/api/vehicles/{id}")
   Future<void> deleteVehicle(
-      @Header('authorization') String token, @Path() int id);
+      @Header('Authorization') String token, @Path() int id);
 
   // Visitor
   @POST("/api/visitors")
   Future<VisitorModel> createVisitor(
-      @Header('authorization') String token, @Body() VisitorModel visitor);
+      @Header('Authorization') String token, @Body() VisitorModel visitor);
 
   @GET("/api/visitors")
-  Future<List<VisitorModel>> listVisitor(@Header('authorization') String token,
+  Future<List<VisitorModel>> listVisitor(@Header('Authorization') String token,
       @Query("date") String date, @Query("dateTo") String dateTo);
 
   @GET("/api/visitors/{id}")
   Future<VisitorModel> getVisitor(
-      @Header('authorization') String token, @Path() int id);
+      @Header('Authorization') String token, @Path() int id);
 
   @POST("/api/visitors/{id}/photo")
-  Future<VisitorModel> addPhotoVisitor(@Header('authorization') String token,
+  Future<VisitorModel> addPhotoVisitor(@Header('Authorization') String token,
       @Path() int id, @Part() File photo);
 
   @POST("/api/visitors/{id}/images/{type}")
-  Future<VisitorModel> addImageToVisitor(@Header('authorization') String token,
+  Future<VisitorModel> addImageToVisitor(@Header('Authorization') String token,
       @Path() int id, @Path() String type, @Part() File file);
 
   @PATCH("/api/visitors/checkout")
   Future<VisitorModel> checkoutVisitor(
-      @Header('authorization') String token, @Body() CheckoutModel checkout);
+      @Header('Authorization') String token, @Body() CheckoutModel checkout);
 
   @GET("/api/report/{type}")
   Future<List<ReportTrafficModel>> reportTraffic(
-      @Header('authorization') String token,
+      @Header('Authorization') String token,
       @Path() String type,
       @Query("date") String date,
       @Query("dateTo") String dateTo);

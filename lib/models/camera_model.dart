@@ -2,15 +2,15 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'camera_model.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 class CameraModel {
   final int id;
   final String name;
-  String ipAddress;
-  String port;
-  String username;
-  String password;
-  String path;
+  final String ipAddress;
+  final String port;
+  final String username;
+  final String password;
+  final String path;
 
   CameraModel(
       {required this.id,
@@ -25,6 +25,25 @@ class CameraModel {
       _$CameraModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$CameraModelToJson(this);
+
+  CameraModel copyWith({
+    int? id,
+    String? name,
+    String? ipAddress,
+    String? port,
+    String? username,
+    String? password,
+    String? path,
+  }) =>
+      CameraModel(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        ipAddress: ipAddress ?? this.ipAddress,
+        port: port ?? this.port,
+        username: username ?? this.username,
+        password: password ?? this.password,
+        path: path ?? this.path,
+      );
 
   String toUrl() {
     return "rtsp://$username:$password@$ipAddress:$port$path";

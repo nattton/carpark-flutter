@@ -1,10 +1,10 @@
+import 'package:carpark/components/user_list_card.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/save_user_model.dart';
 import 'package:carpark/models/user_model.dart';
 import 'package:carpark/services/api_service.dart';
-import 'package:flutter/material.dart';
-import 'package:carpark/components/user_list_card.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class UserScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _UserScreenState extends State<UserScreen> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return UserListCard(
-            user: UserModel(id: 0, username: "Name", role: "Role"),
+            user: UserModel(id: 0, name: "Name", role: "Role"),
             onTap: () {},
           );
         }
@@ -75,7 +75,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void onPressedRow(BuildContext context, UserModel user) {
-    _usernameController.text = user.username;
+    _usernameController.text = user.name;
     _passwordController.text = '';
 
     Alert(

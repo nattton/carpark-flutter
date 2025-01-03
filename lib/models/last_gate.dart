@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'last_gate.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 @immutable
 class LastGate {
   final GateLogModel gateIn;

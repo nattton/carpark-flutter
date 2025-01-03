@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'visitor_image_model.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 class VisitorImageModel {
   int id;
   String type;

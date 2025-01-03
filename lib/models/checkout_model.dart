@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'checkout_model.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 class CheckoutModel {
   final int gateLogId;
   final String barcode;

@@ -15,9 +15,10 @@ class AppService {
 
   get token => prefs.getString(kTokenKey) ?? '';
   get printer => prefs.getString(kPrinterKey) ?? '';
+  get user => UserModel.fromJson(jsonDecode(prefs.getString(kUserKey) ?? ''));
 
   Future<void> saveLogin(LoginUserModel login) async {
-    await prefs.setString(kTokenKey, "bearer ${login.refreshToken}");
+    await prefs.setString(kTokenKey, "Bearer ${login.token}");
     await prefs.setString(kUserKey, jsonEncode(login.user.toJson()));
   }
 

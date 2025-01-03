@@ -840,7 +840,11 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                   textStyleHighlight:
                       const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                subtitle: Text(option.stringVehicles!),
+                subtitle: Text(option.vehicles != null
+                    ? option.vehicles!
+                        .map((vehicle) => vehicle.plateNumber!)
+                        .join(', ')
+                    : ''),
                 onTap: () {
                   onSelected(option);
                 },
