@@ -5,6 +5,7 @@ part 'update_registered_user_request.g.dart';
 
 @JsonSerializable()
 class UpdateRegisteredUserRequest extends Equatable {
+  final int id;
   final String type;
   final String telephone;
   final String idCard;
@@ -17,6 +18,7 @@ class UpdateRegisteredUserRequest extends Equatable {
   final String expiredDate;
 
   const UpdateRegisteredUserRequest({
+    required this.id,
     required this.type,
     required this.telephone,
     required this.idCard,

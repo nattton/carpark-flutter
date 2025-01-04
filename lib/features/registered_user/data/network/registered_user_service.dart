@@ -11,6 +11,10 @@ part 'registered_user_service.g.dart';
 abstract class RegisteredUserService {
   factory RegisteredUserService(Dio dio) = _RegisteredUserService;
 
+  @GET('/api/v1/registered-users')
+  Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
+      @Header('Authorization') String token);
+
   @POST('/api/v1/registered-users')
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
       @Header('Authorization') String token,
