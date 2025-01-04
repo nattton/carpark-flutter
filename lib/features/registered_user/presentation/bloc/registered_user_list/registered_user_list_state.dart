@@ -15,10 +15,16 @@ final class RegisteredUserListSuccess extends RegisteredUserListState {
   final List<RegisteredUser> registeredUsers;
 
   const RegisteredUserListSuccess(this.registeredUsers);
+
+  @override
+  List<Object> get props => [registeredUsers];
 }
 
 final class RegisteredUserListFailure extends RegisteredUserListState {
   final String message;
 
   const RegisteredUserListFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
 }

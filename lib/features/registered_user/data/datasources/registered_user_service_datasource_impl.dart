@@ -4,6 +4,7 @@ import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
 import 'package:carpark/features/registered_user/data/network/registered_user_service.dart';
 import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
+import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
 import 'package:carpark/features/registered_user/domain/models/registered_user_check_in_request.dart';
 import 'package:carpark/features/registered_user/domain/models/registered_user_check_out_request.dart';
 import 'package:carpark/features/registered_user/domain/models/registered_user_log_response.dart';
@@ -15,12 +16,6 @@ class RegisteredUserServiceDataSourceImpl
   final RegisteredUserService registeredUserService;
 
   RegisteredUserServiceDataSourceImpl(this.registeredUserService);
-
-  @override
-  Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
-      String token) {
-    return registeredUserService.getRegisteredUsers(token);
-  }
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
@@ -56,5 +51,11 @@ class RegisteredUserServiceDataSourceImpl
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
       String token, int id, UpdateRegisteredUserRequest request) {
     return registeredUserService.updateRegisteredUser(token, id, request);
+  }
+
+  @override
+  Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
+      String token, ListRegisteredUserParam param) {
+    return registeredUserService.getRegisteredUsers(token, param.search);
   }
 }

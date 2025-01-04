@@ -8,3 +8,12 @@ sealed class RegisteredUserListEvent extends Equatable {
 }
 
 class GetRegisteredUserList extends RegisteredUserListEvent {}
+
+class SearchRegisteredUser extends RegisteredUserListEvent {
+  final String searchText;
+
+  const SearchRegisteredUser(this.searchText);
+
+  @override
+  List<Object> get props => [searchText];
+}
