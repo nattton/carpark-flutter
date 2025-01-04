@@ -20,7 +20,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'api_service.g.dart';
 
-@RestApi(baseUrl: kHostUrl)
+@RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 

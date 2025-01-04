@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carpark/constants.dart';
+import 'package:carpark/features/registered_user/presentation/pages/registered_user_list_screen.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
@@ -335,6 +336,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 icon: const Icon(Icons.person_search),
               ),
               SideMenuItem(
+                title: 'ผู้ใช้งานที่ลงทะเบียน',
+                onTap: (page, _) {
+                  selectedPage('REGISTERED_USER');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.person_search),
+              ),
+              SideMenuItem(
                 title: 'รายงาน',
                 onTap: (page, _) {
                   selectedPage('REPORT');
@@ -411,6 +420,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 Container(
                   color: Colors.white,
                   child: const MemberListScreen(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: RegisteredUserListScreen.page,
                 ),
                 Container(
                   color: Colors.white,

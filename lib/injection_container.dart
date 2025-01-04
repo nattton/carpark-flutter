@@ -1,5 +1,7 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource_impl.dart';
+import 'package:carpark/features/registered_user/data/network/registered_user_service.dart';
 import 'package:carpark/features/registered_user/data/repositories/registered_user_service_repository_impl.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:carpark/services/api_service.dart';
@@ -14,7 +16,9 @@ final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
   // Dio
-  sl.registerSingleton<Dio>(Dio());
+  Dio dio = Dio();
+  dio.options.baseUrl = kHostUrl;
+  sl.registerSingleton<Dio>(dio);
 
   sl.registerLazySingletonAsync<SharedPreferences>(
     () => SharedPreferences.getInstance(),
@@ -26,6 +30,7 @@ Future<void> initializeDependencies() async {
   //
   sl.registerSingleton<ApiService>(ApiService(sl()));
 
+  sl.registerSingleton<RegisteredUserService>(RegisteredUserService(sl()));
   sl.registerSingleton<RegisteredUserServiceDataSource>(
       RegisteredUserServiceDataSourceImpl(sl()));
   sl.registerSingleton<RegisteredUserServiceRepository>(
