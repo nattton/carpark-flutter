@@ -8,14 +8,12 @@ import 'package:carpark/features/registered_user/domain/repositories/registered_
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dartz/dartz.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisteredUserServiceRepositoryImpl
     extends RegisteredUserServiceRepository {
   final RegisteredUserServiceDataSource dataSource;
-  final SharedPreferences sharedPreferences;
 
-  RegisteredUserServiceRepositoryImpl(this.dataSource, this.sharedPreferences);
+  RegisteredUserServiceRepositoryImpl(this.dataSource);
 
   @override
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
