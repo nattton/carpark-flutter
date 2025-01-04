@@ -5,9 +5,9 @@ import 'package:carpark/components/entrance_card.dart';
 import 'package:carpark/components/exit_card.dart';
 import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
+import 'package:carpark/features/registered_user/domain/models/id_card_response.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/visitor_model.dart';
@@ -45,7 +45,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   bool _isReadCard = false;
   String _vehicleType = 'car';
 
-  IDCardModel? _idCardModel;
+  IDCardResponse? _idCardModel;
   File? _photoFile;
   int _selectedGateLogId = 0;
 

@@ -28,3 +28,5 @@ final class RegisteredUserListFailure extends RegisteredUserListState {
   @override
   List<Object> get props => [message];
 }
+
+final class RegisteredUserListCreating extends RegisteredUserListState {}

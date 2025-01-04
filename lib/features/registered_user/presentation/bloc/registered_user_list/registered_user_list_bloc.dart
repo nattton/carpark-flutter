@@ -15,6 +15,7 @@ class RegisteredUserListBloc
   RegisteredUserListBloc(this.usecase) : super(RegisteredUserListInitial()) {
     on<GetRegisteredUserList>(_onGetRegisteredUserList);
     on<SearchRegisteredUser>(_onSearchRegisteredUser);
+    on<CreateRegisteredUser>(_onCreateRegisteredUser);
   }
 
   Future<void> _onGetRegisteredUserList(GetRegisteredUserList event,
@@ -41,5 +42,10 @@ class RegisteredUserListBloc
       final registeredUsers = RegisteredUserListMapper.responseMapper(response);
       emit(RegisteredUserListSuccess(registeredUsers));
     });
+  }
+
+  Future<void> _onCreateRegisteredUser(
+      CreateRegisteredUser event, Emitter<RegisteredUserListState> emit) async {
+    emit(RegisteredUserListCreating());
   }
 }
