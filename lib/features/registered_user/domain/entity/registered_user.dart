@@ -1,3 +1,4 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -59,4 +60,11 @@ class RegisteredUser extends Equatable {
         updatedAt,
         expiredDate,
       ];
+
+  String photoUrl() {
+    if (photo.isNotEmpty) {
+      return "$kHostUrl/anpr_store$photo";
+    }
+    return "";
+  }
 }

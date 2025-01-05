@@ -22,7 +22,7 @@ class RegisteredUserListScreen extends StatefulWidget {
                 RegisteredUserListBloc(sl())..add(GetRegisteredUserList()),
           ),
           BlocProvider<RegisteredUserCreateBloc>(
-            create: (context) => RegisteredUserCreateBloc(sl(), sl()),
+            create: (context) => RegisteredUserCreateBloc(sl(), sl(), sl()),
           ),
         ],
         child: const RegisteredUserListScreen(),

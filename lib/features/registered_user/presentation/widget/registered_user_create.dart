@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
@@ -41,8 +39,10 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
         listener: (context, state) {
       switch (state.status) {
         case RegisteredUserCreateStatus.initial:
+        case RegisteredUserCreateStatus.savingPhoto:
           break;
         case RegisteredUserCreateStatus.reading:
+        case RegisteredUserCreateStatus.creating:
           EasyLoading.show();
         case RegisteredUserCreateStatus.readSuccess:
           EasyLoading.dismiss();
@@ -50,23 +50,21 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('อ่านบัตรสำเร็จ')),
           );
-        case RegisteredUserCreateStatus.readFailure:
-          EasyLoading.dismiss();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-        case RegisteredUserCreateStatus.creating:
-          EasyLoading.show();
         case RegisteredUserCreateStatus.createSuccess:
           EasyLoading.dismiss();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
           );
-        case RegisteredUserCreateStatus.createFailure:
+          context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+        case RegisteredUserCreateStatus.savePhotoSuccess:
           EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
+            const SnackBar(content: Text('บันทึกภาพสำเร็จ')),
           );
+        case RegisteredUserCreateStatus.readFailure:
+        case RegisteredUserCreateStatus.createFailure:
+        case RegisteredUserCreateStatus.savePhotoFailure:
         case RegisteredUserCreateStatus.failure:
           EasyLoading.dismiss();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -75,7 +73,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
       }
     }, builder: (context, state) {
       if (state.status == RegisteredUserCreateStatus.readSuccess) {
-        _idCardController.text = state.id;
+        _idCardController.text = state.idCard;
         _thaiNameController.text = state.thaiName;
         _engNameController.text = state.engName;
         _birthdateController.text = state.birthdate;
@@ -87,8 +85,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
         children: <Widget>[
           SizedBox(
             height: 120.0,
-            child: state.photoPath.isNotEmpty
-                ? Image.file(File(state.photoPath))
+            child: state.photoUrl.isNotEmpty
+                ? Image.network(state.photoUrl, fit: BoxFit.cover)
                 : const Icon(size: 120.0, Icons.face),
           ),
           TextField(

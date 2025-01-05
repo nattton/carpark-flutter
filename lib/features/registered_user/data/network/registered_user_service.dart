@@ -26,9 +26,10 @@ abstract class RegisteredUserService {
       @Body() CreateRegisteredUserRequest request);
 
   @PATCH('/api/registered-users/{id}/photo')
-  Future<GenericResponseData<RegisteredUserResponse>>
-      updatePhotoToRegisteredUser(@Header('Authorization') String token,
-          @Path() int id, @Part() File photo);
+  Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
+      @Header('Authorization') String token,
+      @Path() int id,
+      @Part() File photo);
 
   @PATCH('/api/registered-users/{id}')
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(

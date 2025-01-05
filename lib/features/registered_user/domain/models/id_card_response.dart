@@ -12,7 +12,6 @@ class IDCardResponse {
   final String gender;
   final String address;
   final String photoPath;
-  final String photoByte;
 
   const IDCardResponse(
       {required this.id,
@@ -21,8 +20,7 @@ class IDCardResponse {
       required this.birthdate,
       required this.gender,
       required this.address,
-      required this.photoPath,
-      required this.photoByte});
+      required this.photoPath});
 
   factory IDCardResponse.fromJson(Map<String, dynamic> json) =>
       _$IDCardResponseFromJson(json);

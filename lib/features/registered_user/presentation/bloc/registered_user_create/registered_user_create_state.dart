@@ -8,20 +8,22 @@ enum RegisteredUserCreateStatus {
   creating,
   createSuccess,
   createFailure,
+  savingPhoto,
+  savePhotoSuccess,
+  savePhotoFailure,
   failure,
 }
 
 final class RegisteredUserCreateState extends Equatable {
   final RegisteredUserCreateStatus status;
   final String message;
-  final String id;
+  final int id;
   final String idCard;
   final String engName;
   final String thaiName;
   final String birthdate;
   final String gender;
   final String address;
-  final String photoPath;
   final String photoUrl;
   final String telephone;
   final String type;
@@ -29,14 +31,13 @@ final class RegisteredUserCreateState extends Equatable {
   const RegisteredUserCreateState(
       {this.status = RegisteredUserCreateStatus.initial,
       this.message = "",
-      this.id = "",
+      this.id = 0,
       this.idCard = "",
       this.engName = "",
       this.thaiName = "",
       this.birthdate = "",
       this.gender = "",
       this.address = "",
-      this.photoPath = "",
       this.photoUrl = "",
       this.telephone = "",
       this.type = "",
@@ -53,7 +54,6 @@ final class RegisteredUserCreateState extends Equatable {
         birthdate,
         gender,
         address,
-        photoPath,
         photoUrl,
         telephone,
         type,
@@ -63,14 +63,13 @@ final class RegisteredUserCreateState extends Equatable {
   RegisteredUserCreateState copyWith({
     RegisteredUserCreateStatus? status,
     String? message,
-    String? id,
+    int? id,
     String? idCard,
     String? engName,
     String? thaiName,
     String? birthdate,
     String? gender,
     String? address,
-    String? photoPath,
     String? photoUrl,
     String? telephone,
     String? type,
@@ -86,7 +85,6 @@ final class RegisteredUserCreateState extends Equatable {
       birthdate: birthdate ?? this.birthdate,
       gender: gender ?? this.gender,
       address: address ?? this.address,
-      photoPath: photoPath ?? this.photoPath,
       photoUrl: photoUrl ?? this.photoUrl,
       telephone: telephone ?? this.telephone,
       type: type ?? this.type,

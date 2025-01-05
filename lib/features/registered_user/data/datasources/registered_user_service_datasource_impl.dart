@@ -19,7 +19,7 @@ class RegisteredUserServiceDataSourceImpl
   @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
       String token, int id, File photo) {
-    return registeredUserService.updatePhotoToRegisteredUser(token, id, photo);
+    return registeredUserService.addPhotoToRegisteredUser(token, id, photo);
   }
 
   @override
