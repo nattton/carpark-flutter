@@ -25,7 +25,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   Widget build(BuildContext context) {
     return BlocBuilder<RegisteredUserCreateBloc, RegisteredUserCreateState>(
         builder: (context, state) {
-      if (state.state == RegisteredUserCreateStatus.readSuccess) {
+      if (state.status == RegisteredUserCreateStatus.readSuccess) {
         _idCardController.text = state.id;
         _thaiNameController.text = state.thaiName;
         _engNameController.text = state.engName;

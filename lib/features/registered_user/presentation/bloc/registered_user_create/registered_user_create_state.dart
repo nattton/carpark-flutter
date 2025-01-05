@@ -12,7 +12,7 @@ enum RegisteredUserCreateStatus {
 }
 
 final class RegisteredUserCreateState extends Equatable {
-  final RegisteredUserCreateStatus state;
+  final RegisteredUserCreateStatus status;
   final String id;
   final String idCard;
   final String engName;
@@ -25,7 +25,7 @@ final class RegisteredUserCreateState extends Equatable {
   final String type;
   final String expiredDate;
   const RegisteredUserCreateState(
-      {required this.state,
+      {required this.status,
       required this.id,
       required this.idCard,
       required this.engName,
@@ -53,7 +53,7 @@ final class RegisteredUserCreateState extends Equatable {
       ];
 
   RegisteredUserCreateState copyWith({
-    RegisteredUserCreateStatus? state,
+    RegisteredUserCreateStatus? status,
     String? id,
     String? idCard,
     String? engName,
@@ -67,7 +67,7 @@ final class RegisteredUserCreateState extends Equatable {
     String? expiredDate,
   }) {
     return RegisteredUserCreateState(
-      state: state ?? this.state,
+      status: status ?? this.status,
       id: id ?? this.id,
       idCard: idCard ?? this.idCard,
       engName: engName ?? this.engName,

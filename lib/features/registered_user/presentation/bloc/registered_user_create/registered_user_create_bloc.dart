@@ -18,7 +18,7 @@ class RegisteredUserCreateBloc
 
   RegisteredUserCreateBloc(this.usercase)
       : super(const RegisteredUserCreateState(
-            state: RegisteredUserCreateStatus.initial,
+            status: RegisteredUserCreateStatus.initial,
             id: "",
             idCard: "",
             engName: "",
@@ -36,13 +36,13 @@ class RegisteredUserCreateBloc
 
   Future<void> _readSmartCard(
       ReadSmartCard event, Emitter<RegisteredUserCreateState> emit) async {
-    emit(state.copyWith(state: RegisteredUserCreateStatus.reading));
+    emit(state.copyWith(status: RegisteredUserCreateStatus.reading));
     try {
       final idCardResponse = await sl<ApiService>().smartCardReader();
       final photoFile = await _tempImage(idCardResponse.id);
       await sl<Dio>().download(idCardResponse.photoUrl(), photoFile.path);
       emit(state.copyWith(
-          state: RegisteredUserCreateStatus.readSuccess,
+          status: RegisteredUserCreateStatus.readSuccess,
           id: idCardResponse.id,
           engName: idCardResponse.engName,
           thaiName: idCardResponse.thaiName,
@@ -52,7 +52,7 @@ class RegisteredUserCreateBloc
           photoPath: photoFile.path));
     } catch (e) {
       emit(state.copyWith(
-          state: RegisteredUserCreateStatus.readFailure,
+          status: RegisteredUserCreateStatus.readFailure,
           id: "",
           engName: "",
           thaiName: "",
@@ -72,7 +72,7 @@ class RegisteredUserCreateBloc
 
   Future<void> _addRegisteredUser(
       AddRegisteredUser event, Emitter<RegisteredUserCreateState> emit) async {
-    emit(state.copyWith(state: RegisteredUserCreateStatus.creating));
+    emit(state.copyWith(status: RegisteredUserCreateStatus.creating));
     try {
       final request = CreateRegisteredUserRequest(
         idCard: state.id,
@@ -88,9 +88,9 @@ class RegisteredUserCreateBloc
       final registeredUser = await usercase.call(request);
       registeredUser.fold(
         (l) => emit(
-            state.copyWith(state: RegisteredUserCreateStatus.createFailure)),
+            state.copyWith(status: RegisteredUserCreateStatus.createFailure)),
         (r) => emit(state.copyWith(
-            state: RegisteredUserCreateStatus.createSuccess,
+            status: RegisteredUserCreateStatus.createSuccess,
             idCard: r.idCard,
             engName: r.engName,
             thaiName: r.thaiName,
@@ -102,7 +102,7 @@ class RegisteredUserCreateBloc
             expiredDate: r.expiredDate.toDateString())),
       );
     } catch (e) {
-      emit(state.copyWith(state: RegisteredUserCreateStatus.createFailure));
+      emit(state.copyWith(status: RegisteredUserCreateStatus.createFailure));
     }
   }
 }
