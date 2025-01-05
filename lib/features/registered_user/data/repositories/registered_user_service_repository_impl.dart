@@ -23,6 +23,8 @@ class RegisteredUserServiceRepositoryImpl
       final result =
           await dataSource.getRegisteredUsers(sl<AppService>().token, param);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -35,6 +37,8 @@ class RegisteredUserServiceRepositoryImpl
       final result = await dataSource.addPhotoToRegisteredUser(
           sl<AppService>().token, id, photo);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -47,6 +51,8 @@ class RegisteredUserServiceRepositoryImpl
       final result = await dataSource.checkInRegisteredUser(
           sl<AppService>().token, request);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -59,6 +65,8 @@ class RegisteredUserServiceRepositoryImpl
       final result = await dataSource.checkOutRegisteredUser(
           sl<AppService>().token, request);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -72,7 +80,7 @@ class RegisteredUserServiceRepositoryImpl
           sl<AppService>().token, request);
       return Right(result);
     } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? ""));
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -85,6 +93,8 @@ class RegisteredUserServiceRepositoryImpl
       final result = await dataSource.getRegisteredUserLogs(
           sl<AppService>().token, generatedId);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -97,6 +107,8 @@ class RegisteredUserServiceRepositoryImpl
       final result = await dataSource.updateRegisteredUser(
           sl<AppService>().token, request.id, request);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
     } catch (e) {
       return Left(Failure(e.toString()));
     }

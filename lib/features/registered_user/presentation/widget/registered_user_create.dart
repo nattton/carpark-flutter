@@ -24,6 +24,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _addressNameController = TextEditingController();
   final TextEditingController _telephoneController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
+
   List<DateTime?> _dates = [DateTime.now()];
 
   void _selectDate(List<DateTime?> newSelectedDate) {
@@ -143,6 +145,18 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             ),
             textInputAction: TextInputAction.next,
           ),
+          TextField(
+            controller: _typeController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.text,
+            decoration: const InputDecoration(
+              labelText: 'ประเภท',
+              suffixIcon: Icon(Icons.phone),
+              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+            ),
+            textInputAction: TextInputAction.next,
+          ),
           const SizedBox(height: 16.0),
           OutlinedButton(
             onPressed: () async {
@@ -187,7 +201,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                             gender: _genderController.text,
                             address: _addressNameController.text,
                             telephone: _telephoneController.text,
-                            type: 'Rider',
+                            type: _typeController.text,
                             expiredDate:
                                 DateFormat("yyyy-MM-dd").format(_dates[0]!),
                           ),
