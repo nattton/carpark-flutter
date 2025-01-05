@@ -12,6 +12,11 @@ class RegisteredUserServiceDataSourceImpl
   RegisteredUserServiceDataSourceImpl(this.registeredUserService);
 
   @override
+  Future<GenericResponseData<IDCardResponse>> readIdCard() {
+    return registeredUserService.readIdCard();
+  }
+
+  @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
       String token, int id, File photo) {
     return registeredUserService.updatePhotoToRegisteredUser(token, id, photo);

@@ -45,4 +45,5 @@ Future<void> initializeDependencies() async {
       RegisteredUserUpdateUsecase(sl()));
   sl.registerSingleton<RegisteredUserListUsecase>(
       RegisteredUserListUsecase(sl()));
+  sl.registerSingleton<ReadIdCardUsecase>(ReadIdCardUsecase(sl()));
 }

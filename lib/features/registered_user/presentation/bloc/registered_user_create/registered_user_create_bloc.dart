@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:carpark/core/utils/usecases/usecase.dart';
 import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
+import 'package:carpark/features/registered_user/domain/usecases/read_id_card_usecase.dart';
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_create_usecase.dart';
-import 'package:carpark/injection_container.dart';
-import 'package:carpark/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +15,13 @@ part 'registered_user_create_state.dart';
 class RegisteredUserCreateBloc
     extends Bloc<RegisteredUserCreateEvent, RegisteredUserCreateState> {
   final RegisteredUserCreateUsecase usercase;
+  final ReadIdCardUsecase readIdCardUsecase;
 
-  RegisteredUserCreateBloc(this.usercase)
+  RegisteredUserCreateBloc(this.usercase, this.readIdCardUsecase)
       : super(const RegisteredUserCreateState()) {
     on<Initial>(_onInitial);
-    on<ReadSmartCard>(_readSmartCard);
+    on<ReadIdCard>(_readIdCard);
+    on<SavePhoto>(_savePhoto);
     on<CreateRegisteredUser>(_createRegisteredUser);
   }
 
@@ -37,43 +39,46 @@ class RegisteredUserCreateBloc
         telephone: "",
         type: "",
         expiredDate: "",
-        photoPath: ""));
+        photoPath: "",
+        photoUrl: ""));
   }
 
-  Future<void> _readSmartCard(
-      ReadSmartCard event, Emitter<RegisteredUserCreateState> emit) async {
+  Future<void> _readIdCard(
+      ReadIdCard event, Emitter<RegisteredUserCreateState> emit) async {
     emit(state.copyWith(status: RegisteredUserCreateStatus.reading));
-    try {
-      final idCardResponse = await sl<ApiService>().smartCardReader();
-      final photoFile = await _tempImage(idCardResponse.id);
-      await sl<Dio>().download(idCardResponse.photoUrl(), photoFile.path);
+    final idCardResponse = await readIdCardUsecase.call(NoParams());
+    idCardResponse.fold(
+        (l) => emit(state.copyWith(
+            status: RegisteredUserCreateStatus.readFailure,
+            message: l.message)), (r) {
       emit(state.copyWith(
-          status: RegisteredUserCreateStatus.readSuccess,
-          id: idCardResponse.id,
-          engName: idCardResponse.engName,
-          thaiName: idCardResponse.thaiName,
-          birthdate: idCardResponse.birthdate,
-          gender: idCardResponse.gender,
-          address: idCardResponse.address,
-          photoPath: photoFile.path));
-    } catch (e) {
-      emit(state.copyWith(
-          status: RegisteredUserCreateStatus.readFailure,
-          id: "",
-          engName: "",
-          thaiName: "",
-          birthdate: "",
-          gender: "",
-          address: "",
-          photoPath: "",
-          telephone: ""));
-    }
+        status: RegisteredUserCreateStatus.readSuccess,
+        id: r.id,
+        engName: r.engName,
+        thaiName: r.thaiName,
+        birthdate: r.birthdate,
+        gender: r.gender,
+        address: r.address,
+        photoUrl: r.photoUrl(),
+      ));
+      add(SavePhoto());
+    });
   }
 
   Future<File> _tempImage(String type) async {
     final directory = await getTemporaryDirectory();
 
     return File('${directory.path}/$type.jpg');
+  }
+
+  Future<void> _savePhoto(
+      SavePhoto event, Emitter<RegisteredUserCreateState> emit) async {
+    emit(state.copyWith(status: RegisteredUserCreateStatus.reading));
+    final photoFile = await _tempImage(state.id);
+    await Dio().download(state.photoUrl, photoFile.path);
+    emit(state.copyWith(
+        status: RegisteredUserCreateStatus.readSuccess,
+        photoPath: photoFile.path));
   }
 
   Future<void> _createRegisteredUser(CreateRegisteredUser event,

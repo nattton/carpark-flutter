@@ -17,6 +17,19 @@ class RegisteredUserServiceRepositoryImpl
   RegisteredUserServiceRepositoryImpl(this.dataSource);
 
   @override
+  Future<Either<Failure, GenericResponseData<IDCardResponse>>>
+      readIdCard() async {
+    try {
+      final result = await dataSource.readIdCard();
+      return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? e.toString()));
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
       getRegisteredUsers(ListRegisteredUserParam param) async {
     try {

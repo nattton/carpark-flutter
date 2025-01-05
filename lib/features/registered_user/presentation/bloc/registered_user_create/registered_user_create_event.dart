@@ -9,7 +9,9 @@ sealed class RegisteredUserCreateEvent extends Equatable {
 
 class Initial extends RegisteredUserCreateEvent {}
 
-class ReadSmartCard extends RegisteredUserCreateEvent {}
+class ReadIdCard extends RegisteredUserCreateEvent {}
+
+class SavePhoto extends RegisteredUserCreateEvent {}
 
 class CreateRegisteredUser extends RegisteredUserCreateEvent {
   final CreateRegisteredUserRequest request;

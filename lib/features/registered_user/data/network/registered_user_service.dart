@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carpark/constants.dart';
 import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:dio/dio.dart';
@@ -10,6 +11,9 @@ part 'registered_user_service.g.dart';
 @RestApi()
 abstract class RegisteredUserService {
   factory RegisteredUserService(Dio dio) = _RegisteredUserService;
+
+  @GET("$kSmartCardReaderUrl/smartcardreader")
+  Future<GenericResponseData<IDCardResponse>> readIdCard();
 
   @GET('/api/registered-users')
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(

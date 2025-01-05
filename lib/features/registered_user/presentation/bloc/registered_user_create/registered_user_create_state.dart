@@ -22,6 +22,7 @@ final class RegisteredUserCreateState extends Equatable {
   final String gender;
   final String address;
   final String photoPath;
+  final String photoUrl;
   final String telephone;
   final String type;
   final String expiredDate;
@@ -36,6 +37,7 @@ final class RegisteredUserCreateState extends Equatable {
       this.gender = "",
       this.address = "",
       this.photoPath = "",
+      this.photoUrl = "",
       this.telephone = "",
       this.type = "",
       this.expiredDate = ""});
@@ -52,6 +54,7 @@ final class RegisteredUserCreateState extends Equatable {
         gender,
         address,
         photoPath,
+        photoUrl,
         telephone,
         type,
         expiredDate
@@ -68,6 +71,7 @@ final class RegisteredUserCreateState extends Equatable {
     String? gender,
     String? address,
     String? photoPath,
+    String? photoUrl,
     String? telephone,
     String? type,
     String? expiredDate,
@@ -83,6 +87,7 @@ final class RegisteredUserCreateState extends Equatable {
       gender: gender ?? this.gender,
       address: address ?? this.address,
       photoPath: photoPath ?? this.photoPath,
+      photoUrl: photoUrl ?? this.photoUrl,
       telephone: telephone ?? this.telephone,
       type: type ?? this.type,
       expiredDate: expiredDate ?? this.expiredDate,

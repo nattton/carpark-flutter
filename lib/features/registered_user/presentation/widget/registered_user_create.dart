@@ -7,6 +7,7 @@ import 'package:carpark/features/registered_user/presentation/bloc/registered_us
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
@@ -38,13 +39,39 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   Widget build(BuildContext context) {
     return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
         listener: (context, state) {
-      if (state.status == RegisteredUserCreateStatus.readFailure ||
-          state.status == RegisteredUserCreateStatus.createFailure) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.message)),
-        );
-      } else if (state.status == RegisteredUserCreateStatus.createSuccess) {
-        context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+      switch (state.status) {
+        case RegisteredUserCreateStatus.initial:
+          break;
+        case RegisteredUserCreateStatus.reading:
+          EasyLoading.show();
+        case RegisteredUserCreateStatus.readSuccess:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('อ่านบัตรสำเร็จ')),
+          );
+        case RegisteredUserCreateStatus.readFailure:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        case RegisteredUserCreateStatus.creating:
+          EasyLoading.show();
+        case RegisteredUserCreateStatus.createSuccess:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
+          );
+        case RegisteredUserCreateStatus.createFailure:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        case RegisteredUserCreateStatus.failure:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
       }
     }, builder: (context, state) {
       if (state.status == RegisteredUserCreateStatus.readSuccess) {
@@ -183,9 +210,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             children: [
               ElevatedButton(
                   onPressed: () {
-                    context
-                        .read<RegisteredUserCreateBloc>()
-                        .add(ReadSmartCard());
+                    context.read<RegisteredUserCreateBloc>().add(ReadIdCard());
                   },
                   child: const Text('อ่านบัตร')),
               ElevatedButton(
