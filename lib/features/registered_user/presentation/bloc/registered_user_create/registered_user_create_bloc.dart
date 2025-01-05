@@ -17,21 +17,27 @@ class RegisteredUserCreateBloc
   final RegisteredUserCreateUsecase usercase;
 
   RegisteredUserCreateBloc(this.usercase)
-      : super(const RegisteredUserCreateState(
-            status: RegisteredUserCreateStatus.initial,
-            id: "",
-            idCard: "",
-            engName: "",
-            thaiName: "",
-            birthdate: "",
-            gender: "",
-            address: "",
-            photoPath: "",
-            telephone: "",
-            type: "",
-            expiredDate: "")) {
+      : super(const RegisteredUserCreateState()) {
+    on<Initial>(_onInitial);
     on<ReadSmartCard>(_readSmartCard);
-    on<AddRegisteredUser>(_addRegisteredUser);
+    on<CreateRegisteredUser>(_createRegisteredUser);
+  }
+
+  Future<void> _onInitial(
+      Initial event, Emitter<RegisteredUserCreateState> emit) async {
+    emit(state.copyWith(
+        status: RegisteredUserCreateStatus.initial,
+        id: "",
+        idCard: "",
+        engName: "",
+        thaiName: "",
+        birthdate: "",
+        gender: "",
+        address: "",
+        telephone: "",
+        type: "",
+        expiredDate: "",
+        photoPath: ""));
   }
 
   Future<void> _readSmartCard(
@@ -70,25 +76,15 @@ class RegisteredUserCreateBloc
     return File('${directory.path}/$type.jpg');
   }
 
-  Future<void> _addRegisteredUser(
-      AddRegisteredUser event, Emitter<RegisteredUserCreateState> emit) async {
+  Future<void> _createRegisteredUser(CreateRegisteredUser event,
+      Emitter<RegisteredUserCreateState> emit) async {
     emit(state.copyWith(status: RegisteredUserCreateStatus.creating));
     try {
-      final request = CreateRegisteredUserRequest(
-        idCard: state.id,
-        engName: state.engName,
-        thaiName: state.thaiName,
-        birthdate: state.birthdate,
-        gender: state.gender,
-        address: state.address,
-        telephone: state.telephone,
-        type: state.type,
-        expiredDate: state.expiredDate,
-      );
-      final registeredUser = await usercase.call(request);
+      final registeredUser = await usercase.call(event.request);
       registeredUser.fold(
-        (l) => emit(
-            state.copyWith(status: RegisteredUserCreateStatus.createFailure)),
+        (l) => emit(state.copyWith(
+            status: RegisteredUserCreateStatus.createFailure,
+            message: l.message)),
         (r) => emit(state.copyWith(
             status: RegisteredUserCreateStatus.createSuccess,
             idCard: r.idCard,
@@ -102,7 +98,9 @@ class RegisteredUserCreateBloc
             expiredDate: r.expiredDate.toDateString())),
       );
     } catch (e) {
-      emit(state.copyWith(status: RegisteredUserCreateStatus.createFailure));
+      emit(state.copyWith(
+          status: RegisteredUserCreateStatus.createFailure,
+          message: e.toString()));
     }
   }
 }

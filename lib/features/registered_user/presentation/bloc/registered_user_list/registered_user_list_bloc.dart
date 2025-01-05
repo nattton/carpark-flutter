@@ -15,7 +15,7 @@ class RegisteredUserListBloc
   RegisteredUserListBloc(this.usecase) : super(RegisteredUserListInitial()) {
     on<GetRegisteredUserList>(_onGetRegisteredUserList);
     on<SearchRegisteredUser>(_onSearchRegisteredUser);
-    on<CreateRegisteredUser>(_onCreateRegisteredUser);
+    on<RegisteredUserCreateScreen>(_onGoToRegisteredUserCreateScreen);
   }
 
   Future<void> _onGetRegisteredUserList(GetRegisteredUserList event,
@@ -44,8 +44,9 @@ class RegisteredUserListBloc
     });
   }
 
-  Future<void> _onCreateRegisteredUser(
-      CreateRegisteredUser event, Emitter<RegisteredUserListState> emit) async {
+  Future<void> _onGoToRegisteredUserCreateScreen(
+      RegisteredUserCreateScreen event,
+      Emitter<RegisteredUserListState> emit) async {
     emit(RegisteredUserListCreating());
   }
 }

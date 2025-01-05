@@ -13,6 +13,7 @@ enum RegisteredUserCreateStatus {
 
 final class RegisteredUserCreateState extends Equatable {
   final RegisteredUserCreateStatus status;
+  final String message;
   final String id;
   final String idCard;
   final String engName;
@@ -25,21 +26,25 @@ final class RegisteredUserCreateState extends Equatable {
   final String type;
   final String expiredDate;
   const RegisteredUserCreateState(
-      {required this.status,
-      required this.id,
-      required this.idCard,
-      required this.engName,
-      required this.thaiName,
-      required this.birthdate,
-      required this.gender,
-      required this.address,
-      required this.photoPath,
-      required this.telephone,
-      required this.type,
-      required this.expiredDate});
+      {this.status = RegisteredUserCreateStatus.initial,
+      this.message = "",
+      this.id = "",
+      this.idCard = "",
+      this.engName = "",
+      this.thaiName = "",
+      this.birthdate = "",
+      this.gender = "",
+      this.address = "",
+      this.photoPath = "",
+      this.telephone = "",
+      this.type = "",
+      this.expiredDate = ""});
 
   @override
   List<Object> get props => [
+        status,
+        message,
+        id,
         idCard,
         engName,
         thaiName,
@@ -54,6 +59,7 @@ final class RegisteredUserCreateState extends Equatable {
 
   RegisteredUserCreateState copyWith({
     RegisteredUserCreateStatus? status,
+    String? message,
     String? id,
     String? idCard,
     String? engName,
@@ -68,6 +74,7 @@ final class RegisteredUserCreateState extends Equatable {
   }) {
     return RegisteredUserCreateState(
       status: status ?? this.status,
+      message: message ?? this.message,
       id: id ?? this.id,
       idCard: idCard ?? this.idCard,
       engName: engName ?? this.engName,

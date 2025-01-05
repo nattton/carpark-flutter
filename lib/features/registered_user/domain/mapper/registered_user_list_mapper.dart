@@ -16,7 +16,6 @@ class RegisteredUserListMapper {
             birthdate: e.birthdate,
             gender: e.gender,
             address: e.address,
-            age: e.age,
             photo: e.photo,
             createdAt: e.createdAt,
             updatedAt: e.updatedAt,

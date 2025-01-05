@@ -11,4 +11,8 @@ class Initial extends RegisteredUserCreateEvent {}
 
 class ReadSmartCard extends RegisteredUserCreateEvent {}
 
-class AddRegisteredUser extends RegisteredUserCreateEvent {}
+class CreateRegisteredUser extends RegisteredUserCreateEvent {
+  final CreateRegisteredUserRequest request;
+
+  const CreateRegisteredUser(this.request);
+}

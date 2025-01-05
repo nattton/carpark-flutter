@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/constants.dart';
+import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -20,11 +24,27 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _addressNameController = TextEditingController();
   final TextEditingController _telephoneController = TextEditingController();
+  List<DateTime?> _dates = [DateTime.now()];
+
+  void _selectDate(List<DateTime?> newSelectedDate) {
+    setState(() {
+      _dates = newSelectedDate;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RegisteredUserCreateBloc, RegisteredUserCreateState>(
-        builder: (context, state) {
+    return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
+        listener: (context, state) {
+      if (state.status == RegisteredUserCreateStatus.readFailure ||
+          state.status == RegisteredUserCreateStatus.createFailure) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(state.message)),
+        );
+      } else if (state.status == RegisteredUserCreateStatus.createSuccess) {
+        context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+      }
+    }, builder: (context, state) {
       if (state.status == RegisteredUserCreateStatus.readSuccess) {
         _idCardController.text = state.id;
         _thaiNameController.text = state.thaiName;
@@ -124,6 +144,26 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16.0),
+          OutlinedButton(
+            onPressed: () async {
+              var results = await showCalendarDatePicker2Dialog(
+                context: context,
+                config: CalendarDatePicker2WithActionButtonsConfig(
+                    calendarType: CalendarDatePicker2Type.single),
+                dialogSize: const Size(325, 400),
+                value: _dates,
+                borderRadius: BorderRadius.circular(15),
+              );
+              if (results != null) {
+                _selectDate(results);
+              }
+            },
+            child: Text(
+              'เลือกวันที่หมดอายุ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year}',
+              style: kButton2Style,
+            ),
+          ),
+          const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -134,7 +174,26 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                         .add(ReadSmartCard());
                   },
                   child: const Text('อ่านบัตร')),
-              ElevatedButton(onPressed: () {}, child: const Text('ยืนยัน')),
+              ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<RegisteredUserCreateBloc>()
+                        .add(CreateRegisteredUser(
+                          CreateRegisteredUserRequest(
+                            idCard: _idCardController.text,
+                            engName: _engNameController.text,
+                            thaiName: _thaiNameController.text,
+                            birthdate: _birthdateController.text,
+                            gender: _genderController.text,
+                            address: _addressNameController.text,
+                            telephone: _telephoneController.text,
+                            type: 'Rider',
+                            expiredDate:
+                                DateFormat("yyyy-MM-dd").format(_dates[0]!),
+                          ),
+                        ));
+                  },
+                  child: const Text('ยืนยัน')),
               ElevatedButton(
                   onPressed: () {
                     context

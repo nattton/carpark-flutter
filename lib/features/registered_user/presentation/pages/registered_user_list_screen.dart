@@ -107,9 +107,10 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
             onPressed: () {
+              context.read<RegisteredUserCreateBloc>().add(Initial());
               context
                   .read<RegisteredUserListBloc>()
-                  .add(CreateRegisteredUser());
+                  .add(RegisteredUserCreateScreen());
             },
             child: const Text('Add'),
           ),

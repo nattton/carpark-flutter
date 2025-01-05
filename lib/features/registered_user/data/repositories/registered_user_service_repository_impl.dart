@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/core/error/failures.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
-import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:carpark/injection_container.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 class RegisteredUserServiceRepositoryImpl
     extends RegisteredUserServiceRepository {
@@ -71,6 +71,8 @@ class RegisteredUserServiceRepositoryImpl
       final result = await dataSource.createRegisteredUser(
           sl<AppService>().token, request);
       return Right(result);
+    } on DioException catch (e) {
+      return Left(Failure(e.response?.data['message'] ?? ""));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
