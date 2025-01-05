@@ -1,6 +1,6 @@
 import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
+import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/smart_card/smart_card_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_create.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_card.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_header.dart';
@@ -21,8 +21,8 @@ class RegisteredUserListScreen extends StatefulWidget {
             create: (context) =>
                 RegisteredUserListBloc(sl())..add(GetRegisteredUserList()),
           ),
-          BlocProvider<SmartCardBloc>(
-            create: (context) => SmartCardBloc(),
+          BlocProvider<RegisteredUserCreateBloc>(
+            create: (context) => RegisteredUserCreateBloc(sl()),
           ),
         ],
         child: const RegisteredUserListScreen(),

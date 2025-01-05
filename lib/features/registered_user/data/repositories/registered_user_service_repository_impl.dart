@@ -90,7 +90,7 @@ class RegisteredUserServiceRepositoryImpl
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      updateRegisteredUser(UpdateRegisteredUserRequest request) async {
+      updateRegisteredUser(RegisteredUserUpdateRequest request) async {
     try {
       final result = await dataSource.updateRegisteredUser(
           sl<AppService>().token, request.id, request);

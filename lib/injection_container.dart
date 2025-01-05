@@ -4,13 +4,12 @@ import 'package:carpark/features/registered_user/data/datasources/registered_use
 import 'package:carpark/features/registered_user/data/network/registered_user_service.dart';
 import 'package:carpark/features/registered_user/data/repositories/registered_user_service_repository_impl.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
+import 'package:carpark/features/registered_user/domain/usecases/usercases.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'features/registered_user/domain/usecases/usercases.dart';
 
 final sl = GetIt.instance;
 

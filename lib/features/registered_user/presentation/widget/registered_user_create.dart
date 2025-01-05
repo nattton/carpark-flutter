@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/smart_card/smart_card_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,12 +19,13 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   final TextEditingController _birthdateController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _addressNameController = TextEditingController();
+  final TextEditingController _telephoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SmartCardBloc, SmartCardState>(
+    return BlocBuilder<RegisteredUserCreateBloc, RegisteredUserCreateState>(
         builder: (context, state) {
-      if (state.state == SmartCardStateX.success) {
+      if (state.state == RegisteredUserCreateStatus.readSuccess) {
         _idCardController.text = state.id;
         _thaiNameController.text = state.thaiName;
         _engNameController.text = state.engName;
@@ -110,10 +111,29 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             ),
             textInputAction: TextInputAction.next,
           ),
+          TextField(
+            controller: _telephoneController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.phone,
+            decoration: const InputDecoration(
+              labelText: 'เบอร์โทรศัพท์',
+              suffixIcon: Icon(Icons.phone),
+              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+            ),
+            textInputAction: TextInputAction.next,
+          ),
           const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<RegisteredUserCreateBloc>()
+                        .add(ReadSmartCard());
+                  },
+                  child: const Text('อ่านบัตร')),
               ElevatedButton(onPressed: () {}, child: const Text('ยืนยัน')),
               ElevatedButton(
                   onPressed: () {

@@ -1,7 +1,7 @@
 import 'package:carpark/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part '../../../../models/id_card_model.g.dart';
+part 'id_card_response.g.dart';
 
 @JsonSerializable()
 class IDCardResponse {
@@ -25,9 +25,9 @@ class IDCardResponse {
       required this.photoByte});
 
   factory IDCardResponse.fromJson(Map<String, dynamic> json) =>
-      _$IDCardModelFromJson(json);
+      _$IDCardResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$IDCardModelToJson(this);
+  Map<String, dynamic> toJson() => _$IDCardResponseToJson(this);
 
   String genderName() {
     if (kGenderMap.containsKey(gender)) {

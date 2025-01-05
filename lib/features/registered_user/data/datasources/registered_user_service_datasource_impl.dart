@@ -3,13 +3,7 @@ import 'dart:io';
 import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
 import 'package:carpark/features/registered_user/data/network/registered_user_service.dart';
-import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
-import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_check_in_request.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_check_out_request.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_log_response.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_response.dart';
-import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
+import 'package:carpark/features/registered_user/domain/models/models.dart';
 
 class RegisteredUserServiceDataSourceImpl
     extends RegisteredUserServiceDataSource {
@@ -49,7 +43,7 @@ class RegisteredUserServiceDataSourceImpl
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      String token, int id, UpdateRegisteredUserRequest request) {
+      String token, int id, RegisteredUserUpdateRequest request) {
     return registeredUserService.updateRegisteredUser(token, id, request);
   }
 

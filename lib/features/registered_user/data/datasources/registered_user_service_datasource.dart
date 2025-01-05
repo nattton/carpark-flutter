@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
-
-import '../../domain/models/models.dart';
+import 'package:carpark/features/registered_user/domain/models/models.dart';
 
 abstract class RegisteredUserServiceDataSource {
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
@@ -25,5 +23,5 @@ abstract class RegisteredUserServiceDataSource {
       String token, String generatedId);
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      String token, int id, UpdateRegisteredUserRequest request);
+      String token, int id, RegisteredUserUpdateRequest request);
 }
