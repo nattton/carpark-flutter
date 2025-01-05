@@ -8,14 +8,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 
-class RegisteredUserCreate extends StatefulWidget {
-  const RegisteredUserCreate({super.key});
+class RegisteredUserUpdate extends StatefulWidget {
+  const RegisteredUserUpdate({super.key});
 
   @override
-  State<RegisteredUserCreate> createState() => _RegisteredUserCreateState();
+  State<RegisteredUserUpdate> createState() => _RegisteredUserUpdateState();
 }
 
-class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
+class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
   final TextEditingController _idCardController = TextEditingController();
   final TextEditingController _thaiNameController = TextEditingController();
   final TextEditingController _engNameController = TextEditingController();

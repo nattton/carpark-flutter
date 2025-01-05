@@ -25,5 +25,5 @@ abstract class RegisteredUserServiceDataSource {
       String token, String generatedId);
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      String token, int id, RegisteredUserUpdateRequest request);
+      String token, int id, UpdateRegisteredUserRequest request);
 }

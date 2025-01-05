@@ -35,7 +35,7 @@ abstract class RegisteredUserService {
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
       @Header('Authorization') String token,
       @Path() int id,
-      @Body() RegisteredUserUpdateRequest request);
+      @Body() UpdateRegisteredUserRequest request);
 
   @POST('/api/registered-users-logs/check-in')
   Future<GenericResponseData<RegisteredUserResponse>> checkInRegisteredUser(

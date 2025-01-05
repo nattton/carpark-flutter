@@ -48,7 +48,7 @@ class RegisteredUserServiceDataSourceImpl
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      String token, int id, RegisteredUserUpdateRequest request) {
+      String token, int id, UpdateRegisteredUserRequest request) {
     return registeredUserService.updateRegisteredUser(token, id, request);
   }
 

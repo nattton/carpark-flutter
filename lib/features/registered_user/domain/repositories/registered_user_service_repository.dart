@@ -27,5 +27,5 @@ abstract class RegisteredUserServiceRepository {
       getRegisteredUserLogs(String generatedId);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      updateRegisteredUser(RegisteredUserUpdateRequest request);
+      updateRegisteredUser(UpdateRegisteredUserRequest request);
 }

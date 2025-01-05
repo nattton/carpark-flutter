@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'registered_user_update_request.g.dart';
+part 'update_registered_user_request.g.dart';
 
 @JsonSerializable()
-class RegisteredUserUpdateRequest extends Equatable {
+class UpdateRegisteredUserRequest extends Equatable {
   final int id;
   final String type;
   final String telephone;
@@ -17,7 +17,7 @@ class RegisteredUserUpdateRequest extends Equatable {
   final String age;
   final String expiredDate;
 
-  const RegisteredUserUpdateRequest({
+  const UpdateRegisteredUserRequest({
     required this.id,
     required this.type,
     required this.telephone,
@@ -31,10 +31,10 @@ class RegisteredUserUpdateRequest extends Equatable {
     required this.expiredDate,
   });
 
-  factory RegisteredUserUpdateRequest.fromJson(Map<String, dynamic> json) =>
-      _$RegisteredUserUpdateRequestFromJson(json);
+  factory UpdateRegisteredUserRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdateRegisteredUserRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RegisteredUserUpdateRequestToJson(this);
+  Map<String, dynamic> toJson() => _$UpdateRegisteredUserRequestToJson(this);
 
   @override
   List<Object?> get props => [
