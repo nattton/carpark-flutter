@@ -19,7 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.1+2
 
 environment:
-  sdk: ">=2.19.3 <3.22.3"
+  sdk: ^3.5.4
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -65,10 +65,11 @@ dependencies:
   media_kit: ^1.1.7
   media_kit_video: ^1.1.8
   media_kit_libs_video: ^1.0.1
-  freezed_annotation: ^2.4.1
   web_socket_channel: ^3.0.0
   thermal_printer: ^1.0.5
   text_marquee: ^0.0.2
+  flutter_bloc: ^8.1.6
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:
@@ -78,7 +79,6 @@ dev_dependencies:
   json_serializable: ^6.7.1
   flutter_lints: ^4.0.0
   riverpod_generator: ^2.4.0
-  freezed: ^2.5.2
 
 flutter:
   uses-material-design: true

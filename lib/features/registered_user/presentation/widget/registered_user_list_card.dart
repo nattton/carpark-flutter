@@ -1,12 +1,12 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/models/visitor_model.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:flutter/material.dart';
 
-class VisitorListCard extends StatelessWidget {
-  const VisitorListCard(
-      {super.key, required this.visitor, required this.onTap});
+class RegisteredUserListCard extends StatelessWidget {
+  const RegisteredUserListCard(
+      {super.key, required this.user, required this.onTap});
 
-  final VisitorModel visitor;
+  final RegisteredUser user;
   final VoidCallback onTap;
 
   @override
@@ -21,7 +21,7 @@ class VisitorListCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  visitor.dateTimeNanoFormat(),
+                  user.idCard,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -30,7 +30,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.exitTime!.toDateTimeNanoString(),
+                  user.thaiName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -39,7 +39,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.plateNumber!,
+                  user.telephone,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -48,7 +48,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.member!.name!,
+                  user.type,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -57,13 +57,14 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.thaiName!,
+                  user.expiredDate.toDateString(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
                   ),
                 ),
               ),
+              const Icon(Icons.edit),
             ],
           ),
         ),
