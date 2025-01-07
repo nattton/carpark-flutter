@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/domain/models/id_card_response.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';
@@ -16,9 +17,16 @@ import 'package:carpark/models/user_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'api_service.g.dart';
+
+@module
+abstract class ApiServiceModule {
+  @singleton
+  ApiService get apiService => ApiService(getIt());
+}
 
 @RestApi()
 abstract class ApiService {

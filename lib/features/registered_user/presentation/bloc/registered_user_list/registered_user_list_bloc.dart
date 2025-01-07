@@ -4,10 +4,12 @@ import 'package:carpark/features/registered_user/domain/models/list_registered_u
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_list_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'registered_user_list_event.dart';
 part 'registered_user_list_state.dart';
 
+@Injectable()
 class RegisteredUserListBloc
     extends Bloc<RegisteredUserListEvent, RegisteredUserListState> {
   final RegisteredUserListUsecase usecase;

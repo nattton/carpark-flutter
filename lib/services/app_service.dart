@@ -1,12 +1,20 @@
 import 'dart:convert';
 
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/user_model.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const kTokenKey = 'TOKEN_KEY';
 const kUserKey = 'USER_KEY';
 const kPrinterKey = 'PRINTER_KEY';
+
+@module
+abstract class AppServiceModule {
+  @singleton
+  AppService get appService => AppService(prefs: getIt());
+}
 
 class AppService {
   final SharedPreferences prefs;

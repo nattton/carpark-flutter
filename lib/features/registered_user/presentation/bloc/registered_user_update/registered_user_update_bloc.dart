@@ -2,10 +2,12 @@ import 'package:carpark/features/registered_user/domain/models/update_registered
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_update_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'registered_user_update_event.dart';
 part 'registered_user_update_state.dart';
 
+@Injectable()
 class RegisteredUserUpdateBloc
     extends Bloc<RegisteredUserUpdateEvent, RegisteredUserUpdateState> {
   final RegisteredUserUpdateUsecase updateUsercase;

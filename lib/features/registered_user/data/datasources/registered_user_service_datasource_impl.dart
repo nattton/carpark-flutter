@@ -4,7 +4,9 @@ import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
 import 'package:carpark/features/registered_user/data/network/registered_user_service.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: RegisteredUserServiceDataSource)
 class RegisteredUserServiceDataSourceImpl
     extends RegisteredUserServiceDataSource {
   final RegisteredUserService registeredUserService;

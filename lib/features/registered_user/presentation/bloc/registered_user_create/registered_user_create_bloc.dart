@@ -9,11 +9,13 @@ import 'package:carpark/features/registered_user/domain/usecases/registered_user
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'registered_user_create_event.dart';
 part 'registered_user_create_state.dart';
 
+@Injectable()
 class RegisteredUserCreateBloc
     extends Bloc<RegisteredUserCreateEvent, RegisteredUserCreateState> {
   final RegisteredUserCreateUsecase usercase;

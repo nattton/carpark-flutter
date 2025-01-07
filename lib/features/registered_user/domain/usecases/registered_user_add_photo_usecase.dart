@@ -4,7 +4,9 @@ import 'package:carpark/features/registered_user/domain/models/add_photo_registe
 import 'package:carpark/features/registered_user/domain/models/registered_user_response.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable()
 class RegisteredUserAddPhotoUsecase
     extends UseCase<RegisteredUserResponse, AddPhotoRegisteredUserParam> {
   final RegisteredUserServiceRepository repository;

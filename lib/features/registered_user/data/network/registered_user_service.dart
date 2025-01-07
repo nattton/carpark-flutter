@@ -3,10 +3,19 @@ import 'dart:io';
 import 'package:carpark/constants.dart';
 import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'registered_user_service.g.dart';
+
+@module
+abstract class RegisteredUserServiceModule {
+  @singleton
+  RegisteredUserService get registeredUserService =>
+      RegisteredUserService(getIt());
+}
 
 @RestApi()
 abstract class RegisteredUserService {

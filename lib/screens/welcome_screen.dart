@@ -1,9 +1,9 @@
-import 'package:carpark/injection_container.dart';
-import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/screens/main_screen.dart';
+import 'package:carpark/injection_container.dart';
 import 'package:carpark/screens/login_screen.dart';
+import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
 class WelcomeScreen extends StatefulWidget {

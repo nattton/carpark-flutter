@@ -1,10 +1,10 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/injection_container.dart';
+import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
+import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/app_service.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';

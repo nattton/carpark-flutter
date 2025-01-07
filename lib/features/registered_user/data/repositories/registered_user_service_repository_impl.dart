@@ -9,7 +9,9 @@ import 'package:carpark/injection_container.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: RegisteredUserServiceRepository)
 class RegisteredUserServiceRepositoryImpl
     extends RegisteredUserServiceRepository {
   final RegisteredUserServiceDataSource dataSource;

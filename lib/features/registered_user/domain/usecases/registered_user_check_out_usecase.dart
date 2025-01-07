@@ -4,7 +4,9 @@ import 'package:carpark/features/registered_user/domain/models/registered_user_c
 import 'package:carpark/features/registered_user/domain/models/registered_user_response.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable()
 class RegisteredUserCheckOutUsecase
     extends UseCase<RegisteredUserResponse, RegisteredUserCheckOutRequest> {
   final RegisteredUserServiceRepository repository;

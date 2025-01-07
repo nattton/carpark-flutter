@@ -4,7 +4,7 @@ import 'package:carpark/features/registered_user/presentation/bloc/registered_us
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_create.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_card.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_header.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,10 +19,10 @@ class RegisteredUserListScreen extends StatefulWidget {
         providers: [
           BlocProvider<RegisteredUserListBloc>(
             create: (context) =>
-                RegisteredUserListBloc(sl())..add(GetRegisteredUserList()),
+                getIt<RegisteredUserListBloc>()..add(GetRegisteredUserList()),
           ),
           BlocProvider<RegisteredUserCreateBloc>(
-            create: (context) => RegisteredUserCreateBloc(sl(), sl(), sl()),
+            create: (context) => getIt<RegisteredUserCreateBloc>(),
           ),
         ],
         child: const RegisteredUserListScreen(),
