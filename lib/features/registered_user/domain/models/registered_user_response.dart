@@ -16,7 +16,6 @@ class RegisteredUserResponse extends Equatable {
   final String birthdate;
   final String gender;
   final String address;
-  final String age;
   final String photo;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -33,7 +32,6 @@ class RegisteredUserResponse extends Equatable {
     required this.birthdate,
     required this.gender,
     required this.address,
-    required this.age,
     required this.photo,
     required this.createdAt,
     required this.updatedAt,
@@ -57,7 +55,6 @@ class RegisteredUserResponse extends Equatable {
         birthdate,
         gender,
         address,
-        age,
         photo,
         createdAt,
         updatedAt,

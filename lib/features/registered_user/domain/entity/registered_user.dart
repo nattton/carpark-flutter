@@ -1,3 +1,4 @@
+import 'package:carpark/constants.dart';
 import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -16,7 +17,6 @@ class RegisteredUser extends Equatable {
   final String birthdate;
   final String gender;
   final String address;
-  final String age;
   final String photo;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -33,7 +33,6 @@ class RegisteredUser extends Equatable {
       required this.birthdate,
       required this.gender,
       required this.address,
-      required this.age,
       required this.photo,
       required this.createdAt,
       required this.updatedAt,
@@ -56,10 +55,16 @@ class RegisteredUser extends Equatable {
         birthdate,
         gender,
         address,
-        age,
         photo,
         createdAt,
         updatedAt,
         expiredDate,
       ];
+
+  String photoUrl() {
+    if (photo.isNotEmpty) {
+      return "$kHostUrl/anpr_store$photo";
+    }
+    return "";
+  }
 }

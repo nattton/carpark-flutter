@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/presentation/pages/registered_user_list_screen.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/last_gate.dart';
@@ -165,7 +165,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<Map<String, CameraModel>> getCameraList() async {
     final camera = ref.read(cameraMapProvider);
-    final data = await sl<ApiService>().getCameraList(sl<AppService>().token);
+    final data =
+        await getIt<ApiService>().getCameraList(getIt<AppService>().token);
     for (CameraModel cam in data) {
       camera[cam.name] = cam;
     }
@@ -174,7 +175,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> getMember() async {
     final memberList = ref.read(membersProvider.notifier);
-    sl<ApiService>().getMemberList(sl<AppService>().token).then((value) {
+    getIt<ApiService>().getMemberList(getIt<AppService>().token).then((value) {
       memberList.setState(value);
     }).onError((error, stackTrace) {
       alertError(error.toString());
@@ -185,7 +186,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     if (!loadingLastGate) {
       loadingLastGate = true;
       final lastGate = ref.read(lastGateProvider.notifier);
-      sl<ApiService>().getLastGate(sl<AppService>().token).then((value) {
+      getIt<ApiService>().getLastGate(getIt<AppService>().token).then((value) {
         lastGate.setGateIn(value.gateIn);
         lastGate.setGateOut(value.gateOut);
         loadingLastGate = false;
@@ -200,7 +201,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     if (!loadingLastGate) {
       loadingLastGate = true;
       final lastGate = ref.read(lastGateProvider.notifier);
-      sl<ApiService>().getGateIn(sl<AppService>().token).then((value) {
+      getIt<ApiService>().getGateIn(getIt<AppService>().token).then((value) {
         lastGate.setGateIn(value.gateLog);
         loadingLastGate = false;
       }).onError((error, stackTrace) {
@@ -214,7 +215,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     if (!loadingLastGate) {
       loadingLastGate = true;
       final lastGate = ref.read(lastGateProvider.notifier);
-      sl<ApiService>().getGateOut(sl<AppService>().token).then((value) {
+      getIt<ApiService>().getGateOut(getIt<AppService>().token).then((value) {
         lastGate.setGateOut(value.gateLog);
         loadingLastGate = false;
       }).onError((error, stackTrace) {
@@ -390,7 +391,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 icon: const Icon(Icons.exit_to_app),
                 onTap: (page, _) {
                   selectedPage('LOGOUT');
-                  sl<AppService>().logout().then((value) {
+                  getIt<AppService>().logout().then((value) {
                     Navigator.pop(context);
                   });
                 },
@@ -603,8 +604,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void createMember() {
-    sl<ApiService>()
-        .createMember(sl<AppService>().token, _memberModel)
+    getIt<ApiService>()
+        .createMember(getIt<AppService>().token, _memberModel)
         .then((value) {
       showDialog<String>(
         context: context,

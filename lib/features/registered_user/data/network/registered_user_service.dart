@@ -1,15 +1,26 @@
 import 'dart:io';
 
+import 'package:carpark/constants.dart';
 import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'registered_user_service.g.dart';
 
+@module
+abstract class RegisteredUserServiceModule {
+  @singleton
+  RegisteredUserService create(Dio dio) => RegisteredUserService(dio);
+}
+
 @RestApi()
 abstract class RegisteredUserService {
   factory RegisteredUserService(Dio dio) = _RegisteredUserService;
+
+  @GET("$kSmartCardReaderUrl/smartcardreader")
+  Future<GenericResponseData<IDCardResponse>> readIdCard();
 
   @GET('/api/registered-users')
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
@@ -22,9 +33,10 @@ abstract class RegisteredUserService {
       @Body() CreateRegisteredUserRequest request);
 
   @PATCH('/api/registered-users/{id}/photo')
-  Future<GenericResponseData<RegisteredUserResponse>>
-      updatePhotoToRegisteredUser(@Header('Authorization') String token,
-          @Path() int id, @Part() File photo);
+  Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
+      @Header('Authorization') String token,
+      @Path() int id,
+      @Part() File photo);
 
   @PATCH('/api/registered-users/{id}')
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(

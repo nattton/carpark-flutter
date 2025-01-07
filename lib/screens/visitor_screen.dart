@@ -4,7 +4,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/components/visitor_header_card.dart';
 import 'package:carpark/components/visitor_list_card.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/providers/visitors_notifier.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
@@ -130,8 +130,8 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
       if (selectedDate.length > 1) {
         dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
       }
-      sl<ApiService>()
-          .listVisitor(sl<AppService>().token, date, dateTo)
+      getIt<ApiService>()
+          .listVisitor(getIt<AppService>().token, date, dateTo)
           .then((value) {
         EasyLoading.dismiss();
         visitors.setState(value);

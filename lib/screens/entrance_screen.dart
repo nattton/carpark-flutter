@@ -5,9 +5,9 @@ import 'package:carpark/components/entrance_card.dart';
 import 'package:carpark/components/exit_card.dart';
 import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/features/registered_user/domain/models/id_card_response.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/id_card_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/visitor_model.dart';
@@ -45,7 +45,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   bool _isReadCard = false;
   String _vehicleType = 'car';
 
-  IDCardModel? _idCardModel;
+  IDCardResponse? _idCardModel;
   File? _photoFile;
   int _selectedGateLogId = 0;
 
@@ -469,8 +469,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Future<void> openDoor(String door) async {
-    sl<ApiService>()
-        .openDoor(sl<AppService>().token, door)
+    getIt<ApiService>()
+        .openDoor(getIt<AppService>().token, door)
         .then((value) {})
         .onError((error, stackTrace) {
       alertError(error.toString());
@@ -478,8 +478,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Future<void> manualCapture(String door) async {
-    sl<ApiService>()
-        .manualCapture(sl<AppService>().token, door)
+    getIt<ApiService>()
+        .manualCapture(getIt<AppService>().token, door)
         .then((value) {})
         .onError((error, stackTrace) {
       alertError(error.toString());
@@ -539,10 +539,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     EasyLoading.show();
     _isReadDrivingLicence = false;
     _isReadCard = true;
-    sl<ApiService>().smartCardReader().then((card) async {
+    getIt<ApiService>().smartCardReader().then((card) async {
       _idCardModel = card;
       _photoFile = await _tempImage(card.id);
-      await sl<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
+      await getIt<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
       _idCardController.text = card.id;
       _thaiNameController.text = card.thaiName;
       _engNameController.text = card.engName;
@@ -702,8 +702,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         address: _addressNameController.text,
         visitorImages: []);
 
-    sl<ApiService>()
-        .createVisitor(sl<AppService>().token, visitor)
+    getIt<ApiService>()
+        .createVisitor(getIt<AppService>().token, visitor)
         .then((value) async {
       if (value.idCard != "") {
         addPhotoToVisitor(value);
@@ -722,8 +722,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   void addPhotoToVisitor(VisitorModel visitor) async {
     if (_idCardModel != null && _photoFile != null) {
       if (await _photoFile!.exists()) {
-        sl<ApiService>()
-            .addPhotoVisitor(sl<AppService>().token, visitor.id, _photoFile!)
+        getIt<ApiService>()
+            .addPhotoVisitor(getIt<AppService>().token, visitor.id, _photoFile!)
             .then((value) => {});
       }
     }
@@ -753,18 +753,18 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     }
 
     if (await cardImage.exists()) {
-      await sl<ApiService>().addImageToVisitor(
-          sl<AppService>().token, visitor.id, "card", cardImage);
+      await getIt<ApiService>().addImageToVisitor(
+          getIt<AppService>().token, visitor.id, "card", cardImage);
       cardImage.delete();
     }
     if (await inSideImage.exists()) {
-      await sl<ApiService>().addImageToVisitor(
-          sl<AppService>().token, visitor.id, "in_side", inSideImage);
+      await getIt<ApiService>().addImageToVisitor(
+          getIt<AppService>().token, visitor.id, "in_side", inSideImage);
       inSideImage.delete();
     }
     if (await entranceImage.exists()) {
-      await sl<ApiService>().addImageToVisitor(
-          sl<AppService>().token, visitor.id, "entrance", entranceImage);
+      await getIt<ApiService>().addImageToVisitor(
+          getIt<AppService>().token, visitor.id, "entrance", entranceImage);
       entranceImage.delete();
     }
   }
@@ -772,11 +772,13 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   void printTicket(VisitorModel visitor) async {
     var printerManager = PrinterManager.instance;
     // print(printerManager.currentStatusUSB.toString());
-    print(sl<AppService>().printer);
+    print(getIt<AppService>().printer);
     printerManager.connect(
         type: PrinterType.usb,
         model: UsbPrinterInput(
-            name: sl<AppService>().printer, productId: null, vendorId: null));
+            name: getIt<AppService>().printer,
+            productId: null,
+            vendorId: null));
     await printerManager.send(
         type: PrinterType.usb, bytes: await _generateTicket(visitor));
     await printerManager.disconnect(type: PrinterType.usb);

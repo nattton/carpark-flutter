@@ -4,7 +4,9 @@ import 'package:carpark/features/registered_user/domain/models/registered_user_r
 import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable()
 class RegisteredUserUpdateUsecase
     extends UseCase<RegisteredUserResponse, UpdateRegisteredUserRequest> {
   final RegisteredUserServiceRepository repository;

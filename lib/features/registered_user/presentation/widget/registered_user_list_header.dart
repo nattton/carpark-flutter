@@ -14,7 +14,7 @@ class RegisteredUserListHeader extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                "ID",
+                "ID Card",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,

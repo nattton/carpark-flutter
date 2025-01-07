@@ -4,7 +4,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/components/gate_log_card.dart';
 import 'package:carpark/components/gate_log_header_card.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_result.dart';
 import 'package:carpark/providers/gate_logs_notifier.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
@@ -132,8 +132,8 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       if (selectedDate.length > 1) {
         dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
       }
-      sl<ApiService>()
-          .searchGateLog(sl<AppService>().token, date, dateTo)
+      getIt<ApiService>()
+          .searchGateLog(getIt<AppService>().token, date, dateTo)
           .then((value) {
         EasyLoading.dismiss();
         gateLogs.setState(value);

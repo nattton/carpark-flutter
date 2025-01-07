@@ -17,3 +17,5 @@ class SearchRegisteredUser extends RegisteredUserListEvent {
   @override
   List<Object> get props => [searchText];
 }
+
+class RegisteredUserCreateScreen extends RegisteredUserListEvent {}

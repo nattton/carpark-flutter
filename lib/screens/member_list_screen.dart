@@ -1,6 +1,6 @@
 import 'package:carpark/components/member_header_card.dart';
 import 'package:carpark/components/member_list_card.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
@@ -97,7 +97,9 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
   Future<void> getMember() async {
     EasyLoading.show(status: 'loading...');
     final memberList = ref.read(membersProvider.notifier);
-    sl<ApiService>().getMemberList(sl<AppService>().token).then((members) {
+    getIt<ApiService>()
+        .getMemberList(getIt<AppService>().token)
+        .then((members) {
       setState(() {
         memberList.setState(members);
       });

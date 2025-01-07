@@ -1,7 +1,7 @@
 import 'package:carpark/components/vehicle_header_card.dart';
 import 'package:carpark/components/vehicle_list_card.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/vehicle_model.dart';
 import 'package:carpark/services/api_service.dart';
@@ -66,8 +66,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
   void getMember() {
     EasyLoading.show(status: 'loading...');
     final member = ref.read(memberModelProvider);
-    sl<ApiService>()
-        .getMember(sl<AppService>().token, widget.memberId)
+    getIt<ApiService>()
+        .getMember(getIt<AppService>().token, widget.memberId)
         .then((value) {
       member.setMember(value);
       setState(() {
@@ -498,8 +498,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
 
   void onPressedSave() {
     final member = ref.read(memberModelProvider);
-    sl<ApiService>()
-        .updateMember(sl<AppService>().token, widget.memberId, member)
+    getIt<ApiService>()
+        .updateMember(getIt<AppService>().token, widget.memberId, member)
         .then((value) {
       showDialog<String>(
         context: context,
@@ -530,8 +530,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
       resemble: _resembleController.text,
     );
 
-    sl<ApiService>()
-        .createVehicle(sl<AppService>().token, widget.memberId, vehicle)
+    getIt<ApiService>()
+        .createVehicle(getIt<AppService>().token, widget.memberId, vehicle)
         .then((value) {
       showDialog<String>(
         context: context,
@@ -564,8 +564,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     vehicle.telephone = _telephoneController.text;
     vehicle.resemble = _resembleController.text;
 
-    sl<ApiService>()
-        .updateVehicle(sl<AppService>().token, vehicle.id!, vehicle)
+    getIt<ApiService>()
+        .updateVehicle(getIt<AppService>().token, vehicle.id!, vehicle)
         .then((value) {
       getMember();
       showDialog<String>(
@@ -619,8 +619,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
   }
 
   void deleteVehicle(VehicleModel vehicle) {
-    sl<ApiService>()
-        .deleteVehicle(sl<AppService>().token, vehicle.id!)
+    getIt<ApiService>()
+        .deleteVehicle(getIt<AppService>().token, vehicle.id!)
         .then((value) {
       showDialog<String>(
         context: context,

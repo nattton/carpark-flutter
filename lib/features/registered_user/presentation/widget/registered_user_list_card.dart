@@ -21,7 +21,7 @@ class RegisteredUserListCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  user.id.toString(),
+                  user.idCard,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -57,7 +57,7 @@ class RegisteredUserListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  user.expiredDate.toString(),
+                  user.expiredDate.toDateString(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

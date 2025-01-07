@@ -1,10 +1,10 @@
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/constants.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
+import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/app_service.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -163,14 +163,14 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    sl<ApiService>()
+    getIt<ApiService>()
         .login(_usernameController.text, _passwordController.text)
         .then((value) async {
       setState(() {
         _usernameController.text = '';
         _passwordController.text = '';
       });
-      await sl<AppService>().saveLogin(value);
+      await getIt<AppService>().saveLogin(value);
       goAdminScreen();
     }).onError((error, stackTrace) {
       alertError(error.toString());

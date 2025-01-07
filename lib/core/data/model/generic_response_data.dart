@@ -6,10 +6,9 @@ part 'generic_response_data.g.dart';
 @JsonSerializable(genericArgumentFactories: true)
 class GenericResponseData<T> extends Equatable {
   final String? message;
-  final String? error;
   final T? data;
 
-  const GenericResponseData({this.message, this.error, this.data});
+  const GenericResponseData({this.message, this.data});
 
   factory GenericResponseData.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
@@ -19,5 +18,5 @@ class GenericResponseData<T> extends Equatable {
       _$GenericResponseDataToJson(this, toJsonT);
 
   @override
-  List<Object?> get props => [message, error, data];
+  List<Object?> get props => [message, data];
 }

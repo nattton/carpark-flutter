@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
-
-import '../../domain/models/models.dart';
+import 'package:carpark/features/registered_user/domain/models/models.dart';
 
 abstract class RegisteredUserServiceDataSource {
+  Future<GenericResponseData<IDCardResponse>> readIdCard();
+
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
       String token, ListRegisteredUserParam param);
 

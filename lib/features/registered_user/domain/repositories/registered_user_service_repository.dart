@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/core/error/failures.dart';
-import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class RegisteredUserServiceRepository {
+  Future<Either<Failure, GenericResponseData<IDCardResponse>>> readIdCard();
+
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
       getRegisteredUsers(ListRegisteredUserParam param);
 

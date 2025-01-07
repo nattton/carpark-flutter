@@ -1,5 +1,5 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
@@ -86,8 +86,8 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
 
   getVisitor() {
     EasyLoading.show(status: 'loading...');
-    sl<ApiService>()
-        .getVisitor(sl<AppService>().token, visitorId)
+    getIt<ApiService>()
+        .getVisitor(getIt<AppService>().token, visitorId)
         .then((value) {
       setState(() {
         visitor = value;
