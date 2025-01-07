@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'registered_user_create_event.dart';
@@ -29,23 +30,25 @@ class RegisteredUserCreateBloc
     on<ReadIdCard>(_readIdCard);
     on<SavePhoto>(_savePhoto);
     on<CreateRegisteredUser>(_createRegisteredUser);
+    on<SelectExpiredDate>(_selectExpiredDate);
   }
 
   Future<void> _onInitial(
       Initial event, Emitter<RegisteredUserCreateState> emit) async {
     emit(state.copyWith(
-        status: RegisteredUserCreateStatus.initial,
-        id: 0,
-        idCard: "",
-        engName: "",
-        thaiName: "",
-        birthdate: "",
-        gender: "",
-        address: "",
-        telephone: "",
-        type: "",
-        expiredDate: "",
-        photoUrl: ""));
+      status: RegisteredUserCreateStatus.initial,
+      id: 0,
+      idCard: "",
+      engName: "",
+      thaiName: "",
+      birthdate: "",
+      gender: "",
+      address: "",
+      telephone: "",
+      type: "",
+      expiredDate: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+      photoUrl: "",
+    ));
   }
 
   Future<void> _readIdCard(
@@ -123,5 +126,18 @@ class RegisteredUserCreateBloc
     final directory = await getTemporaryDirectory();
 
     return File('${directory.path}/$type.jpg');
+  }
+
+  Future<void> _selectExpiredDate(
+      SelectExpiredDate event, Emitter<RegisteredUserCreateState> emit) async {
+    emit(state.copyWith(
+        status: RegisteredUserCreateStatus.selectingExpiredDate));
+    emit(state.copyWith(
+        status: RegisteredUserCreateStatus.selectExpiredDateSuccess,
+        expiredDate: _formatDate(event.expiredDates[0]!)));
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat("yyyy-MM-dd").format(date);
   }
 }

@@ -12,6 +12,8 @@ enum RegisteredUserCreateStatus {
   savePhotoSuccess,
   savePhotoFailure,
   failure,
+  selectingExpiredDate,
+  selectExpiredDateSuccess,
 }
 
 final class RegisteredUserCreateState extends Equatable {
@@ -28,20 +30,21 @@ final class RegisteredUserCreateState extends Equatable {
   final String telephone;
   final String type;
   final String expiredDate;
-  const RegisteredUserCreateState(
-      {this.status = RegisteredUserCreateStatus.initial,
-      this.message = "",
-      this.id = 0,
-      this.idCard = "",
-      this.engName = "",
-      this.thaiName = "",
-      this.birthdate = "",
-      this.gender = "",
-      this.address = "",
-      this.photoUrl = "",
-      this.telephone = "",
-      this.type = "",
-      this.expiredDate = ""});
+  const RegisteredUserCreateState({
+    this.status = RegisteredUserCreateStatus.initial,
+    this.message = "",
+    this.id = 0,
+    this.idCard = "",
+    this.engName = "",
+    this.thaiName = "",
+    this.birthdate = "",
+    this.gender = "",
+    this.address = "",
+    this.photoUrl = "",
+    this.telephone = "",
+    this.type = "",
+    this.expiredDate = "",
+  });
 
   @override
   List<Object> get props => [
@@ -57,7 +60,7 @@ final class RegisteredUserCreateState extends Equatable {
         photoUrl,
         telephone,
         type,
-        expiredDate
+        expiredDate,
       ];
 
   RegisteredUserCreateState copyWith({
@@ -74,6 +77,7 @@ final class RegisteredUserCreateState extends Equatable {
     String? telephone,
     String? type,
     String? expiredDate,
+    List<DateTime?>? expiredDates,
   }) {
     return RegisteredUserCreateState(
       status: status ?? this.status,

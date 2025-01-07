@@ -16,6 +16,8 @@ class RegisteredUserCreate extends StatefulWidget {
 }
 
 class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
+  late RegisteredUserCreateBloc _bloc;
+
   final TextEditingController _idCardController = TextEditingController();
   final TextEditingController _thaiNameController = TextEditingController();
   final TextEditingController _engNameController = TextEditingController();
@@ -25,21 +27,16 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   final TextEditingController _telephoneController = TextEditingController();
   final TextEditingController _typeController = TextEditingController();
 
-  List<DateTime?> _dates = [DateTime.now()];
-
-  void _selectDate(List<DateTime?> newSelectedDate) {
-    setState(() {
-      _dates = newSelectedDate;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    _bloc = context.read<RegisteredUserCreateBloc>();
     return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
         listener: (context, state) {
       switch (state.status) {
         case RegisteredUserCreateStatus.initial:
         case RegisteredUserCreateStatus.savingPhoto:
+        case RegisteredUserCreateStatus.selectingExpiredDate:
+        case RegisteredUserCreateStatus.selectExpiredDateSuccess:
           break;
         case RegisteredUserCreateStatus.reading:
         case RegisteredUserCreateStatus.creating:
@@ -80,6 +77,9 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
         _genderController.text = state.gender;
         _addressNameController.text = state.address;
       }
+
+      final selectExpiredDate =
+          'เลือกวันที่หมดอายุ : ${DateFormat("dd/MM/yyyy").format(DateTime.parse(state.expiredDate))}';
 
       return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -192,15 +192,15 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                   config: CalendarDatePicker2WithActionButtonsConfig(
                       calendarType: CalendarDatePicker2Type.single),
                   dialogSize: const Size(325, 400),
-                  value: _dates,
+                  value: [DateTime.parse(state.expiredDate)],
                   borderRadius: BorderRadius.circular(15),
                 );
                 if (results != null) {
-                  _selectDate(results);
+                  _bloc.add(SelectExpiredDate(results));
                 }
               },
               child: Text(
-                'เลือกวันที่หมดอายุ : ${_dates[0]!.day}/${_dates[0]!.month}/${_dates[0]!.year}',
+                selectExpiredDate,
                 style: kButton2Style,
               ),
             ),
@@ -210,36 +210,29 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<RegisteredUserCreateBloc>()
-                          .add(ReadIdCard());
+                      _bloc.add(ReadIdCard());
                     },
                     child: const Text('อ่านบัตร')),
                 ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<RegisteredUserCreateBloc>()
-                          .add(CreateRegisteredUser(
-                            CreateRegisteredUserRequest(
-                              idCard: _idCardController.text,
-                              engName: _engNameController.text,
-                              thaiName: _thaiNameController.text,
-                              birthdate: _birthdateController.text,
-                              gender: _genderController.text,
-                              address: _addressNameController.text,
-                              telephone: _telephoneController.text,
-                              type: _typeController.text,
-                              expiredDate:
-                                  DateFormat("yyyy-MM-dd").format(_dates[0]!),
-                            ),
-                          ));
+                      _bloc.add(CreateRegisteredUser(
+                        CreateRegisteredUserRequest(
+                          idCard: _idCardController.text,
+                          engName: _engNameController.text,
+                          thaiName: _thaiNameController.text,
+                          birthdate: _birthdateController.text,
+                          gender: _genderController.text,
+                          address: _addressNameController.text,
+                          telephone: _telephoneController.text,
+                          type: _typeController.text,
+                          expiredDate: state.expiredDate,
+                        ),
+                      ));
                     },
                     child: const Text('ยืนยัน')),
                 ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<RegisteredUserListBloc>()
-                          .add(GetRegisteredUserList());
+                      _bloc.add(Initial());
                     },
                     child: const Text('ยกเลิก')),
               ],
