@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:carpark/components/exit_card.dart';
 import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
@@ -125,7 +125,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   }
 
   Future<void> openGateOut() async {
-    sl<ApiService>().openDoor(sl<AppService>().token, "out");
+    await getIt<ApiService>().openDoor(getIt<AppService>().token, "out");
   }
 
   Future<File> _tempImage(String type) async {
@@ -152,13 +152,13 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     }
 
     if (await outSideImage.exists()) {
-      await sl<ApiService>().addImageToVisitor(
-          sl<AppService>().token, visitor.id, "out_side", outSideImage);
+      await getIt<ApiService>().addImageToVisitor(
+          getIt<AppService>().token, visitor.id, "out_side", outSideImage);
       outSideImage.delete();
     }
     if (await exitImage.exists()) {
-      await sl<ApiService>().addImageToVisitor(
-          sl<AppService>().token, visitor.id, "exit", exitImage);
+      await getIt<ApiService>().addImageToVisitor(
+          getIt<AppService>().token, visitor.id, "exit", exitImage);
       exitImage.delete();
     }
   }
@@ -169,8 +169,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       var barcode = _barcodeController.text;
       _barcodeController.clear();
       focusNode.requestFocus();
-      sl<ApiService>()
-          .checkoutVisitor(sl<AppService>().token,
+      getIt<ApiService>()
+          .checkoutVisitor(getIt<AppService>().token,
               CheckoutModel(barcode: barcode, gateLogId: gateLog.id))
           .then((value) {
         alertMessage('ลงเวลาออก ทะเบียน : ${value.plateNumber}');

@@ -1,5 +1,5 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/screens/login_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/app_service.dart';
@@ -23,7 +23,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void checkLogin() async {
-    var app = sl<AppService>();
+    var app = getIt<AppService>();
     await Future.delayed(const Duration(seconds: 1));
     if (!app.isLogIn()) {
       app.logout().then((value) {

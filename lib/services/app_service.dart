@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/login_user_model.dart';
 import 'package:carpark/models/user_model.dart';
 import 'package:injectable/injectable.dart';
@@ -13,7 +12,7 @@ const kPrinterKey = 'PRINTER_KEY';
 @module
 abstract class AppServiceModule {
   @singleton
-  AppService get appService => AppService(prefs: getIt());
+  AppService create(SharedPreferences prefs) => AppService(prefs: prefs);
 }
 
 class AppService {

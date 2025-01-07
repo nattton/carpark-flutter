@@ -1,6 +1,6 @@
 import 'package:carpark/components/camera_list_card.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
@@ -65,10 +65,10 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                 ),
               ),
               DropdownButton<String>(
-                value: sl<AppService>().printer.isEmpty ||
-                        !devices.contains(sl<AppService>().printer)
+                value: getIt<AppService>().printer.isEmpty ||
+                        !devices.contains(getIt<AppService>().printer)
                     ? devices.first
-                    : sl<AppService>().printer,
+                    : getIt<AppService>().printer,
                 icon: const Icon(Icons.print),
                 elevation: 16,
                 style: const TextStyle(color: Colors.deepPurple),
@@ -79,7 +79,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                 onChanged: (String? value) {
                   // This is called when the user selects an item.
                   setState(() {
-                    sl<AppService>().savePrinter(value!);
+                    getIt<AppService>().savePrinter(value!);
                   });
                 },
                 items: devices.map<DropdownMenuItem<String>>((String value) {
@@ -126,7 +126,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   }
 
   Future<void> getCamera() async {
-    sl<ApiService>().getCameraList(sl<AppService>().token).then((value) {
+    getIt<ApiService>().getCameraList(getIt<AppService>().token).then((value) {
       setState(() {
         cameraList = value;
       });
@@ -147,8 +147,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       password: _passwordController.text,
       path: _pathController.text,
     );
-    sl<ApiService>()
-        .updateCamera(sl<AppService>().token, camera.id, camera)
+    getIt<ApiService>()
+        .updateCamera(getIt<AppService>().token, camera.id, camera)
         .then((value) {
       Navigator.pop(context);
       getCamera();

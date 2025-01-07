@@ -8,8 +8,10 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../features/registered_user/data/datasources/registered_user_service_datasource.dart'
     as _i798;
@@ -43,25 +45,35 @@ import '../features/registered_user/presentation/bloc/registered_user_update/reg
     as _i92;
 import '../services/api_service.dart' as _i137;
 import '../services/app_service.dart' as _i479;
+import 'injector.dart' as _i811;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
-  _i174.GetIt init({
+  Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i526.GetItHelper(
       this,
       environment,
       environmentFilter,
     );
+    final sharedPreferencesModule = _$SharedPreferencesModule();
+    final dioModule = _$DioModule();
+    final appServiceModule = _$AppServiceModule();
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
     final apiServiceModule = _$ApiServiceModule();
-    final appServiceModule = _$AppServiceModule();
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => sharedPreferencesModule.sharedPreferences,
+      preResolve: true,
+    );
+    gh.singleton<_i361.Dio>(() => dioModule.dio);
+    gh.singleton<_i479.AppService>(
+        () => appServiceModule.create(gh<_i460.SharedPreferences>()));
     gh.singleton<_i636.RegisteredUserService>(
-        () => registeredUserServiceModule.registeredUserService);
-    gh.singleton<_i137.ApiService>(() => apiServiceModule.apiService);
-    gh.singleton<_i479.AppService>(() => appServiceModule.appService);
+        () => registeredUserServiceModule.create(gh<_i361.Dio>()));
+    gh.singleton<_i137.ApiService>(
+        () => apiServiceModule.create(gh<_i361.Dio>()));
     gh.factory<_i798.RegisteredUserServiceDataSource>(() =>
         _i790.RegisteredUserServiceDataSourceImpl(
             gh<_i636.RegisteredUserService>()));
@@ -102,8 +114,12 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
+class _$SharedPreferencesModule extends _i811.SharedPreferencesModule {}
+
+class _$DioModule extends _i811.DioModule {}
+
+class _$AppServiceModule extends _i479.AppServiceModule {}
+
 class _$RegisteredUserServiceModule extends _i636.RegisteredUserServiceModule {}
 
 class _$ApiServiceModule extends _i137.ApiServiceModule {}
-
-class _$AppServiceModule extends _i479.AppServiceModule {}

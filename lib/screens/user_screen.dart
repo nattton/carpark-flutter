@@ -1,5 +1,5 @@
 import 'package:carpark/components/user_list_card.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/save_user_model.dart';
 import 'package:carpark/models/user_model.dart';
 import 'package:carpark/services/api_service.dart';
@@ -51,7 +51,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Future<void> getUser() async {
-    sl<ApiService>().getUserList(sl<AppService>().token).then((value) {
+    getIt<ApiService>().getUserList(getIt<AppService>().token).then((value) {
       setState(() {
         userList = value;
       });
@@ -64,8 +64,8 @@ class _UserScreenState extends State<UserScreen> {
         username: _usernameController.text,
         password: _passwordController.text,
         role: user.role);
-    sl<ApiService>()
-        .updateUser(sl<AppService>().token, saveUser.id, saveUser)
+    getIt<ApiService>()
+        .updateUser(getIt<AppService>().token, saveUser.id, saveUser)
         .then((value) {
       Navigator.pop(context);
       getUser();

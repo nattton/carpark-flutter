@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
@@ -122,8 +122,8 @@ class _ReportScreenState extends State<ReportScreen> {
     if (_dates.length > 1) {
       dateTo = DateFormat('yyyy-MM-dd').format(_dates[1]!);
     }
-    sl<ApiService>()
-        .reportTraffic(sl<AppService>().token, _reportType, date, dateTo)
+    getIt<ApiService>()
+        .reportTraffic(getIt<AppService>().token, _reportType, date, dateTo)
         .then((report) async {
       Excel excel = Excel.createExcel();
       Sheet sheetObject = excel['Sheet1'];

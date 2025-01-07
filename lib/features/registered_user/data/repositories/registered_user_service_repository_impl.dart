@@ -5,7 +5,7 @@ import 'package:carpark/core/error/failures.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
-import 'package:carpark/injection_container.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -36,7 +36,7 @@ class RegisteredUserServiceRepositoryImpl
       getRegisteredUsers(ListRegisteredUserParam param) async {
     try {
       final result =
-          await dataSource.getRegisteredUsers(sl<AppService>().token, param);
+          await dataSource.getRegisteredUsers(getIt<AppService>().token, param);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
@@ -50,7 +50,7 @@ class RegisteredUserServiceRepositoryImpl
       addPhotoToRegisteredUser(int id, File photo) async {
     try {
       final result = await dataSource.addPhotoToRegisteredUser(
-          sl<AppService>().token, id, photo);
+          getIt<AppService>().token, id, photo);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
@@ -64,7 +64,7 @@ class RegisteredUserServiceRepositoryImpl
       checkInRegisteredUser(RegisteredUserCheckInRequest request) async {
     try {
       final result = await dataSource.checkInRegisteredUser(
-          sl<AppService>().token, request);
+          getIt<AppService>().token, request);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
@@ -78,7 +78,7 @@ class RegisteredUserServiceRepositoryImpl
       checkOutRegisteredUser(RegisteredUserCheckOutRequest request) async {
     try {
       final result = await dataSource.checkOutRegisteredUser(
-          sl<AppService>().token, request);
+          getIt<AppService>().token, request);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
@@ -92,7 +92,7 @@ class RegisteredUserServiceRepositoryImpl
       createRegisteredUser(CreateRegisteredUserRequest request) async {
     try {
       final result = await dataSource.createRegisteredUser(
-          sl<AppService>().token, request);
+          getIt<AppService>().token, request);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
@@ -106,7 +106,7 @@ class RegisteredUserServiceRepositoryImpl
       getRegisteredUserLogs(String generatedId) async {
     try {
       final result = await dataSource.getRegisteredUserLogs(
-          sl<AppService>().token, generatedId);
+          getIt<AppService>().token, generatedId);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
@@ -120,7 +120,7 @@ class RegisteredUserServiceRepositoryImpl
       updateRegisteredUser(UpdateRegisteredUserRequest request) async {
     try {
       final result = await dataSource.updateRegisteredUser(
-          sl<AppService>().token, request.id, request);
+          getIt<AppService>().token, request.id, request);
       return Right(result);
     } on DioException catch (e) {
       return Left(Failure(e.response?.data['message'] ?? e.toString()));
