@@ -80,25 +80,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i960.RegisteredUserServiceRepository>(() =>
         _i296.RegisteredUserServiceRepositoryImpl(
             gh<_i798.RegisteredUserServiceDataSource>()));
-    gh.factory<_i399.ReadIdCardUsecase>(() =>
-        _i399.ReadIdCardUsecase(gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i856.RegisteredUserAddPhotoUsecase>(() =>
         _i856.RegisteredUserAddPhotoUsecase(
-            gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i1063.RegisteredUserCheckInUsecase>(() =>
-        _i1063.RegisteredUserCheckInUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i815.RegisteredUserCheckOutUsecase>(() =>
         _i815.RegisteredUserCheckOutUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i589.RegisteredUserCreateUsecase>(() =>
-        _i589.RegisteredUserCreateUsecase(
-            gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i390.RegisteredUserListUsecase>(() =>
         _i390.RegisteredUserListUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i1063.RegisteredUserCheckInUsecase>(() =>
+        _i1063.RegisteredUserCheckInUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i544.RegisteredUserUpdateUsecase>(() =>
         _i544.RegisteredUserUpdateUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i399.ReadIdCardUsecase>(() =>
+        _i399.ReadIdCardUsecase(gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i589.RegisteredUserCreateUsecase>(() =>
+        _i589.RegisteredUserCreateUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i707.RegisteredUserListBloc>(() =>
         _i707.RegisteredUserListBloc(gh<_i390.RegisteredUserListUsecase>()));
