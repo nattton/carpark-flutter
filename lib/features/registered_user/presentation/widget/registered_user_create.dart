@@ -233,6 +233,22 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                 ElevatedButton(
                     onPressed: () {
                       _bloc.add(Initial());
+                      _idCardController.clear();
+                      _thaiNameController.clear();
+                      _engNameController.clear();
+                      _birthdateController.clear();
+                      _genderController.clear();
+                      _addressNameController.clear();
+                      _telephoneController.clear();
+                      _typeController.clear();
+                    },
+                    child: const Text('ล้างข้อมูล')),
+                ElevatedButton(
+                    onPressed: () {
+                      _bloc.add(Initial());
+                      context
+                          .read<RegisteredUserListBloc>()
+                          .add(GetRegisteredUserList());
                     },
                     child: const Text('ยกเลิก')),
               ],

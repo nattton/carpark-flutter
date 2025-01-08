@@ -1,10 +1,11 @@
-import 'package:carpark/screens/display_screen.dart';
+import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
 import 'package:carpark/screens/login_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (context, child) => MaterialApp(
-        title: 'Car Park',
+        title: context.read<AppTitleCubit>().state.title,
         initialRoute: WelcomeScreen.id,
         debugShowCheckedModeBanner: false,
         routes: {
@@ -34,11 +35,6 @@ class MyApp extends StatelessWidget {
               final visitorId = settings.arguments as int;
               return MaterialPageRoute(builder: (context) {
                 return VisitorDetailScreen(visitorId: visitorId);
-              });
-            case DisplayScreen.id:
-              final screenId = settings.arguments as int;
-              return MaterialPageRoute(builder: (context) {
-                return DisplayScreen(screenId: screenId);
               });
           }
           return null;
