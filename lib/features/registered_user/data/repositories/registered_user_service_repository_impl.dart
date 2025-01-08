@@ -37,6 +37,15 @@ class RegisteredUserServiceRepositoryImpl
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
+      getRegisteredUser(int id) async {
+    return TaskEither.tryCatch(
+      () => dataSource.getRegisteredUser(getIt<AppService>().token, id),
+      (e, _) => Failure.fromException(e),
+    ).run();
+  }
+
+  @override
+  Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       addPhotoToRegisteredUser(int id, File photo) async {
     return TaskEither.tryCatch(
       () => dataSource.addPhotoToRegisteredUser(

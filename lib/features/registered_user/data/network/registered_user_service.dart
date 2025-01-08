@@ -27,6 +27,10 @@ abstract class RegisteredUserService {
       @Header('Authorization') String token,
       @Query('search') String searchText);
 
+  @GET('/api/registered-users/{id}')
+  Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(
+      @Header('Authorization') String token, @Path() int id);
+
   @POST('/api/registered-users')
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
       @Header('Authorization') String token,

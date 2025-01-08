@@ -12,6 +12,9 @@ abstract class RegisteredUserServiceRepository {
       getRegisteredUsers(ListRegisteredUserParam param);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
+      getRegisteredUser(int id);
+
+  Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       addPhotoToRegisteredUser(int id, File photo);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>

@@ -7,10 +7,20 @@ sealed class RegisteredUserUpdateEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class Initial extends RegisteredUserUpdateEvent {}
+class GetRegisteredUser extends RegisteredUserUpdateEvent {
+  final int id;
+
+  const GetRegisteredUser(this.id);
+}
 
 class UpdateRegisteredUser extends RegisteredUserUpdateEvent {
   final UpdateRegisteredUserRequest request;
 
   const UpdateRegisteredUser(this.request);
+}
+
+class UpdateRegisteredUserSelectExpiredDate extends RegisteredUserUpdateEvent {
+  final List<DateTime?> expiredDates;
+
+  const UpdateRegisteredUserSelectExpiredDate(this.expiredDates);
 }

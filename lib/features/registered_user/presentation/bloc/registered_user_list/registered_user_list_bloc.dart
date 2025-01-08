@@ -18,6 +18,7 @@ class RegisteredUserListBloc
     on<GetRegisteredUserList>(_onGetRegisteredUserList);
     on<SearchRegisteredUser>(_onSearchRegisteredUser);
     on<RegisteredUserCreateScreen>(_onGoToRegisteredUserCreateScreen);
+    on<RegisteredUserUpdateScreen>(_onGoToRegisteredUserUpdateScreen);
   }
 
   Future<void> _onGetRegisteredUserList(GetRegisteredUserList event,
@@ -50,5 +51,11 @@ class RegisteredUserListBloc
       RegisteredUserCreateScreen event,
       Emitter<RegisteredUserListState> emit) async {
     emit(RegisteredUserListCreating());
+  }
+
+  Future<void> _onGoToRegisteredUserUpdateScreen(
+      RegisteredUserUpdateScreen event,
+      Emitter<RegisteredUserListState> emit) async {
+    emit(RegisteredUserListUpdating());
   }
 }

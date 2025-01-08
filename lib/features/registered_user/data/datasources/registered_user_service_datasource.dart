@@ -9,6 +9,9 @@ abstract class RegisteredUserServiceDataSource {
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
       String token, ListRegisteredUserParam param);
 
+  Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(
+      String token, int id);
+
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
       String token, int id, File photo);
 

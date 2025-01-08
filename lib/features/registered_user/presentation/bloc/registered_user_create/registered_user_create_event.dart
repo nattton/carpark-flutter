@@ -7,7 +7,7 @@ sealed class RegisteredUserCreateEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class Initial extends RegisteredUserCreateEvent {}
+class InitialCreateRegisteredUser extends RegisteredUserCreateEvent {}
 
 class ReadIdCard extends RegisteredUserCreateEvent {}
 

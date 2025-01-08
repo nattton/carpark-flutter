@@ -10,8 +10,8 @@ class NullTimeModel {
   @JsonKey(name: "Valid")
   bool? valid;
 
-  NullTimeModel(
-    this.time, {
+  NullTimeModel({
+    this.time,
     this.valid,
   });
 
@@ -47,5 +47,12 @@ class NullTimeModel {
       return "";
     }
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(time!);
+  }
+
+  NullTimeModel copyWith({
+    DateTime? time,
+    bool? valid,
+  }) {
+    return NullTimeModel(time: time ?? this.time, valid: valid ?? this.valid);
   }
 }

@@ -33,6 +33,8 @@ import '../features/registered_user/domain/usecases/registered_user_check_out_us
     as _i815;
 import '../features/registered_user/domain/usecases/registered_user_create_usecase.dart'
     as _i589;
+import '../features/registered_user/domain/usecases/registered_user_get_usecase.dart'
+    as _i173;
 import '../features/registered_user/domain/usecases/registered_user_list_usecase.dart'
     as _i390;
 import '../features/registered_user/domain/usecases/registered_user_update_usecase.dart'
@@ -80,36 +82,42 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i960.RegisteredUserServiceRepository>(() =>
         _i296.RegisteredUserServiceRepositoryImpl(
             gh<_i798.RegisteredUserServiceDataSource>()));
+    gh.factory<_i399.ReadIdCardUsecase>(() =>
+        _i399.ReadIdCardUsecase(gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i856.RegisteredUserAddPhotoUsecase>(() =>
         _i856.RegisteredUserAddPhotoUsecase(
-            gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i815.RegisteredUserCheckOutUsecase>(() =>
-        _i815.RegisteredUserCheckOutUsecase(
-            gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i390.RegisteredUserListUsecase>(() =>
-        _i390.RegisteredUserListUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i1063.RegisteredUserCheckInUsecase>(() =>
         _i1063.RegisteredUserCheckInUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i544.RegisteredUserUpdateUsecase>(() =>
-        _i544.RegisteredUserUpdateUsecase(
+    gh.factory<_i815.RegisteredUserCheckOutUsecase>(() =>
+        _i815.RegisteredUserCheckOutUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i399.ReadIdCardUsecase>(() =>
-        _i399.ReadIdCardUsecase(gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i589.RegisteredUserCreateUsecase>(() =>
         _i589.RegisteredUserCreateUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i173.RegisteredUserGetUsecase>(() =>
+        _i173.RegisteredUserGetUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i390.RegisteredUserListUsecase>(() =>
+        _i390.RegisteredUserListUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i544.RegisteredUserUpdateUsecase>(() =>
+        _i544.RegisteredUserUpdateUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i707.RegisteredUserListBloc>(() =>
         _i707.RegisteredUserListBloc(gh<_i390.RegisteredUserListUsecase>()));
+    gh.factory<_i92.RegisteredUserUpdateBloc>(
+        () => _i92.RegisteredUserUpdateBloc(
+              gh<_i173.RegisteredUserGetUsecase>(),
+              gh<_i544.RegisteredUserUpdateUsecase>(),
+            ));
     gh.factory<_i582.RegisteredUserCreateBloc>(
         () => _i582.RegisteredUserCreateBloc(
               gh<_i589.RegisteredUserCreateUsecase>(),
               gh<_i399.ReadIdCardUsecase>(),
               gh<_i856.RegisteredUserAddPhotoUsecase>(),
             ));
-    gh.factory<_i92.RegisteredUserUpdateBloc>(() =>
-        _i92.RegisteredUserUpdateBloc(gh<_i544.RegisteredUserUpdateUsecase>()));
     return this;
   }
 }
