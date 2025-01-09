@@ -76,9 +76,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => registeredUserServiceModule.create(gh<_i361.Dio>()));
     gh.singleton<_i137.ApiService>(
         () => apiServiceModule.create(gh<_i361.Dio>()));
-    gh.factory<_i798.RegisteredUserServiceDataSource>(() =>
-        _i790.RegisteredUserServiceDataSourceImpl(
-            gh<_i636.RegisteredUserService>()));
+    gh.factory<_i798.RegisteredUserServiceDataSource>(
+        () => _i790.RegisteredUserServiceDataSourceImpl(
+              gh<_i636.RegisteredUserService>(),
+              gh<_i479.AppService>(),
+            ));
     gh.factory<_i960.RegisteredUserServiceRepository>(() =>
         _i296.RegisteredUserServiceRepositoryImpl(
             gh<_i798.RegisteredUserServiceDataSource>()));

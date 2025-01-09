@@ -79,7 +79,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
       }
 
       final selectExpiredDate =
-          'เลือกวันที่หมดอายุ : ${DateFormat("dd/MM/yyyy").format(DateTime.parse(state.expiredDate))}';
+          'เลือกวันที่หมดอายุ : ${DateFormat("dd/MM/yyyy").format(state.expiredDate.isNotEmpty ? DateTime.parse(state.expiredDate) : DateTime.now())}';
 
       return Padding(
         padding: const EdgeInsets.all(16.0),
