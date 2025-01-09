@@ -51,7 +51,7 @@ class RegisteredUserUpdateBloc
         (r) {
           emit(state.copyWith(
               status: RegisteredUserUpdateStatus.updateSuccess,
-              registeredUser: RegisteredUserMapper.responseMapper(r)));
+              registeredUser: r));
         },
       );
     } catch (e) {
