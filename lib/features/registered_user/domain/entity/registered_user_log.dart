@@ -1,4 +1,3 @@
-import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 
 typedef RegisteredUserLogList = List<RegisteredUserLog>;
@@ -6,8 +5,8 @@ typedef RegisteredUserLogList = List<RegisteredUserLog>;
 class RegisteredUserLog extends Equatable {
   final int id;
   final String generatedId;
-  final NullTimeModel? checkInTime;
-  final NullTimeModel? checkOutTime;
+  final DateTime? checkInTime;
+  final DateTime? checkOutTime;
 
   const RegisteredUserLog(
       {this.id = 0,

@@ -37,6 +37,8 @@ import '../features/registered_user/domain/usecases/registered_user_get_usecase.
     as _i173;
 import '../features/registered_user/domain/usecases/registered_user_list_usecase.dart'
     as _i390;
+import '../features/registered_user/domain/usecases/registered_user_logs_usecase.dart'
+    as _i908;
 import '../features/registered_user/domain/usecases/registered_user_update_usecase.dart'
     as _i544;
 import '../features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart'
@@ -106,6 +108,9 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i544.RegisteredUserUpdateUsecase>(() =>
         _i544.RegisteredUserUpdateUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i908.RegisteredUserLogsUsecase>(() =>
+        _i908.RegisteredUserLogsUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i707.RegisteredUserListBloc>(() =>
         _i707.RegisteredUserListBloc(gh<_i390.RegisteredUserListUsecase>()));

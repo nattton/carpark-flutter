@@ -58,7 +58,7 @@ abstract class RegisteredUserService {
       @Header('Authorization') String token,
       @Body() RegisteredUserCheckOutRequest request);
 
-  @GET('/api/registered-users-logs/{generatedId}')
-  Future<GenericResponseData<RegisteredUserLogResponse>> getRegisteredUserLogs(
-      @Header('Authorization') String token, @Path() String generatedId);
+  @GET('/api/registered-users-logs/{id}')
+  Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
+      @Header('Authorization') String token, @Path() int id);
 }

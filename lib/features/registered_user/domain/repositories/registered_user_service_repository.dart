@@ -26,8 +26,8 @@ abstract class RegisteredUserServiceRepository {
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       createRegisteredUser(CreateRegisteredUserRequest request);
 
-  Future<Either<Failure, GenericResponseData<RegisteredUserLogResponse>>>
-      getRegisteredUserLogs(String generatedId);
+  Future<Either<Failure, GenericResponseData<RegisteredUserLogsResponse>>>
+      getRegisteredUserLogs(int id);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       updateRegisteredUser(UpdateRegisteredUserRequest request);

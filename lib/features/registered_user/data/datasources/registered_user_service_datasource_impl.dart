@@ -50,10 +50,9 @@ class RegisteredUserServiceDataSourceImpl
   }
 
   @override
-  Future<GenericResponseData<RegisteredUserLogResponse>> getRegisteredUserLogs(
-      String generatedId) {
-    return registeredUserService.getRegisteredUserLogs(
-        appService.token, generatedId);
+  Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
+      int id) {
+    return registeredUserService.getRegisteredUserLogs(appService.token, id);
   }
 
   @override

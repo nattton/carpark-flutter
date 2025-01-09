@@ -23,8 +23,8 @@ abstract class RegisteredUserServiceDataSource {
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
       CreateRegisteredUserRequest request);
 
-  Future<GenericResponseData<RegisteredUserLogResponse>> getRegisteredUserLogs(
-      String generatedId);
+  Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
+      int id);
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
       int id, UpdateRegisteredUserRequest request);

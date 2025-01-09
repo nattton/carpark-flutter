@@ -79,10 +79,10 @@ class RegisteredUserServiceRepositoryImpl
   }
 
   @override
-  Future<Either<Failure, GenericResponseData<RegisteredUserLogResponse>>>
-      getRegisteredUserLogs(String generatedId) async {
+  Future<Either<Failure, GenericResponseData<RegisteredUserLogsResponse>>>
+      getRegisteredUserLogs(int id) async {
     return TaskEither.tryCatch(
-      () => dataSource.getRegisteredUserLogs(generatedId),
+      () => dataSource.getRegisteredUserLogs(id),
       (e, _) => Failure.fromException(e),
     ).run();
   }
