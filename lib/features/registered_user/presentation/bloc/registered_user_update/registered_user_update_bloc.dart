@@ -1,5 +1,9 @@
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
+import 'package:carpark/features/registered_user/domain/mapper/registered_user_mapper.dart';
 import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
+import 'package:carpark/features/registered_user/domain/usecases/registered_user_get_usecase.dart';
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_update_usecase.dart';
+import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -10,29 +14,29 @@ part 'registered_user_update_state.dart';
 @Injectable()
 class RegisteredUserUpdateBloc
     extends Bloc<RegisteredUserUpdateEvent, RegisteredUserUpdateState> {
+  final RegisteredUserGetUsecase readUsercase;
   final RegisteredUserUpdateUsecase updateUsercase;
 
-  RegisteredUserUpdateBloc(this.updateUsercase)
+  RegisteredUserUpdateBloc(this.readUsercase, this.updateUsercase)
       : super(const RegisteredUserUpdateState()) {
-    on<Initial>(_onInitial);
+    on<GetRegisteredUser>(_getRegisteredUser);
     on<UpdateRegisteredUser>(_updateRegisteredUser);
+    on<UpdateRegisteredUserSelectExpiredDate>(_selectExpiredDate);
   }
 
-  Future<void> _onInitial(
-      Initial event, Emitter<RegisteredUserUpdateState> emit) async {
-    emit(state.copyWith(
-        status: RegisteredUserUpdateStatus.initial,
-        id: 0,
-        idCard: "",
-        engName: "",
-        thaiName: "",
-        birthdate: "",
-        gender: "",
-        address: "",
-        telephone: "",
-        type: "",
-        expiredDate: "",
-        photoUrl: ""));
+  Future<void> _getRegisteredUser(
+      GetRegisteredUser event, Emitter<RegisteredUserUpdateState> emit) async {
+    emit(state.copyWith(status: RegisteredUserUpdateStatus.loading));
+    final registeredUser = await readUsercase.call(event.id);
+    registeredUser.fold(
+      (l) => emit(state.copyWith(
+          status: RegisteredUserUpdateStatus.loadFailure, message: l.message)),
+      (r) {
+        emit(state.copyWith(
+            status: RegisteredUserUpdateStatus.loadSuccess,
+            registeredUser: RegisteredUserMapper.responseMapper(r)));
+      },
+    );
   }
 
   Future<void> _updateRegisteredUser(UpdateRegisteredUser event,
@@ -47,16 +51,7 @@ class RegisteredUserUpdateBloc
         (r) {
           emit(state.copyWith(
               status: RegisteredUserUpdateStatus.updateSuccess,
-              id: r.id,
-              idCard: r.idCard,
-              engName: r.engName,
-              thaiName: r.thaiName,
-              birthdate: r.birthdate,
-              gender: r.gender,
-              address: r.address,
-              telephone: r.telephone,
-              type: r.type,
-              expiredDate: r.expiredDate.toDateString()));
+              registeredUser: r));
         },
       );
     } catch (e) {
@@ -64,5 +59,16 @@ class RegisteredUserUpdateBloc
           status: RegisteredUserUpdateStatus.updateFailure,
           message: e.toString()));
     }
+  }
+
+  Future<void> _selectExpiredDate(UpdateRegisteredUserSelectExpiredDate event,
+      Emitter<RegisteredUserUpdateState> emit) async {
+    emit(state.copyWith(
+        status: RegisteredUserUpdateStatus.selectingExpiredDate));
+    emit(state.copyWith(
+        status: RegisteredUserUpdateStatus.selectExpiredDateSuccess,
+        registeredUser: state.registeredUser.copyWith(
+            expiredDate:
+                NullTimeModel(valid: true, time: event.expiredDates[0]!))));
   }
 }

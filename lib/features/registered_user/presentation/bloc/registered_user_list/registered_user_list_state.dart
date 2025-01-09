@@ -30,3 +30,5 @@ final class RegisteredUserListFailure extends RegisteredUserListState {
 }
 
 final class RegisteredUserListCreating extends RegisteredUserListState {}
+
+final class RegisteredUserListUpdating extends RegisteredUserListState {}

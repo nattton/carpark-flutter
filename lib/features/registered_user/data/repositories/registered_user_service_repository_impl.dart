@@ -5,10 +5,7 @@ import 'package:carpark/core/error/failures.dart';
 import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/services/app_service.dart';
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: RegisteredUserServiceRepository)
@@ -21,111 +18,81 @@ class RegisteredUserServiceRepositoryImpl
   @override
   Future<Either<Failure, GenericResponseData<IDCardResponse>>>
       readIdCard() async {
-    try {
-      final result = await dataSource.readIdCard();
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.readIdCard(),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
       getRegisteredUsers(ListRegisteredUserParam param) async {
-    try {
-      final result =
-          await dataSource.getRegisteredUsers(getIt<AppService>().token, param);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.getRegisteredUsers(param),
+      (e, _) => Failure.fromException(e),
+    ).run();
+  }
+
+  @override
+  Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
+      getRegisteredUser(int id) async {
+    return TaskEither.tryCatch(
+      () => dataSource.getRegisteredUser(id),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       addPhotoToRegisteredUser(int id, File photo) async {
-    try {
-      final result = await dataSource.addPhotoToRegisteredUser(
-          getIt<AppService>().token, id, photo);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.addPhotoToRegisteredUser(id, photo),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       checkInRegisteredUser(RegisteredUserCheckInRequest request) async {
-    try {
-      final result = await dataSource.checkInRegisteredUser(
-          getIt<AppService>().token, request);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.checkInRegisteredUser(request),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       checkOutRegisteredUser(RegisteredUserCheckOutRequest request) async {
-    try {
-      final result = await dataSource.checkOutRegisteredUser(
-          getIt<AppService>().token, request);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.checkOutRegisteredUser(request),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       createRegisteredUser(CreateRegisteredUserRequest request) async {
-    try {
-      final result = await dataSource.createRegisteredUser(
-          getIt<AppService>().token, request);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.createRegisteredUser(request),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
-  Future<Either<Failure, GenericResponseData<RegisteredUserLogResponse>>>
-      getRegisteredUserLogs(String generatedId) async {
-    try {
-      final result = await dataSource.getRegisteredUserLogs(
-          getIt<AppService>().token, generatedId);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+  Future<Either<Failure, GenericResponseData<RegisteredUserLogsResponse>>>
+      getRegisteredUserLogs(int id) async {
+    return TaskEither.tryCatch(
+      () => dataSource.getRegisteredUserLogs(id),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 
   @override
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       updateRegisteredUser(UpdateRegisteredUserRequest request) async {
-    try {
-      final result = await dataSource.updateRegisteredUser(
-          getIt<AppService>().token, request.id, request);
-      return Right(result);
-    } on DioException catch (e) {
-      return Left(Failure(e.response?.data['message'] ?? e.toString()));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
+    return TaskEither.tryCatch(
+      () => dataSource.updateRegisteredUser(request.id, request),
+      (e, _) => Failure.fromException(e),
+    ).run();
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carpark/constants.dart';
+import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
 import 'package:carpark/features/registered_user/presentation/pages/registered_user_list_screen.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
@@ -10,7 +11,6 @@ import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/providers/members_notifier.dart';
-import 'package:carpark/screens/display_screen.dart';
 import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
@@ -27,6 +27,7 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -79,6 +80,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
 
+  late AppTitleCubit _appTitleCubit;
+
   initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     var channel = WebSocketChannel.connect(Uri.parse(wsUrl));
@@ -127,6 +130,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
+    _appTitleCubit = context.read<AppTitleCubit>();
+    _appTitleCubit.changeTitle('Car Park');
     if (kIsWeb) {
       initWebSocketChannelConnection();
     } else {
@@ -269,197 +274,193 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kColorPrimary,
-        title: const Text(
-          'Car Park',
-          style: TextStyle(color: Colors.white),
-        ),
-        automaticallyImplyLeading: false,
-        actions: _buildActionBar(),
-      ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SideMenu(
-            controller: sideMenu,
-            style: SideMenuStyle(
-              displayMode: SideMenuDisplayMode.compact,
-              openSideMenuWidth: 200,
-              compactSideMenuWidth: 60,
-              hoverColor: Colors.blue[100],
-              selectedColor: Colors.lightBlue,
-              selectedTitleTextStyle: const TextStyle(color: Colors.white),
-              selectedIconColor: Colors.white,
+    return BlocBuilder<AppTitleCubit, AppTitleState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: kColorPrimary,
+            title: Text(
+              state.title,
+              style: TextStyle(color: Colors.white),
             ),
-            items: [
-              SideMenuItem(
-                title: 'ทางเข้า',
-                onTap: (page, _) {
-                  selectedPage('ENTRANCE');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.door_front_door_outlined),
-                tooltipContent: "ทางเข้า",
+            automaticallyImplyLeading: false,
+            actions: _buildActionBar(),
+          ),
+          body: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SideMenu(
+                controller: sideMenu,
+                style: SideMenuStyle(
+                  displayMode: SideMenuDisplayMode.compact,
+                  openSideMenuWidth: 200,
+                  compactSideMenuWidth: 60,
+                  hoverColor: Colors.blue[100],
+                  selectedColor: Colors.lightBlue,
+                  selectedTitleTextStyle: const TextStyle(color: Colors.white),
+                  selectedIconColor: Colors.white,
+                ),
+                items: [
+                  SideMenuItem(
+                    title: 'ทางเข้า',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('ทางเข้า');
+                      selectedPage('ENTRANCE');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.door_front_door_outlined),
+                    tooltipContent: "ทางเข้า",
+                  ),
+                  SideMenuItem(
+                    title: 'ทางออก',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('ทางออก');
+                      selectedPage('EXIT');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.door_back_door_outlined),
+                    tooltipContent: "ทางออก",
+                  ),
+                  SideMenuItem(
+                    title: 'ผู้ติดต่อ',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('รายชื่อผู้ติดต่อ');
+                      selectedPage('VISITOR');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.badge),
+                  ),
+                  SideMenuItem(
+                    title: 'บันทึกเข้า-ออก',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('บันทึกเข้า-ออก');
+                      selectedPage('LOG');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.commute),
+                  ),
+                  SideMenuItem(
+                    title: 'สมาชิก',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('รายชื่อสมาชิก');
+                      selectedPage('MEMBER');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.person_search),
+                  ),
+                  SideMenuItem(
+                    title: 'ผู้ติดต่อลงทะเบียน',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('รายชื่อผู้ติดต่อลงทะเบียน');
+                      selectedPage('REGISTERED_USER');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.person_search),
+                  ),
+                  SideMenuItem(
+                    title: 'รายงาน',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('รายงาน');
+                      selectedPage('REPORT');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.summarize),
+                  ),
+                  SideMenuItem(
+                    title: 'ตั้งค่า',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('ตั้งค่า');
+                      selectedPage('SETTING');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.settings),
+                  ),
+                  SideMenuItem(
+                    title: 'ผู้ใช้งาน',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('รายชื่อผู้ใช้งาน');
+                      selectedPage('USER');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.supervisor_account_rounded),
+                  ),
+                  SideMenuItem(
+                    title: 'ออกโปรแกรม',
+                    icon: const Icon(Icons.exit_to_app),
+                    onTap: (page, _) {
+                      selectedPage('LOGOUT');
+                      getIt<AppService>().logout().then((value) {
+                        Navigator.pop(context);
+                      });
+                    },
+                  ),
+                ],
               ),
-              SideMenuItem(
-                title: 'ทางออก',
-                onTap: (page, _) {
-                  selectedPage('EXIT');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.door_back_door_outlined),
-                tooltipContent: "ทางออก",
-              ),
-              SideMenuItem(
-                title: 'ผู้ติดต่อ',
-                onTap: (page, _) {
-                  selectedPage('VISITOR');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.badge),
-              ),
-              SideMenuItem(
-                title: 'บันทึกเข้า-ออก',
-                onTap: (page, _) {
-                  selectedPage('LOG');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.commute),
-              ),
-              SideMenuItem(
-                title: 'สมาชิก',
-                onTap: (page, _) {
-                  selectedPage('MEMBER');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.person_search),
-              ),
-              SideMenuItem(
-                title: 'ผู้ใช้งานที่ลงทะเบียน',
-                onTap: (page, _) {
-                  selectedPage('REGISTERED_USER');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.person_search),
-              ),
-              SideMenuItem(
-                title: 'รายงาน',
-                onTap: (page, _) {
-                  selectedPage('REPORT');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.summarize),
-              ),
-              SideMenuItem(
-                title: 'จอทางเข้า',
-                onTap: (page, _) {
-                  Navigator.of(context).pushNamed(DisplayScreen.id,
-                      arguments: DisplayScreen.gateIn);
-                },
-                icon: const Icon(Icons.turn_right),
-                tooltipContent: "จอทางเข้า",
-              ),
-              SideMenuItem(
-                title: 'จอทางออก',
-                onTap: (page, _) {
-                  Navigator.of(context).pushNamed(DisplayScreen.id,
-                      arguments: DisplayScreen.gateOut);
-                },
-                icon: const Icon(Icons.turn_left),
-                tooltipContent: "จอทางออก",
-              ),
-              SideMenuItem(
-                title: 'ตั้งค่า',
-                onTap: (page, _) {
-                  selectedPage('SETTING');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.settings),
-              ),
-              SideMenuItem(
-                title: 'ผู้ใช้งาน',
-                onTap: (page, _) {
-                  selectedPage('USER');
-                  sideMenu.changePage(page);
-                },
-                icon: const Icon(Icons.supervisor_account_rounded),
-              ),
-              SideMenuItem(
-                title: 'ออกโปรแกรม',
-                icon: const Icon(Icons.exit_to_app),
-                onTap: (page, _) {
-                  selectedPage('LOGOUT');
-                  getIt<AppService>().logout().then((value) {
-                    Navigator.pop(context);
-                  });
-                },
+              Expanded(
+                child: PageView(
+                  controller: page,
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      child: const EntranceScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const ExitScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const VisitorScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const GateLogScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const MemberListScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: RegisteredUserListScreen.page,
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const ReportScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Container(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Container(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const SettingScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const UserScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: const Center(
+                        child: Text(
+                          'Exit',
+                          style: TextStyle(fontSize: 35),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          Expanded(
-            child: PageView(
-              controller: page,
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: const EntranceScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const ExitScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const VisitorScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const GateLogScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const MemberListScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: RegisteredUserListScreen.page,
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const ReportScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: Container(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: Container(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const SettingScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const UserScreen(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: const Center(
-                    child: Text(
-                      'Exit',
-                      style: TextStyle(fontSize: 35),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

@@ -7,23 +7,25 @@ abstract class RegisteredUserServiceDataSource {
   Future<GenericResponseData<IDCardResponse>> readIdCard();
 
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
-      String token, ListRegisteredUserParam param);
+      ListRegisteredUserParam param);
+
+  Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(int id);
 
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
-      String token, int id, File photo);
+      int id, File photo);
 
   Future<GenericResponseData<RegisteredUserResponse>> checkInRegisteredUser(
-      String token, RegisteredUserCheckInRequest request);
+      RegisteredUserCheckInRequest request);
 
   Future<GenericResponseData<RegisteredUserResponse>> checkOutRegisteredUser(
-      String token, RegisteredUserCheckOutRequest request);
+      RegisteredUserCheckOutRequest request);
 
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
-      String token, CreateRegisteredUserRequest request);
+      CreateRegisteredUserRequest request);
 
-  Future<GenericResponseData<RegisteredUserLogResponse>> getRegisteredUserLogs(
-      String token, String generatedId);
+  Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
+      int id);
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      String token, int id, UpdateRegisteredUserRequest request);
+      int id, UpdateRegisteredUserRequest request);
 }

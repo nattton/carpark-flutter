@@ -18,25 +18,25 @@ class RegisteredUser extends Equatable {
   final String gender;
   final String address;
   final String photo;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final NullTimeModel expiredDate;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final NullTimeModel? expiredDate;
 
   const RegisteredUser(
-      {required this.id,
-      required this.generatedId,
-      required this.type,
-      required this.telephone,
-      required this.idCard,
-      required this.thaiName,
-      required this.engName,
-      required this.birthdate,
-      required this.gender,
-      required this.address,
-      required this.photo,
-      required this.createdAt,
-      required this.updatedAt,
-      required this.expiredDate});
+      {this.id = 0,
+      this.generatedId = "",
+      this.type = "",
+      this.telephone = "",
+      this.idCard = "",
+      this.thaiName = "",
+      this.engName = "",
+      this.birthdate = "",
+      this.gender = "",
+      this.address = "",
+      this.photo = "",
+      this.createdAt,
+      this.updatedAt,
+      this.expiredDate});
 
   factory RegisteredUser.fromJson(Map<String, dynamic> json) =>
       _$RegisteredUserFromJson(json);
@@ -66,5 +66,38 @@ class RegisteredUser extends Equatable {
       return "$kHostUrl/anpr_store$photo";
     }
     return "";
+  }
+
+  RegisteredUser copyWith({
+    int? id,
+    String? generatedId,
+    String? type,
+    String? telephone,
+    String? idCard,
+    String? thaiName,
+    String? engName,
+    String? birthdate,
+    String? gender,
+    String? address,
+    String? photo,
+    NullTimeModel? expiredDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return RegisteredUser(
+        id: id ?? this.id,
+        generatedId: generatedId ?? this.generatedId,
+        type: type ?? this.type,
+        telephone: telephone ?? this.telephone,
+        idCard: idCard ?? this.idCard,
+        thaiName: thaiName ?? this.thaiName,
+        engName: engName ?? this.engName,
+        birthdate: birthdate ?? this.birthdate,
+        gender: gender ?? this.gender,
+        address: address ?? this.address,
+        photo: photo ?? this.photo,
+        expiredDate: expiredDate ?? this.expiredDate,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 }

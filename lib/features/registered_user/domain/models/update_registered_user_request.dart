@@ -14,7 +14,6 @@ class UpdateRegisteredUserRequest extends Equatable {
   final String birthdate;
   final String gender;
   final String address;
-  final String age;
   final String expiredDate;
 
   const UpdateRegisteredUserRequest({
@@ -27,7 +26,6 @@ class UpdateRegisteredUserRequest extends Equatable {
     required this.birthdate,
     required this.gender,
     required this.address,
-    required this.age,
     required this.expiredDate,
   });
 
@@ -46,7 +44,6 @@ class UpdateRegisteredUserRequest extends Equatable {
         birthdate,
         gender,
         address,
-        age,
         expiredDate,
       ];
 }

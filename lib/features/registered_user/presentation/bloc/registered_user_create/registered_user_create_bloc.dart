@@ -26,15 +26,15 @@ class RegisteredUserCreateBloc
   RegisteredUserCreateBloc(
       this.usercase, this.readIdCardUsecase, this.addPhotoUsecase)
       : super(const RegisteredUserCreateState()) {
-    on<Initial>(_onInitial);
+    on<InitialCreateRegisteredUser>(_onInitial);
     on<ReadIdCard>(_readIdCard);
     on<SavePhoto>(_savePhoto);
     on<CreateRegisteredUser>(_createRegisteredUser);
     on<SelectExpiredDate>(_selectExpiredDate);
   }
 
-  Future<void> _onInitial(
-      Initial event, Emitter<RegisteredUserCreateState> emit) async {
+  Future<void> _onInitial(InitialCreateRegisteredUser event,
+      Emitter<RegisteredUserCreateState> emit) async {
     emit(state.copyWith(
       status: RegisteredUserCreateStatus.initial,
       id: 0,
@@ -65,7 +65,7 @@ class RegisteredUserCreateBloc
               engName: r.engName,
               thaiName: r.thaiName,
               birthdate: r.birthdate,
-              gender: r.gender,
+              gender: r.genderName(),
               address: r.address,
               photoUrl: r.photoUrl(),
             )));

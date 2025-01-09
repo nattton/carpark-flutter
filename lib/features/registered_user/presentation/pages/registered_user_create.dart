@@ -1,0 +1,310 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
+import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
+import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+class RegisteredUserCreate extends StatefulWidget {
+  const RegisteredUserCreate({super.key});
+
+  @override
+  State<RegisteredUserCreate> createState() => _RegisteredUserCreateState();
+}
+
+class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
+  late RegisteredUserCreateBloc _bloc;
+
+  final TextEditingController _idCardController = TextEditingController();
+  final TextEditingController _thaiNameController = TextEditingController();
+  final TextEditingController _engNameController = TextEditingController();
+  final TextEditingController _birthdateController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _addressNameController = TextEditingController();
+  final TextEditingController _telephoneController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
+  final TextEditingController _expiredDateController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    _bloc = context.read<RegisteredUserCreateBloc>();
+    return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
+        listener: (context, state) {
+      switch (state.status) {
+        case RegisteredUserCreateStatus.initial:
+        case RegisteredUserCreateStatus.savingPhoto:
+        case RegisteredUserCreateStatus.selectingExpiredDate:
+        case RegisteredUserCreateStatus.selectExpiredDateSuccess:
+          break;
+        case RegisteredUserCreateStatus.reading:
+        case RegisteredUserCreateStatus.creating:
+          EasyLoading.show();
+        case RegisteredUserCreateStatus.readSuccess:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('อ่านบัตรสำเร็จ')),
+          );
+        case RegisteredUserCreateStatus.createSuccess:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
+          );
+          context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+        case RegisteredUserCreateStatus.savePhotoSuccess:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('บันทึกภาพสำเร็จ')),
+          );
+        case RegisteredUserCreateStatus.readFailure:
+        case RegisteredUserCreateStatus.createFailure:
+        case RegisteredUserCreateStatus.savePhotoFailure:
+        case RegisteredUserCreateStatus.failure:
+          EasyLoading.dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+      }
+    }, builder: (context, state) {
+      if (state.status == RegisteredUserCreateStatus.readSuccess) {
+        _idCardController.text = state.idCard;
+        _thaiNameController.text = state.thaiName;
+        _engNameController.text = state.engName;
+        _birthdateController.text = state.birthdate;
+        _genderController.text = state.gender;
+        _addressNameController.text = state.address;
+      }
+
+      if (state.status == RegisteredUserCreateStatus.initial ||
+          state.status == RegisteredUserCreateStatus.selectExpiredDateSuccess) {
+        _expiredDateController.text = state.expiredDate;
+      }
+
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            ..._buildInputFields(state),
+            const SizedBox(height: 16.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      _bloc.add(ReadIdCard());
+                    },
+                    child: const Text('อ่านบัตร')),
+                ElevatedButton(
+                    onPressed: () {
+                      _bloc.add(CreateRegisteredUser(
+                        CreateRegisteredUserRequest(
+                          idCard: _idCardController.text,
+                          engName: _engNameController.text,
+                          thaiName: _thaiNameController.text,
+                          birthdate: _birthdateController.text,
+                          gender: _genderController.text,
+                          address: _addressNameController.text,
+                          telephone: _telephoneController.text,
+                          type: _typeController.text,
+                          expiredDate: _expiredDateController.text,
+                        ),
+                      ));
+                    },
+                    child: const Text('ยืนยัน')),
+                ElevatedButton(
+                    onPressed: () {
+                      _bloc.add(InitialCreateRegisteredUser());
+                      _idCardController.clear();
+                      _thaiNameController.clear();
+                      _engNameController.clear();
+                      _birthdateController.clear();
+                      _genderController.clear();
+                      _addressNameController.clear();
+                      _telephoneController.clear();
+                      _typeController.clear();
+                    },
+                    child: const Text('ล้างข้อมูล')),
+                ElevatedButton(
+                    onPressed: () {
+                      _bloc.add(InitialCreateRegisteredUser());
+                      context
+                          .read<RegisteredUserListBloc>()
+                          .add(GetRegisteredUserList());
+                    },
+                    child: const Text('ยกเลิก')),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  List<Widget> _buildInputFields(RegisteredUserCreateState state) {
+    return [
+      SizedBox(
+        height: 120.0,
+        child: state.photoUrl.isNotEmpty
+            ? Image.network(state.photoUrl, fit: BoxFit.cover)
+            : const Icon(size: 120.0, Icons.face),
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _idCardController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.name,
+              decoration: const InputDecoration(
+                labelText: 'เลขประจำตัวประชาชน',
+                prefixIcon: Icon(Icons.text_fields),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _birthdateController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                labelText: 'วันเกิด',
+                prefixIcon: Icon(Icons.cake),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+      Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Expanded(
+          child: TextField(
+            controller: _thaiNameController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: const InputDecoration(
+              labelText: 'ชื่อไทย',
+              prefixIcon: Icon(Icons.text_fields),
+              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+            ),
+          ),
+        ),
+        Expanded(
+          child: TextField(
+            controller: _engNameController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: const InputDecoration(
+              labelText: 'ชื่ออังกฤษ',
+              prefixIcon: Icon(Icons.text_fields),
+              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+            ),
+            textInputAction: TextInputAction.next,
+          ),
+        ),
+      ]),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _telephoneController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                labelText: 'เบอร์โทรศัพท์',
+                prefixIcon: Icon(Icons.phone),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _genderController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'เพศ',
+                prefixIcon: Icon(Icons.wc),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+      TextField(
+        controller: _addressNameController,
+        autofocus: false,
+        autocorrect: false,
+        keyboardType: TextInputType.streetAddress,
+        decoration: const InputDecoration(
+          labelText: 'ที่อยู่',
+          prefixIcon: Icon(Icons.location_city),
+          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+        ),
+        textInputAction: TextInputAction.next,
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _typeController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                labelText: 'ประเภท',
+                prefixIcon: Icon(Icons.group),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _expiredDateController,
+              autofocus: false,
+              autocorrect: false,
+              readOnly: true,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'วันหมดอายุ',
+                prefixIcon: GestureDetector(
+                  onTap: () async {
+                    var results = await showCalendarDatePicker2Dialog(
+                      context: context,
+                      config: CalendarDatePicker2WithActionButtonsConfig(
+                          calendarType: CalendarDatePicker2Type.single),
+                      dialogSize: const Size(325, 400),
+                      value: [DateTime.parse(state.expiredDate)],
+                      borderRadius: BorderRadius.circular(15),
+                    );
+                    if (results != null) {
+                      _bloc.add(SelectExpiredDate(results));
+                    }
+                  },
+                  child: Icon(Icons.group),
+                ),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+}

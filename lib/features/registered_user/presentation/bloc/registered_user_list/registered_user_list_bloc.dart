@@ -1,5 +1,4 @@
 import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/mapper/registered_user_list_mapper.dart';
 import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_list_usecase.dart';
 import 'package:equatable/equatable.dart';
@@ -18,6 +17,7 @@ class RegisteredUserListBloc
     on<GetRegisteredUserList>(_onGetRegisteredUserList);
     on<SearchRegisteredUser>(_onSearchRegisteredUser);
     on<RegisteredUserCreateScreen>(_onGoToRegisteredUserCreateScreen);
+    on<RegisteredUserUpdateScreen>(_onGoToRegisteredUserUpdateScreen);
   }
 
   Future<void> _onGetRegisteredUserList(GetRegisteredUserList event,
@@ -27,8 +27,7 @@ class RegisteredUserListBloc
         await usecase.call(const ListRegisteredUserParam(search: ''));
     result.fold((failure) {
       emit(RegisteredUserListFailure(failure.message));
-    }, (response) {
-      final registeredUsers = RegisteredUserListMapper.responseMapper(response);
+    }, (registeredUsers) {
       emit(RegisteredUserListSuccess(registeredUsers));
     });
   }
@@ -40,8 +39,7 @@ class RegisteredUserListBloc
         await usecase.call(ListRegisteredUserParam(search: event.searchText));
     result.fold((failure) {
       emit(RegisteredUserListFailure(failure.message));
-    }, (response) {
-      final registeredUsers = RegisteredUserListMapper.responseMapper(response);
+    }, (registeredUsers) {
       emit(RegisteredUserListSuccess(registeredUsers));
     });
   }
@@ -50,5 +48,11 @@ class RegisteredUserListBloc
       RegisteredUserCreateScreen event,
       Emitter<RegisteredUserListState> emit) async {
     emit(RegisteredUserListCreating());
+  }
+
+  Future<void> _onGoToRegisteredUserUpdateScreen(
+      RegisteredUserUpdateScreen event,
+      Emitter<RegisteredUserListState> emit) async {
+    emit(RegisteredUserListUpdating());
   }
 }

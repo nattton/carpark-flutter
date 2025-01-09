@@ -19,3 +19,5 @@ class SearchRegisteredUser extends RegisteredUserListEvent {
 }
 
 class RegisteredUserCreateScreen extends RegisteredUserListEvent {}
+
+class RegisteredUserUpdateScreen extends RegisteredUserListEvent {}
