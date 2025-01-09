@@ -1,12 +1,10 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:intl/intl.dart';
 
 class RegisteredUserUpdate extends StatefulWidget {
   const RegisteredUserUpdate({super.key});
@@ -26,7 +24,7 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
   final TextEditingController _addressNameController = TextEditingController();
   final TextEditingController _telephoneController = TextEditingController();
   final TextEditingController _typeController = TextEditingController();
-  String _selectExpiredDate = '';
+  final TextEditingController _expiredDateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -82,143 +80,23 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
         _addressNameController.text = state.registeredUser.address;
         _telephoneController.text = state.registeredUser.telephone;
         _typeController.text = state.registeredUser.type;
-        _selectExpiredDate =
-            'เลือกวันที่หมดอายุ : ${DateFormat("dd/MM/yyyy").format(state.registeredUser.expiredDate!.valid! ? state.registeredUser.expiredDate!.time! : DateTime.now())}';
-      } else {
-        _selectExpiredDate =
-            'เลือกวันที่หมดอายุ : ${DateFormat("dd/MM/yyyy").format(DateTime.now())}';
+        _expiredDateController.text =
+            state.registeredUser.expiredDate!.toDateString();
+      }
+
+      if (state.status == RegisteredUserUpdateStatus.selectExpiredDateSuccess) {
+        _expiredDateController.text =
+            state.registeredUser.expiredDate!.toDateString();
       }
 
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 120.0,
-              child: state.registeredUser.photoUrl().isNotEmpty
-                  ? Image.network(state.registeredUser.photoUrl(),
-                      fit: BoxFit.cover)
-                  : const Icon(size: 120.0, Icons.face),
-            ),
-            TextField(
-              controller: _idCardController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: const InputDecoration(
-                labelText: 'เลขประจำตัวประชาชน',
-                suffixIcon: Icon(Icons.text_fields),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-            ),
-            TextField(
-              controller: _thaiNameController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: const InputDecoration(
-                labelText: 'ชื่อไทย',
-                suffixIcon: Icon(Icons.text_fields),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-            ),
-            TextField(
-              controller: _engNameController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: const InputDecoration(
-                labelText: 'ชื่ออังกฤษ',
-                suffixIcon: Icon(Icons.text_fields),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-              textInputAction: TextInputAction.next,
-            ),
-            TextField(
-              controller: _birthdateController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                labelText: 'วันเกิด',
-                suffixIcon: Icon(Icons.cake),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-            ),
-            TextField(
-              controller: _genderController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'เพศ',
-                suffixIcon: Icon(Icons.wc),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-            ),
-            TextField(
-              controller: _addressNameController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.streetAddress,
-              decoration: const InputDecoration(
-                labelText: 'ที่อยู่',
-                suffixIcon: Icon(Icons.location_city),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-              textInputAction: TextInputAction.next,
-            ),
-            TextField(
-              controller: _telephoneController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'เบอร์โทรศัพท์',
-                suffixIcon: Icon(Icons.phone),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-              textInputAction: TextInputAction.next,
-            ),
-            TextField(
-              controller: _typeController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                labelText: 'ประเภท',
-                suffixIcon: Icon(Icons.phone),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              ),
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(height: 16.0),
-            OutlinedButton(
-              onPressed: () async {
-                var results = await showCalendarDatePicker2Dialog(
-                  context: context,
-                  config: CalendarDatePicker2WithActionButtonsConfig(
-                      calendarType: CalendarDatePicker2Type.single),
-                  dialogSize: const Size(325, 400),
-                  value: [
-                    DateTime.parse(
-                        state.registeredUser.expiredDate!.toDateString())
-                  ],
-                  borderRadius: BorderRadius.circular(15),
-                );
-                if (results != null) {
-                  _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
-                }
-              },
-              child: Text(
-                _selectExpiredDate,
-                style: kButton2Style,
-              ),
-            ),
+            ..._buildInputFields(state),
             const SizedBox(height: 16.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                     onPressed: () {
@@ -239,6 +117,7 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
                       ));
                     },
                     child: const Text('ยืนยัน')),
+                const SizedBox(width: 32.0),
                 ElevatedButton(
                     onPressed: () {
                       context
@@ -252,5 +131,174 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
         ),
       );
     });
+  }
+
+  List<Widget> _buildInputFields(RegisteredUserUpdateState state) {
+    return [
+      SizedBox(
+        height: 120.0,
+        child: state.registeredUser.photoUrl().isNotEmpty
+            ? Image.network(state.registeredUser.photoUrl(), fit: BoxFit.cover)
+            : const Icon(size: 120.0, Icons.face),
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _idCardController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.name,
+              decoration: const InputDecoration(
+                labelText: 'เลขประจำตัวประชาชน',
+                prefixIcon: Icon(Icons.text_fields),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _birthdateController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                labelText: 'วันเกิด',
+                prefixIcon: Icon(Icons.cake),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+      Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Expanded(
+          child: TextField(
+            controller: _thaiNameController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: const InputDecoration(
+              labelText: 'ชื่อไทย',
+              prefixIcon: Icon(Icons.text_fields),
+              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+            ),
+          ),
+        ),
+        Expanded(
+          child: TextField(
+            controller: _engNameController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: const InputDecoration(
+              labelText: 'ชื่ออังกฤษ',
+              prefixIcon: Icon(Icons.text_fields),
+              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+            ),
+            textInputAction: TextInputAction.next,
+          ),
+        ),
+      ]),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _telephoneController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                labelText: 'เบอร์โทรศัพท์',
+                prefixIcon: Icon(Icons.phone),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _genderController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'เพศ',
+                prefixIcon: Icon(Icons.wc),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+      TextField(
+        controller: _addressNameController,
+        autofocus: false,
+        autocorrect: false,
+        keyboardType: TextInputType.streetAddress,
+        decoration: const InputDecoration(
+          labelText: 'ที่อยู่',
+          prefixIcon: Icon(Icons.location_city),
+          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+        ),
+        textInputAction: TextInputAction.next,
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _typeController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                labelText: 'ประเภท',
+                prefixIcon: Icon(Icons.group),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _expiredDateController,
+              autofocus: false,
+              autocorrect: false,
+              readOnly: true,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'วันหมดอายุ',
+                prefixIcon: GestureDetector(
+                  onTap: () async {
+                    var results = await showCalendarDatePicker2Dialog(
+                      context: context,
+                      config: CalendarDatePicker2WithActionButtonsConfig(
+                          calendarType: CalendarDatePicker2Type.single),
+                      dialogSize: const Size(325, 400),
+                      value: [
+                        state.registeredUser.expiredDate!.valid!
+                            ? state.registeredUser.expiredDate!.time!
+                            : DateTime.now()
+                      ],
+                      borderRadius: BorderRadius.circular(15),
+                    );
+                    if (results != null) {
+                      _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
+                    }
+                  },
+                  child: Icon(Icons.group),
+                ),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+          ),
+        ],
+      ),
+    ];
   }
 }
