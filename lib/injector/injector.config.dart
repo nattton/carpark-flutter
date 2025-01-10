@@ -23,6 +23,8 @@ import '../features/registered_user/data/repositories/registered_user_service_re
     as _i296;
 import '../features/registered_user/domain/repositories/registered_user_service_repository.dart'
     as _i960;
+import '../features/registered_user/domain/usecases/get_registered_user_logs_usecase.dart'
+    as _i287;
 import '../features/registered_user/domain/usecases/read_id_card_usecase.dart'
     as _i399;
 import '../features/registered_user/domain/usecases/registered_user_add_photo_usecase.dart'
@@ -45,6 +47,8 @@ import '../features/registered_user/presentation/bloc/registered_user_create/reg
     as _i582;
 import '../features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart'
     as _i707;
+import '../features/registered_user/presentation/bloc/registered_user_logs/registered_user_logs_bloc.dart'
+    as _i540;
 import '../features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart'
     as _i92;
 import '../services/api_service.dart' as _i137;
@@ -112,6 +116,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i908.RegisteredUserLogsUsecase>(() =>
         _i908.RegisteredUserLogsUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i287.GetRegisteredUserLogsUsecase>(() =>
+        _i287.GetRegisteredUserLogsUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i707.RegisteredUserListBloc>(() =>
         _i707.RegisteredUserListBloc(gh<_i390.RegisteredUserListUsecase>()));
     gh.factory<_i92.RegisteredUserUpdateBloc>(
@@ -119,6 +126,8 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i173.RegisteredUserGetUsecase>(),
               gh<_i544.RegisteredUserUpdateUsecase>(),
             ));
+    gh.factory<_i540.RegisteredUserLogsBloc>(() =>
+        _i540.RegisteredUserLogsBloc(gh<_i287.GetRegisteredUserLogsUsecase>()));
     gh.factory<_i582.RegisteredUserCreateBloc>(
         () => _i582.RegisteredUserCreateBloc(
               gh<_i589.RegisteredUserCreateUsecase>(),

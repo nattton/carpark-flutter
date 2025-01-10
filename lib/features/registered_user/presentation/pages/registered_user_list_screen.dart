@@ -2,10 +2,11 @@ import 'package:carpark/features/registered_user/domain/entity/registered_user.d
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_create.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_card.dart';
+import 'package:carpark/features/registered_user/presentation/pages/registered_user_create.dart';
+import 'package:carpark/features/registered_user/presentation/pages/registered_user_logs_screen.dart';
+import 'package:carpark/features/registered_user/presentation/pages/registered_user_update.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_header.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_update.dart';
+import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_row.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -138,9 +139,13 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
     return ListView.builder(
       itemCount: registeredUsers.length,
       itemBuilder: (context, index) {
-        return RegisteredUserListCard(
+        return RegisteredUserRow(
             user: registeredUsers[index],
             onTap: () {
+              Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
+                  arguments: registeredUsers[index].id);
+            },
+            onEditTap: () {
               _registeredUserListBloc.add(RegisteredUserUpdateScreen());
               _registeredUserUpdateBloc
                   .add(GetRegisteredUser(registeredUsers[index].id));

@@ -1,21 +1,31 @@
 import 'package:carpark/constants.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:flutter/material.dart';
 
-class RegisteredUserListHeader extends StatelessWidget {
-  const RegisteredUserListHeader({super.key});
+class RegisteredUserRow extends StatelessWidget {
+  const RegisteredUserRow({
+    super.key,
+    required this.user,
+    required this.onTap,
+    required this.onEditTap,
+  });
+
+  final RegisteredUser user;
+  final VoidCallback onTap;
+  final VoidCallback onEditTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.blue.shade200,
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             Expanded(
               child: Text(
-                "ID Card",
-                style: TextStyle(
+                user.idCard,
+                style: const TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
@@ -23,8 +33,8 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Thai Name",
-                style: TextStyle(
+                user.thaiName,
+                style: const TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
@@ -32,8 +42,8 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Telephone",
-                style: TextStyle(
+                user.telephone,
+                style: const TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
@@ -41,8 +51,8 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Type",
-                style: TextStyle(
+                user.type,
+                style: const TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
@@ -50,14 +60,22 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Expired Date",
-                style: TextStyle(
+                user.expiredDate?.toDateString() ?? "",
+                style: const TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
               ),
             ),
-            SizedBox(width: 60.0),
+            GestureDetector(
+              onTap: onTap,
+              child: const Icon(Icons.visibility, size: 24.0),
+            ),
+            SizedBox(width: 12.0),
+            GestureDetector(
+              onTap: onEditTap,
+              child: const Icon(Icons.edit, size: 24.0),
+            ),
           ],
         ),
       ),

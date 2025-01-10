@@ -1,8 +1,8 @@
 import 'package:carpark/constants.dart';
 import 'package:flutter/material.dart';
 
-class RegisteredUserListHeader extends StatelessWidget {
-  const RegisteredUserListHeader({super.key});
+class RegisteredUserLogListHeaderWidget extends StatelessWidget {
+  const RegisteredUserLogListHeaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class RegisteredUserListHeader extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                "ID Card",
+                "ID",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -23,7 +23,7 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Thai Name",
+                "Check In Time",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -32,7 +32,7 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Telephone",
+                "Check Out Time",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -41,23 +41,14 @@ class RegisteredUserListHeader extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Type",
+                "Duration",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
               ),
             ),
-            Expanded(
-              child: Text(
-                "Expired Date",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
-              ),
-            ),
-            SizedBox(width: 60.0),
+            SizedBox(width: 30.0),
           ],
         ),
       ),

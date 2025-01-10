@@ -1,12 +1,16 @@
 import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user_logs.dart';
+import 'package:carpark/features/registered_user/domain/mapper/registered_user_mapper.dart';
 import 'package:carpark/features/registered_user/domain/models/registered_user_logs_response.dart';
 
 class RegisteredUserLogsMapper {
-  static List<RegisteredUserLog> responseMapper(
-      List<RegisteredUserLogResponse> response) {
-    return response
-        .map((e) => RegisteredUserLogMapper.responseMapper(e))
-        .toList();
+  static RegisteredUserLogs responseMapper(
+      RegisteredUserLogsResponse response) {
+    return RegisteredUserLogs(
+        RegisteredUserMapper.responseMapper(response.registeredUser),
+        response.logs
+            .map((e) => RegisteredUserLogMapper.responseMapper(e))
+            .toList());
   }
 }
 
@@ -14,8 +18,11 @@ class RegisteredUserLogMapper {
   static RegisteredUserLog responseMapper(RegisteredUserLogResponse response) {
     return RegisteredUserLog(
       id: response.id,
-      checkInTime: response.checkInTime.time,
-      checkOutTime: response.checkOutTime.time,
+      checkInTime:
+          response.checkInTime.valid == true ? response.checkInTime.time : null,
+      checkOutTime: response.checkOutTime.valid == true
+          ? response.checkOutTime.time
+          : null,
     );
   }
 }

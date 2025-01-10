@@ -1,4 +1,5 @@
 import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
+import 'package:carpark/features/registered_user/presentation/pages/registered_user_logs_screen.dart';
 import 'package:carpark/screens/login_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';
@@ -35,6 +36,11 @@ class MyApp extends StatelessWidget {
               final visitorId = settings.arguments as int;
               return MaterialPageRoute(builder: (context) {
                 return VisitorDetailScreen(visitorId: visitorId);
+              });
+            case RegisteredUserLogsScreen.routeName:
+              final userId = settings.arguments as int;
+              return MaterialPageRoute(builder: (context) {
+                return RegisteredUserLogsScreen.page(userId: userId);
               });
           }
           return null;
