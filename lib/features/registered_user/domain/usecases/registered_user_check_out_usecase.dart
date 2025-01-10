@@ -1,22 +1,28 @@
 import 'package:carpark/core/error/failures.dart';
 import 'package:carpark/core/utils/usecases/usecase.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
+import 'package:carpark/features/registered_user/domain/mapper/registered_user_mapper.dart';
 import 'package:carpark/features/registered_user/domain/models/registered_user_check_out_request.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_response.dart';
 import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
 class RegisteredUserCheckOutUsecase
-    extends UseCase<RegisteredUserResponse, RegisteredUserCheckOutRequest> {
+    extends UseCase<RegisteredUser, RegisteredUserCheckOutRequest> {
   final RegisteredUserServiceRepository repository;
 
   RegisteredUserCheckOutUsecase(this.repository);
 
   @override
-  Future<Either<Failure, RegisteredUserResponse>> call(
+  Future<Either<Failure, RegisteredUser>> call(
       RegisteredUserCheckOutRequest params) async {
-    final result = await repository.checkOutRegisteredUser(params);
-    return result.fold((l) => Left(l), (r) => Right(r.data!));
+    try {
+      final result = await repository.checkOutRegisteredUser(params);
+      return result.fold((l) => Left(l),
+          (r) => Right(RegisteredUserMapper.responseMapper(r.data!)));
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
   }
 }
