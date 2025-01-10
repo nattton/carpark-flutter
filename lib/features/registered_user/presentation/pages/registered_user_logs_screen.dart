@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
@@ -5,8 +8,10 @@ import 'package:carpark/features/registered_user/presentation/bloc/registered_us
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_logs_list_header_widget.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_logs_list_row_widget.dart';
 import 'package:carpark/injector/injector.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class RegisteredUserLogsScreen extends StatefulWidget {
   const RegisteredUserLogsScreen({super.key});
@@ -84,6 +89,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                           color: Colors.white,
                           fontFamily: kDefaultFont,
                           fontSize: 16.0))),
+              SizedBox(width: 24.0),
             ],
           ),
         ),
@@ -119,6 +125,32 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                           color: Colors.white,
                           fontFamily: kDefaultFont,
                           fontSize: 16.0))),
+              GestureDetector(
+                onTap: () async {
+                  String filename =
+                      "${user.idCard}_${user.thaiName}_${user.engName}.png"
+                          .replaceAll(" ", "_");
+
+                  String? outputFile = await FilePicker.platform.saveFile(
+                    dialogTitle: 'Please select an output file:',
+                    fileName: filename,
+                  );
+
+                  if (outputFile != null) {
+                    final file = File(outputFile);
+                    ByteData? qrBytes = await QrPainter(
+                      data: user.generatedId,
+                      version: QrVersions.auto,
+                    ).toImageData(878);
+                    if (qrBytes != null) {
+                      final buffer = qrBytes.buffer;
+                      file.writeAsBytes(buffer.asUint8List(
+                          qrBytes.offsetInBytes, qrBytes.lengthInBytes));
+                    }
+                  }
+                },
+                child: const Icon(Icons.qr_code_scanner, size: 24.0),
+              ),
             ],
           ),
         ),

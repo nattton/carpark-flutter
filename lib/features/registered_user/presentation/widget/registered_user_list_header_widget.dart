@@ -1,8 +1,8 @@
 import 'package:carpark/constants.dart';
 import 'package:flutter/material.dart';
 
-class RegisteredUserListHeader extends StatelessWidget {
-  const RegisteredUserListHeader({super.key});
+class RegisteredUserListHeaderWidget extends StatelessWidget {
+  const RegisteredUserListHeaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -2,17 +2,15 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:flutter/material.dart';
 
-class RegisteredUserRow extends StatelessWidget {
-  const RegisteredUserRow({
+class RegisteredUserRowWidget extends StatelessWidget {
+  const RegisteredUserRowWidget({
     super.key,
     required this.user,
-    required this.onTapQR,
     required this.onTapViewLogs,
     required this.onEditTap,
   });
 
   final RegisteredUser user;
-  final VoidCallback onTapQR;
   final VoidCallback onTapViewLogs;
   final VoidCallback onEditTap;
 
@@ -72,11 +70,6 @@ class RegisteredUserRow extends StatelessWidget {
             GestureDetector(
               onTap: onTapViewLogs,
               child: const Icon(Icons.visibility, size: 24.0),
-            ),
-            SizedBox(width: 24.0),
-            GestureDetector(
-              onTap: onTapQR,
-              child: const Icon(Icons.qr_code_scanner, size: 24.0),
             ),
             SizedBox(width: 24.0),
             GestureDetector(

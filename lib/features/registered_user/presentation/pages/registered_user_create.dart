@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
+import 'package:carpark/features/registered_user/presentation/pages/registered_user_logs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -52,6 +53,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
           );
           context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+          Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
+              arguments: state.id);
         case RegisteredUserCreateStatus.savePhotoSuccess:
           EasyLoading.dismiss();
           ScaffoldMessenger.of(context).clearSnackBars();

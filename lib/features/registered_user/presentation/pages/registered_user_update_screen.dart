@@ -6,14 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class RegisteredUserUpdate extends StatefulWidget {
-  const RegisteredUserUpdate({super.key});
+class RegisteredUserUpdateScreen extends StatefulWidget {
+  const RegisteredUserUpdateScreen({super.key});
 
   @override
-  State<RegisteredUserUpdate> createState() => _RegisteredUserUpdateState();
+  State<RegisteredUserUpdateScreen> createState() =>
+      _RegisteredUserUpdateScreenState();
 }
 
-class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
+class _RegisteredUserUpdateScreenState
+    extends State<RegisteredUserUpdateScreen> {
   late RegisteredUserUpdateBloc _bloc;
 
   final TextEditingController _idCardController = TextEditingController();
@@ -62,8 +64,8 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
         case RegisteredUserUpdateStatus.updating:
         case RegisteredUserUpdateStatus.failure:
         case RegisteredUserUpdateStatus.loadFailure:
-        case RegisteredUserUpdateStatus.updateFailure:
           return const SizedBox();
+        case RegisteredUserUpdateStatus.updateFailure:
         case RegisteredUserUpdateStatus.loadSuccess:
         case RegisteredUserUpdateStatus.updateSuccess:
         case RegisteredUserUpdateStatus.selectingExpiredDate:
