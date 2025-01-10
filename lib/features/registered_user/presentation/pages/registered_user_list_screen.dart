@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
@@ -8,8 +10,11 @@ import 'package:carpark/features/registered_user/presentation/pages/registered_u
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_header.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_row.dart';
 import 'package:carpark/injector/injector.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class RegisteredUserListScreen extends StatefulWidget {
   const RegisteredUserListScreen({super.key});
@@ -141,9 +146,33 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
       itemBuilder: (context, index) {
         return RegisteredUserRow(
             user: registeredUsers[index],
-            onTap: () {
+            onTapViewLogs: () {
               Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
                   arguments: registeredUsers[index].id);
+            },
+            onTapQR: () async {
+              final user = registeredUsers[index];
+              String filename =
+                  "${user.idCard}_${user.thaiName}_${user.engName}.png"
+                      .replaceAll(" ", "_");
+
+              String? outputFile = await FilePicker.platform.saveFile(
+                dialogTitle: 'Please select an output file:',
+                fileName: filename,
+              );
+
+              if (outputFile != null) {
+                final file = File(outputFile);
+                ByteData? qrBytes = await QrPainter(
+                  data: user.generatedId,
+                  version: QrVersions.auto,
+                ).toImageData(878);
+                if (qrBytes != null) {
+                  final buffer = qrBytes.buffer;
+                  file.writeAsBytes(buffer.asUint8List(
+                      qrBytes.offsetInBytes, qrBytes.lengthInBytes));
+                }
+              }
             },
             onEditTap: () {
               _registeredUserListBloc.add(RegisteredUserUpdateScreen());

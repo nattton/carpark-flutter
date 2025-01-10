@@ -6,12 +6,14 @@ class RegisteredUserRow extends StatelessWidget {
   const RegisteredUserRow({
     super.key,
     required this.user,
-    required this.onTap,
+    required this.onTapQR,
+    required this.onTapViewLogs,
     required this.onEditTap,
   });
 
   final RegisteredUser user;
-  final VoidCallback onTap;
+  final VoidCallback onTapQR;
+  final VoidCallback onTapViewLogs;
   final VoidCallback onEditTap;
 
   @override
@@ -68,10 +70,15 @@ class RegisteredUserRow extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: onTap,
+              onTap: onTapViewLogs,
               child: const Icon(Icons.visibility, size: 24.0),
             ),
-            SizedBox(width: 12.0),
+            SizedBox(width: 24.0),
+            GestureDetector(
+              onTap: onTapQR,
+              child: const Icon(Icons.qr_code_scanner, size: 24.0),
+            ),
+            SizedBox(width: 24.0),
             GestureDetector(
               onTap: onEditTap,
               child: const Icon(Icons.edit, size: 24.0),
