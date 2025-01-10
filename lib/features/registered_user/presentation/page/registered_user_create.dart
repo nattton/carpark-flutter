@@ -294,6 +294,19 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           ),
           Expanded(
             child: TextField(
+              onTap: () async {
+                var results = await showCalendarDatePicker2Dialog(
+                  context: context,
+                  config: CalendarDatePicker2WithActionButtonsConfig(
+                      calendarType: CalendarDatePicker2Type.single),
+                  dialogSize: const Size(325, 400),
+                  value: [DateTime.parse(state.expiredDate)],
+                  borderRadius: BorderRadius.circular(15),
+                );
+                if (results != null) {
+                  _registeredUserCreateBloc.add(SelectExpiredDate(results));
+                }
+              },
               controller: _expiredDateController,
               autofocus: false,
               autocorrect: false,
@@ -301,22 +314,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 labelText: 'วันหมดอายุ',
-                prefixIcon: GestureDetector(
-                  onTap: () async {
-                    var results = await showCalendarDatePicker2Dialog(
-                      context: context,
-                      config: CalendarDatePicker2WithActionButtonsConfig(
-                          calendarType: CalendarDatePicker2Type.single),
-                      dialogSize: const Size(325, 400),
-                      value: [DateTime.parse(state.expiredDate)],
-                      borderRadius: BorderRadius.circular(15),
-                    );
-                    if (results != null) {
-                      _registeredUserCreateBloc.add(SelectExpiredDate(results));
-                    }
-                  },
-                  child: Icon(Icons.group),
-                ),
+                prefixIcon: Icon(Icons.group),
                 contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
               ),
               textInputAction: TextInputAction.next,

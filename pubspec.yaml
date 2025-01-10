@@ -71,6 +71,8 @@ dependencies:
   flutter_bloc: ^8.1.6
   injectable: ^2.5.0
   fpdart: ^1.1.1
+  uuid: ^4.5.1
+  duration: ^4.0.3
 
 dev_dependencies:
   flutter_test:

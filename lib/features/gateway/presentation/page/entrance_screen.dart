@@ -5,8 +5,10 @@ import 'package:carpark/components/entrance_card.dart';
 import 'package:carpark/components/exit_card.dart';
 import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/features/entrance/domain/entity/id_card_entity.dart';
-import 'package:carpark/features/entrance/domain/repository/id_card_service_repository.dart';
+import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
+import 'package:carpark/features/gateway/domain/repository/id_card_service_repository.dart';
+import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
@@ -19,6 +21,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -30,17 +33,31 @@ import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
 
+enum EntranceScreenLeftState {
+  initial,
+  visitor,
+  checkIn,
+}
+
 class EntranceScreen extends StatefulHookConsumerWidget {
   const EntranceScreen({super.key});
 
   @override
   ConsumerState<EntranceScreen> createState() => _EntranceScreenState();
+
+  static Widget get page => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => getIt<RegisteredUserCheckInBloc>()),
+        ],
+        child: const EntranceScreen(),
+      );
 }
 
 class _EntranceScreenState extends ConsumerState<EntranceScreen> {
+  late RegisteredUserCheckInBloc _registeredUserCheckInBloc;
   late FocusNode focusNode;
 
-  bool _isShowVisitor = false;
+  EntranceScreenLeftState _leftState = EntranceScreenLeftState.initial;
   bool _isReadDrivingLicence = false;
   bool _isReadCard = false;
   String _vehicleType = 'car';
@@ -61,10 +78,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   final _birthdateController = TextEditingController();
   final _genderController = TextEditingController();
   final _addressNameController = TextEditingController();
+  final _barcodeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _registeredUserCheckInBloc = context.read<RegisteredUserCheckInBloc>();
     focusNode = FocusNode();
   }
 
@@ -78,6 +97,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     _birthdateController.dispose();
     _genderController.dispose();
     _addressNameController.dispose();
+    _barcodeController.dispose();
     super.dispose();
   }
 
@@ -86,80 +106,120 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     final gateLog = ref.watch(lastGateProvider).gateIn;
     final gateLogOut = ref.watch(lastGateProvider).gateOut;
     final player = ref.watch(cameraPlayerProvider);
-    return gateLog.id != 0
-        ? Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      !kIsWeb
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () => openDoor("in"),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: kColorButtonPrimary),
-                                  child: const Text(
-                                    "เปิดประตู ขาเข้า",
-                                    style: kButtonStyle,
+    return BlocListener<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
+      listener: (context, state) {
+        if (state is RegisteredUserCheckInSuccess) {
+          alertMessage('ลงเวลาเข้า : ${state.registeredUser.thaiName}');
+          Navigator.of(context).pushNamed(RegisteredUserLogsScreen.routeName,
+              arguments: state.registeredUser.id);
+        } else if (state is RegisteredUserCheckInFailure) {
+          alertError(state.failure.message);
+        }
+      },
+      child: gateLog.id != 0
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        !kIsWeb
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => openDoor("in"),
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: kColorButtonPrimary),
+                                    child: const Text(
+                                      "เปิดประตู ขาเข้า",
+                                      style: kButtonStyle,
+                                    ),
                                   ),
-                                ),
-                                // ElevatedButton(
-                                //   onPressed: () => openDoor("in"),
-                                //   style: ElevatedButton.styleFrom(
-                                //       backgroundColor: Colors.lightGreen),
-                                //   child: const Text(
-                                //     "อ่านป้ายทะเบียนอีกครั้ง",
-                                //     style: kButtonStyle,
-                                //   ),
-                                // ),
-                                _isShowVisitor
-                                    ? ElevatedButton(
-                                        onPressed: () => openVisitior(),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Colors.red, // Background color
-                                        ),
-                                        child: const Text(
-                                          "ยกเลิก",
-                                          style: kButtonStyle,
-                                        ),
-                                      )
-                                    : ElevatedButton(
-                                        onPressed: () => showVisitorFromEmpty(),
-                                        style: ElevatedButton.styleFrom(
+                                  _leftState == EntranceScreenLeftState.visitor
+                                      ? ElevatedButton(
+                                          onPressed: () => openVisitior(),
+                                          style: ElevatedButton.styleFrom(
                                             backgroundColor:
-                                                kColorButtonPrimary),
-                                        child: const Text(
-                                          "สร้างผู้ติดต่อ",
-                                          style: kButtonStyle,
+                                                Colors.red, // Background color
+                                          ),
+                                          child: const Text(
+                                            "ยกเลิก",
+                                            style: kButtonStyle,
+                                          ),
+                                        )
+                                      : ElevatedButton(
+                                          onPressed: () =>
+                                              showVisitorFromEmpty(),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  kColorButtonPrimary),
+                                          child: const Text(
+                                            "สร้างผู้ติดต่อ",
+                                            style: kButtonStyle,
+                                          ),
                                         ),
-                                      ),
-                              ],
-                            )
-                          : const SizedBox(),
-                      _isShowVisitor ? _buildVisitorForm() : _buildViewer(),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: !kIsWeb
-                      ? LivePlayerSection(
-                          mainController: player.mainController,
-                          sideController: player.sideController)
-                      : Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [ExitCard(gateLog: gateLogOut)],
+                                ],
+                              )
+                            : const SizedBox(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, top: 8.0, right: 8.0),
+                          child: TextField(
+                            controller: _barcodeController,
+                            autofocus: true,
+                            autocorrect: false,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () => _onBarcodeSubmitted(),
+                                child: const Icon(Icons.barcode_reader),
+                              ),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(0.0)),
+                            ),
+                            onSubmitted: (value) => _onBarcodeSubmitted(),
+                            focusNode: focusNode,
+                          ),
                         ),
-                ),
-              ],
-            ),
-          )
-        : Container();
+                        switch (_leftState) {
+                          EntranceScreenLeftState.visitor =>
+                            _buildVisitorForm(),
+                          EntranceScreenLeftState.checkIn =>
+                            _buildCheckInForm(),
+                          _ => _buildViewer(),
+                        },
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: !kIsWeb
+                        ? LivePlayerSection(
+                            mainController: player.mainController,
+                            sideController: player.sideController)
+                        : Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [ExitCard(gateLog: gateLogOut)],
+                          ),
+                  ),
+                ],
+              ),
+            )
+          : Container(),
+    );
+  }
+
+  void _onBarcodeSubmitted() {
+    final barcode = _barcodeController.text;
+    _barcodeController.clear();
+    focusNode.requestFocus();
+    _registeredUserCheckInBloc
+        .add(PostRegisteredUserCheckInEvent(generatedId: barcode));
   }
 
   Widget _buildViewer() {
@@ -167,6 +227,23 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     return EntranceCard(
         gateLog: gateLog,
         onTapSelectGateLog: () => showVisitorFromSelect(gateLog));
+  }
+
+  Widget _buildCheckInForm() {
+    return BlocBuilder<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
+      builder: (context, state) {
+        switch (state) {
+          case RegisteredUserCheckInInitial():
+            return const SizedBox();
+          case RegisteredUserCheckInLoading():
+            return const Center(child: CircularProgressIndicator());
+          case RegisteredUserCheckInSuccess():
+            return const SizedBox();
+          case RegisteredUserCheckInFailure():
+            return Center(child: Text(state.failure.message));
+        }
+      },
+    );
   }
 
   Widget _buildVisitorForm() {
@@ -462,7 +539,11 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     setState(() {
       clearForm();
       _vehicleType = "car";
-      _isShowVisitor = !_isShowVisitor;
+
+      _leftState = _leftState == EntranceScreenLeftState.initial
+          ? EntranceScreenLeftState.visitor
+          : EntranceScreenLeftState.initial;
+
       _isReadCard = false;
       _isReadDrivingLicence = false;
     });
@@ -700,7 +781,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       addImageToVisitor(value);
       printTicket(value);
       setState(() {
-        _isShowVisitor = false;
+        _leftState = EntranceScreenLeftState.initial;
         _isReadCard = false;
       });
     }).onError((error, stackTrace) {
@@ -760,8 +841,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   void printTicket(VisitorModel visitor) async {
     var printerManager = PrinterManager.instance;
-    // print(printerManager.currentStatusUSB.toString());
-    print(getIt<AppService>().printer);
     printerManager.connect(
         type: PrinterType.usb,
         model: UsbPrinterInput(
@@ -858,7 +937,25 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     );
   }
 
-  void alertError(String msg) {
+  void alertMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  void alertError(String msg) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error Message'),
+            content: Text(msg),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Close'))
+            ],
+          );
+        });
   }
 }

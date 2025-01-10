@@ -280,37 +280,56 @@ class _RegisteredUserUpdateScreenState
             ),
           ),
           Expanded(
-            child: TextField(
-              controller: _expiredDateController,
-              autofocus: false,
-              autocorrect: false,
-              readOnly: true,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'วันหมดอายุ',
-                prefixIcon: GestureDetector(
-                  onTap: () async {
-                    var results = await showCalendarDatePicker2Dialog(
-                      context: context,
-                      config: CalendarDatePicker2WithActionButtonsConfig(
-                          calendarType: CalendarDatePicker2Type.single),
-                      dialogSize: const Size(325, 400),
-                      value: [
-                        state.registeredUser.expiredDate!.valid!
-                            ? state.registeredUser.expiredDate!.time!
-                            : DateTime.now()
-                      ],
-                      borderRadius: BorderRadius.circular(15),
-                    );
-                    if (results != null) {
-                      _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
-                    }
-                  },
-                  child: Icon(Icons.group),
+            child: GestureDetector(
+              onTap: () async {
+                var results = await showCalendarDatePicker2Dialog(
+                  context: context,
+                  config: CalendarDatePicker2WithActionButtonsConfig(
+                      calendarType: CalendarDatePicker2Type.single),
+                  dialogSize: const Size(325, 400),
+                  value: [
+                    state.registeredUser.expiredDate!.valid!
+                        ? state.registeredUser.expiredDate!.time!
+                        : DateTime.now()
+                  ],
+                  borderRadius: BorderRadius.circular(15),
+                );
+                if (results != null) {
+                  _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
+                }
+              },
+              child: TextField(
+                onTap: () async {
+                  var results = await showCalendarDatePicker2Dialog(
+                    context: context,
+                    config: CalendarDatePicker2WithActionButtonsConfig(
+                        calendarType: CalendarDatePicker2Type.single),
+                    dialogSize: const Size(325, 400),
+                    value: [
+                      state.registeredUser.expiredDate!.valid!
+                          ? state.registeredUser.expiredDate!.time!
+                          : DateTime.now()
+                    ],
+                    borderRadius: BorderRadius.circular(15),
+                  );
+                  if (results != null) {
+                    _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
+                  }
+                },
+                controller: _expiredDateController,
+                autofocus: false,
+                autocorrect: false,
+                readOnly: true,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'วันหมดอายุ',
+                  prefixIcon: GestureDetector(
+                    child: Icon(Icons.group),
+                  ),
+                  contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                 ),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                textInputAction: TextInputAction.next,
               ),
-              textInputAction: TextInputAction.next,
             ),
           ),
         ],

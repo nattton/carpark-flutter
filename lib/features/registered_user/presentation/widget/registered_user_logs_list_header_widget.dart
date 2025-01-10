@@ -23,7 +23,7 @@ class RegisteredUserLogListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Check In Time",
+                "เวลาเข้า",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -32,7 +32,7 @@ class RegisteredUserLogListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Check Out Time",
+                "เวลาออก",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -41,7 +41,7 @@ class RegisteredUserLogListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Duration",
+                "ระยะเวลา",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,

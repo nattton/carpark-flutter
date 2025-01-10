@@ -1,11 +1,7 @@
 import 'package:carpark/constants.dart';
 import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'registered_user.g.dart';
-
-@JsonSerializable()
 class RegisteredUser extends Equatable {
   final int id;
   final String generatedId;
@@ -37,11 +33,6 @@ class RegisteredUser extends Equatable {
       this.createdAt,
       this.updatedAt,
       this.expiredDate});
-
-  factory RegisteredUser.fromJson(Map<String, dynamic> json) =>
-      _$RegisteredUserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$RegisteredUserToJson(this);
 
   @override
   List<Object?> get props => [

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:carpark/features/entrance/domain/entity/id_card_entity.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';

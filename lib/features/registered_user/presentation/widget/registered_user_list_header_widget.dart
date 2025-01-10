@@ -14,7 +14,7 @@ class RegisteredUserListHeaderWidget extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                "ID Card",
+                "รหัสบัตรประชาชน",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -23,7 +23,7 @@ class RegisteredUserListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Thai Name",
+                "ชื่อภาษาไทย",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -32,7 +32,7 @@ class RegisteredUserListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Telephone",
+                "เบอร์โทรศัพท์",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -41,7 +41,7 @@ class RegisteredUserListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Type",
+                "ประเภท",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
@@ -50,14 +50,14 @@ class RegisteredUserListHeaderWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                "Expired Date",
+                "วันหมดอายุ",
                 style: TextStyle(
                   fontFamily: kDefaultFont,
                   fontSize: 16.0,
                 ),
               ),
             ),
-            SizedBox(width: 60.0),
+            SizedBox(width: 24.0),
           ],
         ),
       ),

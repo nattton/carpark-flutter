@@ -1,3 +1,4 @@
+import 'package:duration/duration.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
@@ -21,7 +22,7 @@ class RegisteredUserLog extends Equatable {
   List<Object?> get props => [id, generatedId, checkInTime, checkOutTime];
 
   String get duration => checkOutTime != null && checkInTime != null
-      ? "${checkOutTime!.difference(checkInTime!).inMinutes} minutes"
+      ? checkOutTime!.difference(checkInTime!).pretty()
       : "";
 
   String get checkInTimeString =>

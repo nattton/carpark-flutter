@@ -4,10 +4,12 @@ import 'package:carpark/features/registered_user/domain/models/registered_user_c
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_check_out_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'registered_user_check_out_event.dart';
 part 'registered_user_check_out_state.dart';
 
+@Injectable()
 class RegisteredUserCheckOutBloc
     extends Bloc<RegisteredUserCheckOutEvent, RegisteredUserCheckOutState> {
   final RegisteredUserCheckOutUsecase registeredUserCheckOutUsecase;
