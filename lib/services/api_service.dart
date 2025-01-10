@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/models/id_card_response.dart';
+import 'package:carpark/features/entrance/domain/entity/id_card_entity.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/gate_in_model.dart';
@@ -140,7 +139,4 @@ abstract class ApiService {
       @Path() String type,
       @Query("date") String date,
       @Query("dateTo") String dateTo);
-
-  @GET("$kSmartCardReaderUrl/smartcardreader")
-  Future<IDCardResponse> smartCardReader();
 }

@@ -1,5 +1,5 @@
 import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
-import 'package:carpark/features/registered_user/presentation/pages/registered_user_logs_screen.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/screens/login_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/screens/member_screen.dart';

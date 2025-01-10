@@ -1,10 +1,10 @@
 import 'package:carpark/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'id_card_response.g.dart';
+part 'id_card_entity.g.dart';
 
 @JsonSerializable()
-class IDCardResponse {
+class IDCardEntity {
   final String id;
   final String engName;
   final String thaiName;
@@ -13,7 +13,7 @@ class IDCardResponse {
   final String address;
   final String photoPath;
 
-  const IDCardResponse(
+  const IDCardEntity(
       {required this.id,
       required this.engName,
       required this.thaiName,
@@ -22,10 +22,10 @@ class IDCardResponse {
       required this.address,
       required this.photoPath});
 
-  factory IDCardResponse.fromJson(Map<String, dynamic> json) =>
-      _$IDCardResponseFromJson(json);
+  factory IDCardEntity.fromJson(Map<String, dynamic> json) =>
+      _$IDCardEntityFromJson(json);
 
-  Map<String, dynamic> toJson() => _$IDCardResponseToJson(this);
+  Map<String, dynamic> toJson() => _$IDCardEntityToJson(this);
 
   String genderName() {
     if (kGenderMap.containsKey(gender)) {

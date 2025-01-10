@@ -5,11 +5,11 @@ import 'package:carpark/components/entrance_card.dart';
 import 'package:carpark/components/exit_card.dart';
 import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/models/id_card_response.dart';
+import 'package:carpark/features/entrance/domain/entity/id_card_entity.dart';
+import 'package:carpark/features/entrance/domain/repository/id_card_service_repository.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
-import 'package:carpark/models/response_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
@@ -45,7 +45,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   bool _isReadCard = false;
   String _vehicleType = 'car';
 
-  IDCardResponse? _idCardModel;
+  IDCardEntity? _idCardModel;
   File? _photoFile;
   int _selectedGateLogId = 0;
 
@@ -512,9 +512,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     print('count: $count');
     if (count == 6) {
       final lines = value.split("\n");
-      // for (var i = 0; i < lines.length; i++) {
-      //   print(" $i = ${lines[i]} ");
-      // }
 
       final name = lines[0];
       final idNumber = lines[2];
@@ -539,29 +536,21 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     EasyLoading.show();
     _isReadDrivingLicence = false;
     _isReadCard = true;
-    getIt<ApiService>().smartCardReader().then((card) async {
-      _idCardModel = card;
-      _photoFile = await _tempImage(card.id);
-      await getIt<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
-      _idCardController.text = card.id;
-      _thaiNameController.text = card.thaiName;
-      _engNameController.text = card.engName;
-      _birthdateController.text = card.birthdate;
-      _genderController.text = card.genderName();
-      _addressNameController.text = card.address;
-      EasyLoading.dismiss();
-      setState(() {});
-    }).catchError((Object obj) {
-      EasyLoading.dismiss();
-      switch (obj.runtimeType) {
-        case DioException:
-          final res = (obj as DioException).response;
-          final response = ResponseModel.fromJson(res!.data);
-          alertError(response.error);
-          break;
-        default:
-          break;
-      }
+    getIt<IdCardServiceRepository>().readIdCard().then((card) async {
+      card.fold((l) => {alertError(l.message), EasyLoading.dismiss()},
+          (r) async {
+        _idCardModel = r.data;
+        _photoFile = await _tempImage(r.data!.id);
+        await getIt<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
+        _idCardController.text = r.data!.id;
+        _thaiNameController.text = r.data!.thaiName;
+        _engNameController.text = r.data!.engName;
+        _birthdateController.text = r.data!.birthdate;
+        _genderController.text = r.data!.genderName();
+        _addressNameController.text = r.data!.address;
+        EasyLoading.dismiss();
+        setState(() {});
+      });
     });
   }
 
@@ -783,22 +772,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         type: PrinterType.usb, bytes: await _generateTicket(visitor));
     await printerManager.disconnect(type: PrinterType.usb);
   }
-
-  // void printNetwork() async {
-  //   const PaperSize paper = PaperSize.mm80;
-  //   final profile = await CapabilityProfile.load();
-  //   final printer = NetworkPrinter(paper, profile);
-
-  //   final PosPrintResult res =
-  //       await printer.connect('192.168.50.43', port: 9100);
-
-  //   if (res == PosPrintResult.success) {
-  //     await testReceipt(printer);
-  //     printer.disconnect();
-  //   }
-
-  //   print('Print result: ${res.msg}');
-  // }
 
   Widget _buildSearchMember() {
     final memberList = ref.watch(membersProvider);

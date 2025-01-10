@@ -2,9 +2,9 @@ import 'package:carpark/features/registered_user/domain/entity/registered_user.d
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/pages/registered_user_create.dart';
-import 'package:carpark/features/registered_user/presentation/pages/registered_user_logs_screen.dart';
-import 'package:carpark/features/registered_user/presentation/pages/registered_user_update_screen.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_create.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_update_screen.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_header_widget.dart';
 import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_row_widget.dart';
 import 'package:carpark/injector/injector.dart';
@@ -155,6 +155,6 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
   }
 
   onSearchTextChanged(String text) async {
-    context.read<RegisteredUserListBloc>().add(SearchRegisteredUser(text));
+    _registeredUserListBloc.add(SearchRegisteredUser(text));
   }
 }

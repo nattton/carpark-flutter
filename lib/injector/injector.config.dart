@@ -13,6 +13,15 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../features/entrance/data/datasource/id_card_service_datasource.dart'
+    as _i647;
+import '../features/entrance/data/datasource/id_card_service_datasource_impl.dart'
+    as _i652;
+import '../features/entrance/data/network/id_card_service.dart' as _i1013;
+import '../features/entrance/data/repository/id_card_service_repository_impl.dart'
+    as _i612;
+import '../features/entrance/domain/repository/id_card_service_repository.dart'
+    as _i365;
 import '../features/registered_user/data/datasources/registered_user_service_datasource.dart'
     as _i798;
 import '../features/registered_user/data/datasources/registered_user_service_datasource_impl.dart'
@@ -71,6 +80,7 @@ extension GetItInjectableX on _i174.GetIt {
     final appServiceModule = _$AppServiceModule();
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
     final apiServiceModule = _$ApiServiceModule();
+    final idCardServiceModule = _$IdCardServiceModule();
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.sharedPreferences,
       preResolve: true,
@@ -82,16 +92,22 @@ extension GetItInjectableX on _i174.GetIt {
         () => registeredUserServiceModule.create(gh<_i361.Dio>()));
     gh.singleton<_i137.ApiService>(
         () => apiServiceModule.create(gh<_i361.Dio>()));
+    gh.singleton<_i1013.IdCardService>(
+        () => idCardServiceModule.create(gh<_i361.Dio>()));
+    gh.factory<_i647.IdCardServiceDataSource>(
+        () => _i652.IdCardServiceDataSourceImpl(gh<_i1013.IdCardService>()));
+    gh.factory<_i365.IdCardServiceRepository>(() =>
+        _i612.IdCardServiceRepositoryImpl(gh<_i647.IdCardServiceDataSource>()));
     gh.factory<_i798.RegisteredUserServiceDataSource>(
         () => _i790.RegisteredUserServiceDataSourceImpl(
               gh<_i636.RegisteredUserService>(),
               gh<_i479.AppService>(),
             ));
+    gh.factory<_i399.ReadIdCardUsecase>(
+        () => _i399.ReadIdCardUsecase(gh<_i365.IdCardServiceRepository>()));
     gh.factory<_i960.RegisteredUserServiceRepository>(() =>
         _i296.RegisteredUserServiceRepositoryImpl(
             gh<_i798.RegisteredUserServiceDataSource>()));
-    gh.factory<_i399.ReadIdCardUsecase>(() =>
-        _i399.ReadIdCardUsecase(gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i856.RegisteredUserAddPhotoUsecase>(() =>
         _i856.RegisteredUserAddPhotoUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
@@ -147,3 +163,5 @@ class _$AppServiceModule extends _i479.AppServiceModule {}
 class _$RegisteredUserServiceModule extends _i636.RegisteredUserServiceModule {}
 
 class _$ApiServiceModule extends _i137.ApiServiceModule {}
+
+class _$IdCardServiceModule extends _i1013.IdCardServiceModule {}

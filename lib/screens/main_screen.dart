@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:carpark/constants.dart';
 import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
-import 'package:carpark/features/registered_user/presentation/pages/registered_user_list_screen.dart';
+import 'package:carpark/features/entrance/presentation/page/entrance_screen.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_list_screen.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
@@ -11,7 +12,6 @@ import 'package:carpark/models/last_gate.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/providers/members_notifier.dart';
-import 'package:carpark/screens/entrance_screen.dart';
 import 'package:carpark/screens/exit_screen.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
 import 'package:carpark/screens/member_list_screen.dart';
