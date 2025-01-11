@@ -1,7 +1,7 @@
-import 'package:carpark/components/member_header_card.dart';
-import 'package:carpark/components/member_list_card.dart';
 import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
 import 'package:carpark/features/member/presentation/page/member_screen.dart';
+import 'package:carpark/features/member/presentation/widget/member_header_card.dart';
+import 'package:carpark/features/member/presentation/widget/member_list_card.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

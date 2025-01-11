@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carpark/components/exit_card.dart';
-import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
+import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
+import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/injector/injector.dart';
