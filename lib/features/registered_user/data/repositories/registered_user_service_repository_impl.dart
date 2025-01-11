@@ -86,4 +86,15 @@ class RegisteredUserServiceRepositoryImpl
       (e, _) => Failure.fromException(e),
     ).run();
   }
+
+  @override
+  Future<
+          Either<Failure,
+              GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>>
+      getNotCheckOutRegisteredUser() async {
+    return TaskEither.tryCatch(
+      () => dataSource.getNotCheckOutRegisteredUser(),
+      (e, _) => Failure.fromException(e),
+    ).run();
+  }
 }

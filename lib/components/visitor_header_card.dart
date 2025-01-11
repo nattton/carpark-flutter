@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:carpark/constants.dart';
+import 'package:flutter/material.dart';
 
 class VisitorHeaderCard extends StatelessWidget {
   const VisitorHeaderCard({
@@ -53,6 +53,12 @@ class VisitorHeaderCard extends StatelessWidget {
                   "วันที่-เวลา ออก",
                   style: _columnStyle(1),
                 ),
+              ),
+            ),
+            GestureDetector(
+              child: Text(
+                "ระยะเวลา",
+                style: _columnStyle(2),
               ),
             ),
             Expanded(

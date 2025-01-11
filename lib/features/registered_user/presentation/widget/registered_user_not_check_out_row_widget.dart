@@ -1,12 +1,12 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/models/visitor_model.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
 import 'package:flutter/material.dart';
 
-class VisitorListCard extends StatelessWidget {
-  const VisitorListCard(
-      {super.key, required this.visitor, required this.onTap});
+class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
+  const RegisteredUserNotCheckOutRowWidget(
+      {super.key, required this.log, required this.onTap});
 
-  final VisitorModel visitor;
+  final RegisteredUserLog log;
   final VoidCallback onTap;
 
   @override
@@ -21,7 +21,7 @@ class VisitorListCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  visitor.dateTimeNanoFormat(),
+                  log.registeredUser!.thaiName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -30,7 +30,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.exitTime!.toDateTimeNanoString(),
+                  log.registeredUser!.engName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -39,7 +39,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.durationString(),
+                  log.registeredUser!.telephone,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -48,25 +48,7 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  visitor.plateNumber!,
-                  style: const TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  visitor.member!.name!,
-                  style: const TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  visitor.thaiName!,
+                  log.checkInTimeString,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,

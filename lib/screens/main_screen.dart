@@ -6,6 +6,7 @@ import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
 import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart';
 import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_list_screen.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_not_check_out_screen.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
 import 'package:carpark/models/gate_log_model.dart';
@@ -332,6 +333,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     icon: const Icon(Icons.badge),
                   ),
                   SideMenuItem(
+                    title: 'บันทึกผู้ติดต่อลงทะเบียน',
+                    onTap: (page, _) {
+                      _appTitleCubit.changeTitle('บันทึกผู้ติดต่อลงทะเบียน');
+                      selectedPage('REGISTERED_USER_NOT_CHECK_OUT');
+                      sideMenu.changePage(page);
+                    },
+                    icon: const Icon(Icons.badge),
+                  ),
+                  SideMenuItem(
                     title: 'บันทึกเข้า-ออก',
                     onTap: (page, _) {
                       _appTitleCubit.changeTitle('บันทึกเข้า-ออก');
@@ -412,6 +422,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     Container(
                       color: Colors.white,
                       child: const VisitorScreen(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: RegisteredUserNotCheckOutScreen.page,
                     ),
                     Container(
                       color: Colors.white,

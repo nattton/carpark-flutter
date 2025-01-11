@@ -29,4 +29,9 @@ abstract class RegisteredUserServiceRepository {
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       updateRegisteredUser(UpdateRegisteredUserRequest request);
+
+  Future<
+          Either<Failure,
+              GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>>
+      getNotCheckOutRegisteredUser();
 }

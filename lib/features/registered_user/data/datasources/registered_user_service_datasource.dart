@@ -26,4 +26,7 @@ abstract class RegisteredUserServiceDataSource {
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
       int id, UpdateRegisteredUserRequest request);
+
+  Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
+      getNotCheckOutRegisteredUser();
 }
