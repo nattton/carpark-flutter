@@ -37,7 +37,7 @@ class GateLogResult {
   Map<String, dynamic> toJson() => _$GateLogResultToJson(this);
 
   String captureImageUrl() {
-    return "$kHostUrl/anpr_store$captureImage";
+    return "$kCurrentHost/anpr_store$captureImage";
   }
 
   String dateTimeFormat() {

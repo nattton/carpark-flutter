@@ -28,7 +28,7 @@ abstract class DioModule {
   @singleton
   Dio get dio {
     Dio dio = Dio();
-    dio.options.baseUrl = kHostUrl;
+    dio.options.baseUrl = kCurrentHost;
     return dio;
   }
 }

@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:web/web.dart' as web;
 
 const kHost = 'localhost:4000';
 // const kHost = '192.168.1.50:4000';
@@ -6,6 +8,8 @@ const kHost = 'localhost:4000';
 
 const kHostUrl = 'http://$kHost';
 const kHostWS = 'ws://$kHost';
+
+final kCurrentHost = kIsWeb ? web.window.location.origin : kHostUrl;
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 

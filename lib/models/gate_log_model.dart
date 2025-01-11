@@ -38,11 +38,11 @@ class GateLogModel {
   Map<String, dynamic> toJson() => _$GateLogModelToJson(this);
 
   String captureImageUrl() {
-    return "$kHostUrl/anpr_store$captureImage";
+    return "$kCurrentHost/anpr_store$captureImage";
   }
 
   String licensePlateImageUrl() {
-    return "$kHostUrl/anpr_store$licensePlateImage";
+    return "$kCurrentHost/anpr_store$licensePlateImage";
   }
 
   String dateTimeFormat() {
