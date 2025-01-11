@@ -6,14 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class RegisteredUserUpdate extends StatefulWidget {
-  const RegisteredUserUpdate({super.key});
+class RegisteredUserUpdateScreen extends StatefulWidget {
+  const RegisteredUserUpdateScreen({super.key});
 
   @override
-  State<RegisteredUserUpdate> createState() => _RegisteredUserUpdateState();
+  State<RegisteredUserUpdateScreen> createState() =>
+      _RegisteredUserUpdateScreenState();
 }
 
-class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
+class _RegisteredUserUpdateScreenState
+    extends State<RegisteredUserUpdateScreen> {
   late RegisteredUserUpdateBloc _bloc;
 
   final TextEditingController _idCardController = TextEditingController();
@@ -25,6 +27,20 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
   final TextEditingController _telephoneController = TextEditingController();
   final TextEditingController _typeController = TextEditingController();
   final TextEditingController _expiredDateController = TextEditingController();
+
+  @override
+  void dispose() {
+    _idCardController.dispose();
+    _thaiNameController.dispose();
+    _engNameController.dispose();
+    _birthdateController.dispose();
+    _genderController.dispose();
+    _addressNameController.dispose();
+    _telephoneController.dispose();
+    _typeController.dispose();
+    _expiredDateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +78,8 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
         case RegisteredUserUpdateStatus.updating:
         case RegisteredUserUpdateStatus.failure:
         case RegisteredUserUpdateStatus.loadFailure:
-        case RegisteredUserUpdateStatus.updateFailure:
           return const SizedBox();
+        case RegisteredUserUpdateStatus.updateFailure:
         case RegisteredUserUpdateStatus.loadSuccess:
         case RegisteredUserUpdateStatus.updateSuccess:
         case RegisteredUserUpdateStatus.selectingExpiredDate:
@@ -264,37 +280,56 @@ class _RegisteredUserUpdateState extends State<RegisteredUserUpdate> {
             ),
           ),
           Expanded(
-            child: TextField(
-              controller: _expiredDateController,
-              autofocus: false,
-              autocorrect: false,
-              readOnly: true,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'วันหมดอายุ',
-                prefixIcon: GestureDetector(
-                  onTap: () async {
-                    var results = await showCalendarDatePicker2Dialog(
-                      context: context,
-                      config: CalendarDatePicker2WithActionButtonsConfig(
-                          calendarType: CalendarDatePicker2Type.single),
-                      dialogSize: const Size(325, 400),
-                      value: [
-                        state.registeredUser.expiredDate!.valid!
-                            ? state.registeredUser.expiredDate!.time!
-                            : DateTime.now()
-                      ],
-                      borderRadius: BorderRadius.circular(15),
-                    );
-                    if (results != null) {
-                      _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
-                    }
-                  },
-                  child: Icon(Icons.group),
+            child: GestureDetector(
+              onTap: () async {
+                var results = await showCalendarDatePicker2Dialog(
+                  context: context,
+                  config: CalendarDatePicker2WithActionButtonsConfig(
+                      calendarType: CalendarDatePicker2Type.single),
+                  dialogSize: const Size(325, 400),
+                  value: [
+                    state.registeredUser.expiredDate!.valid!
+                        ? state.registeredUser.expiredDate!.time!
+                        : DateTime.now()
+                  ],
+                  borderRadius: BorderRadius.circular(15),
+                );
+                if (results != null) {
+                  _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
+                }
+              },
+              child: TextField(
+                onTap: () async {
+                  var results = await showCalendarDatePicker2Dialog(
+                    context: context,
+                    config: CalendarDatePicker2WithActionButtonsConfig(
+                        calendarType: CalendarDatePicker2Type.single),
+                    dialogSize: const Size(325, 400),
+                    value: [
+                      state.registeredUser.expiredDate!.valid!
+                          ? state.registeredUser.expiredDate!.time!
+                          : DateTime.now()
+                    ],
+                    borderRadius: BorderRadius.circular(15),
+                  );
+                  if (results != null) {
+                    _bloc.add(UpdateRegisteredUserSelectExpiredDate(results));
+                  }
+                },
+                controller: _expiredDateController,
+                autofocus: false,
+                autocorrect: false,
+                readOnly: true,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'วันหมดอายุ',
+                  prefixIcon: GestureDetector(
+                    child: Icon(Icons.group),
+                  ),
+                  contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                 ),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                textInputAction: TextInputAction.next,
               ),
-              textInputAction: TextInputAction.next,
             ),
           ),
         ],

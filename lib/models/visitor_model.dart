@@ -3,6 +3,7 @@ import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/member_model.dart';
 import 'package:carpark/models/null_time_model.dart';
 import 'package:carpark/models/visitor_image_model.dart';
+import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -81,5 +82,12 @@ class VisitorModel {
   String dateTimeNanoShortFormat() {
     DateTime dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyyMMddHHmmss.SSS").format(dt);
+  }
+
+  String durationString() {
+    if (exitTime == null || exitTime!.valid == false) {
+      return "";
+    }
+    return exitTime!.time!.difference(createdAt!).pretty();
   }
 }

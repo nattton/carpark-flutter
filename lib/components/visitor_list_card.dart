@@ -39,6 +39,15 @@ class VisitorListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
+                  visitor.durationString(),
+                  style: const TextStyle(
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
                   visitor.plateNumber!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,

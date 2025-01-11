@@ -6,8 +6,6 @@ import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:fpdart/fpdart.dart';
 
 abstract class RegisteredUserServiceRepository {
-  Future<Either<Failure, GenericResponseData<IDCardResponse>>> readIdCard();
-
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
       getRegisteredUsers(ListRegisteredUserParam param);
 
@@ -31,4 +29,9 @@ abstract class RegisteredUserServiceRepository {
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
       updateRegisteredUser(UpdateRegisteredUserRequest request);
+
+  Future<
+          Either<Failure,
+              GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>>
+      getNotCheckOutRegisteredUser();
 }

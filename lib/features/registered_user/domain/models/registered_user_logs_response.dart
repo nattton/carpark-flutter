@@ -20,16 +20,18 @@ class RegisteredUserLogsResponse {
   Map<String, dynamic> toJson() => _$RegisteredUserLogsResponseToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class RegisteredUserLogResponse {
   final int id;
   final NullTimeModel checkInTime;
   final NullTimeModel checkOutTime;
+  final RegisteredUserResponse? registeredUser;
 
   const RegisteredUserLogResponse({
     required this.id,
     required this.checkInTime,
     required this.checkOutTime,
+    required this.registeredUser,
   });
 
   factory RegisteredUserLogResponse.fromJson(Map<String, dynamic> json) =>

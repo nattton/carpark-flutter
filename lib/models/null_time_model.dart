@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'null_time_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class NullTimeModel {
   @JsonKey(name: "Time")
   DateTime? time;
@@ -36,14 +36,14 @@ class NullTimeModel {
   }
 
   String toDateTimeString() {
-    if (time == null) {
+    if (valid == false || time == null) {
       return "";
     }
     return DateFormat("yyyy-MM-dd HH:mm:ss").format(time!);
   }
 
   String toDateTimeNanoString() {
-    if (time == null) {
+    if (valid == false || time == null) {
       return "";
     }
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(time!);

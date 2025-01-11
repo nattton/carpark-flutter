@@ -17,11 +17,6 @@ class RegisteredUserServiceDataSourceImpl
       this.registeredUserService, this.appService);
 
   @override
-  Future<GenericResponseData<IDCardResponse>> readIdCard() {
-    return registeredUserService.readIdCard();
-  }
-
-  @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
       int id, File photo) {
     return registeredUserService.addPhotoToRegisteredUser(
@@ -73,5 +68,11 @@ class RegisteredUserServiceDataSourceImpl
       ListRegisteredUserParam param) {
     return registeredUserService.getRegisteredUsers(
         appService.token, param.search);
+  }
+
+  @override
+  Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
+      getNotCheckOutRegisteredUser() {
+    return registeredUserService.getNotCheckOutRegisteredUser(appService.token);
   }
 }

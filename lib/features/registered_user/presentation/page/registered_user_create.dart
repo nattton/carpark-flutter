@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
+import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,7 +15,7 @@ class RegisteredUserCreate extends StatefulWidget {
 }
 
 class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
-  late RegisteredUserCreateBloc _bloc;
+  late RegisteredUserCreateBloc _registeredUserCreateBloc;
 
   final TextEditingController _idCardController = TextEditingController();
   final TextEditingController _thaiNameController = TextEditingController();
@@ -27,8 +28,22 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   final TextEditingController _expiredDateController = TextEditingController();
 
   @override
+  void dispose() {
+    _idCardController.dispose();
+    _thaiNameController.dispose();
+    _engNameController.dispose();
+    _birthdateController.dispose();
+    _genderController.dispose();
+    _addressNameController.dispose();
+    _telephoneController.dispose();
+    _typeController.dispose();
+    _expiredDateController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _bloc = context.read<RegisteredUserCreateBloc>();
+    _registeredUserCreateBloc = context.read<RegisteredUserCreateBloc>();
     return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
         listener: (context, state) {
       switch (state.status) {
@@ -52,6 +67,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
           );
           context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+          Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
+              arguments: state.id);
         case RegisteredUserCreateStatus.savePhotoSuccess:
           EasyLoading.dismiss();
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -94,12 +111,12 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      _bloc.add(ReadIdCard());
+                      _registeredUserCreateBloc.add(ReadIdCard());
                     },
                     child: const Text('อ่านบัตร')),
                 ElevatedButton(
                     onPressed: () {
-                      _bloc.add(CreateRegisteredUser(
+                      _registeredUserCreateBloc.add(CreateRegisteredUser(
                         CreateRegisteredUserRequest(
                           idCard: _idCardController.text,
                           engName: _engNameController.text,
@@ -116,7 +133,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                     child: const Text('ยืนยัน')),
                 ElevatedButton(
                     onPressed: () {
-                      _bloc.add(InitialCreateRegisteredUser());
+                      _registeredUserCreateBloc
+                          .add(InitialCreateRegisteredUser());
                       _idCardController.clear();
                       _thaiNameController.clear();
                       _engNameController.clear();
@@ -129,7 +147,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                     child: const Text('ล้างข้อมูล')),
                 ElevatedButton(
                     onPressed: () {
-                      _bloc.add(InitialCreateRegisteredUser());
+                      _registeredUserCreateBloc
+                          .add(InitialCreateRegisteredUser());
                       context
                           .read<RegisteredUserListBloc>()
                           .add(GetRegisteredUserList());
@@ -275,6 +294,19 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           ),
           Expanded(
             child: TextField(
+              onTap: () async {
+                var results = await showCalendarDatePicker2Dialog(
+                  context: context,
+                  config: CalendarDatePicker2WithActionButtonsConfig(
+                      calendarType: CalendarDatePicker2Type.single),
+                  dialogSize: const Size(325, 400),
+                  value: [DateTime.parse(state.expiredDate)],
+                  borderRadius: BorderRadius.circular(15),
+                );
+                if (results != null) {
+                  _registeredUserCreateBloc.add(SelectExpiredDate(results));
+                }
+              },
               controller: _expiredDateController,
               autofocus: false,
               autocorrect: false,
@@ -282,22 +314,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 labelText: 'วันหมดอายุ',
-                prefixIcon: GestureDetector(
-                  onTap: () async {
-                    var results = await showCalendarDatePicker2Dialog(
-                      context: context,
-                      config: CalendarDatePicker2WithActionButtonsConfig(
-                          calendarType: CalendarDatePicker2Type.single),
-                      dialogSize: const Size(325, 400),
-                      value: [DateTime.parse(state.expiredDate)],
-                      borderRadius: BorderRadius.circular(15),
-                    );
-                    if (results != null) {
-                      _bloc.add(SelectExpiredDate(results));
-                    }
-                  },
-                  child: Icon(Icons.group),
-                ),
+                prefixIcon: Icon(Icons.group),
                 contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
               ),
               textInputAction: TextInputAction.next,

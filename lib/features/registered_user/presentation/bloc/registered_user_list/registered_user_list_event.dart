@@ -18,6 +18,6 @@ class SearchRegisteredUser extends RegisteredUserListEvent {
   List<Object> get props => [searchText];
 }
 
-class RegisteredUserCreateScreen extends RegisteredUserListEvent {}
+class RegisteredUserCreating extends RegisteredUserListEvent {}
 
-class RegisteredUserUpdateScreen extends RegisteredUserListEvent {}
+class RegisteredUserUpdating extends RegisteredUserListEvent {}

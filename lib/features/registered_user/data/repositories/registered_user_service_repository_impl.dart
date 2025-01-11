@@ -16,15 +16,6 @@ class RegisteredUserServiceRepositoryImpl
   RegisteredUserServiceRepositoryImpl(this.dataSource);
 
   @override
-  Future<Either<Failure, GenericResponseData<IDCardResponse>>>
-      readIdCard() async {
-    return TaskEither.tryCatch(
-      () => dataSource.readIdCard(),
-      (e, _) => Failure.fromException(e),
-    ).run();
-  }
-
-  @override
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
       getRegisteredUsers(ListRegisteredUserParam param) async {
     return TaskEither.tryCatch(
@@ -92,6 +83,17 @@ class RegisteredUserServiceRepositoryImpl
       updateRegisteredUser(UpdateRegisteredUserRequest request) async {
     return TaskEither.tryCatch(
       () => dataSource.updateRegisteredUser(request.id, request),
+      (e, _) => Failure.fromException(e),
+    ).run();
+  }
+
+  @override
+  Future<
+          Either<Failure,
+              GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>>
+      getNotCheckOutRegisteredUser() async {
+    return TaskEither.tryCatch(
+      () => dataSource.getNotCheckOutRegisteredUser(),
       (e, _) => Failure.fromException(e),
     ).run();
   }

@@ -4,8 +4,6 @@ import 'package:carpark/core/data/model/generic_response_data.dart';
 import 'package:carpark/features/registered_user/domain/models/models.dart';
 
 abstract class RegisteredUserServiceDataSource {
-  Future<GenericResponseData<IDCardResponse>> readIdCard();
-
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
       ListRegisteredUserParam param);
 
@@ -28,4 +26,7 @@ abstract class RegisteredUserServiceDataSource {
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
       int id, UpdateRegisteredUserRequest request);
+
+  Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
+      getNotCheckOutRegisteredUser();
 }

@@ -1,12 +1,12 @@
 import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
 import 'package:flutter/material.dart';
 
-class RegisteredUserListCard extends StatelessWidget {
-  const RegisteredUserListCard(
-      {super.key, required this.user, required this.onTap});
+class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
+  const RegisteredUserNotCheckOutRowWidget(
+      {super.key, required this.log, required this.onTap});
 
-  final RegisteredUser user;
+  final RegisteredUserLog log;
   final VoidCallback onTap;
 
   @override
@@ -21,7 +21,7 @@ class RegisteredUserListCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  user.idCard,
+                  log.registeredUser!.thaiName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -30,7 +30,7 @@ class RegisteredUserListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  user.thaiName,
+                  log.registeredUser!.engName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -39,7 +39,7 @@ class RegisteredUserListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  user.telephone,
+                  log.registeredUser!.telephone,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
@@ -48,23 +48,13 @@ class RegisteredUserListCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  user.type,
+                  log.checkInTimeString,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
                     fontSize: 16.0,
                   ),
                 ),
               ),
-              Expanded(
-                child: Text(
-                  user.expiredDate?.toDateString() ?? "",
-                  style: const TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              const Icon(Icons.edit),
             ],
           ),
         ),
