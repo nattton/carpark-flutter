@@ -1,8 +1,8 @@
 import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
+import 'package:carpark/features/member/presentation/page/member_screen.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/screens/login_screen.dart';
 import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/visitor_detail_screen.dart';
 import 'package:carpark/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           WelcomeScreen.id: (context) => const WelcomeScreen(),
-          LoginScreen.id: (context) => const LoginScreen(),
-          MainScreen.id: (context) => const MainScreen(),
+          LoginScreen.routeName: (context) => const LoginScreen(),
+          MainScreen.routeName: (context) => MainScreen.page,
         },
         onGenerateRoute: (settings) {
           switch (settings.name) {

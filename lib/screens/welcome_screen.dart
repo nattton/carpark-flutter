@@ -35,11 +35,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void goLoginPage() {
-    Navigator.of(context).pushNamed(LoginScreen.id);
+    Navigator.of(context).pushNamed(LoginScreen.routeName);
   }
 
   void goAdminScreen() {
-    Navigator.of(context).pushNamed(MainScreen.id).then((value) {
+    Navigator.of(context).pushNamed(MainScreen.routeName).then((value) {
       goLoginPage();
     });
   }

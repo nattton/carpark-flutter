@@ -15,10 +15,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'member_screen.g.dart';
+part 'member_screen.g.dart'; 
 
 @riverpod
-MemberModel memberModel(MemberModelRef ref) {
+MemberModel memberModel(MemberModelRef ref) { 
   return MemberModel(id: 0, vehicles: []);
 }
 

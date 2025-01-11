@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String id = 'login_screen';
+  static const String routeName = '/login';
 
   const LoginScreen({super.key});
 
@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void goAdminScreen() {
-    Navigator.of(context).pushNamed(MainScreen.id);
+    Navigator.of(context).pushNamed(MainScreen.routeName);
   }
 
   void alertError(String msg) {

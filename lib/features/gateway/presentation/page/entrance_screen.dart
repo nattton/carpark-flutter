@@ -7,6 +7,7 @@ import 'package:carpark/components/live_player_section.dart';
 import 'package:carpark/constants.dart';
 import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
 import 'package:carpark/features/gateway/domain/repository/id_card_service_repository.dart';
+import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/injector/injector.dart';
@@ -853,7 +854,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildSearchMember() {
-    final memberList = ref.watch(membersProvider);
+    final memberList = BlocProvider.of<MemberListBloc>(context).state.members;
     return Autocomplete<MemberModel>(
       initialValue:
           _selectedMember != null && _selectedMember!.status == "overdue"

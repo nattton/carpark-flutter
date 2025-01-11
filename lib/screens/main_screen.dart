@@ -5,18 +5,15 @@ import 'package:carpark/constants.dart';
 import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
 import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart';
 import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
+import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/features/member/presentation/page/member_list_screen.dart';
+import 'package:carpark/features/member/presentation/page/member_screen.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_list_screen.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_not_check_out_screen.dart';
 import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/last_gate.dart';
-import 'package:carpark/models/member_model.dart';
+import 'package:carpark/models/models.dart';
 import 'package:carpark/providers/camera_player.dart';
-import 'package:carpark/providers/members_notifier.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
-import 'package:carpark/screens/member_list_screen.dart';
-import 'package:carpark/screens/member_screen.dart';
 import 'package:carpark/screens/report_screen.dart';
 import 'package:carpark/screens/setting_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
@@ -45,11 +42,6 @@ final lastGateProvider =
       LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
 });
 
-final membersProvider =
-    StateNotifierProvider<MembersNotifier, List<MemberModel>>((ref) {
-  return MembersNotifier();
-});
-
 final cameraMapProvider =
     Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
 
@@ -59,15 +51,25 @@ CameraPlayer cameraPlayer(CameraPlayerRef ref) {
 }
 
 class MainScreen extends StatefulHookConsumerWidget {
-  static const String id = 'main_screen';
+  static const String routeName = '/main';
 
   const MainScreen({super.key});
 
   @override
   ConsumerState<MainScreen> createState() => _MainScreenState();
+
+  static Widget get page => MultiBlocProvider(
+        providers: [
+          BlocProvider<MemberListBloc>(
+              create: (context) =>
+                  getIt<MemberListBloc>()..add(LoadMemberList())),
+        ],
+        child: MainScreen(),
+      );
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
+  late MemberListBloc _memberListBloc;
   final wsUrl = '$kHostWS/ws';
   late WebSocket channel;
   bool loadingLastGate = false;
@@ -131,6 +133,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
+    _memberListBloc = context.read<MemberListBloc>();
     _appTitleCubit = context.read<AppTitleCubit>();
     _appTitleCubit.changeTitle('Car Park');
     if (kIsWeb) {
@@ -140,7 +143,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }
 
     getLastGate();
-    getMember();
     getCameraList().then((value) {
       if (!kIsWeb) {
         var camera = value['ENTRANCE'];
@@ -177,15 +179,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       camera[cam.name] = cam;
     }
     return camera;
-  }
-
-  Future<void> getMember() async {
-    final memberList = ref.read(membersProvider.notifier);
-    getIt<ApiService>().getMemberList(getIt<AppService>().token).then((value) {
-      memberList.setState(value);
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
   }
 
   Future<void> getLastGate() async {
@@ -634,7 +627,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 Navigator.pop(context);
                 Navigator.of(context)
                     .pushNamed(MemberScreen.id, arguments: value.id)
-                    .then((value) => {getMember()});
+                    .then((value) => {_memberListBloc.add(LoadMemberList())});
               },
               child: const Text('Close'),
             ),
@@ -647,7 +640,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Excel generateExcel() {
-    final members = ref.read(membersProvider);
+    final members = BlocProvider.of<MemberListBloc>(context).state.members;
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Sheet1'];
 
