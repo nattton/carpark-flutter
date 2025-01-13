@@ -93,11 +93,11 @@ extension GetItInjectableX on _i174.GetIt {
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
     final apiServiceModule = _$ApiServiceModule();
     gh.factory<_i314.AppTitleCubit>(() => _i314.AppTitleCubit());
+    gh.factory<_i207.MemberListBloc>(() => _i207.MemberListBloc());
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.sharedPreferences,
       preResolve: true,
     );
-    gh.factory<_i207.MemberListBloc>(() => _i207.MemberListBloc());
     gh.singleton<_i361.Dio>(() => dioModule.dio);
     gh.singleton<_i479.AppService>(
         () => appServiceModule.create(gh<_i460.SharedPreferences>()));
@@ -125,6 +125,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i287.GetRegisteredUserLogsUsecase>(() =>
         _i287.GetRegisteredUserLogsUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i1039.GetRegisteredUserLogNotCheckOutResponseUsecase>(() =>
+        _i1039.GetRegisteredUserLogNotCheckOutResponseUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i856.RegisteredUserAddPhotoUsecase>(() =>
         _i856.RegisteredUserAddPhotoUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
@@ -148,9 +151,6 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i544.RegisteredUserUpdateUsecase>(() =>
         _i544.RegisteredUserUpdateUsecase(
-            gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i1039.GetRegisteredUserLogNotCheckOutResponseUsecase>(() =>
-        _i1039.GetRegisteredUserLogNotCheckOutResponseUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i399.RegisteredUserCheckInBloc>(() =>
         _i399.RegisteredUserCheckInBloc(

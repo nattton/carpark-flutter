@@ -26,9 +26,8 @@ abstract class SharedPreferencesModule {
 @module
 abstract class DioModule {
   @singleton
-  Dio get dio {
-    Dio dio = Dio();
-    dio.options.baseUrl = kCurrentHost;
-    return dio;
-  }
+  Dio get dio => Dio(BaseOptions(baseUrl: kHostUrl));
+  // CONFIG FOR WEB
+  // Dio get dio => Dio(
+  //     BaseOptions(baseUrl: kIsWeb ? html.window.location.origin : kHostUrl));
 }

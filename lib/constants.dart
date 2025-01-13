@@ -1,15 +1,15 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:web/web.dart' as web;
+import 'package:universal_html/html.dart' as html;
 
-const kHost = 'localhost:4000';
-// const kHost = '192.168.1.50:4000';
+// const kHost = 'localhost:4000';
+const kHost = '192.168.1.50:4000';
 // const kHost = 'cyptpr.ddns.net';
 
 const kHostUrl = 'http://$kHost';
 const kHostWS = 'ws://$kHost';
 
-final kCurrentHost = kIsWeb ? web.window.location.origin : kHostUrl;
+final kCurrentHost = kIsWeb ? html.window.location.origin : kHostUrl;
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 
