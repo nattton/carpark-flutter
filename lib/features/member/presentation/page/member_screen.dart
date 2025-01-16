@@ -15,10 +15,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'member_screen.g.dart'; 
+part 'member_screen.g.dart';
 
 @riverpod
-MemberModel memberModel(MemberModelRef ref) { 
+MemberModel memberModel(MemberModelRef ref) {
   return MemberModel(id: 0, vehicles: []);
 }
 
@@ -642,7 +642,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     }).catchError((Object obj) {
       // non-200 error goes here.
       switch (obj.runtimeType) {
-        case DioException:
+        case DioException _:
           final res = (obj as DioException).response;
           alertError("Got error : ${res!.statusCode} -> ${res.statusMessage}");
           break;
