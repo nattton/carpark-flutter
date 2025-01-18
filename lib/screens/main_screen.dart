@@ -64,7 +64,7 @@ class MainScreen extends StatefulHookConsumerWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  final wsUrl = '${kHostUrl.replaceAll('http', 'ws')}/ws';
+  final wsUrl = '$kCurrentHost/ws'.replaceAll('http', 'ws');
   late WebSocket channel;
   bool loadingLastGate = false;
 
