@@ -21,17 +21,11 @@ import 'package:carpark/screens/visitor_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
-import 'package:excel/excel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -70,16 +64,12 @@ class MainScreen extends StatefulHookConsumerWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  late MemberListBloc _memberListBloc;
   final wsUrl = '${kHostUrl.replaceAll('http', 'ws')}/ws';
   late WebSocket channel;
   bool loadingLastGate = false;
 
-  var _currentScreen = "";
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
-
-  final MemberModel _memberModel = MemberModel(id: 0, vehicles: []);
 
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
@@ -134,7 +124,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _memberListBloc = context.read<MemberListBloc>();
     _appTitleCubit = context.read<AppTitleCubit>();
     _appTitleCubit.changeTitle('Car Park');
     if (kIsWeb) {
@@ -262,9 +251,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       default:
         player.stopAll();
     }
-    setState(() {
-      _currentScreen = page;
-    });
   }
 
   @override
@@ -280,7 +266,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               style: TextStyle(color: Colors.white),
             ),
             automaticallyImplyLeading: false,
-            actions: _buildActionBar(),
           ),
           body: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -474,245 +459,5 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   void goLoginScreen() {
     context.go(LoginScreen.routeName);
-  }
-
-  List<Widget> _buildActionBar() {
-    List<Widget> widget = [];
-    switch (_currentScreen) {
-      case "MEMBER":
-        widget.add(
-          IconButton(
-            icon: const Icon(Icons.person_add),
-            tooltip: 'สร้างสมาชิกใหม่',
-            onPressed: () {
-              onPressedAddMember(context);
-            },
-          ),
-        );
-        widget.add(
-          IconButton(
-            icon: const Icon(Icons.download),
-            tooltip: 'Export Member',
-            onPressed: () {
-              onPressedExportMember(context);
-            },
-          ),
-        );
-        break;
-      default:
-    }
-
-    return widget;
-  }
-
-  void onPressedAddMember(BuildContext context) {
-    _memberModel.name = '';
-    _memberModel.telephone = '';
-    _memberModel.type = 'resident';
-    _memberModel.status = 'active';
-
-    _nameController.text = '';
-    _telController.text = '';
-
-    Alert(
-        context: context,
-        title: "สร้างสมาชิกใหม่",
-        content: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _nameController,
-                onChanged: (value) {
-                  _memberModel.name = value;
-                },
-                autofocus: false,
-                autocorrect: false,
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  labelText: 'ชื่อ',
-                  suffixIcon: const Icon(Icons.account_circle),
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _telController,
-                onChanged: (value) {
-                  _memberModel.telephone = value;
-                },
-                autofocus: false,
-                autocorrect: false,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: 'โทรศัพท์.',
-                  suffixIcon: const Icon(Icons.phone),
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FormBuilderRadioGroup(
-                decoration: InputDecoration(
-                  labelText: 'ประเภท',
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                ),
-                initialValue: _memberModel.type,
-                name: 'type',
-                onChanged: (value) {
-                  _memberModel.type = value;
-                },
-                validator: FormBuilderValidators.required(),
-                options: kMemberTypeList
-                    .map((lang) => FormBuilderFieldOption(value: lang))
-                    .toList(growable: false),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FormBuilderRadioGroup(
-                decoration: InputDecoration(
-                  labelText: 'สถานะ',
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                ),
-                initialValue: _memberModel.status,
-                name: 'status',
-                onChanged: (value) {
-                  _memberModel.status = value;
-                },
-                validator: FormBuilderValidators.required(),
-                options: kStatusList
-                    .map((lang) => FormBuilderFieldOption(value: lang))
-                    .toList(growable: false),
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              createMember();
-            },
-            child: const Text(
-              "สร้าง",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
-  }
-
-  void createMember() {
-    getIt<ApiService>()
-        .createMember(getIt<AppService>().token, _memberModel)
-        .then((value) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Create Member'),
-          content: const Text('สร้างข้อมูลสมาชิกเรียบร้อย'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                context.pop();
-                context.pop();
-                _memberListBloc.add(LoadMemberList());
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        ),
-      );
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
-  }
-
-  Excel generateExcel() {
-    final members = BlocProvider.of<MemberListBloc>(context).state.members;
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Sheet1'];
-
-    int currentRow = 0;
-    List<CellValue> columnName = [
-      TextCellValue("id"),
-      TextCellValue("name"),
-      TextCellValue("telephone"),
-      TextCellValue("type"),
-      TextCellValue("status"),
-      TextCellValue("vehicleId"),
-      TextCellValue("plateNumber"),
-      TextCellValue("resemble"),
-      TextCellValue("plateProvince"),
-      TextCellValue("brand"),
-      TextCellValue("color"),
-      TextCellValue("telephone"),
-    ];
-    sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(
-        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
-    for (var i = 0; i < columnName.length; i++) {
-      var cell = sheetObject.cell(
-          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
-      cell.cellStyle = cellStyle;
-    }
-
-    for (var i = 0; i < members.length; i++) {
-      currentRow++;
-      var m = members[i];
-      List<CellValue> dataList = [
-        TextCellValue(m.id.toString()),
-        TextCellValue(m.name!),
-        TextCellValue(m.telephone!),
-        TextCellValue(m.type!),
-        TextCellValue(m.status!),
-      ];
-      sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
-      for (var j = 0; j < m.vehicles!.length; j++) {
-        if (j > 0) {
-          currentRow++;
-        }
-        var v = m.vehicles?[j];
-        List<CellValue> vehicleList = [
-          TextCellValue(v!.id.toString()),
-          TextCellValue(v.plateNumber!),
-          TextCellValue(v.resemble!),
-          TextCellValue(v.plateProvince!),
-          TextCellValue(v.brand!),
-          TextCellValue(v.color!),
-          TextCellValue(v.telephone!),
-        ];
-        sheetObject.insertRowIterables(vehicleList, currentRow,
-            startingColumn: 5);
-      }
-    }
-    return excel;
-  }
-
-  void onPressedExportMember(BuildContext context) async {
-    String dateTime = DateFormat("yyyy-MM-dd_HH-mm").format(DateTime.now());
-    String? outputFile = await FilePicker.platform.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: 'member_list_$dateTime.xlsx',
-    );
-
-    if (outputFile != null) {
-      final file = File(outputFile);
-      file.writeAsBytes(generateExcel().encode()!);
-    }
   }
 }

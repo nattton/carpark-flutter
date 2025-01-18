@@ -30,6 +30,8 @@ const kGenderMap = {
   '2': 'หญิง',
 };
 
+const kRegisteredUserTypeList = ["รปภ.", "ผู้รับเหมาประจำ", "ขนส่ง", "อื่นๆ"];
+
 const kDefaultFont = 'NotoSerif';
 const kBoldFont = 'NotoSerif-Bold';
 const kColorPrimary = Color(0xFF009CDE);

@@ -125,12 +125,12 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              _registeredUserListBloc.add(RegisteredUserCreating());
-            },
-            child: const Text('Add'),
-          ),
+          child: IconButton(
+              onPressed: () {
+                _registeredUserListBloc.add(RegisteredUserCreating());
+              },
+              icon: const Icon(Icons.person_add),
+              tooltip: 'สร้างผู้ติดต่อใหม่'),
         ),
       ],
     );
