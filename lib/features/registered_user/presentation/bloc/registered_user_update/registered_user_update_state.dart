@@ -11,6 +11,7 @@ enum RegisteredUserUpdateStatus {
   failure,
   selectingExpiredDate,
   selectExpiredDateSuccess,
+  selectType,
 }
 
 final class RegisteredUserUpdateState extends Equatable {
