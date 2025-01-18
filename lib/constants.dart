@@ -10,6 +10,8 @@ const kHostUrl = 'http://$kHost';
 const kHostWS = 'ws://$kHost';
 
 final kCurrentHost = kIsWeb ? html.window.location.origin : kHostUrl;
+final kCurrentHostWS =
+    kIsWeb ? html.window.location.origin.replaceAll('http', 'ws') : kHostWS;
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 

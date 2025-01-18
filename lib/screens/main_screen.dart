@@ -46,7 +46,7 @@ final cameraMapProvider =
     Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
 
 @riverpod
-CameraPlayer cameraPlayer(CameraPlayerRef ref) {
+CameraPlayer cameraPlayer(Ref ref) {
   return CameraPlayer.initialize();
 }
 
@@ -70,7 +70,7 @@ class MainScreen extends StatefulHookConsumerWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   late MemberListBloc _memberListBloc;
-  final wsUrl = '$kHostWS/ws';
+  final wsUrl = '$kCurrentHostWS/ws';
   late WebSocket channel;
   bool loadingLastGate = false;
 
