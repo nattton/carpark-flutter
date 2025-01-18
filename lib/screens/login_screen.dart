@@ -4,6 +4,7 @@ import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -178,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void goAdminScreen() {
-    Navigator.of(context).pushNamed(MainScreen.routeName);
+    context.go(MainScreen.routeName);
   }
 
   void alertError(String msg) {
@@ -191,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    GoRouter.of(context).pop();
                   },
                   child: const Text('Close'))
             ],
@@ -226,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
       desc: desc,
       buttons: [
         DialogButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => GoRouter.of(context).pop(),
           color: const Color.fromRGBO(0, 179, 134, 1.0),
           radius: BorderRadius.circular(0.0),
           child: const Text(

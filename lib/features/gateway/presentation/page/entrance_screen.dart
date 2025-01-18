@@ -27,6 +27,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:media_kit_video/media_kit_video.dart';
@@ -111,8 +112,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       listener: (context, state) {
         if (state is RegisteredUserCheckInSuccess) {
           alertMessage('ลงเวลาเข้า : ${state.registeredUser.thaiName}');
-          Navigator.of(context).pushNamed(RegisteredUserLogsScreen.routeName,
-              arguments: state.registeredUser.id);
+          context.push(
+              "${RegisteredUserLogsScreen.routeName}/${state.registeredUser.id}");
         } else if (state is RegisteredUserCheckInFailure) {
           alertError(state.failure.message);
         }
@@ -952,7 +953,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.pop();
                   },
                   child: const Text('Close'))
             ],

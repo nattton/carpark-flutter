@@ -6,6 +6,7 @@ import 'package:carpark/features/registered_user/presentation/page/registered_us
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -67,8 +68,8 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
           );
           context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
-          Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
-              arguments: state.id);
+          GoRouter.of(context)
+              .pushNamed(RegisteredUserLogsScreen.routeName, extra: state.id);
         case RegisteredUserCreateStatus.savePhotoSuccess:
           EasyLoading.dismiss();
           ScaffoldMessenger.of(context).clearSnackBars();

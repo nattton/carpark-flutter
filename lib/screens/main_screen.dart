@@ -7,13 +7,13 @@ import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart'
 import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
 import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
 import 'package:carpark/features/member/presentation/page/member_list_screen.dart';
-import 'package:carpark/features/member/presentation/page/member_screen.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_list_screen.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_not_check_out_screen.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/models.dart';
 import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/screens/gate_log_screen.dart';
+import 'package:carpark/screens/login_screen.dart';
 import 'package:carpark/screens/report_screen.dart';
 import 'package:carpark/screens/setting_screen.dart';
 import 'package:carpark/screens/user_screen.dart';
@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -70,7 +71,7 @@ class MainScreen extends StatefulHookConsumerWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   late MemberListBloc _memberListBloc;
-  final wsUrl = '$kCurrentHostWS/ws';
+  final wsUrl = '${kHostUrl.replaceAll('http', 'ws')}/ws';
   late WebSocket channel;
   bool loadingLastGate = false;
 
@@ -394,7 +395,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     onTap: (page, _) {
                       selectedPage('LOGOUT');
                       getIt<AppService>().logout().then((value) {
-                        Navigator.pop(context);
+                        goLoginScreen();
                       });
                     },
                   ),
@@ -469,6 +470,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         );
       },
     );
+  }
+
+  void goLoginScreen() {
+    context.go(LoginScreen.routeName);
   }
 
   List<Widget> _buildActionBar() {
@@ -623,11 +628,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context, 'OK');
-                Navigator.pop(context);
-                Navigator.of(context)
-                    .pushNamed(MemberScreen.id, arguments: value.id)
-                    .then((value) => {_memberListBloc.add(LoadMemberList())});
+                context.pop();
+                context.pop();
+                _memberListBloc.add(LoadMemberList());
               },
               child: const Text('Close'),
             ),

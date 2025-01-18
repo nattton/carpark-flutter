@@ -5,6 +5,7 @@ import 'package:carpark/features/member/presentation/widget/member_list_card.dar
 import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class MemberListScreen extends StatefulWidget {
   const MemberListScreen({super.key});
@@ -79,11 +80,9 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   void onPressedRow(BuildContext context, MemberModel member) async {
-    Navigator.of(context)
-        .pushNamed(MemberScreen.id, arguments: member.id)
-        .then((value) => {
-              _memberListBloc.add(LoadMemberList()),
-            });
+    context.push("${MemberScreen.routeName}/${member.id}").then((value) {
+      _memberListBloc.add(LoadMemberList());
+    });
   }
 
   void onSearchTextChanged(String text) async {

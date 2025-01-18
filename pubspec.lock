@@ -362,10 +362,10 @@ packages:
     dependency: transitive
     description:
       name: enum_to_string
-      sha256: bd9e83a33b754cb43a75b36a9af2a0b92a757bfd9847d2621ca0b1bed45f8e7a
+      sha256: d968a315531f577a9bbb88c25284d8963128ea4ee5d2ccfc6be97cb333ea675d
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.2.0"
   equatable:
     dependency: "direct main"
     description:
@@ -512,14 +512,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.1"
-  flutter_screenutil:
-    dependency: "direct main"
-    description:
-      name: flutter_screenutil
-      sha256: "8239210dd68bee6b0577aa4a090890342d04a136ce1c81f98ee513fc0ce891de"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.9.3"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -594,6 +586,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  go_router:
+    dependency: "direct main"
+    description:
+      name: go_router
+      sha256: "7c2d40b59890a929824f30d442e810116caf5088482629c894b9e4478c67472d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.6.3"
   graphs:
     dependency: transitive
     description:
@@ -1238,10 +1238,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: bf808be89fe9dc467475e982c1db6c2faf3d2acf54d526cd5ec37d86c99dbd84
+      sha256: "138b7bbbc7f59c56236e426c37afb8f78cbc57b094ac64c440e0bb90e380a4f5"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.2"
   shared_preferences_foundation:
     dependency: transitive
     description:

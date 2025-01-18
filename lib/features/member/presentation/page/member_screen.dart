@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,7 +24,7 @@ MemberModel memberModel(Ref ref) {
 }
 
 class MemberScreen extends ConsumerStatefulWidget {
-  static const String id = "member_screen";
+  static const String routeName = "/member";
 
   const MemberScreen({super.key, required this.memberId});
 
@@ -488,7 +489,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    GoRouter.of(context).pop();
                   },
                   child: const Text('Close'))
             ],
@@ -496,11 +497,11 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
         });
   }
 
-  void onPressedSave() {
+  void onPressedSave() async {
     final member = ref.read(memberModelProvider);
-    getIt<ApiService>()
-        .updateMember(getIt<AppService>().token, widget.memberId, member)
-        .then((value) {
+    try {
+      await getIt<ApiService>()
+          .updateMember(getIt<AppService>().token, widget.memberId, member);
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -508,15 +509,19 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
           content: const Text('บันทึกข้อมูลเรียบร้อย'),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
+              onPressed: () {
+                context.pop();
+                context.pop();
+                getMember();
+              },
               child: const Text('Close'),
             ),
           ],
         ),
       );
-    }).catchError((error) {
-      alertError(error);
-    });
+    } catch (e) {
+      alertError(e.toString());
+    }
   }
 
   void createVehicle() {
@@ -541,8 +546,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context, 'OK');
-                Navigator.pop(context);
+                GoRouter.of(context).pop();
+                GoRouter.of(context).pop();
                 getMember();
               },
               child: const Text('Close'),
@@ -576,8 +581,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context, 'OK');
-                Navigator.pop(context);
+                GoRouter.of(context).pop();
+                GoRouter.of(context).pop();
+                getMember();
               },
               child: const Text('Close'),
             ),
@@ -599,7 +605,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
         DialogButton(
           color: Colors.red,
           onPressed: () {
-            Navigator.pop(context);
+            GoRouter.of(context).pop();
             deleteVehicle(vehicle);
           },
           child: const Text(
@@ -608,7 +614,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
           ),
         ),
         DialogButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => GoRouter.of(context).pop(),
           child: const Text(
             "ไม่",
             style: TextStyle(color: Colors.white, fontSize: 20),
@@ -630,8 +636,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context, 'OK');
-                Navigator.pop(context);
+                GoRouter.of(context).pop();
+                GoRouter.of(context).pop();
                 getMember();
               },
               child: const Text('Close'),

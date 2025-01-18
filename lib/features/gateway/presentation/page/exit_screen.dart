@@ -16,6 +16,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -63,8 +64,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       listener: (context, state) {
         if (state is RegisteredUserCheckOutSuccess) {
           alertMessage('ลงเวลาออก : ${state.registeredUser.thaiName}');
-          Navigator.of(context).pushNamed(RegisteredUserLogsScreen.routeName,
-              arguments: state.registeredUser.id);
+          context.push(
+              "${RegisteredUserLogsScreen.routeName}/${state.registeredUser.id}");
         } else if (state is RegisteredUserCheckOutFailure) {
           alertError(state.failure.message);
         }
@@ -142,7 +143,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.pop();
                   },
                   child: const Text('Close'))
             ],

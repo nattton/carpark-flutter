@@ -6,6 +6,7 @@ import 'package:carpark/features/registered_user/presentation/widget/registered_
 import 'package:carpark/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisteredUserNotCheckOutScreen extends StatefulWidget {
   const RegisteredUserNotCheckOutScreen({super.key});
@@ -54,9 +55,8 @@ class _RegisteredUserNotCheckOutScreenState
               return RegisteredUserNotCheckOutRowWidget(
                   log: registeredUserLog[index],
                   onTap: () {
-                    Navigator.pushNamed(
-                        context, RegisteredUserLogsScreen.routeName,
-                        arguments: registeredUserLog[index].registeredUser!.id);
+                    context.push(
+                        "${RegisteredUserLogsScreen.routeName}/${registeredUserLog[index].registeredUser!.id}");
                   });
             },
           ),

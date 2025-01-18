@@ -10,6 +10,7 @@ import 'package:carpark/features/registered_user/presentation/widget/registered_
 import 'package:carpark/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisteredUserListScreen extends StatefulWidget {
   const RegisteredUserListScreen({super.key});
@@ -142,8 +143,8 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
         return RegisteredUserRowWidget(
             user: registeredUsers[index],
             onTapViewLogs: () {
-              Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
-                  arguments: registeredUsers[index].id);
+              context.push(
+                  "${RegisteredUserLogsScreen.routeName}/${registeredUsers[index].id}");
             },
             onEditTap: () {
               _registeredUserListBloc.add(RegisteredUserUpdating());

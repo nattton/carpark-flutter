@@ -5,9 +5,10 @@ import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
+import 'package:go_router/go_router.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  static const String id = 'welcome_screen';
+  static const String routeName = '/';
 
   const WelcomeScreen({super.key});
 
@@ -35,13 +36,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void goLoginPage() {
-    Navigator.of(context).pushNamed(LoginScreen.routeName);
+    context.go(LoginScreen.routeName);
   }
 
   void goAdminScreen() {
-    Navigator.of(context).pushNamed(MainScreen.routeName).then((value) {
-      goLoginPage();
-    });
+    context.go(MainScreen.routeName);
   }
 
   @override

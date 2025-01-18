@@ -5,6 +5,7 @@ import 'package:carpark/models/user_model.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class UserScreen extends StatefulWidget {
@@ -67,7 +68,7 @@ class _UserScreenState extends State<UserScreen> {
     getIt<ApiService>()
         .updateUser(getIt<AppService>().token, saveUser.id, saveUser)
         .then((value) {
-      Navigator.pop(context);
+      GoRouter.of(context).pop();
       getUser();
     }).onError((error, stackTrace) {
       alertError(error.toString());
@@ -139,7 +140,7 @@ class _UserScreenState extends State<UserScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    GoRouter.of(context).pop();
                   },
                   child: const Text('Close'))
             ],
