@@ -66,13 +66,9 @@ class MainScreen extends StatefulHookConsumerWidget {
 class _MainScreenState extends ConsumerState<MainScreen> {
   final wsUrl = '$kCurrentHost/ws'.replaceAll('http', 'ws');
   late WebSocket channel;
-  bool loadingLastGate = false;
 
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
-
-  final _nameController = TextEditingController();
-  final _telController = TextEditingController();
 
   late AppTitleCubit _appTitleCubit;
 
@@ -150,13 +146,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _telController.dispose();
-    super.dispose();
-  }
-
   void alertError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
@@ -172,51 +161,42 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Future<void> getLastGate() async {
-    if (!loadingLastGate) {
-      loadingLastGate = true;
-      final lastGate = ref.read(lastGateProvider.notifier);
-      getIt<ApiService>().getLastGate(getIt<AppService>().token).then((value) {
-        lastGate.setGateIn(value.gateIn);
-        lastGate.setGateOut(value.gateOut);
-        loadingLastGate = false;
-      }).onError((error, stackTrace) {
-        alertError(error.toString());
-        loadingLastGate = false;
-      });
+    final lastGate = ref.read(lastGateProvider.notifier);
+    try {
+      final result =
+          await getIt<ApiService>().getLastGate(getIt<AppService>().token);
+      lastGate.setGateIn(result.gateIn);
+      lastGate.setGateOut(result.gateOut);
+    } catch (e) {
+      alertError(e.toString());
     }
   }
 
   Future<void> getLastGateIn() async {
-    if (!loadingLastGate) {
-      loadingLastGate = true;
-      final lastGate = ref.read(lastGateProvider.notifier);
-      getIt<ApiService>().getGateIn(getIt<AppService>().token).then((value) {
-        lastGate.setGateIn(value.gateLog);
-        loadingLastGate = false;
-      }).onError((error, stackTrace) {
-        alertError(error.toString());
-        loadingLastGate = false;
-      });
+    final lastGate = ref.read(lastGateProvider.notifier);
+    try {
+      final result =
+          await getIt<ApiService>().getGateIn(getIt<AppService>().token);
+      lastGate.setGateIn(result.gateLog);
+    } catch (e) {
+      alertError(e.toString());
     }
   }
 
   Future<void> getLastGateOut() async {
-    if (!loadingLastGate) {
-      loadingLastGate = true;
-      final lastGate = ref.read(lastGateProvider.notifier);
-      getIt<ApiService>().getGateOut(getIt<AppService>().token).then((value) {
-        lastGate.setGateOut(value.gateLog);
-        loadingLastGate = false;
-      }).onError((error, stackTrace) {
-        alertError(error.toString());
-        loadingLastGate = false;
-      });
+    final lastGate = ref.read(lastGateProvider.notifier);
+    try {
+      final result =
+          await getIt<ApiService>().getGateOut(getIt<AppService>().token);
+      lastGate.setGateOut(result.gateLog);
+    } catch (e) {
+      alertError(e.toString());
     }
   }
 
   void selectedPage(String page) {
-    final player = ref.watch(cameraPlayerProvider);
-    final camera = ref.watch(cameraMapProvider);
+    final player = ref.read(cameraPlayerProvider);
+    final camera = ref.read(cameraMapProvider);
     switch (page) {
       case 'ENTRANCE':
         getLastGateIn();
