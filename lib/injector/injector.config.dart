@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -13,6 +14,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../core/presentation/bloc/app_title/app_title_cubit.dart' as _i314;
 import '../features/gateway/data/datasource/id_card_service_datasource.dart'
     as _i680;
 import '../features/gateway/data/datasource/id_card_service_datasource_impl.dart'
@@ -22,6 +24,8 @@ import '../features/gateway/data/repository/id_card_service_repository_impl.dart
     as _i1028;
 import '../features/gateway/domain/repository/id_card_service_repository.dart'
     as _i325;
+import '../features/member/presentation/bloc/member_list/member_list_bloc.dart'
+    as _i207;
 import '../features/registered_user/data/datasources/registered_user_service_datasource.dart'
     as _i798;
 import '../features/registered_user/data/datasources/registered_user_service_datasource_impl.dart'
@@ -89,6 +93,8 @@ extension GetItInjectableX on _i174.GetIt {
     final idCardServiceModule = _$IdCardServiceModule();
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
     final apiServiceModule = _$ApiServiceModule();
+    gh.factory<_i314.AppTitleCubit>(() => _i314.AppTitleCubit());
+    gh.factory<_i207.MemberListBloc>(() => _i207.MemberListBloc());
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.sharedPreferences,
       preResolve: true,
@@ -120,6 +126,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i287.GetRegisteredUserLogsUsecase>(() =>
         _i287.GetRegisteredUserLogsUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
+    gh.factory<_i1039.GetRegisteredUserLogNotCheckOutResponseUsecase>(() =>
+        _i1039.GetRegisteredUserLogNotCheckOutResponseUsecase(
+            gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i856.RegisteredUserAddPhotoUsecase>(() =>
         _i856.RegisteredUserAddPhotoUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
@@ -143,9 +152,6 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i544.RegisteredUserUpdateUsecase>(() =>
         _i544.RegisteredUserUpdateUsecase(
-            gh<_i960.RegisteredUserServiceRepository>()));
-    gh.factory<_i1039.GetRegisteredUserLogNotCheckOutResponseUsecase>(() =>
-        _i1039.GetRegisteredUserLogNotCheckOutResponseUsecase(
             gh<_i960.RegisteredUserServiceRepository>()));
     gh.factory<_i399.RegisteredUserCheckInBloc>(() =>
         _i399.RegisteredUserCheckInBloc(

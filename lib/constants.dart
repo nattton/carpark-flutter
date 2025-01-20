@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:universal_html/html.dart' as html;
 
 const kHost = 'localhost:4000';
 // const kHost = '192.168.1.50:4000';
 // const kHost = 'cyptpr.ddns.net';
 
 const kHostUrl = 'http://$kHost';
-const kHostWS = 'ws://$kHost';
+
+final kCurrentHost = kIsWeb ? html.window.location.origin : kHostUrl;
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 
@@ -26,6 +29,8 @@ const kGenderMap = {
   '1': 'ชาย',
   '2': 'หญิง',
 };
+
+const kRegisteredUserTypeList = ["รปภ.", "ผู้รับเหมาประจำ", "ขนส่ง", "อื่นๆ"];
 
 const kDefaultFont = 'NotoSerif';
 const kBoldFont = 'NotoSerif-Bold';

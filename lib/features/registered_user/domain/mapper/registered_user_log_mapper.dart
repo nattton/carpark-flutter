@@ -6,7 +6,9 @@ class RegisteredUserLogMapper {
   static RegisteredUserLog responseMapper(RegisteredUserLogResponse response) {
     return RegisteredUserLog(
         id: response.id,
-        checkInTime: response.checkInTime.time,
+        checkInTime: response.checkInTime.valid == true
+            ? response.checkInTime.time
+            : null,
         checkOutTime: response.checkOutTime.valid == true
             ? response.checkOutTime.time
             : null,

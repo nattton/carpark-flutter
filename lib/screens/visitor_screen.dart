@@ -15,6 +15,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -261,8 +262,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   void viewDetail(VisitorModel visitor) {
-    Navigator.of(context)
-        .pushNamed(VisitorDetailScreen.id, arguments: visitor.id);
+    GoRouter.of(context).push(VisitorDetailScreen.routeName, extra: visitor.id);
   }
 
   Excel generateExcel() {

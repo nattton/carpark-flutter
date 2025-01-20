@@ -22,6 +22,7 @@ class RegisteredUserUpdateBloc
     on<GetRegisteredUser>(_getRegisteredUser);
     on<UpdateRegisteredUser>(_updateRegisteredUser);
     on<UpdateRegisteredUserSelectExpiredDate>(_selectExpiredDate);
+    on<UpdateRegisteredUserSelectType>(_selectType);
   }
 
   Future<void> _getRegisteredUser(
@@ -70,5 +71,12 @@ class RegisteredUserUpdateBloc
         registeredUser: state.registeredUser.copyWith(
             expiredDate:
                 NullTimeModel(valid: true, time: event.expiredDates[0]!))));
+  }
+
+  Future<void> _selectType(UpdateRegisteredUserSelectType event,
+      Emitter<RegisteredUserUpdateState> emit) async {
+    emit(state.copyWith(
+        status: RegisteredUserUpdateStatus.selectType,
+        registeredUser: state.registeredUser.copyWith(type: event.type)));
   }
 }

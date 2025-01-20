@@ -1,11 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'response_model.g.dart';
 
 @JsonSerializable()
 class ResponseModel {
-  final String error;
+  final String? message;
+  final String? error;
 
-  ResponseModel(this.error);
+  ResponseModel(this.message, this.error);
 
   factory ResponseModel.fromJson(Map<String, dynamic> json) =>
       _$ResponseModelFromJson(json);

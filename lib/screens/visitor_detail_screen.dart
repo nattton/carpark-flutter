@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class VisitorDetailScreen extends StatefulWidget {
-  static const id = "visitor_detail_screen";
+  static const routeName = "/visitor_detail";
   const VisitorDetailScreen({super.key, required this.visitorId});
 
   final int visitorId;

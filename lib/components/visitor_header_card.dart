@@ -55,10 +55,12 @@ class VisitorHeaderCard extends StatelessWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              child: Text(
-                "ระยะเวลา",
-                style: _columnStyle(2),
+            Expanded(
+              child: GestureDetector(
+                child: Text(
+                  "ระยะเวลา",
+                  style: _columnStyle(2),
+                ),
               ),
             ),
             Expanded(

@@ -7,6 +7,7 @@ import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:thermal_printer/thermal_printer.dart';
@@ -150,7 +151,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     getIt<ApiService>()
         .updateCamera(getIt<AppService>().token, camera.id, camera)
         .then((value) {
-      Navigator.pop(context);
+      GoRouter.of(context).pop();
       getCamera();
     }).onError((error, stackTrace) {
       alertError(error.toString());
