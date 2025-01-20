@@ -54,7 +54,7 @@ class RegisteredUser extends Equatable {
 
   String photoUrl() {
     if (photo.isNotEmpty) {
-      return "$kHostUrl/anpr_store$photo";
+      return "$kCurrentHost/anpr_store$photo";
     }
     return "";
   }

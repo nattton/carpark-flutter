@@ -13,7 +13,8 @@ Future<void> main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<AppTitleCubit>(create: (context) => AppTitleCubit()),
+        BlocProvider<AppTitleCubit>(
+            create: (context) => getIt<AppTitleCubit>()),
       ],
       child: const ProviderScope(child: MyApp()),
     ),

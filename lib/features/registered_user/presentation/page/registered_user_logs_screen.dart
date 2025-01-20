@@ -16,7 +16,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class RegisteredUserLogsScreen extends StatefulWidget {
   const RegisteredUserLogsScreen({super.key});
 
-  static const String routeName = '/registered-user-logs';
+  static const String routeName = '/registered_user_logs';
 
   @override
   State<RegisteredUserLogsScreen> createState() =>

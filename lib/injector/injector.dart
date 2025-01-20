@@ -1,8 +1,11 @@
 import 'package:carpark/constants.dart';
 import 'package:dio/dio.dart';
+// import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'package:universal_html/html.dart' as html;
 
 import 'injector.config.dart';
 
@@ -26,9 +29,8 @@ abstract class SharedPreferencesModule {
 @module
 abstract class DioModule {
   @singleton
-  Dio get dio {
-    Dio dio = Dio();
-    dio.options.baseUrl = kHostUrl;
-    return dio;
-  }
+  Dio get dio => Dio(BaseOptions(baseUrl: kHostUrl));
+  // CONFIG FOR WEB
+  // Dio get dio => Dio(
+  //     BaseOptions(baseUrl: kIsWeb ? html.window.location.origin : kHostUrl));
 }

@@ -24,3 +24,9 @@ class UpdateRegisteredUserSelectExpiredDate extends RegisteredUserUpdateEvent {
 
   const UpdateRegisteredUserSelectExpiredDate(this.expiredDates);
 }
+
+class UpdateRegisteredUserSelectType extends RegisteredUserUpdateEvent {
+  final String type;
+
+  const UpdateRegisteredUserSelectType(this.type);
+}

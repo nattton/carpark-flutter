@@ -1,4 +1,5 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/constants.dart';
 import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
@@ -6,6 +7,9 @@ import 'package:carpark/features/registered_user/presentation/page/registered_us
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -67,8 +71,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
           );
           context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
-          Navigator.pushNamed(context, RegisteredUserLogsScreen.routeName,
-              arguments: state.id);
+          context.push('${RegisteredUserLogsScreen.routeName}/${state.id}');
         case RegisteredUserCreateStatus.savePhotoSuccess:
           EasyLoading.dismiss();
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -278,15 +281,46 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: FormBuilderRadioGroup(
+                decoration: InputDecoration(
+                  labelText: 'ประเภท',
+                  prefixIcon: Icon(Icons.group),
+                  contentPadding: const EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+                initialValue:
+                    kRegisteredUserTypeList.any((type) => type == state.type)
+                        ? state.type
+                        : "อื่นๆ",
+                name: 'type',
+                onChanged: (value) {
+                  _typeController.text = value ?? "";
+                  if (value == "อื่นๆ") {
+                    _typeController.text = "";
+                  }
+                  setState(() {});
+                },
+                validator: FormBuilderValidators.required(),
+                options: kRegisteredUserTypeList
+                    .map((lang) => FormBuilderFieldOption(value: lang))
+                    .toList(growable: false),
+              ),
+            ),
+          ),
           Expanded(
             child: TextField(
               controller: _typeController,
+              readOnly: kRegisteredUserTypeList
+                  .any((type) => type == _typeController.text),
               autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
-                labelText: 'ประเภท',
-                prefixIcon: Icon(Icons.group),
+                labelText: 'ประเภทอื่นๆ ระบุ',
                 contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
               ),
               textInputAction: TextInputAction.next,
