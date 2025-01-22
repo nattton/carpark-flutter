@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carpark/constants.dart';
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
 import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
@@ -72,44 +71,33 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       },
       child: gateLog.id != 0
           ? Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
               child: Row(
                 children: [
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        !kIsWeb
-                            ? ElevatedButton(
-                                onPressed: () => openGateOut(),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: kColorButtonPrimary),
-                                child: const Text(
-                                  "เปิดประตู ขาออก",
-                                  style: kButtonStyle,
-                                ),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextField(
-                          controller: _barcodeController,
-                          autofocus: true,
-                          autocorrect: false,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            suffixIcon: GestureDetector(
-                              onTap: () => checkout(),
-                              child: const Icon(Icons.barcode_reader),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: _barcodeController,
+                            autofocus: true,
+                            autocorrect: false,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () => checkout(),
+                                child: const Icon(Icons.barcode_reader),
+                              ),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(0.0)),
                             ),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(0.0)),
+                            onSubmitted: (value) => checkout(),
+                            focusNode: focusNode,
                           ),
-                          onSubmitted: (value) => checkout(),
-                          focusNode: focusNode,
                         ),
                         ExitCard(gateLog: gateLog),
                       ],
@@ -151,10 +139,6 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
         });
   }
 
-  Future<void> openGateOut() async {
-    await getIt<ApiService>().openDoor(getIt<AppService>().token, "out");
-  }
-
   Future<File> _tempImage(String type) async {
     final directory = await getTemporaryDirectory();
 
@@ -190,7 +174,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     }
   }
 
-  void checkout() {
+  void checkout() async {
     if (_barcodeController.text.isNotEmpty) {
       final gateLog = ref.watch(lastGateProvider).gateOut;
       var barcode = _barcodeController.text;
@@ -200,29 +184,26 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
         _registeredUserCheckOutBloc
             .add(PostRegisteredUserCheckOutEvent(generatedId: barcode));
       } else {
-        getIt<ApiService>()
-            .checkoutVisitor(getIt<AppService>().token,
-                CheckoutModel(barcode: barcode, gateLogId: gateLog.id))
-            .then((value) {
-          alertMessage('ลงเวลาออก ทะเบียน : ${value.plateNumber}');
-          addImageToVisitor(value);
-        }).catchError((Object obj) {
-          switch (obj.runtimeType) {
-            case DioException:
-              final res = (obj as DioException).response;
-              if (res != null) {
-                if (res.statusCode == HttpStatus.badRequest) {
-                  alertError(
-                      "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ");
-                } else if (res.statusCode == HttpStatus.notFound) {
-                  alertError("ไม่พบข้อมูล");
-                }
-              }
-              break;
-            default:
-              break;
+        try {
+          final visitor = await getIt<ApiService>().checkoutVisitor(
+              getIt<AppService>().token,
+              CheckoutModel(barcode: barcode, gateLogId: gateLog.id));
+
+          alertMessage('ลงเวลาออก ทะเบียน : ${visitor.plateNumber}');
+          addImageToVisitor(visitor);
+        } on DioException catch (e) {
+          final res = e.response;
+          if (res != null) {
+            if (res.statusCode == HttpStatus.badRequest) {
+              alertError(
+                  "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ");
+            } else if (res.statusCode == HttpStatus.notFound) {
+              alertError("ไม่พบข้อมูล");
+            }
           }
-        });
+        } catch (e) {
+          alertError(e.toString());
+        }
       }
     }
   }

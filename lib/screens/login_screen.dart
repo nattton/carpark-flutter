@@ -3,6 +3,7 @@ import 'package:carpark/injector/injector.dart';
 import 'package:carpark/screens/main_screen.dart';
 import 'package:carpark/services/api_service.dart';
 import 'package:carpark/services/app_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -163,19 +164,23 @@ class _LoginScreenState extends State<LoginScreen> {
       alertLogin("Please fill username and password");
       return;
     }
+    try {
+      final login = await getIt<ApiService>().login(
+        _usernameController.text,
+        _passwordController.text,
+      );
 
-    getIt<ApiService>()
-        .login(_usernameController.text, _passwordController.text)
-        .then((value) async {
       setState(() {
         _usernameController.text = '';
         _passwordController.text = '';
       });
-      await getIt<AppService>().saveLogin(value);
+      await getIt<AppService>().saveLogin(login);
       goAdminScreen();
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+    } on DioException catch (e) {
+      alertError(e.response?.data['message'] ?? 'ไม่สามารถเข้าสู่ระบบได้');
+    } catch (e) {
+      alertError(e.toString());
+    }
   }
 
   void goAdminScreen() {
@@ -192,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    GoRouter.of(context).pop();
+                    context.pop();
                   },
                   child: const Text('Close'))
             ],
@@ -227,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
       desc: desc,
       buttons: [
         DialogButton(
-          onPressed: () => GoRouter.of(context).pop(),
+          onPressed: () => context.pop(),
           color: const Color.fromRGBO(0, 179, 134, 1.0),
           radius: BorderRadius.circular(0.0),
           child: const Text(
