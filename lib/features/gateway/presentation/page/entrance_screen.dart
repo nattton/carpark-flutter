@@ -8,6 +8,7 @@ import 'package:carpark/features/gateway/presentation/widget/entrance_card.dart'
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
 import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/injector/injector.dart';
@@ -111,9 +112,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     return BlocListener<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
       listener: (context, state) {
         if (state is RegisteredUserCheckInSuccess) {
-          alertMessage('ลงเวลาเข้า : ${state.registeredUser.thaiName}');
-          context.push(
-              "${RegisteredUserLogsScreen.routeName}/${state.registeredUser.id}");
+          alertCheckIn(state.registeredUser);
         } else if (state is RegisteredUserCheckInFailure) {
           alertError(state.failure.message);
         }
@@ -952,6 +951,31 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                     context.pop();
                   },
                   child: const Text('Close'))
+            ],
+          );
+        });
+  }
+
+  void alertCheckIn(RegisteredUser registeredUser) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Check In'),
+            content: Text('ลงเวลาเข้าโดย ${registeredUser.thaiName}'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    context.pop();
+                    context.push(
+                        "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}");
+                  },
+                  child: const Text('ดูประวัติการเข้าใช้งาน')),
+              TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('ปิด'))
             ],
           );
         });

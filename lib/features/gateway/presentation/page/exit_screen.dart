@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
 import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/injector/injector.dart';
@@ -62,9 +63,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
         RegisteredUserCheckOutState>(
       listener: (context, state) {
         if (state is RegisteredUserCheckOutSuccess) {
-          alertMessage('ลงเวลาออก : ${state.registeredUser.thaiName}');
-          context.push(
-              "${RegisteredUserLogsScreen.routeName}/${state.registeredUser.id}");
+          alertCheckOut(state.registeredUser);
         } else if (state is RegisteredUserCheckOutFailure) {
           alertError(state.failure.message);
         }
@@ -206,5 +205,30 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
         }
       }
     }
+  }
+
+  void alertCheckOut(RegisteredUser registeredUser) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Check Out'),
+            content: Text('ลงเวลาออกโดย ${registeredUser.thaiName}'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    context.pop();
+                    context.push(
+                        "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}");
+                  },
+                  child: const Text('ดูประวัติการเข้าใช้งาน')),
+              TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('ปิด'))
+            ],
+          );
+        });
   }
 }
