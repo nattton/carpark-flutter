@@ -262,7 +262,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   void viewDetail(VisitorModel visitor) {
-    GoRouter.of(context).push(VisitorDetailScreen.routeName, extra: visitor.id);
+    context.push("${VisitorDetailScreen.routeName}/${visitor.id}");
   }
 
   Excel generateExcel() {
