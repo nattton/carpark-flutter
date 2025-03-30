@@ -9,13 +9,14 @@ class CameraPlayer {
   final Player cardPlayer;
   final VideoController cardController;
 
-  CameraPlayer(
-      {required this.mainPlayer,
-      required this.mainController,
-      required this.sidePlayer,
-      required this.sideController,
-      required this.cardPlayer,
-      required this.cardController});
+  CameraPlayer({
+    required this.mainPlayer,
+    required this.mainController,
+    required this.sidePlayer,
+    required this.sideController,
+    required this.cardPlayer,
+    required this.cardController,
+  });
 
   factory CameraPlayer.initialize() {
     final Player mainPlayer = Player();
