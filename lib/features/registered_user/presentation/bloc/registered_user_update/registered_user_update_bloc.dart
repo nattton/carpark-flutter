@@ -1,5 +1,5 @@
+import 'package:carpark/features/registered_user/data/models/registered_user_model.dart';
 import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/mapper/registered_user_mapper.dart';
 import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_get_usecase.dart';
 import 'package:carpark/features/registered_user/domain/usecases/registered_user_update_usecase.dart';
@@ -35,7 +35,7 @@ class RegisteredUserUpdateBloc
       (r) {
         emit(state.copyWith(
             status: RegisteredUserUpdateStatus.loadSuccess,
-            registeredUser: RegisteredUserMapper.responseMapper(r)));
+            registeredUser: RegisteredUserModel.responseMapper(r)));
       },
     );
   }

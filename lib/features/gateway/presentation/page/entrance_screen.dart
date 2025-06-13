@@ -8,6 +8,7 @@ import 'package:carpark/features/gateway/presentation/widget/entrance_card.dart'
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
 import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
 import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:carpark/injector/injector.dart';
@@ -111,9 +112,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     return BlocListener<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
       listener: (context, state) {
         if (state is RegisteredUserCheckInSuccess) {
-          alertMessage('ลงเวลาเข้า : ${state.registeredUser.thaiName}');
-          context.push(
-              "${RegisteredUserLogsScreen.routeName}/${state.registeredUser.id}");
+          alertCheckIn(state.registeredUser);
         } else if (state is RegisteredUserCheckInFailure) {
           alertError(state.failure.message);
         }
@@ -127,67 +126,68 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        !kIsWeb
-                            ? Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 8.0, top: 8.0, right: 8.0),
+                              child: Row(
                                 children: [
-                                  ElevatedButton(
-                                    onPressed: () => openDoor("in"),
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: kColorButtonPrimary),
-                                    child: const Text(
-                                      "เปิดประตู ขาเข้า",
-                                      style: kButtonStyle,
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _barcodeController,
+                                      autofocus: true,
+                                      autocorrect: false,
+                                      keyboardType: TextInputType.text,
+                                      decoration: InputDecoration(
+                                        suffixIcon: GestureDetector(
+                                          onTap: () => _onBarcodeSubmitted(),
+                                          child:
+                                              const Icon(Icons.barcode_reader),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                8.0, 8.0, 8.0, 8.0),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(0.0)),
+                                      ),
+                                      onSubmitted: (value) =>
+                                          _onBarcodeSubmitted(),
+                                      focusNode: focusNode,
                                     ),
                                   ),
-                                  _leftState == EntranceScreenLeftState.visitor
-                                      ? ElevatedButton(
-                                          onPressed: () => openVisitior(),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Colors.red, // Background color
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: _leftState ==
+                                            EntranceScreenLeftState.visitor
+                                        ? ElevatedButton(
+                                            onPressed: () => openVisitior(),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors
+                                                  .red, // Background color
+                                            ),
+                                            child: const Text(
+                                              "ยกเลิก",
+                                              style: kButtonStyle,
+                                            ),
+                                          )
+                                        : ElevatedButton(
+                                            onPressed: () =>
+                                                showVisitorFromEmpty(),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    kColorButtonPrimary),
+                                            child: const Text(
+                                              "สร้างผู้ติดต่อ",
+                                              style: kButtonStyle,
+                                            ),
                                           ),
-                                          child: const Text(
-                                            "ยกเลิก",
-                                            style: kButtonStyle,
-                                          ),
-                                        )
-                                      : ElevatedButton(
-                                          onPressed: () =>
-                                              showVisitorFromEmpty(),
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  kColorButtonPrimary),
-                                          child: const Text(
-                                            "สร้างผู้ติดต่อ",
-                                            style: kButtonStyle,
-                                          ),
-                                        ),
+                                  ),
                                 ],
-                              )
-                            : const SizedBox(),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0, top: 8.0, right: 8.0),
-                          child: TextField(
-                            controller: _barcodeController,
-                            autofocus: true,
-                            autocorrect: false,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              suffixIcon: GestureDetector(
-                                onTap: () => _onBarcodeSubmitted(),
-                                child: const Icon(Icons.barcode_reader),
                               ),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(0.0)),
                             ),
-                            onSubmitted: (value) => _onBarcodeSubmitted(),
-                            focusNode: focusNode,
-                          ),
+                          ],
                         ),
                         switch (_leftState) {
                           EntranceScreenLeftState.visitor =>
@@ -551,15 +551,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     });
   }
 
-  Future<void> openDoor(String door) async {
-    getIt<ApiService>()
-        .openDoor(getIt<AppService>().token, door)
-        .then((value) {})
-        .onError((error, stackTrace) {
-      alertError(error.toString());
-    });
-  }
-
   Future<void> manualCapture(String door) async {
     getIt<ApiService>()
         .manualCapture(getIt<AppService>().token, door)
@@ -619,9 +610,13 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     EasyLoading.show();
     _isReadDrivingLicence = false;
     _isReadCard = true;
-    getIt<IdCardServiceRepository>().readIdCard().then((card) async {
-      card.fold((l) => {alertError(l.message), EasyLoading.dismiss()},
-          (r) async {
+    final card = await getIt<IdCardServiceRepository>().readIdCard();
+    card.fold(
+      (l) {
+        alertError(l.message);
+        EasyLoading.dismiss();
+      },
+      (r) async {
         _idCardModel = r.data;
         _photoFile = await _tempImage(r.data!.id);
         await getIt<Dio>().download(_idCardModel!.photoUrl(), _photoFile!.path);
@@ -633,8 +628,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         _addressNameController.text = r.data!.address;
         EasyLoading.dismiss();
         setState(() {});
-      });
-    });
+      },
+    );
   }
 
   Future<Uint8List> charsetConvert(String s) async {
@@ -956,6 +951,31 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                     context.pop();
                   },
                   child: const Text('Close'))
+            ],
+          );
+        });
+  }
+
+  void alertCheckIn(RegisteredUser registeredUser) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Check In'),
+            content: Text('ลงเวลาเข้าโดย ${registeredUser.thaiName}'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    context.pop();
+                    context.push(
+                        "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}");
+                  },
+                  child: const Text('ดูประวัติการเข้าใช้งาน')),
+              TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('ปิด'))
             ],
           );
         });

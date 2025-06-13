@@ -404,14 +404,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     ),
                     Container(
                       color: Colors.white,
-                      child: Container(),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: Container(),
-                    ),
-                    Container(
-                      color: Colors.white,
                       child: const SettingScreen(),
                     ),
                     Container(

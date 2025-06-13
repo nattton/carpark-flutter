@@ -6,7 +6,7 @@ class RegisteredUserLogs extends Equatable {
   final RegisteredUser user;
   final RegisteredUserLogList logs;
 
-  const RegisteredUserLogs(this.user, this.logs);
+  const RegisteredUserLogs({required this.user, required this.logs});
 
   @override
   List<Object?> get props => [user, logs];

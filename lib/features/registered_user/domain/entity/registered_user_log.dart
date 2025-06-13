@@ -31,8 +31,12 @@ class RegisteredUserLog extends Equatable {
       ? checkOutTime!.difference(checkInTime!).pretty()
       : "";
 
-  String get checkInTimeString =>
-      checkInTime != null ? DateFormat(dateFormat).format(checkInTime!) : "";
-  String get checkOutTimeString =>
-      checkOutTime != null ? DateFormat(dateFormat).format(checkOutTime!) : "";
+  String get checkInTimeString => checkInTime != null
+      ? DateFormat(dateFormat)
+          .format(checkInTime!.add(const Duration(hours: 7)))
+      : "";
+  String get checkOutTimeString => checkOutTime != null
+      ? DateFormat(dateFormat)
+          .format(checkOutTime!.add(const Duration(hours: 7)))
+      : "";
 }
