@@ -72,7 +72,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   late AppTitleCubit _appTitleCubit;
 
-  initWebSocketChannelConnection() async {
+  Future<void> initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     var channel = WebSocketChannel.connect(Uri.parse(wsUrl));
     channel.stream.listen((streamData) {
@@ -81,7 +81,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
   }
 
-  initWebSocketConnection() async {
+  Future<void> initWebSocketConnection() async {
     print("conecting...");
     channel = await connectWs();
     print("socket connection initializied");
@@ -89,7 +89,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     broadcastNotifications();
   }
 
-  broadcastNotifications() {
+  void broadcastNotifications() {
     final lastGate = ref.read(lastGateProvider.notifier);
     channel.listen((streamData) {
       print(streamData);
@@ -103,7 +103,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
   }
 
-  connectWs() async {
+  Future connectWs() async {
     try {
       return await WebSocket.connect(wsUrl);
     } catch (e) {
@@ -254,7 +254,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 controller: sideMenu,
                 style: SideMenuStyle(
                   displayMode: SideMenuDisplayMode.compact,
-                  openSideMenuWidth: 200,
+                  openSideMenuWidth: 60,
                   compactSideMenuWidth: 60,
                   hoverColor: Colors.blue[100],
                   selectedColor: Colors.lightBlue,
