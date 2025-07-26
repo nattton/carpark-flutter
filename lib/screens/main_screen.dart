@@ -26,24 +26,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-part 'main_screen.g.dart';
+final lastGateProvider = StateNotifierProvider<LastGateNotifier, LastGate>(
+  (ref) => LastGateNotifier(
+    LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)),
+  ),
+);
 
-final lastGateProvider =
-    StateNotifierProvider<LastGateNotifier, LastGate>((ref) {
-  return LastGateNotifier(
-      LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)));
-});
+final cameraMapProvider = Provider<Map<String, CameraModel>>(
+  (ref) => <String, CameraModel>{},
+);
 
-final cameraMapProvider =
-    Provider<Map<String, CameraModel>>((ref) => <String, CameraModel>{});
-
-@riverpod
-CameraPlayer cameraPlayer(Ref ref) {
-  return CameraPlayer.initialize();
-}
+final cameraPlayerProvider = Provider<CameraPlayer>(
+  (ref) => CameraPlayer.initialize(),
+);
 
 class MainScreen extends StatefulHookConsumerWidget {
   static const String routeName = '/main';
@@ -54,13 +51,13 @@ class MainScreen extends StatefulHookConsumerWidget {
   ConsumerState<MainScreen> createState() => _MainScreenState();
 
   static Widget get page => MultiBlocProvider(
-        providers: [
-          BlocProvider<MemberListBloc>(
-              create: (context) =>
-                  getIt<MemberListBloc>()..add(LoadMemberList())),
-        ],
-        child: MainScreen(),
-      );
+    providers: [
+      BlocProvider<MemberListBloc>(
+        create: (context) => getIt<MemberListBloc>()..add(LoadMemberList()),
+      ),
+    ],
+    child: MainScreen(),
+  );
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
@@ -91,16 +88,20 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   void broadcastNotifications() {
     final lastGate = ref.read(lastGateProvider.notifier);
-    channel.listen((streamData) {
-      print(streamData);
-      lastGate.setFromJson(streamData);
-    }, onDone: () {
-      print("conecting aborted");
-      initWebSocketConnection();
-    }, onError: (e) {
-      print('Server error: $e');
-      initWebSocketConnection();
-    });
+    channel.listen(
+      (streamData) {
+        print(streamData);
+        lastGate.setFromJson(streamData);
+      },
+      onDone: () {
+        print("conecting aborted");
+        initWebSocketConnection();
+      },
+      onError: (e) {
+        print('Server error: $e');
+        initWebSocketConnection();
+      },
+    );
   }
 
   Future connectWs() async {
@@ -152,8 +153,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<Map<String, CameraModel>> getCameraList() async {
     final camera = ref.read(cameraMapProvider);
-    final data =
-        await getIt<ApiService>().getCameraList(getIt<AppService>().token);
+    final data = await getIt<ApiService>().getCameraList(
+      getIt<AppService>().token,
+    );
     for (CameraModel cam in data) {
       camera[cam.name] = cam;
     }
@@ -163,8 +165,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> getLastGate() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
-      final result =
-          await getIt<ApiService>().getLastGate(getIt<AppService>().token);
+      final result = await getIt<ApiService>().getLastGate(
+        getIt<AppService>().token,
+      );
       lastGate.setGateIn(result.gateIn);
       lastGate.setGateOut(result.gateOut);
     } catch (e) {
@@ -175,8 +178,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> getLastGateIn() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
-      final result =
-          await getIt<ApiService>().getGateIn(getIt<AppService>().token);
+      final result = await getIt<ApiService>().getGateIn(
+        getIt<AppService>().token,
+      );
       lastGate.setGateIn(result.gateLog);
     } catch (e) {
       alertError(e.toString());
@@ -186,8 +190,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> getLastGateOut() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
-      final result =
-          await getIt<ApiService>().getGateOut(getIt<AppService>().token);
+      final result = await getIt<ApiService>().getGateOut(
+        getIt<AppService>().token,
+      );
       lastGate.setGateOut(result.gateLog);
     } catch (e) {
       alertError(e.toString());
@@ -235,16 +240,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppTitleCubit, AppTitleState>(
-      builder: (context, state) {
+    return BlocSelector<AppTitleCubit, AppTitleState, String>(
+      selector: (state) => state.title,
+      builder: (context, title) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
             backgroundColor: kColorPrimary,
-            title: Text(
-              state.title,
-              style: TextStyle(color: Colors.white),
-            ),
+            title: Text(title, style: TextStyle(color: Colors.white)),
             automaticallyImplyLeading: false,
           ),
           body: Row(
@@ -370,14 +373,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 child: PageView(
                   controller: page,
                   children: [
-                    Container(
-                      color: Colors.white,
-                      child: EntranceScreen.page,
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: ExitScreen.page,
-                    ),
+                    Container(color: Colors.white, child: EntranceScreen.page),
+                    Container(color: Colors.white, child: ExitScreen.page),
                     Container(
                       color: Colors.white,
                       child: const VisitorScreen(),
@@ -398,25 +395,16 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                       color: Colors.white,
                       child: RegisteredUserListScreen.page,
                     ),
-                    Container(
-                      color: Colors.white,
-                      child: const ReportScreen(),
-                    ),
+                    Container(color: Colors.white, child: const ReportScreen()),
                     Container(
                       color: Colors.white,
                       child: const SettingScreen(),
                     ),
-                    Container(
-                      color: Colors.white,
-                      child: const UserScreen(),
-                    ),
+                    Container(color: Colors.white, child: const UserScreen()),
                     Container(
                       color: Colors.white,
                       child: const Center(
-                        child: Text(
-                          'Exit',
-                          style: TextStyle(fontSize: 35),
-                        ),
+                        child: Text('Exit', style: TextStyle(fontSize: 35)),
                       ),
                     ),
                   ],

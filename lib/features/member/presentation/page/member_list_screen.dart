@@ -68,10 +68,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       },
                       child: const Icon(Icons.clear),
                     ),
-                    contentPadding:
-                        const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                    contentPadding: const EdgeInsets.all(20.0),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
                 ),
               ),
@@ -93,21 +93,22 @@ class _MemberListScreenState extends State<MemberListScreen> {
           ],
         ),
         const MemberHeaderCard(),
-        BlocBuilder<MemberListBloc, MemberListState>(
-          builder: (context, state) {
+        BlocSelector<MemberListBloc, MemberListState, List<MemberModel>>(
+          selector: (state) => state.filteredMembers,
+          builder: (context, filteredMembers) {
             return Expanded(
               child: ListView.builder(
-                itemCount: state.filteredMembers.length,
+                itemCount: filteredMembers.length,
                 itemBuilder: (context, index) {
                   return MemberListCard(
-                      member: state.filteredMembers[index],
-                      onTap: () =>
-                          onPressedRow(context, state.filteredMembers[index]));
+                    member: filteredMembers[index],
+                    onTap: () => onPressedRow(context, filteredMembers[index]),
+                  );
                 },
               ),
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -132,135 +133,157 @@ class _MemberListScreenState extends State<MemberListScreen> {
     _telController.text = '';
 
     Alert(
-        context: context,
-        title: "สร้างสมาชิกใหม่",
-        content: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _nameController,
-                onChanged: (value) {
-                  _memberModel.name = value;
-                },
-                autofocus: false,
-                autocorrect: false,
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  labelText: 'ชื่อ',
-                  suffixIcon: const Icon(Icons.account_circle),
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+      context: context,
+      title: "สร้างสมาชิกใหม่",
+      content: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _nameController,
+              onChanged: (value) {
+                _memberModel.name = value;
+              },
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.name,
+              decoration: InputDecoration(
+                labelText: 'ชื่อ',
+                suffixIcon: const Icon(Icons.account_circle),
+                contentPadding: const EdgeInsets.fromLTRB(
+                  20.0,
+                  20.0,
+                  20.0,
+                  20.0,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _telController,
-                onChanged: (value) {
-                  _memberModel.telephone = value;
-                },
-                autofocus: false,
-                autocorrect: false,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: 'โทรศัพท์.',
-                  suffixIcon: const Icon(Icons.phone),
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _telController,
+              onChanged: (value) {
+                _memberModel.telephone = value;
+              },
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                labelText: 'โทรศัพท์.',
+                suffixIcon: const Icon(Icons.phone),
+                contentPadding: const EdgeInsets.fromLTRB(
+                  20.0,
+                  20.0,
+                  20.0,
+                  20.0,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FormBuilderRadioGroup(
-                decoration: InputDecoration(
-                  labelText: 'ประเภท',
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FormBuilderRadioGroup(
+              decoration: InputDecoration(
+                labelText: 'ประเภท',
+                contentPadding: const EdgeInsets.fromLTRB(
+                  20.0,
+                  20.0,
+                  20.0,
+                  20.0,
                 ),
-                initialValue: _memberModel.type,
-                name: 'type',
-                onChanged: (value) {
-                  _memberModel.type = value;
-                },
-                validator: FormBuilderValidators.required(),
-                options: kMemberTypeList
-                    .map((lang) => FormBuilderFieldOption(value: lang))
-                    .toList(growable: false),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FormBuilderRadioGroup(
-                decoration: InputDecoration(
-                  labelText: 'สถานะ',
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                initialValue: _memberModel.status,
-                name: 'status',
-                onChanged: (value) {
-                  _memberModel.status = value;
-                },
-                validator: FormBuilderValidators.required(),
-                options: kStatusList
-                    .map((lang) => FormBuilderFieldOption(value: lang))
-                    .toList(growable: false),
               ),
+              initialValue: _memberModel.type,
+              name: 'type',
+              onChanged: (value) {
+                _memberModel.type = value;
+              },
+              validator: FormBuilderValidators.required(),
+              options: kMemberTypeList
+                  .map((lang) => FormBuilderFieldOption(value: lang))
+                  .toList(growable: false),
             ),
-          ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FormBuilderRadioGroup(
+              decoration: InputDecoration(
+                labelText: 'สถานะ',
+                contentPadding: const EdgeInsets.fromLTRB(
+                  20.0,
+                  20.0,
+                  20.0,
+                  20.0,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              initialValue: _memberModel.status,
+              name: 'status',
+              onChanged: (value) {
+                _memberModel.status = value;
+              },
+              validator: FormBuilderValidators.required(),
+              options: kStatusList
+                  .map((lang) => FormBuilderFieldOption(value: lang))
+                  .toList(growable: false),
+            ),
+          ),
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            createMember();
+          },
+          child: const Text(
+            "สร้าง",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              createMember();
-            },
-            child: const Text(
-              "สร้าง",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+      ],
+    ).show();
   }
 
   void createMember() {
     getIt<ApiService>()
         .createMember(getIt<AppService>().token, _memberModel)
         .then((value) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Create Member'),
-          content: const Text('สร้างข้อมูลสมาชิกเรียบร้อย'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                context.pop();
-                context.pop();
-                _memberListBloc.add(LoadMemberList());
-              },
-              child: const Text('Close'),
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Create Member'),
+              content: const Text('สร้างข้อมูลสมาชิกเรียบร้อย'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                    context.pop();
+                    _memberListBloc.add(LoadMemberList());
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+          );
+        })
+        .onError((error, stackTrace) {
+          alertError(error.toString());
+        });
   }
 
   Excel generateExcel() {
-    final members = BlocProvider.of<MemberListBloc>(context).state.members;
+    final members = _memberListBloc.state.members;
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Sheet1'];
 
@@ -281,10 +304,13 @@ class _MemberListScreenState extends State<MemberListScreen> {
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(
-        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
+      backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
+      bold: true,
+    );
     for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
-          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
+        CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
+      );
       cell.cellStyle = cellStyle;
     }
 
@@ -313,8 +339,11 @@ class _MemberListScreenState extends State<MemberListScreen> {
           TextCellValue(v.color!),
           TextCellValue(v.telephone!),
         ];
-        sheetObject.insertRowIterables(vehicleList, currentRow,
-            startingColumn: 5);
+        sheetObject.insertRowIterables(
+          vehicleList,
+          currentRow,
+          startingColumn: 5,
+        );
       }
     }
     return excel;

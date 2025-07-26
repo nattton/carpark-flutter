@@ -23,33 +23,28 @@ class RegisteredUserLogsScreen extends StatefulWidget {
       _RegisteredUserLogsScreenState();
 
   static Widget page({required int userId}) => BlocProvider(
-        create: (context) => getIt<RegisteredUserLogsBloc>()
+    create: (context) =>
+        getIt<RegisteredUserLogsBloc>()
           ..add(GetRegisteredUserLogs(userId: userId)),
-        child: const RegisteredUserLogsScreen(),
-      );
+    child: const RegisteredUserLogsScreen(),
+  );
 }
 
 class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registered User Logs'),
-      ),
+      appBar: AppBar(title: const Text('Registered User Logs')),
       body: BlocBuilder<RegisteredUserLogsBloc, RegisteredUserLogsState>(
         builder: (context, state) {
           switch (state) {
             case RegisteredUserLogsInitial():
             case RegisteredUserLogsLoading():
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            case RegisteredUserLogsSuccess():
-              return _buildLogs(state.user, state.logs);
-            case RegisteredUserLogsFailure():
-              return Center(
-                child: Text(state.message),
-              );
+              return const Center(child: CircularProgressIndicator());
+            case RegisteredUserLogsSuccess(:final user, :final logs):
+              return _buildLogs(user, logs);
+            case RegisteredUserLogsFailure(:final message):
+              return Center(child: Text(message));
           }
         },
       ),
@@ -66,29 +61,45 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
           child: Row(
             children: [
               Expanded(
-                  child: Text("ID Card",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  "ID Card",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Text("ชื่อภาษาไทย",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  "ชื่อภาษาไทย",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Text("Eng Name",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  "Eng Name",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Text("Telephone",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  "Telephone",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               SizedBox(width: 24.0),
             ],
           ),
@@ -102,29 +113,45 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
           child: Row(
             children: [
               Expanded(
-                  child: Text(user.idCard,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  user.idCard,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Text(user.thaiName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  user.thaiName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Text(user.engName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  user.engName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Text(user.telephone,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: kDefaultFont,
-                          fontSize: 16.0))),
+                child: Text(
+                  user.telephone,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
               GestureDetector(
                 onTap: () async {
                   String filename =
@@ -144,8 +171,12 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                     ).toImageData(878);
                     if (qrBytes != null) {
                       final buffer = qrBytes.buffer;
-                      file.writeAsBytes(buffer.asUint8List(
-                          qrBytes.offsetInBytes, qrBytes.lengthInBytes));
+                      file.writeAsBytes(
+                        buffer.asUint8List(
+                          qrBytes.offsetInBytes,
+                          qrBytes.lengthInBytes,
+                        ),
+                      );
                     }
                   }
                 },
@@ -154,7 +185,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
             ],
           ),
         ),
-      )
+      ),
     ];
   }
 

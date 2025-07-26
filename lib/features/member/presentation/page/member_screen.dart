@@ -14,14 +14,10 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'member_screen.g.dart';
-
-@riverpod
-MemberModel memberModel(Ref ref) {
-  return MemberModel(id: 0, vehicles: []);
-}
+final memberModelProvider = Provider<MemberModel>(
+  (ref) => MemberModel(id: 0, vehicles: []),
+);
 
 class MemberScreen extends ConsumerStatefulWidget {
   static const String routeName = "/member";
@@ -70,28 +66,26 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     getIt<ApiService>()
         .getMember(getIt<AppService>().token, widget.memberId)
         .then((value) {
-      member.setMember(value);
-      setState(() {
-        _nameController.text = member.name!;
-        _telController.text = member.telephone!;
-      });
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    }).whenComplete(() => EasyLoading.dismiss());
+          member.setMember(value);
+          setState(() {
+            _nameController.text = member.name!;
+            _telController.text = member.telephone!;
+          });
+        })
+        .onError((error, stackTrace) {
+          alertError(error.toString());
+        })
+        .whenComplete(() => EasyLoading.dismiss());
   }
 
   @override
   Widget build(BuildContext context) {
     final member = ref.watch(memberModelProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("แก้ไขข้อมูลสมาชิก"),
-      ),
+      appBar: AppBar(title: const Text("แก้ไขข้อมูลสมาชิก")),
       body: Column(
         children: [
-          const SizedBox(
-            height: 10.0,
-          ),
+          const SizedBox(height: 10.0),
           Table(
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
@@ -99,48 +93,60 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
-              TableRow(children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: _nameController,
-                    onChanged: (value) {
-                      member.name = value;
-                    },
-                    autofocus: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      suffixIcon: const Icon(Icons.account_circle),
-                      contentPadding:
-                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
+              TableRow(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _nameController,
+                      onChanged: (value) {
+                        member.name = value;
+                      },
+                      autofocus: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        suffixIcon: const Icon(Icons.account_circle),
+                        contentPadding: const EdgeInsets.fromLTRB(
+                          20.0,
+                          20.0,
+                          20.0,
+                          20.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: _telController,
-                    onChanged: (value) {
-                      member.telephone = value;
-                    },
-                    autofocus: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: 'Tel.',
-                      suffixIcon: const Icon(Icons.phone),
-                      contentPadding:
-                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _telController,
+                      onChanged: (value) {
+                        member.telephone = value;
+                      },
+                      autofocus: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'Tel.',
+                        suffixIcon: const Icon(Icons.phone),
+                        contentPadding: const EdgeInsets.fromLTRB(
+                          20.0,
+                          20.0,
+                          20.0,
+                          20.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ],
+              ),
               member.id != 0
                   ? TableRow(
                       children: [
@@ -150,9 +156,14 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                             decoration: InputDecoration(
                               labelText: 'Type',
                               contentPadding: const EdgeInsets.fromLTRB(
-                                  20.0, 20.0, 20.0, 20.0),
+                                20.0,
+                                20.0,
+                                20.0,
+                                20.0,
+                              ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                             ),
                             initialValue: member.type,
                             name: 'type',
@@ -161,8 +172,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                             },
                             validator: FormBuilderValidators.required(),
                             options: kMemberTypeList
-                                .map((lang) =>
-                                    FormBuilderFieldOption(value: lang))
+                                .map(
+                                  (lang) => FormBuilderFieldOption(value: lang),
+                                )
                                 .toList(growable: false),
                           ),
                         ),
@@ -172,9 +184,14 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                             decoration: InputDecoration(
                               labelText: 'Status',
                               contentPadding: const EdgeInsets.fromLTRB(
-                                  20.0, 20.0, 20.0, 20.0),
+                                20.0,
+                                20.0,
+                                20.0,
+                                20.0,
+                              ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                             ),
                             initialValue: member.status,
                             name: 'status',
@@ -183,8 +200,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                             },
                             validator: FormBuilderValidators.required(),
                             options: kStatusList
-                                .map((lang) =>
-                                    FormBuilderFieldOption(value: lang))
+                                .map(
+                                  (lang) => FormBuilderFieldOption(value: lang),
+                                )
                                 .toList(growable: false),
                           ),
                         ),
@@ -200,19 +218,21 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: ElevatedButton(
-                      onPressed: () => onPressedSave(),
-                      child: const Text("บันทึกข้อมูล")),
+                    onPressed: () => onPressedSave(),
+                    child: const Text("บันทึกข้อมูล"),
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green, // Background color
-                      ),
-                      onPressed: () => onPressedAdd(context),
-                      child: const Text("สร้างทะเบียนรถ")),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green, // Background color
+                    ),
+                    onPressed: () => onPressedAdd(context),
+                    child: const Text("สร้างทะเบียนรถ"),
+                  ),
                 ),
               ),
             ],
@@ -223,9 +243,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
               itemCount: member.vehicles!.length,
               itemBuilder: (context, index) {
                 return VehicleListCard(
-                    vehicle: member.vehicles![index],
-                    onTap: () =>
-                        onPressedEdit(context, member.vehicles![index]));
+                  vehicle: member.vehicles![index],
+                  onTap: () => onPressedEdit(context, member.vehicles![index]),
+                );
               },
             ),
           ),
@@ -242,113 +262,114 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     _telephoneController.text = '';
 
     Alert(
-        context: context,
-        title: "สร้างทะเบียนรถ",
-        content: Column(
-          children: [
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _plateNumberController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'เลขทะเบียน',
-                suffixIcon: const Icon(Icons.text_format),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+      context: context,
+      title: "สร้างทะเบียนรถ",
+      content: Column(
+        children: [
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _plateNumberController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'เลขทะเบียน',
+              suffixIcon: const Icon(Icons.text_format),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _resembleController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'เลขทะเบียนที่คล้าย',
-                suffixIcon: const Icon(Icons.text_format),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _resembleController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'เลขทะเบียนที่คล้าย',
+              suffixIcon: const Icon(Icons.text_format),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _plateProvinceController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'จังหวัด',
-                suffixIcon: const Icon(Icons.text_fields),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _plateProvinceController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'จังหวัด',
+              suffixIcon: const Icon(Icons.text_fields),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _brandController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'ยี่ห้อ',
-                suffixIcon: const Icon(Icons.text_fields),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _brandController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'ยี่ห้อ',
+              suffixIcon: const Icon(Icons.text_fields),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _colorController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'สี',
-                suffixIcon: const Icon(Icons.text_fields),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _colorController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'สี',
+              suffixIcon: const Icon(Icons.text_fields),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _telephoneController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'โทร.',
-                suffixIcon: const Icon(Icons.phone),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _telephoneController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(
+              labelText: 'โทร.',
+              suffixIcon: const Icon(Icons.phone),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            createVehicle();
+          },
+          child: const Text(
+            "สร้าง",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              createVehicle();
-            },
-            child: const Text(
-              "สร้าง",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+      ],
+    ).show();
   }
 
   void onPressedEdit(BuildContext context, VehicleModel vehicle) {
@@ -360,148 +381,154 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     _telephoneController.text = vehicle.telephone!;
 
     Alert(
-        context: context,
-        title: "แก้ไขทะเบียนรถ",
-        content: Column(
-          children: [
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _plateNumberController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'เลขทะเบียน',
-                suffixIcon: const Icon(Icons.text_format),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+      context: context,
+      title: "แก้ไขทะเบียนรถ",
+      content: Column(
+        children: [
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _plateNumberController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'เลขทะเบียน',
+              suffixIcon: const Icon(Icons.text_format),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _resembleController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'เลขทะเบียนที่คล้าย',
-                suffixIcon: const Icon(Icons.text_format),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _plateProvinceController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'จังหวัด',
-                suffixIcon: const Icon(Icons.text_fields),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _brandController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'ยี่ห้อ',
-                suffixIcon: const Icon(Icons.text_fields),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _colorController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'สี',
-                suffixIcon: const Icon(Icons.text_fields),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _telephoneController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'โทร.',
-                suffixIcon: const Icon(Icons.phone),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              updateVehicle(vehicle);
-            },
-            child: const Text(
-              "บันทึก",
-              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
-          DialogButton(
-            color: Colors.red,
-            onPressed: () {
-              alertDelete(vehicle);
-            },
-            child: const Text(
-              "ลบ",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _resembleController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'เลขทะเบียนที่คล้าย',
+              suffixIcon: const Icon(Icons.text_format),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
             ),
-          )
-        ]).show();
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _plateProvinceController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'จังหวัด',
+              suffixIcon: const Icon(Icons.text_fields),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _brandController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'ยี่ห้อ',
+              suffixIcon: const Icon(Icons.text_fields),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _colorController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              labelText: 'สี',
+              suffixIcon: const Icon(Icons.text_fields),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _telephoneController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(
+              labelText: 'โทร.',
+              suffixIcon: const Icon(Icons.phone),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            updateVehicle(vehicle);
+          },
+          child: const Text(
+            "บันทึก",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        ),
+        DialogButton(
+          color: Colors.red,
+          onPressed: () {
+            alertDelete(vehicle);
+          },
+          child: const Text(
+            "ลบ",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        ),
+      ],
+    ).show();
   }
 
   void alertError(String msg) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).pop();
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alert Message'),
+          content: Text(msg),
+          actions: [
+            TextButton(
+              onPressed: () {
+                GoRouter.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void onPressedSave() async {
     final member = ref.read(memberModelProvider);
     try {
-      await getIt<ApiService>()
-          .updateMember(getIt<AppService>().token, widget.memberId, member);
+      await getIt<ApiService>().updateMember(
+        getIt<AppService>().token,
+        widget.memberId,
+        member,
+      );
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -538,26 +565,27 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     getIt<ApiService>()
         .createVehicle(getIt<AppService>().token, widget.memberId, vehicle)
         .then((value) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Create Vehicle'),
-          content: const Text('เพิ่มข้อมูลทะเบียนเรียบร้อย'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).pop();
-                GoRouter.of(context).pop();
-                getMember();
-              },
-              child: const Text('Close'),
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Create Vehicle'),
+              content: const Text('เพิ่มข้อมูลทะเบียนเรียบร้อย'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    GoRouter.of(context).pop();
+                    GoRouter.of(context).pop();
+                    getMember();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }).catchError((error) {
-      alertError(error);
-    });
+          );
+        })
+        .catchError((error) {
+          alertError(error);
+        });
   }
 
   void updateVehicle(VehicleModel vehicle) {
@@ -572,27 +600,28 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     getIt<ApiService>()
         .updateVehicle(getIt<AppService>().token, vehicle.id!, vehicle)
         .then((value) {
-      getMember();
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Edit Vehicle'),
-          content: const Text('แก้ไขข้อมูลทะเบียนเรียบร้อย'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).pop();
-                GoRouter.of(context).pop();
-                getMember();
-              },
-              child: const Text('Close'),
+          getMember();
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Edit Vehicle'),
+              content: const Text('แก้ไขข้อมูลทะเบียนเรียบร้อย'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    GoRouter.of(context).pop();
+                    GoRouter.of(context).pop();
+                    getMember();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }).onError((error, stack) {
-      alertError(error.toString());
-    });
+          );
+        })
+        .onError((error, stack) {
+          alertError(error.toString());
+        });
   }
 
   void alertDelete(VehicleModel vehicle) {
@@ -628,33 +657,36 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     getIt<ApiService>()
         .deleteVehicle(getIt<AppService>().token, vehicle.id!)
         .then((value) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Edit Vehicle'),
-          content: const Text('ลบข้อมูลทะเบียนเรียบร้อย'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).pop();
-                GoRouter.of(context).pop();
-                getMember();
-              },
-              child: const Text('Close'),
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Edit Vehicle'),
+              content: const Text('ลบข้อมูลทะเบียนเรียบร้อย'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    GoRouter.of(context).pop();
+                    GoRouter.of(context).pop();
+                    getMember();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }).catchError((Object obj) {
-      // non-200 error goes here.
-      switch (obj.runtimeType) {
-        case DioException _:
-          final res = (obj as DioException).response;
-          alertError("Got error : ${res!.statusCode} -> ${res.statusMessage}");
-          break;
-        default:
-          break;
-      }
-    });
+          );
+        })
+        .catchError((Object obj) {
+          // non-200 error goes here.
+          switch (obj.runtimeType) {
+            case DioException _:
+              final res = (obj as DioException).response;
+              alertError(
+                "Got error : ${res!.statusCode} -> ${res.statusMessage}",
+              );
+              break;
+            default:
+              break;
+          }
+        });
   }
 }

@@ -20,21 +20,22 @@ class RegisteredUserListScreen extends StatefulWidget {
       _RegisteredUserListScreenState();
 
   static Widget get page => MultiBlocProvider(
-        providers: [
-          BlocProvider<RegisteredUserListBloc>(
-            create: (context) =>
-                getIt<RegisteredUserListBloc>()..add(GetRegisteredUserList()),
-          ),
-          BlocProvider<RegisteredUserCreateBloc>(
-            create: (context) => getIt<RegisteredUserCreateBloc>()
+    providers: [
+      BlocProvider<RegisteredUserListBloc>(
+        create: (context) =>
+            getIt<RegisteredUserListBloc>()..add(GetRegisteredUserList()),
+      ),
+      BlocProvider<RegisteredUserCreateBloc>(
+        create: (context) =>
+            getIt<RegisteredUserCreateBloc>()
               ..add(InitialCreateRegisteredUser()),
-          ),
-          BlocProvider<RegisteredUserUpdateBloc>(
-            create: (context) => getIt<RegisteredUserUpdateBloc>(),
-          ),
-        ],
-        child: const RegisteredUserListScreen(),
-      );
+      ),
+      BlocProvider<RegisteredUserUpdateBloc>(
+        create: (context) => getIt<RegisteredUserUpdateBloc>(),
+      ),
+    ],
+    child: const RegisteredUserListScreen(),
+  );
 }
 
 class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
@@ -69,25 +70,28 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
               children: [
                 _buildSearchBar(),
                 const RegisteredUserListHeaderWidget(),
-                Expanded(child: BlocBuilder<RegisteredUserListBloc,
-                    RegisteredUserListState>(
-                  builder: (context, state) {
-                    if (state is RegisteredUserListCreating) {
-                      return const RegisteredUserCreate();
-                    } else if (state is RegisteredUserListLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (state is RegisteredUserListSuccess) {
-                      return _buildList(state.registeredUsers);
-                    } else if (state is RegisteredUserListFailure) {
-                      return Center(
-                        child: Text(state.message),
-                      );
-                    }
-                    return Container();
-                  },
-                )),
+                Expanded(
+                  child: Builder(
+                    builder: (context) {
+                      switch (state) {
+                        case RegisteredUserListInitial():
+                          return const SizedBox();
+                        case RegisteredUserListCreating():
+                          return const RegisteredUserCreate();
+                        case RegisteredUserListLoading():
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        case RegisteredUserListSuccess(:final registeredUsers):
+                          return _buildList(registeredUsers);
+                        case RegisteredUserListFailure(:final message):
+                          return Center(child: Text(message));
+                        default:
+                          return const SizedBox();
+                      }
+                    },
+                  ),
+                ),
               ],
             );
         }
@@ -115,10 +119,10 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
                   },
                   child: const Icon(Icons.clear),
                 ),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                contentPadding: const EdgeInsets.all(20.0),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ),
           ),
@@ -126,11 +130,12 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
-              onPressed: () {
-                _registeredUserListBloc.add(RegisteredUserCreating());
-              },
-              icon: const Icon(Icons.person_add),
-              tooltip: 'สร้างผู้ติดต่อใหม่'),
+            onPressed: () {
+              _registeredUserListBloc.add(RegisteredUserCreating());
+            },
+            icon: const Icon(Icons.person_add),
+            tooltip: 'สร้างผู้ติดต่อใหม่',
+          ),
         ),
       ],
     );
@@ -141,21 +146,24 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
       itemCount: registeredUsers.length,
       itemBuilder: (context, index) {
         return RegisteredUserRowWidget(
-            user: registeredUsers[index],
-            onTapViewLogs: () {
-              context.push(
-                  "${RegisteredUserLogsScreen.routeName}/${registeredUsers[index].id}");
-            },
-            onEditTap: () {
-              _registeredUserListBloc.add(RegisteredUserUpdating());
-              _registeredUserUpdateBloc
-                  .add(GetRegisteredUser(registeredUsers[index].id));
-            });
+          user: registeredUsers[index],
+          onTapViewLogs: () {
+            context.push(
+              "${RegisteredUserLogsScreen.routeName}/${registeredUsers[index].id}",
+            );
+          },
+          onEditTap: () {
+            _registeredUserListBloc.add(RegisteredUserUpdating());
+            _registeredUserUpdateBloc.add(
+              GetRegisteredUser(registeredUsers[index].id),
+            );
+          },
+        );
       },
     );
   }
 
-  onSearchTextChanged(String text) async {
+  void onSearchTextChanged(String text) {
     _registeredUserListBloc.add(SearchRegisteredUser(text));
   }
 }
