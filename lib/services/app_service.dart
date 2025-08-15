@@ -20,9 +20,10 @@ class AppService {
 
   AppService({required this.prefs});
 
-  get token => prefs.getString(kTokenKey) ?? '';
-  get printer => prefs.getString(kPrinterKey) ?? '';
-  get user => UserModel.fromJson(jsonDecode(prefs.getString(kUserKey) ?? ''));
+  String get token => prefs.getString(kTokenKey) ?? '';
+  String get printer => prefs.getString(kPrinterKey) ?? '';
+  UserModel get user =>
+      UserModel.fromJson(jsonDecode(prefs.getString(kUserKey) ?? ''));
 
   Future<void> saveLogin(LoginUserModel login) async {
     await prefs.setString(kTokenKey, "Bearer ${login.token}");

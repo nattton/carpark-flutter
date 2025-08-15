@@ -16,7 +16,7 @@ class VisitorDetailScreen extends StatefulWidget {
 }
 
 class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
-  get visitorId => widget.visitorId;
+  int get visitorId => widget.visitorId;
 
   VisitorModel visitor = VisitorModel(0);
 
@@ -84,14 +84,15 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
         : const SizedBox();
   }
 
-  getVisitor() {
+  void getVisitor() {
     EasyLoading.show(status: 'loading...');
     getIt<ApiService>()
         .getVisitor(getIt<AppService>().token, visitorId)
         .then((value) {
-      setState(() {
-        visitor = value;
-      });
-    }).whenComplete(() => EasyLoading.dismiss());
+          setState(() {
+            visitor = value;
+          });
+        })
+        .whenComplete(() => EasyLoading.dismiss());
   }
 }
