@@ -7,20 +7,16 @@ class Failure {
   final String message;
   Failure([this.message = 'An unexpected error occurred,']);
   Failure.fromException(Object e)
-      : message = (e is DioException)
-            ? e.response?.data['message'] ?? e.toString()
-            : e.toString();
+    : message = (e is DioException)
+          ? e.response?.data['message'] ?? e.toString()
+          : e.toString();
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'message': message,
-    };
+    return <String, dynamic>{'message': message};
   }
 
   factory Failure.fromMap(Map<String, dynamic> map) {
-    return Failure(
-      map['message'] as String,
-    );
+    return Failure(map['message'] as String);
   }
 
   String toJson() => json.encode(toMap());

@@ -15,7 +15,8 @@ class RegisteredUserCreateUsecase
 
   @override
   Future<Either<Failure, RegisteredUserResponse>> call(
-      CreateRegisteredUserRequest params) async {
+    CreateRegisteredUserRequest params,
+  ) async {
     final result = await repository.createRegisteredUser(params);
     return result.fold((l) => Left(l), (r) => Right(r.data!));
   }

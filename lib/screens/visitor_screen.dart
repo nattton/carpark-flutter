@@ -21,8 +21,8 @@ import 'package:intl/intl.dart';
 
 final visitorsProvider =
     StateNotifierProvider<VisitorsNotifier, List<VisitorModel>>((ref) {
-  return VisitorsNotifier();
-});
+      return VisitorsNotifier();
+    });
 
 final filterProvider = StateProvider((ref) => "");
 final sortByProvider = StateProvider((ref) => "");
@@ -134,12 +134,13 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
       getIt<ApiService>()
           .listVisitor(getIt<AppService>().token, date, dateTo)
           .then((value) {
-        EasyLoading.dismiss();
-        visitors.setState(value);
-      }).onError((error, stackTrace) {
-        EasyLoading.dismiss();
-        alertError(error.toString());
-      });
+            EasyLoading.dismiss();
+            visitors.setState(value);
+          })
+          .onError((error, stackTrace) {
+            EasyLoading.dismiss();
+            alertError(error.toString());
+          });
     }
   }
 
@@ -161,7 +162,8 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                   var results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
-                        calendarType: CalendarDatePicker2Type.range),
+                      calendarType: CalendarDatePicker2Type.range,
+                    ),
                     dialogSize: const Size(325, 400),
                     value: _dates,
                     borderRadius: BorderRadius.circular(15),
@@ -181,27 +183,19 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                   style: kButton2Style,
                 ),
               ),
-              const SizedBox(
-                width: 10.0,
-              ),
+              const SizedBox(width: 10.0),
               OutlinedButton(
                 onPressed: () {
                   _selectDate(_dates);
                 },
-                child: const Text(
-                  'Refresh',
-                  style: kButton2Style,
-                ),
+                child: const Text('Refresh', style: kButton2Style),
               ),
               Expanded(child: Container()),
               OutlinedButton(
                 onPressed: () {
                   onPressedExportVisitor();
                 },
-                child: const Text(
-                  'Export to Excel',
-                  style: kButton2Style,
-                ),
+                child: const Text('Export to Excel', style: kButton2Style),
               ),
             ],
           ),
@@ -223,8 +217,9 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                 child: const Icon(Icons.clear),
               ),
               contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
             ),
           ),
         ),
@@ -252,11 +247,12 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
             itemCount: filteredVisitors.length,
             itemBuilder: (context, index) {
               return VisitorListCard(
-                  visitor: filteredVisitors[index],
-                  onTap: () => viewDetail(filteredVisitors[index]));
+                visitor: filteredVisitors[index],
+                onTap: () => viewDetail(filteredVisitors[index]),
+              );
             },
           ),
-        )
+        ),
       ],
     );
   }
@@ -289,10 +285,13 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(
-        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
+      backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
+      bold: true,
+    );
     for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
-          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
+        CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
+      );
       cell.cellStyle = cellStyle;
     }
 
@@ -312,7 +311,8 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         TextCellValue(v.address!),
         TextCellValue(v.age!),
         TextCellValue(
-            v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : ""),
+          v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : "",
+        ),
       ];
       sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
       for (var j = 0; j < v.visitorImages!.length; j++) {
@@ -324,8 +324,11 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
           TextCellValue(image!.type),
           TextCellValue(image.imageUrl()),
         ];
-        sheetObject.insertRowIterables(vehicleList, currentRow,
-            startingColumn: 12);
+        sheetObject.insertRowIterables(
+          vehicleList,
+          currentRow,
+          startingColumn: 12,
+        );
       }
     }
 

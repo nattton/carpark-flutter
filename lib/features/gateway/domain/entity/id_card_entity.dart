@@ -13,14 +13,15 @@ class IDCardEntity {
   final String address;
   final String photoPath;
 
-  const IDCardEntity(
-      {required this.id,
-      required this.engName,
-      required this.thaiName,
-      required this.birthdate,
-      required this.gender,
-      required this.address,
-      required this.photoPath});
+  const IDCardEntity({
+    required this.id,
+    required this.engName,
+    required this.thaiName,
+    required this.birthdate,
+    required this.gender,
+    required this.address,
+    required this.photoPath,
+  });
 
   factory IDCardEntity.fromJson(Map<String, dynamic> json) =>
       _$IDCardEntityFromJson(json);

@@ -3,8 +3,11 @@ import 'package:carpark/features/registered_user/domain/entity/registered_user_l
 import 'package:flutter/material.dart';
 
 class RegisteredUserLogsRowWidget extends StatelessWidget {
-  const RegisteredUserLogsRowWidget(
-      {super.key, required this.log, required this.onTap});
+  const RegisteredUserLogsRowWidget({
+    super.key,
+    required this.log,
+    required this.onTap,
+  });
 
   final RegisteredUserLog log;
   final VoidCallback onTap;

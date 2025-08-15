@@ -15,37 +15,25 @@ class RegisteredUserNotCheckOutHeaderWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 "ชื่อภาษาไทย",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "ชื่อภาษาอังกฤษ",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "เบอร์โทรศัพท์",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "เวลาเข้า",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
           ],

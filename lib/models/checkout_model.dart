@@ -7,10 +7,7 @@ class CheckoutModel {
   final int gateLogId;
   final String barcode;
 
-  const CheckoutModel({
-    required this.barcode,
-    required this.gateLogId,
-  });
+  const CheckoutModel({required this.barcode, required this.gateLogId});
 
   factory CheckoutModel.fromJson(Map<String, dynamic> json) =>
       _$CheckoutModelFromJson(json);

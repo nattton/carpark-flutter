@@ -14,7 +14,7 @@ class RegisteredUserCheckOutBloc
     extends Bloc<RegisteredUserCheckOutEvent, RegisteredUserCheckOutState> {
   final RegisteredUserCheckOutUsecase registeredUserCheckOutUsecase;
   RegisteredUserCheckOutBloc(this.registeredUserCheckOutUsecase)
-      : super(RegisteredUserCheckOutInitial()) {
+    : super(RegisteredUserCheckOutInitial()) {
     on<RegisteredUserCheckOutEvent>((event, emit) {});
     on<PostRegisteredUserCheckOutEvent>((event, emit) async {
       emit(RegisteredUserCheckOutLoading());
@@ -22,12 +22,9 @@ class RegisteredUserCheckOutBloc
         RegisteredUserCheckOutRequest(generatedId: event.generatedId),
       );
       result.fold(
-        (failure) => emit(
-          RegisteredUserCheckOutFailure(failure: failure),
-        ),
-        (registeredUser) => emit(
-          RegisteredUserCheckOutSuccess(registeredUser: registeredUser),
-        ),
+        (failure) => emit(RegisteredUserCheckOutFailure(failure: failure)),
+        (registeredUser) =>
+            emit(RegisteredUserCheckOutSuccess(registeredUser: registeredUser)),
       );
     });
   }

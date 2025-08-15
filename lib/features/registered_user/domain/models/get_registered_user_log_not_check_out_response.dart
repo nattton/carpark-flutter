@@ -7,13 +7,11 @@ part 'get_registered_user_log_not_check_out_response.g.dart';
 class GetRegisteredUserLogNotCheckOutResponse {
   final List<RegisteredUserLogResponse> logs;
 
-  const GetRegisteredUserLogNotCheckOutResponse({
-    required this.logs,
-  });
+  const GetRegisteredUserLogNotCheckOutResponse({required this.logs});
 
   factory GetRegisteredUserLogNotCheckOutResponse.fromJson(
-          Map<String, dynamic> json) =>
-      _$GetRegisteredUserLogNotCheckOutResponseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$GetRegisteredUserLogNotCheckOutResponseFromJson(json);
 
   Map<String, dynamic> toJson() =>
       _$GetRegisteredUserLogNotCheckOutResponseToJson(this);

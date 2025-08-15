@@ -45,19 +45,19 @@ class RegisteredUserResponse extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        generatedId,
-        type,
-        telephone,
-        idCard,
-        thaiName,
-        engName,
-        birthdate,
-        gender,
-        address,
-        photo,
-        createdAt,
-        updatedAt,
-        expiredDate,
-      ];
+    id,
+    generatedId,
+    type,
+    telephone,
+    idCard,
+    thaiName,
+    engName,
+    birthdate,
+    gender,
+    address,
+    photo,
+    createdAt,
+    updatedAt,
+    expiredDate,
+  ];
 }

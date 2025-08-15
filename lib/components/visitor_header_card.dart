@@ -19,12 +19,16 @@ class VisitorHeaderCard extends StatelessWidget {
   TextStyle _columnStyle(int column) {
     if (selectedColumn == column) {
       return const TextStyle(
-          fontFamily: kDefaultFont,
-          fontSize: 22.0,
-          fontWeight: FontWeight.w800);
+        fontFamily: kDefaultFont,
+        fontSize: 22.0,
+        fontWeight: FontWeight.w800,
+      );
     }
     return const TextStyle(
-        fontFamily: kDefaultFont, fontSize: 16.0, fontWeight: FontWeight.bold);
+      fontFamily: kDefaultFont,
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+    );
   }
 
   @override
@@ -40,45 +44,30 @@ class VisitorHeaderCard extends StatelessWidget {
                 onTap: (() {
                   onTapDate();
                 }),
-                child: Text(
-                  "วันที่-เวลา เข้า",
-                  style: _columnStyle(0),
-                ),
+                child: Text("วันที่-เวลา เข้า", style: _columnStyle(0)),
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: onTapExitTime,
-                child: Text(
-                  "วันที่-เวลา ออก",
-                  style: _columnStyle(1),
-                ),
+                child: Text("วันที่-เวลา ออก", style: _columnStyle(1)),
               ),
             ),
             Expanded(
               child: GestureDetector(
-                child: Text(
-                  "ระยะเวลา",
-                  style: _columnStyle(2),
-                ),
+                child: Text("ระยะเวลา", style: _columnStyle(2)),
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: onTapPlateNumber,
-                child: Text(
-                  "ทะเบียน",
-                  style: _columnStyle(2),
-                ),
+                child: Text("ทะเบียน", style: _columnStyle(2)),
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: onTapMemberName,
-                child: Text(
-                  "ติดต่อ",
-                  style: _columnStyle(3),
-                ),
+                child: Text("ติดต่อ", style: _columnStyle(3)),
               ),
             ),
             const Expanded(

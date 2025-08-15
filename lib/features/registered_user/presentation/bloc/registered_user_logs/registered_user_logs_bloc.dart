@@ -16,14 +16,19 @@ class RegisteredUserLogsBloc
     on<GetRegisteredUserLogs>(_onGetRegisteredUserLogs);
   }
 
-  Future<void> _onGetRegisteredUserLogs(GetRegisteredUserLogs event,
-      Emitter<RegisteredUserLogsState> emit) async {
+  Future<void> _onGetRegisteredUserLogs(
+    GetRegisteredUserLogs event,
+    Emitter<RegisteredUserLogsState> emit,
+  ) async {
     emit(RegisteredUserLogsLoading());
     final result = await usecase.call(event.userId);
-    result.fold((failure) {
-      emit(RegisteredUserLogsFailure(failure.message));
-    }, (logs) {
-      emit(RegisteredUserLogsSuccess(logs.user, logs.logs));
-    });
+    result.fold(
+      (failure) {
+        emit(RegisteredUserLogsFailure(failure.message));
+      },
+      (logs) {
+        emit(RegisteredUserLogsSuccess(logs.user, logs.logs));
+      },
+    );
   }
 }

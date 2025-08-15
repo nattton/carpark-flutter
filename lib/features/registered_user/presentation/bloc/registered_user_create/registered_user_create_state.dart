@@ -48,20 +48,20 @@ final class RegisteredUserCreateState extends Equatable {
 
   @override
   List<Object> get props => [
-        status,
-        message,
-        id,
-        idCard,
-        engName,
-        thaiName,
-        birthdate,
-        gender,
-        address,
-        photoUrl,
-        telephone,
-        type,
-        expiredDate,
-      ];
+    status,
+    message,
+    id,
+    idCard,
+    engName,
+    thaiName,
+    birthdate,
+    gender,
+    address,
+    photoUrl,
+    telephone,
+    type,
+    expiredDate,
+  ];
 
   RegisteredUserCreateState copyWith({
     RegisteredUserCreateStatus? status,

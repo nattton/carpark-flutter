@@ -16,27 +16,30 @@ class MemberHeaderCard extends StatelessWidget {
               child: Text(
                 "ID",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(
               child: Text(
                 "ชื่อ",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(
               child: Text(
                 "โทรศัพท์",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(

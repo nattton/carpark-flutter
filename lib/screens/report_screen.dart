@@ -52,7 +52,8 @@ class _ReportScreenState extends State<ReportScreen> {
                   var results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
-                        calendarType: CalendarDatePicker2Type.range),
+                      calendarType: CalendarDatePicker2Type.range,
+                    ),
                     dialogSize: const Size(325, 400),
                     value: _dates,
                     borderRadius: BorderRadius.circular(15),
@@ -71,17 +72,12 @@ class _ReportScreenState extends State<ReportScreen> {
                   style: kButton2Style,
                 ),
               ),
-              const SizedBox(
-                width: 10.0,
-              ),
+              const SizedBox(width: 10.0),
               OutlinedButton(
                 onPressed: () {
                   downloadMemberTrafficExcel();
                 },
-                child: const Text(
-                  'Export to Excel',
-                  style: kButton2Style,
-                ),
+                child: const Text('Export to Excel', style: kButton2Style),
               ),
               Expanded(child: Container()),
             ],
@@ -95,10 +91,10 @@ class _ReportScreenState extends State<ReportScreen> {
           },
           validator: FormBuilderValidators.required(),
           options: kReportTypeMap.entries
-              .map((e) => FormBuilderFieldOption(
-                    value: e.key,
-                    child: Text(e.value),
-                  ))
+              .map(
+                (e) =>
+                    FormBuilderFieldOption(value: e.key, child: Text(e.value)),
+              )
               .toList(growable: false),
         ),
       ],
@@ -125,40 +121,47 @@ class _ReportScreenState extends State<ReportScreen> {
     getIt<ApiService>()
         .reportTraffic(getIt<AppService>().token, _reportType, date, dateTo)
         .then((report) async {
-      Excel excel = Excel.createExcel();
-      Sheet sheetObject = excel['Sheet1'];
+          Excel excel = Excel.createExcel();
+          Sheet sheetObject = excel['Sheet1'];
 
-      int currentRow = 0;
-      List<CellValue> columnName = [
-        TextCellValue("ID"),
-        TextCellValue("Name"),
-        TextCellValue("Vehicle ID"),
-        TextCellValue("PlateNumber"),
-        TextCellValue("Traffic"),
-      ];
-      sheetObject.insertRowIterables(columnName, currentRow);
-      CellStyle cellStyle = CellStyle(
-          backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
-      for (var i = 0; i < columnName.length; i++) {
-        var cell = sheetObject.cell(
-            CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
-        cell.cellStyle = cellStyle;
-      }
+          int currentRow = 0;
+          List<CellValue> columnName = [
+            TextCellValue("ID"),
+            TextCellValue("Name"),
+            TextCellValue("Vehicle ID"),
+            TextCellValue("PlateNumber"),
+            TextCellValue("Traffic"),
+          ];
+          sheetObject.insertRowIterables(columnName, currentRow);
+          CellStyle cellStyle = CellStyle(
+            backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
+            bold: true,
+          );
+          for (var i = 0; i < columnName.length; i++) {
+            var cell = sheetObject.cell(
+              CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
+            );
+            cell.cellStyle = cellStyle;
+          }
 
-      for (var i = 0; i < report.length; i++) {
-        currentRow++;
-        var m = report[i];
-        List<CellValue> dataList = [
-          TextCellValue(m.id.toString()),
-          TextCellValue(m.name),
-          TextCellValue(m.vehicleId.toString()),
-          TextCellValue(m.plateNumber),
-          TextCellValue(m.traffic.toString()),
-        ];
-        sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
-      }
-      saveExcelFile(excel, _reportType);
-    });
+          for (var i = 0; i < report.length; i++) {
+            currentRow++;
+            var m = report[i];
+            List<CellValue> dataList = [
+              TextCellValue(m.id.toString()),
+              TextCellValue(m.name),
+              TextCellValue(m.vehicleId.toString()),
+              TextCellValue(m.plateNumber),
+              TextCellValue(m.traffic.toString()),
+            ];
+            sheetObject.insertRowIterables(
+              dataList,
+              currentRow,
+              startingColumn: 0,
+            );
+          }
+          saveExcelFile(excel, _reportType);
+        });
   }
 
   Future<void> saveExcelFile(Excel excel, String reportType) async {

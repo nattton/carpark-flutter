@@ -21,19 +21,20 @@ class RegisteredUserModel extends RegisteredUser {
 
   factory RegisteredUserModel.responseMapper(RegisteredUserResponse response) {
     return RegisteredUserModel(
-        id: response.id,
-        generatedId: response.generatedId,
-        type: response.type,
-        telephone: response.telephone,
-        idCard: response.idCard,
-        thaiName: response.thaiName,
-        engName: response.engName,
-        birthdate: response.birthdate,
-        gender: response.gender,
-        address: response.address,
-        photo: response.photo,
-        createdAt: response.createdAt,
-        updatedAt: response.updatedAt,
-        expiredDate: response.expiredDate);
+      id: response.id,
+      generatedId: response.generatedId,
+      type: response.type,
+      telephone: response.telephone,
+      idCard: response.idCard,
+      thaiName: response.thaiName,
+      engName: response.engName,
+      birthdate: response.birthdate,
+      gender: response.gender,
+      address: response.address,
+      photo: response.photo,
+      createdAt: response.createdAt,
+      updatedAt: response.updatedAt,
+      expiredDate: response.expiredDate,
+    );
   }
 }

@@ -16,36 +16,40 @@ class VehicleHeaderCard extends StatelessWidget {
               child: Text(
                 "ID",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(
               child: Text(
                 "เลขทะเบียน",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(
               child: Text(
                 "เลขที่คล้าย",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(
               child: Text(
                 "จังหวัด",
                 style: TextStyle(
-                    fontFamily: kDefaultFont,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontFamily: kDefaultFont,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(

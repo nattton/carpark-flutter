@@ -47,9 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      height: 48.0,
-                    ),
+                    SizedBox(height: 48.0),
                     Text(
                       'Car Park',
                       style: TextStyle(
@@ -66,18 +64,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(
-                      height: 36.0,
-                    ),
+                    SizedBox(height: 36.0),
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 400,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: 400),
                   child: Column(
                     children: [
                       const Text(
@@ -89,9 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: kColorTextGrey,
                         ),
                       ),
-                      const SizedBox(
-                        height: 30.0,
-                      ),
+                      const SizedBox(height: 30.0),
                       TextField(
                         controller: _usernameController,
                         autofocus: false,
@@ -100,10 +92,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                           labelText: 'Username',
                           suffixIcon: const Icon(Icons.account_circle),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                          contentPadding: const EdgeInsets.fromLTRB(
+                            20.0,
+                            20.0,
+                            20.0,
+                            20.0,
+                          ),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8.0),
@@ -122,10 +119,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             child: const Icon(Icons.lock),
                           ),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                          contentPadding: const EdgeInsets.fromLTRB(
+                            20.0,
+                            20.0,
+                            20.0,
+                            20.0,
+                          ),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
                         ),
                         onSubmitted: (_) => loginUser(),
                       ),
@@ -146,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -189,20 +191,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void alertError(String msg) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alert Message'),
+          content: Text(msg),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void alertLogin(String desc) {
@@ -215,13 +219,9 @@ class _LoginScreenState extends State<LoginScreen> {
       animationDuration: const Duration(milliseconds: 400),
       alertBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0.0),
-        side: const BorderSide(
-          color: Colors.grey,
-        ),
+        side: const BorderSide(color: Colors.grey),
       ),
-      titleStyle: const TextStyle(
-        color: Colors.red,
-      ),
+      titleStyle: const TextStyle(color: Colors.red),
       alertAlignment: Alignment.center,
     );
     Alert(

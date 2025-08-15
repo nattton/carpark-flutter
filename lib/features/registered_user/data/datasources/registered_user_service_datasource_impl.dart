@@ -14,65 +14,91 @@ class RegisteredUserServiceDataSourceImpl
   final AppService appService;
 
   RegisteredUserServiceDataSourceImpl(
-      this.registeredUserService, this.appService);
+    this.registeredUserService,
+    this.appService,
+  );
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
-      int id, File photo) {
+    int id,
+    File photo,
+  ) {
     return registeredUserService.addPhotoToRegisteredUser(
-        appService.token, id, photo);
+      appService.token,
+      id,
+      photo,
+    );
   }
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> checkInRegisteredUser(
-      RegisteredUserCheckInRequest request) {
+    RegisteredUserCheckInRequest request,
+  ) {
     return registeredUserService.checkInRegisteredUser(
-        appService.token, request);
+      appService.token,
+      request,
+    );
   }
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> checkOutRegisteredUser(
-      RegisteredUserCheckOutRequest request) {
+    RegisteredUserCheckOutRequest request,
+  ) {
     return registeredUserService.checkOutRegisteredUser(
-        appService.token, request);
+      appService.token,
+      request,
+    );
   }
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
-      CreateRegisteredUserRequest request) {
+    CreateRegisteredUserRequest request,
+  ) {
     return registeredUserService.createRegisteredUser(
-        appService.token, request);
+      appService.token,
+      request,
+    );
   }
 
   @override
   Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
-      int id) {
+    int id,
+  ) {
     return registeredUserService.getRegisteredUserLogs(appService.token, id);
   }
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(
-      int id) {
+    int id,
+  ) {
     return registeredUserService.getRegisteredUser(appService.token, id);
   }
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      int id, UpdateRegisteredUserRequest request) {
+    int id,
+    UpdateRegisteredUserRequest request,
+  ) {
     return registeredUserService.updateRegisteredUser(
-        appService.token, id, request);
+      appService.token,
+      id,
+      request,
+    );
   }
 
   @override
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
-      ListRegisteredUserParam param) {
+    ListRegisteredUserParam param,
+  ) {
     return registeredUserService.getRegisteredUsers(
-        appService.token, param.search);
+      appService.token,
+      param.search,
+    );
   }
 
   @override
   Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
-      getNotCheckOutRegisteredUser() {
+  getNotCheckOutRegisteredUser() {
     return registeredUserService.getNotCheckOutRegisteredUser(appService.token);
   }
 }

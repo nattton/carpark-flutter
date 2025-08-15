@@ -10,12 +10,13 @@ class ReportTrafficModel {
   final String plateNumber;
   final int traffic;
 
-  ReportTrafficModel(
-      {required this.id,
-      required this.name,
-      required this.vehicleId,
-      required this.plateNumber,
-      required this.traffic});
+  ReportTrafficModel({
+    required this.id,
+    required this.name,
+    required this.vehicleId,
+    required this.plateNumber,
+    required this.traffic,
+  });
 
   factory ReportTrafficModel.fromJson(Map<String, dynamic> json) =>
       _$ReportTrafficModelFromJson(json);

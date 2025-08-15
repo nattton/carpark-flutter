@@ -7,31 +7,34 @@ import 'package:fpdart/fpdart.dart';
 
 abstract class RegisteredUserServiceRepository {
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
-      getRegisteredUsers(ListRegisteredUserParam param);
+  getRegisteredUsers(ListRegisteredUserParam param);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      getRegisteredUser(int id);
+  getRegisteredUser(int id);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      addPhotoToRegisteredUser(int id, File photo);
+  addPhotoToRegisteredUser(int id, File photo);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      checkInRegisteredUser(RegisteredUserCheckInRequest request);
+  checkInRegisteredUser(RegisteredUserCheckInRequest request);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      checkOutRegisteredUser(RegisteredUserCheckOutRequest request);
+  checkOutRegisteredUser(RegisteredUserCheckOutRequest request);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      createRegisteredUser(CreateRegisteredUserRequest request);
+  createRegisteredUser(CreateRegisteredUserRequest request);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserLogsResponse>>>
-      getRegisteredUserLogs(int id);
+  getRegisteredUserLogs(int id);
 
   Future<Either<Failure, GenericResponseData<RegisteredUserResponse>>>
-      updateRegisteredUser(UpdateRegisteredUserRequest request);
+  updateRegisteredUser(UpdateRegisteredUserRequest request);
 
   Future<
-          Either<Failure,
-              GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>>
-      getNotCheckOutRegisteredUser();
+    Either<
+      Failure,
+      GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>
+    >
+  >
+  getNotCheckOutRegisteredUser();
 }

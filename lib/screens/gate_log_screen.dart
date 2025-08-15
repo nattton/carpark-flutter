@@ -22,8 +22,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 final gateLogsProvider =
     StateNotifierProvider<GateLogsNotifier, List<GateLogResult>>((ref) {
-  return GateLogsNotifier();
-});
+      return GateLogsNotifier();
+    });
 
 final filterProvider = StateProvider((ref) => "");
 final sortByProvider = StateProvider((ref) => "");
@@ -136,12 +136,13 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       getIt<ApiService>()
           .searchGateLog(getIt<AppService>().token, date, dateTo)
           .then((value) {
-        EasyLoading.dismiss();
-        gateLogs.setState(value);
-      }).onError((error, stackTrace) {
-        EasyLoading.dismiss();
-        alertError(error.toString());
-      });
+            EasyLoading.dismiss();
+            gateLogs.setState(value);
+          })
+          .onError((error, stackTrace) {
+            EasyLoading.dismiss();
+            alertError(error.toString());
+          });
     }
   }
 
@@ -163,7 +164,8 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                   var results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
-                        calendarType: CalendarDatePicker2Type.range),
+                      calendarType: CalendarDatePicker2Type.range,
+                    ),
                     dialogSize: const Size(325, 400),
                     value: _dates,
                     borderRadius: BorderRadius.circular(15),
@@ -183,27 +185,19 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                   style: kButton2Style,
                 ),
               ),
-              const SizedBox(
-                width: 10.0,
-              ),
+              const SizedBox(width: 10.0),
               OutlinedButton(
                 onPressed: () {
                   _selectDate(_dates);
                 },
-                child: const Text(
-                  'Refresh',
-                  style: kButton2Style,
-                ),
+                child: const Text('Refresh', style: kButton2Style),
               ),
               Expanded(child: Container()),
               OutlinedButton(
                 onPressed: () {
                   onPressedExportGateLog();
                 },
-                child: const Text(
-                  'Export to Excel',
-                  style: kButton2Style,
-                ),
+                child: const Text('Export to Excel', style: kButton2Style),
               ),
             ],
           ),
@@ -225,8 +219,9 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                 child: const Icon(Icons.clear),
               ),
               contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
             ),
           ),
         ),
@@ -246,27 +241,27 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
             itemCount: filteredGateLogs.length,
             itemBuilder: (context, index) {
               return GateLogCard(
-                  gateLog: filteredGateLogs[index],
-                  onTap: () => viewDetail(filteredGateLogs[index]));
+                gateLog: filteredGateLogs[index],
+                onTap: () => viewDetail(filteredGateLogs[index]),
+              );
             },
           ),
-        )
+        ),
       ],
     );
   }
 
   void viewDetail(GateLogResult gateLog) {
     if (gateLog.visitorMemberId > 0) {
-      GoRouter.of(context)
-          .pushNamed(VisitorDetailScreen.routeName, extra: gateLog.visitorId);
+      GoRouter.of(
+        context,
+      ).pushNamed(VisitorDetailScreen.routeName, extra: gateLog.visitorId);
     } else {
       Alert(
         context: context,
         title: "Gate Log",
         content: Column(
-          children: <Widget>[
-            Image.network(gateLog.captureImageUrl()),
-          ],
+          children: <Widget>[Image.network(gateLog.captureImageUrl())],
         ),
       ).show();
     }
@@ -289,10 +284,13 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     CellStyle cellStyle = CellStyle(
-        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'), bold: true);
+      backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
+      bold: true,
+    );
     for (var i = 0; i < columnName.length; i++) {
       var cell = sheetObject.cell(
-          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow));
+        CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
+      );
       cell.cellStyle = cellStyle;
     }
 

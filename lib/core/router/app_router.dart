@@ -17,8 +17,9 @@ final appRouter = GoRouter(
       builder: (context, state) => const LoginScreen(),
     ),
     GoRoute(
-        path: MainScreen.routeName,
-        builder: (context, state) => MainScreen.page),
+      path: MainScreen.routeName,
+      builder: (context, state) => MainScreen.page,
+    ),
     GoRoute(
       path: '${MemberScreen.routeName}/:memberId',
       builder: (context, state) => MemberScreen(

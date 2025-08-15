@@ -8,11 +8,7 @@ class UserModel {
   final String name;
   final String role;
 
-  UserModel({
-    required this.id,
-    required this.name,
-    required this.role,
-  });
+  UserModel({required this.id, required this.name, required this.role});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

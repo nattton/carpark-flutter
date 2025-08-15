@@ -14,7 +14,7 @@ class IdCardServiceRepositoryImpl extends IdCardServiceRepository {
 
   @override
   Future<Either<Failure, GenericResponseData<IDCardEntity>>>
-      readIdCard() async {
+  readIdCard() async {
     return TaskEither.tryCatch(
       () => dataSource.readIdCard(),
       (e, _) => Failure.fromException(e),

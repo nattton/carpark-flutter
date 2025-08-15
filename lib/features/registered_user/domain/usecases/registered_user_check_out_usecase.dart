@@ -16,11 +16,14 @@ class RegisteredUserCheckOutUsecase
 
   @override
   Future<Either<Failure, RegisteredUser>> call(
-      RegisteredUserCheckOutRequest params) async {
+    RegisteredUserCheckOutRequest params,
+  ) async {
     try {
       final result = await repository.checkOutRegisteredUser(params);
-      return result.fold((l) => Left(l),
-          (r) => Right(RegisteredUserModel.responseMapper(r.data!)));
+      return result.fold(
+        (l) => Left(l),
+        (r) => Right(RegisteredUserModel.responseMapper(r.data!)),
+      );
     } catch (e) {
       return Left(Failure.fromException(e));
     }

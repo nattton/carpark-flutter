@@ -7,7 +7,8 @@ class RegisteredUserLogsModel extends RegisteredUserLogs {
   const RegisteredUserLogsModel({required super.user, required super.logs});
 
   static RegisteredUserLogs responseMapper(
-      RegisteredUserLogsResponse response) {
+    RegisteredUserLogsResponse response,
+  ) {
     return RegisteredUserLogs(
       user: RegisteredUserModel.responseMapper(response.registeredUser),
       logs: response.logs

@@ -12,13 +12,14 @@ class MemberModel {
   String? status;
   List<VehicleModel>? vehicles;
 
-  MemberModel(
-      {this.id,
-      this.name,
-      this.telephone,
-      this.type,
-      this.status,
-      this.vehicles});
+  MemberModel({
+    this.id,
+    this.name,
+    this.telephone,
+    this.type,
+    this.status,
+    this.vehicles,
+  });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) =>
       _$MemberModelFromJson(json);

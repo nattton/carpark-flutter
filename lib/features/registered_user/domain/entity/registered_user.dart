@@ -18,39 +18,40 @@ class RegisteredUser extends Equatable {
   final DateTime? updatedAt;
   final NullTimeModel? expiredDate;
 
-  const RegisteredUser(
-      {this.id = 0,
-      this.generatedId = "",
-      this.type = "",
-      this.telephone = "",
-      this.idCard = "",
-      this.thaiName = "",
-      this.engName = "",
-      this.birthdate = "",
-      this.gender = "",
-      this.address = "",
-      this.photo = "",
-      this.createdAt,
-      this.updatedAt,
-      this.expiredDate});
+  const RegisteredUser({
+    this.id = 0,
+    this.generatedId = "",
+    this.type = "",
+    this.telephone = "",
+    this.idCard = "",
+    this.thaiName = "",
+    this.engName = "",
+    this.birthdate = "",
+    this.gender = "",
+    this.address = "",
+    this.photo = "",
+    this.createdAt,
+    this.updatedAt,
+    this.expiredDate,
+  });
 
   @override
   List<Object?> get props => [
-        id,
-        generatedId,
-        type,
-        telephone,
-        idCard,
-        thaiName,
-        engName,
-        birthdate,
-        gender,
-        address,
-        photo,
-        createdAt,
-        updatedAt,
-        expiredDate,
-      ];
+    id,
+    generatedId,
+    type,
+    telephone,
+    idCard,
+    thaiName,
+    engName,
+    birthdate,
+    gender,
+    address,
+    photo,
+    createdAt,
+    updatedAt,
+    expiredDate,
+  ];
 
   String photoUrl() {
     if (photo.isNotEmpty) {
@@ -76,19 +77,20 @@ class RegisteredUser extends Equatable {
     DateTime? updatedAt,
   }) {
     return RegisteredUser(
-        id: id ?? this.id,
-        generatedId: generatedId ?? this.generatedId,
-        type: type ?? this.type,
-        telephone: telephone ?? this.telephone,
-        idCard: idCard ?? this.idCard,
-        thaiName: thaiName ?? this.thaiName,
-        engName: engName ?? this.engName,
-        birthdate: birthdate ?? this.birthdate,
-        gender: gender ?? this.gender,
-        address: address ?? this.address,
-        photo: photo ?? this.photo,
-        expiredDate: expiredDate ?? this.expiredDate,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt);
+      id: id ?? this.id,
+      generatedId: generatedId ?? this.generatedId,
+      type: type ?? this.type,
+      telephone: telephone ?? this.telephone,
+      idCard: idCard ?? this.idCard,
+      thaiName: thaiName ?? this.thaiName,
+      engName: engName ?? this.engName,
+      birthdate: birthdate ?? this.birthdate,
+      gender: gender ?? this.gender,
+      address: address ?? this.address,
+      photo: photo ?? this.photo,
+      expiredDate: expiredDate ?? this.expiredDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
   }
 }

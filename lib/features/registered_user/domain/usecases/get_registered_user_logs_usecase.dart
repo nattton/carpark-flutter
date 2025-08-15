@@ -16,8 +16,10 @@ class GetRegisteredUserLogsUsecase extends UseCase<RegisteredUserLogs, int> {
   Future<Either<Failure, RegisteredUserLogs>> call(int params) async {
     try {
       final result = await repository.getRegisteredUserLogs(params);
-      return result.fold((l) => Left(l),
-          (r) => Right(RegisteredUserLogsModel.responseMapper(r.data!)));
+      return result.fold(
+        (l) => Left(l),
+        (r) => Right(RegisteredUserLogsModel.responseMapper(r.data!)),
+      );
     } catch (e) {
       return Left(Failure(e.toString()));
     }

@@ -15,26 +15,31 @@ class RegisteredUserCheckInBloc
     extends Bloc<RegisteredUserCheckInEvent, RegisteredUserCheckInState> {
   final RegisteredUserCheckInUsecase registeredUserCheckInUsecase;
   RegisteredUserCheckInBloc(this.registeredUserCheckInUsecase)
-      : super(RegisteredUserCheckInInitial()) {
+    : super(RegisteredUserCheckInInitial()) {
     on<RegisteredUserCheckInEvent>((event, emit) {});
 
     on<PostRegisteredUserCheckInEvent>((event, emit) async {
       emit(RegisteredUserCheckInLoading());
       if (event.generatedId.isEmpty) {
-        emit(RegisteredUserCheckInFailure(
-            failure: Failure("Generated ID is required")));
+        emit(
+          RegisteredUserCheckInFailure(
+            failure: Failure("Generated ID is required"),
+          ),
+        );
         return;
       }
       if (!Uuid.isValidUUID(fromString: event.generatedId)) {
         emit(RegisteredUserCheckInFailure(failure: Failure("รหัสไม่ถูกต้อง")));
         return;
       }
-      final result = await registeredUserCheckInUsecase
-          .call(RegisteredUserCheckInRequest(generatedId: event.generatedId));
+      final result = await registeredUserCheckInUsecase.call(
+        RegisteredUserCheckInRequest(generatedId: event.generatedId),
+      );
       result.fold(
-          (failure) => emit(RegisteredUserCheckInFailure(failure: failure)),
-          (registeredUser) => emit(
-              RegisteredUserCheckInSuccess(registeredUser: registeredUser)));
+        (failure) => emit(RegisteredUserCheckInFailure(failure: failure)),
+        (registeredUser) =>
+            emit(RegisteredUserCheckInSuccess(registeredUser: registeredUser)),
+      );
     });
   }
 }

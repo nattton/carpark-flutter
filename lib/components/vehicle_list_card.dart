@@ -3,8 +3,11 @@ import 'package:carpark/models/vehicle_model.dart';
 import 'package:flutter/material.dart';
 
 class VehicleListCard extends StatelessWidget {
-  const VehicleListCard(
-      {super.key, required this.vehicle, required this.onTap});
+  const VehicleListCard({
+    super.key,
+    required this.vehicle,
+    required this.onTap,
+  });
 
   final VehicleModel vehicle;
   final VoidCallback onTap;

@@ -10,10 +10,7 @@ class NullTimeModel {
   @JsonKey(name: "Valid")
   bool? valid;
 
-  NullTimeModel({
-    this.time,
-    this.valid,
-  });
+  NullTimeModel({this.time, this.valid});
 
   factory NullTimeModel.fromJson(Map<String, dynamic> json) =>
       _$NullTimeModelFromJson(json);
@@ -49,10 +46,7 @@ class NullTimeModel {
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(time!);
   }
 
-  NullTimeModel copyWith({
-    DateTime? time,
-    bool? valid,
-  }) {
+  NullTimeModel copyWith({DateTime? time, bool? valid}) {
     return NullTimeModel(time: time ?? this.time, valid: valid ?? this.valid);
   }
 }

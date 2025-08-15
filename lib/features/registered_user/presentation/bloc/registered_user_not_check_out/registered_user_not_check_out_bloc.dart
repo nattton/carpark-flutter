@@ -10,28 +10,34 @@ part 'registered_user_not_check_out_event.dart';
 part 'registered_user_not_check_out_state.dart';
 
 @Injectable()
-class RegisteredUserNotCheckOutBloc extends Bloc<RegisteredUserNotCheckOutEvent,
-    RegisteredUserNotCheckOutState> {
+class RegisteredUserNotCheckOutBloc
+    extends
+        Bloc<RegisteredUserNotCheckOutEvent, RegisteredUserNotCheckOutState> {
   final GetRegisteredUserLogNotCheckOutResponseUsecase
-      getRegisteredUserLogNotCheckOutResponseUsecase;
+  getRegisteredUserLogNotCheckOutResponseUsecase;
 
   RegisteredUserNotCheckOutBloc(
-      this.getRegisteredUserLogNotCheckOutResponseUsecase)
-      : super(RegisteredUserNotCheckOutInitial()) {
+    this.getRegisteredUserLogNotCheckOutResponseUsecase,
+  ) : super(RegisteredUserNotCheckOutInitial()) {
     on<RegisteredUserNotCheckOutEvent>((event, emit) {});
     on<GetRegisteredUserNotCheckOut>(_onGetRegisteredUserNotCheckOut);
   }
 
   Future<void> _onGetRegisteredUserNotCheckOut(
-      GetRegisteredUserNotCheckOut event,
-      Emitter<RegisteredUserNotCheckOutState> emit) async {
+    GetRegisteredUserNotCheckOut event,
+    Emitter<RegisteredUserNotCheckOutState> emit,
+  ) async {
     emit(RegisteredUserNotCheckOutLoading());
-    final result =
-        await getRegisteredUserLogNotCheckOutResponseUsecase.call(NoParams());
-    result.fold((failure) {
-      emit(RegisteredUserNotCheckOutError(failure));
-    }, (response) {
-      emit(RegisteredUserNotCheckOutLoaded(response));
-    });
+    final result = await getRegisteredUserLogNotCheckOutResponseUsecase.call(
+      NoParams(),
+    );
+    result.fold(
+      (failure) {
+        emit(RegisteredUserNotCheckOutError(failure));
+      },
+      (response) {
+        emit(RegisteredUserNotCheckOutLoaded(response));
+      },
+    );
   }
 }

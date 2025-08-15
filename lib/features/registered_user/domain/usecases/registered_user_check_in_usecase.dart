@@ -16,7 +16,8 @@ class RegisteredUserCheckInUsecase
 
   @override
   Future<Either<Failure, RegisteredUser>> call(
-      RegisteredUserCheckInRequest params) async {
+    RegisteredUserCheckInRequest params,
+  ) async {
     try {
       final result = await repository.checkInRegisteredUser(params);
       return result.fold((l) => Left(l), (r) {

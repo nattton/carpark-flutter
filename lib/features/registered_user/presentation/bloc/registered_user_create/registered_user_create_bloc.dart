@@ -24,8 +24,10 @@ class RegisteredUserCreateBloc
   final RegisteredUserAddPhotoUsecase addPhotoUsecase;
 
   RegisteredUserCreateBloc(
-      this.usercase, this.readIdCardUsecase, this.addPhotoUsecase)
-      : super(const RegisteredUserCreateState()) {
+    this.usercase,
+    this.readIdCardUsecase,
+    this.addPhotoUsecase,
+  ) : super(const RegisteredUserCreateState()) {
     on<InitialCreateRegisteredUser>(_onInitial);
     on<ReadIdCard>(_readIdCard);
     on<SavePhoto>(_savePhoto);
@@ -33,55 +35,73 @@ class RegisteredUserCreateBloc
     on<SelectExpiredDate>(_selectExpiredDate);
   }
 
-  Future<void> _onInitial(InitialCreateRegisteredUser event,
-      Emitter<RegisteredUserCreateState> emit) async {
-    emit(state.copyWith(
-      status: RegisteredUserCreateStatus.initial,
-      id: 0,
-      idCard: "",
-      engName: "",
-      thaiName: "",
-      birthdate: "",
-      gender: "",
-      address: "",
-      telephone: "",
-      type: "",
-      expiredDate: DateFormat("yyyy-MM-dd").format(DateTime.now()),
-      photoUrl: "",
-    ));
+  Future<void> _onInitial(
+    InitialCreateRegisteredUser event,
+    Emitter<RegisteredUserCreateState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: RegisteredUserCreateStatus.initial,
+        id: 0,
+        idCard: "",
+        engName: "",
+        thaiName: "",
+        birthdate: "",
+        gender: "",
+        address: "",
+        telephone: "",
+        type: "",
+        expiredDate: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+        photoUrl: "",
+      ),
+    );
   }
 
   Future<void> _readIdCard(
-      ReadIdCard event, Emitter<RegisteredUserCreateState> emit) async {
+    ReadIdCard event,
+    Emitter<RegisteredUserCreateState> emit,
+  ) async {
     emit(state.copyWith(status: RegisteredUserCreateStatus.reading));
     final idCardResponse = await readIdCardUsecase.call(NoParams());
     idCardResponse.fold(
-        (l) => emit(state.copyWith(
-            status: RegisteredUserCreateStatus.readFailure,
-            message: l.message)),
-        (r) => emit(state.copyWith(
-              status: RegisteredUserCreateStatus.readSuccess,
-              idCard: r.id,
-              engName: r.engName,
-              thaiName: r.thaiName,
-              birthdate: r.birthdate,
-              gender: r.genderName(),
-              address: r.address,
-              photoUrl: r.photoUrl(),
-            )));
+      (l) => emit(
+        state.copyWith(
+          status: RegisteredUserCreateStatus.readFailure,
+          message: l.message,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          status: RegisteredUserCreateStatus.readSuccess,
+          idCard: r.id,
+          engName: r.engName,
+          thaiName: r.thaiName,
+          birthdate: r.birthdate,
+          gender: r.genderName(),
+          address: r.address,
+          photoUrl: r.photoUrl(),
+        ),
+      ),
+    );
   }
 
-  Future<void> _createRegisteredUser(CreateRegisteredUser event,
-      Emitter<RegisteredUserCreateState> emit) async {
+  Future<void> _createRegisteredUser(
+    CreateRegisteredUser event,
+    Emitter<RegisteredUserCreateState> emit,
+  ) async {
     emit(state.copyWith(status: RegisteredUserCreateStatus.creating));
     try {
       final registeredUser = await usercase.call(event.request);
       registeredUser.fold(
-        (l) => emit(state.copyWith(
+        (l) => emit(
+          state.copyWith(
             status: RegisteredUserCreateStatus.createFailure,
-            message: l.message)),
+            message: l.message,
+          ),
+        ),
         (r) {
-          emit(state.copyWith(
+          emit(
+            state.copyWith(
               status: RegisteredUserCreateStatus.createSuccess,
               id: r.id,
               idCard: r.idCard,
@@ -92,32 +112,44 @@ class RegisteredUserCreateBloc
               address: r.address,
               telephone: r.telephone,
               type: r.type,
-              expiredDate: r.expiredDate.toDateString()));
+              expiredDate: r.expiredDate.toDateString(),
+            ),
+          );
           add(SavePhoto());
         },
       );
     } catch (e) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           status: RegisteredUserCreateStatus.createFailure,
-          message: e.toString()));
+          message: e.toString(),
+        ),
+      );
     }
   }
 
   Future<void> _savePhoto(
-      SavePhoto event, Emitter<RegisteredUserCreateState> emit) async {
+    SavePhoto event,
+    Emitter<RegisteredUserCreateState> emit,
+  ) async {
     if (state.photoUrl.isNotEmpty) {
       emit(state.copyWith(status: RegisteredUserCreateStatus.savingPhoto));
       try {
         final photoFile = await _tempImage(state.idCard);
         await Dio().download(state.photoUrl, photoFile.path);
-        await addPhotoUsecase
-            .call(AddPhotoRegisteredUserParam(id: state.id, photo: photoFile));
-        emit(state.copyWith(
-            status: RegisteredUserCreateStatus.savePhotoSuccess));
+        await addPhotoUsecase.call(
+          AddPhotoRegisteredUserParam(id: state.id, photo: photoFile),
+        );
+        emit(
+          state.copyWith(status: RegisteredUserCreateStatus.savePhotoSuccess),
+        );
       } catch (e) {
-        emit(state.copyWith(
+        emit(
+          state.copyWith(
             status: RegisteredUserCreateStatus.savePhotoFailure,
-            message: e.toString()));
+            message: e.toString(),
+          ),
+        );
       }
     }
   }
@@ -129,12 +161,18 @@ class RegisteredUserCreateBloc
   }
 
   Future<void> _selectExpiredDate(
-      SelectExpiredDate event, Emitter<RegisteredUserCreateState> emit) async {
-    emit(state.copyWith(
-        status: RegisteredUserCreateStatus.selectingExpiredDate));
-    emit(state.copyWith(
+    SelectExpiredDate event,
+    Emitter<RegisteredUserCreateState> emit,
+  ) async {
+    emit(
+      state.copyWith(status: RegisteredUserCreateStatus.selectingExpiredDate),
+    );
+    emit(
+      state.copyWith(
         status: RegisteredUserCreateStatus.selectExpiredDateSuccess,
-        expiredDate: _formatDate(event.expiredDates[0]!)));
+        expiredDate: _formatDate(event.expiredDates[0]!),
+      ),
+    );
   }
 
   String _formatDate(DateTime date) {

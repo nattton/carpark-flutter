@@ -45,34 +45,40 @@ class _UserScreenState extends State<UserScreen> {
           );
         }
         return UserListCard(
-            user: userList[index - 1],
-            onTap: () => onPressedRow(context, userList[index - 1]));
+          user: userList[index - 1],
+          onTap: () => onPressedRow(context, userList[index - 1]),
+        );
       },
     );
   }
 
   Future<void> getUser() async {
-    getIt<ApiService>().getUserList(getIt<AppService>().token).then((value) {
-      setState(() {
-        userList = value;
-      });
-    }).catchError((error) {});
+    getIt<ApiService>()
+        .getUserList(getIt<AppService>().token)
+        .then((value) {
+          setState(() {
+            userList = value;
+          });
+        })
+        .catchError((error) {});
   }
 
   void saveUser(UserModel user) {
     var saveUser = SaveUserModel(
-        id: user.id,
-        username: _usernameController.text,
-        password: _passwordController.text,
-        role: user.role);
+      id: user.id,
+      username: _usernameController.text,
+      password: _passwordController.text,
+      role: user.role,
+    );
     getIt<ApiService>()
         .updateUser(getIt<AppService>().token, saveUser.id, saveUser)
         .then((value) {
-      GoRouter.of(context).pop();
-      getUser();
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+          GoRouter.of(context).pop();
+          getUser();
+        })
+        .onError((error, stackTrace) {
+          alertError(error.toString());
+        });
   }
 
   void onPressedRow(BuildContext context, UserModel user) {
@@ -80,71 +86,74 @@ class _UserScreenState extends State<UserScreen> {
     _passwordController.text = '';
 
     Alert(
-        context: context,
-        title: "Change Password",
-        content: Column(
-          children: [
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _usernameController,
-              autofocus: false,
-              autocorrect: false,
-              enabled: false,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'User',
-                suffixIcon: const Icon(Icons.account_circle),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+      context: context,
+      title: "Change Password",
+      content: Column(
+        children: [
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _usernameController,
+            autofocus: false,
+            autocorrect: false,
+            enabled: false,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: 'User',
+              suffixIcon: const Icon(Icons.account_circle),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _passwordController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'New Password',
-                suffixIcon: const Icon(Icons.lock),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _passwordController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: 'New Password',
+              suffixIcon: const Icon(Icons.lock),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            saveUser(user);
+          },
+          child: const Text(
+            "Save",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              saveUser(user);
-            },
-            child: const Text(
-              "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+      ],
+    ).show();
   }
 
   void alertError(String msg) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Alert Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).pop();
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alert Message'),
+          content: Text(msg),
+          actions: [
+            TextButton(
+              onPressed: () {
+                GoRouter.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

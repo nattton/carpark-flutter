@@ -18,17 +18,14 @@ final class RegisteredUserUpdateState extends Equatable {
   final RegisteredUserUpdateStatus status;
   final String message;
   final RegisteredUser registeredUser;
-  const RegisteredUserUpdateState(
-      {this.status = RegisteredUserUpdateStatus.initial,
-      this.message = "",
-      this.registeredUser = const RegisteredUser()});
+  const RegisteredUserUpdateState({
+    this.status = RegisteredUserUpdateStatus.initial,
+    this.message = "",
+    this.registeredUser = const RegisteredUser(),
+  });
 
   @override
-  List<Object> get props => [
-        status,
-        message,
-        registeredUser,
-      ];
+  List<Object> get props => [status, message, registeredUser];
 
   RegisteredUserUpdateState copyWith({
     RegisteredUserUpdateStatus? status,

@@ -16,7 +16,8 @@ class RegisteredUserListUsecase
 
   @override
   Future<Either<Failure, List<RegisteredUser>>> call(
-      ListRegisteredUserParam params) async {
+    ListRegisteredUserParam params,
+  ) async {
     final result = await repository.getRegisteredUsers(params);
     return result.fold(
       (l) => Left(l),

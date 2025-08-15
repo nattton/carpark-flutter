@@ -15,37 +15,25 @@ class RegisteredUserLogListHeaderWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 "ID",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "เวลาเข้า",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "เวลาออก",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "ระยะเวลา",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             SizedBox(width: 30.0),

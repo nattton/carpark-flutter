@@ -3,8 +3,11 @@ import 'package:carpark/features/registered_user/domain/entity/registered_user_l
 import 'package:flutter/material.dart';
 
 class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
-  const RegisteredUserNotCheckOutRowWidget(
-      {super.key, required this.log, required this.onTap});
+  const RegisteredUserNotCheckOutRowWidget({
+    super.key,
+    required this.log,
+    required this.onTap,
+  });
 
   final RegisteredUserLog log;
   final VoidCallback onTap;

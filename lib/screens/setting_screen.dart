@@ -54,61 +54,67 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return Card(
-            child: Row(children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Printer : ',
-                  style: TextStyle(
+            child: Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Printer : ',
+                    style: TextStyle(
                       fontFamily: kDefaultFont,
                       fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
-              DropdownButton<String>(
-                value: getIt<AppService>().printer.isEmpty ||
-                        !devices.contains(getIt<AppService>().printer)
-                    ? devices.first
-                    : getIt<AppService>().printer,
-                icon: const Icon(Icons.print),
-                elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
+                DropdownButton<String>(
+                  value:
+                      getIt<AppService>().printer.isEmpty ||
+                          !devices.contains(getIt<AppService>().printer)
+                      ? devices.first
+                      : getIt<AppService>().printer,
+                  icon: const Icon(Icons.print),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      getIt<AppService>().savePrinter(value!);
+                    });
+                  },
+                  items: devices.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
-                onChanged: (String? value) {
-                  // This is called when the user selects an item.
-                  setState(() {
-                    getIt<AppService>().savePrinter(value!);
-                  });
-                },
-                items: devices.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ]),
+              ],
+            ),
           );
         }
         if (index == 1) {
           return CameraListCard(
             camera: CameraModel(
-                id: 0,
-                name: '',
-                ipAddress: '',
-                port: '',
-                username: '',
-                password: '',
-                path: ''),
+              id: 0,
+              name: '',
+              ipAddress: '',
+              port: '',
+              username: '',
+              password: '',
+              path: '',
+            ),
             onTap: () {},
           );
         }
         return CameraListCard(
-            camera: cameraList[index - 2],
-            onTap: () => onPressedRow(context, cameraList[index - 2]));
+          camera: cameraList[index - 2],
+          onTap: () => onPressedRow(context, cameraList[index - 2]),
+        );
       },
     );
   }
@@ -120,24 +126,28 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       if (!devices.contains(device.name)) {
         devices.add(device.name);
         print(
-            'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}');
+          'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}',
+        );
         setState(() {});
       }
     });
   }
 
   Future<void> getCamera() async {
-    getIt<ApiService>().getCameraList(getIt<AppService>().token).then((value) {
-      setState(() {
-        cameraList = value;
-      });
-      final camera = ref.read(cameraMapProvider);
-      for (CameraModel cam in cameraList) {
-        camera[cam.name] = cam;
-      }
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+    getIt<ApiService>()
+        .getCameraList(getIt<AppService>().token)
+        .then((value) {
+          setState(() {
+            cameraList = value;
+          });
+          final camera = ref.read(cameraMapProvider);
+          for (CameraModel cam in cameraList) {
+            camera[cam.name] = cam;
+          }
+        })
+        .onError((error, stackTrace) {
+          alertError(error.toString());
+        });
   }
 
   void saveCamera(CameraModel camera) {
@@ -151,11 +161,12 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     getIt<ApiService>()
         .updateCamera(getIt<AppService>().token, camera.id, camera)
         .then((value) {
-      GoRouter.of(context).pop();
-      getCamera();
-    }).onError((error, stackTrace) {
-      alertError(error.toString());
-    });
+          GoRouter.of(context).pop();
+          getCamera();
+        })
+        .onError((error, stackTrace) {
+          alertError(error.toString());
+        });
   }
 
   void onPressedRow(BuildContext context, CameraModel camera) {
@@ -166,99 +177,100 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     _pathController.text = camera.path;
 
     Alert(
-        context: context,
-        title: "Camera : ${camera.name}",
-        content: Column(
-          children: [
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _ipAddressController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.url,
-              decoration: InputDecoration(
-                labelText: 'IP Address',
-                suffixIcon: const Icon(Icons.account_circle),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+      context: context,
+      title: "Camera : ${camera.name}",
+      content: Column(
+        children: [
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _ipAddressController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.url,
+            decoration: InputDecoration(
+              labelText: 'IP Address',
+              suffixIcon: const Icon(Icons.account_circle),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _portController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Port',
-                suffixIcon: const Icon(Icons.account_circle),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _portController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: 'Port',
+              suffixIcon: const Icon(Icons.account_circle),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _usernameController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                suffixIcon: const Icon(Icons.account_circle),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _usernameController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: 'Username',
+              suffixIcon: const Icon(Icons.account_circle),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _passwordController,
-              autofocus: false,
-              autocorrect: false,
-              obscureText: true,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: const Icon(Icons.lock),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _passwordController,
+            autofocus: false,
+            autocorrect: false,
+            obscureText: true,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              suffixIcon: const Icon(Icons.lock),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 8.0),
-            TextField(
-              controller: _pathController,
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.url,
-              decoration: InputDecoration(
-                labelText: 'Path',
-                suffixIcon: const Icon(Icons.account_circle),
-                contentPadding:
-                    const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 8.0),
+          TextField(
+            controller: _pathController,
+            autofocus: false,
+            autocorrect: false,
+            keyboardType: TextInputType.url,
+            decoration: InputDecoration(
+              labelText: 'Path',
+              suffixIcon: const Icon(Icons.account_circle),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            saveCamera(camera);
+          },
+          child: const Text(
+            "Save",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              saveCamera(camera);
-            },
-            child: const Text(
-              "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+      ],
+    ).show();
   }
 
   void alertError(String msg) {

@@ -7,15 +7,16 @@ part 'registered_user_log_not_check_out_response.g.dart';
 
 @JsonSerializable()
 class RegisteredUserLogNotCheckOutResponse extends RegisteredUserLogResponse {
-  const RegisteredUserLogNotCheckOutResponse(
-      {required super.id,
-      required super.checkInTime,
-      required super.checkOutTime,
-      required super.registeredUser});
+  const RegisteredUserLogNotCheckOutResponse({
+    required super.id,
+    required super.checkInTime,
+    required super.checkOutTime,
+    required super.registeredUser,
+  });
 
   factory RegisteredUserLogNotCheckOutResponse.fromJson(
-          Map<String, dynamic> json) =>
-      _$RegisteredUserLogNotCheckOutResponseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$RegisteredUserLogNotCheckOutResponseFromJson(json);
 
   @override
   Map<String, dynamic> toJson() =>

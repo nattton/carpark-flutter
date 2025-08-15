@@ -20,37 +20,53 @@ class RegisteredUserListBloc
     on<RegisteredUserUpdating>(_onGoToRegisteredUserUpdateScreen);
   }
 
-  Future<void> _onGetRegisteredUserList(GetRegisteredUserList event,
-      Emitter<RegisteredUserListState> emit) async {
+  Future<void> _onGetRegisteredUserList(
+    GetRegisteredUserList event,
+    Emitter<RegisteredUserListState> emit,
+  ) async {
     emit(RegisteredUserListLoading());
-    final result =
-        await usecase.call(const ListRegisteredUserParam(search: ''));
-    result.fold((failure) {
-      emit(RegisteredUserListFailure(failure.message));
-    }, (registeredUsers) {
-      emit(RegisteredUserListSuccess(registeredUsers));
-    });
+    final result = await usecase.call(
+      const ListRegisteredUserParam(search: ''),
+    );
+    result.fold(
+      (failure) {
+        emit(RegisteredUserListFailure(failure.message));
+      },
+      (registeredUsers) {
+        emit(RegisteredUserListSuccess(registeredUsers));
+      },
+    );
   }
 
   Future<void> _onSearchRegisteredUser(
-      SearchRegisteredUser event, Emitter<RegisteredUserListState> emit) async {
+    SearchRegisteredUser event,
+    Emitter<RegisteredUserListState> emit,
+  ) async {
     emit(RegisteredUserListLoading());
-    final result =
-        await usecase.call(ListRegisteredUserParam(search: event.searchText));
-    result.fold((failure) {
-      emit(RegisteredUserListFailure(failure.message));
-    }, (registeredUsers) {
-      emit(RegisteredUserListSuccess(registeredUsers));
-    });
+    final result = await usecase.call(
+      ListRegisteredUserParam(search: event.searchText),
+    );
+    result.fold(
+      (failure) {
+        emit(RegisteredUserListFailure(failure.message));
+      },
+      (registeredUsers) {
+        emit(RegisteredUserListSuccess(registeredUsers));
+      },
+    );
   }
 
-  Future<void> _onGoToRegisteredUserCreateScreen(RegisteredUserCreating event,
-      Emitter<RegisteredUserListState> emit) async {
+  Future<void> _onGoToRegisteredUserCreateScreen(
+    RegisteredUserCreating event,
+    Emitter<RegisteredUserListState> emit,
+  ) async {
     emit(RegisteredUserListCreating());
   }
 
-  Future<void> _onGoToRegisteredUserUpdateScreen(RegisteredUserUpdating event,
-      Emitter<RegisteredUserListState> emit) async {
+  Future<void> _onGoToRegisteredUserUpdateScreen(
+    RegisteredUserUpdating event,
+    Emitter<RegisteredUserListState> emit,
+  ) async {
     emit(RegisteredUserListUpdating());
   }
 }

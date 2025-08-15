@@ -14,29 +14,38 @@ class RegisteredUserLog extends Equatable {
   final DateTime? checkOutTime;
   final RegisteredUser? registeredUser;
 
-  const RegisteredUserLog(
-      {this.id = 0,
-      this.generatedId = "",
-      this.checkInTime,
-      this.checkOutTime,
-      this.registeredUser});
+  const RegisteredUserLog({
+    this.id = 0,
+    this.generatedId = "",
+    this.checkInTime,
+    this.checkOutTime,
+    this.registeredUser,
+  });
 
   @override
-  List<Object?> get props =>
-      [id, generatedId, checkInTime, checkOutTime, registeredUser];
+  List<Object?> get props => [
+    id,
+    generatedId,
+    checkInTime,
+    checkOutTime,
+    registeredUser,
+  ];
 
-  String get duration => checkOutTime != null &&
+  String get duration =>
+      checkOutTime != null &&
           checkInTime != null &&
           checkOutTime!.isAfter(checkInTime!)
       ? checkOutTime!.difference(checkInTime!).pretty()
       : "";
 
   String get checkInTimeString => checkInTime != null
-      ? DateFormat(dateFormat)
-          .format(checkInTime!.add(const Duration(hours: 7)))
+      ? DateFormat(
+          dateFormat,
+        ).format(checkInTime!.add(const Duration(hours: 7)))
       : "";
   String get checkOutTimeString => checkOutTime != null
-      ? DateFormat(dateFormat)
-          .format(checkOutTime!.add(const Duration(hours: 7)))
+      ? DateFormat(
+          dateFormat,
+        ).format(checkOutTime!.add(const Duration(hours: 7)))
       : "";
 }

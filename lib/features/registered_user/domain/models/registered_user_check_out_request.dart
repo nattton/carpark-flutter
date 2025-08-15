@@ -6,9 +6,7 @@ part 'registered_user_check_out_request.g.dart';
 class RegisteredUserCheckOutRequest {
   final String generatedId;
 
-  const RegisteredUserCheckOutRequest({
-    required this.generatedId,
-  });
+  const RegisteredUserCheckOutRequest({required this.generatedId});
 
   factory RegisteredUserCheckOutRequest.fromJson(Map<String, dynamic> json) =>
       _$RegisteredUserCheckOutRequestFromJson(json);

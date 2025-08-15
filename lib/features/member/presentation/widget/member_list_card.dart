@@ -140,8 +140,8 @@ class MemberListCard extends StatelessWidget {
                       child: Text(
                         member.vehicles != null
                             ? member.vehicles!
-                                .map((vehicle) => vehicle.plateNumber!)
-                                .join(', ')
+                                  .map((vehicle) => vehicle.plateNumber!)
+                                  .join(', ')
                             : '',
                         style: const TextStyle(
                           fontFamily: kDefaultFont,

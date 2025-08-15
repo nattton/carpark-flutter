@@ -15,9 +15,12 @@ class RegisteredUserAddPhotoUsecase
 
   @override
   Future<Either<Failure, RegisteredUserResponse>> call(
-      AddPhotoRegisteredUserParam params) async {
-    final result =
-        await repository.addPhotoToRegisteredUser(params.id, params.photo);
+    AddPhotoRegisteredUserParam params,
+  ) async {
+    final result = await repository.addPhotoToRegisteredUser(
+      params.id,
+      params.photo,
+    );
     return result.fold((l) => Left(l), (r) => Right(r.data!));
   }
 }

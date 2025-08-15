@@ -28,12 +28,11 @@ class ExitScreen extends StatefulHookConsumerWidget {
   ConsumerState<ExitScreen> createState() => _ExitScreenState();
 
   static Widget get page => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) => getIt<RegisteredUserCheckOutBloc>()),
-        ],
-        child: const ExitScreen(),
-      );
+    providers: [
+      BlocProvider(create: (context) => getIt<RegisteredUserCheckOutBloc>()),
+    ],
+    child: const ExitScreen(),
+  );
 }
 
 class _ExitScreenState extends ConsumerState<ExitScreen> {
@@ -59,8 +58,10 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   Widget build(BuildContext context) {
     final gateLog = ref.watch(lastGateProvider).gateOut;
     final player = ref.watch(cameraPlayerProvider);
-    return BlocListener<RegisteredUserCheckOutBloc,
-        RegisteredUserCheckOutState>(
+    return BlocListener<
+      RegisteredUserCheckOutBloc,
+      RegisteredUserCheckOutState
+    >(
       listener: (context, state) {
         if (state is RegisteredUserCheckOutSuccess) {
           alertCheckOut(state.registeredUser);
@@ -89,10 +90,15 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                                 onTap: () => checkout(),
                                 child: const Icon(Icons.barcode_reader),
                               ),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                8.0,
+                                8.0,
+                                8.0,
+                                8.0,
+                              ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(0.0)),
+                                borderRadius: BorderRadius.circular(0.0),
+                              ),
                             ),
                             onSubmitted: (value) => checkout(),
                             focusNode: focusNode,
@@ -106,7 +112,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                     child: !kIsWeb
                         ? LivePlayerSection(
                             mainController: player.mainController,
-                            sideController: player.sideController)
+                            sideController: player.sideController,
+                          )
                         : const SizedBox(),
                   ),
                 ],
@@ -122,20 +129,22 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
   void alertError(String msg) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error Message'),
-            content: Text(msg),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  child: const Text('Close'))
-            ],
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error Message'),
+          content: Text(msg),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<File> _tempImage(String type) async {
@@ -149,10 +158,10 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     File outSideImage = await _tempImage("out_side");
     File exitImage = await _tempImage("exit");
 
-    final Uint8List? sideScreenshot =
-        await cameraPlayer.sidePlayer.screenshot();
-    final Uint8List? mainScreenshot =
-        await cameraPlayer.mainPlayer.screenshot();
+    final Uint8List? sideScreenshot = await cameraPlayer.sidePlayer
+        .screenshot();
+    final Uint8List? mainScreenshot = await cameraPlayer.mainPlayer
+        .screenshot();
 
     if (sideScreenshot != null) {
       outSideImage.writeAsBytes(sideScreenshot);
@@ -163,12 +172,20 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
     if (await outSideImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-          getIt<AppService>().token, visitor.id, "out_side", outSideImage);
+        getIt<AppService>().token,
+        visitor.id,
+        "out_side",
+        outSideImage,
+      );
       outSideImage.delete();
     }
     if (await exitImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-          getIt<AppService>().token, visitor.id, "exit", exitImage);
+        getIt<AppService>().token,
+        visitor.id,
+        "exit",
+        exitImage,
+      );
       exitImage.delete();
     }
   }
@@ -180,13 +197,15 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       _barcodeController.clear();
       focusNode.requestFocus();
       if (Uuid.isValidUUID(fromString: barcode)) {
-        _registeredUserCheckOutBloc
-            .add(PostRegisteredUserCheckOutEvent(generatedId: barcode));
+        _registeredUserCheckOutBloc.add(
+          PostRegisteredUserCheckOutEvent(generatedId: barcode),
+        );
       } else {
         try {
           final visitor = await getIt<ApiService>().checkoutVisitor(
-              getIt<AppService>().token,
-              CheckoutModel(barcode: barcode, gateLogId: gateLog.id));
+            getIt<AppService>().token,
+            CheckoutModel(barcode: barcode, gateLogId: gateLog.id),
+          );
 
           alertMessage('ลงเวลาออก ทะเบียน : ${visitor.plateNumber}');
           addImageToVisitor(visitor);
@@ -195,7 +214,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
           if (res != null) {
             if (res.statusCode == HttpStatus.badRequest) {
               alertError(
-                  "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ");
+                "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ",
+              );
             } else if (res.statusCode == HttpStatus.notFound) {
               alertError("ไม่พบข้อมูล");
             }
@@ -209,26 +229,30 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
   void alertCheckOut(RegisteredUser registeredUser) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Check Out'),
-            content: Text('ลงเวลาออกโดย ${registeredUser.thaiName}'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    context.pop();
-                    context.push(
-                        "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}");
-                  },
-                  child: const Text('ดูประวัติการเข้าใช้งาน')),
-              TextButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  child: const Text('ปิด'))
-            ],
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Check Out'),
+          content: Text('ลงเวลาออกโดย ${registeredUser.thaiName}'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+                context.push(
+                  "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}",
+                );
+              },
+              child: const Text('ดูประวัติการเข้าใช้งาน'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('ปิด'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

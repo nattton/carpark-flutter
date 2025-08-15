@@ -21,16 +21,18 @@ class GateLogModel {
   final String? captureImage;
   final String? licensePlateImage;
 
-  GateLogModel(this.id,
-      {this.createdAt,
-      this.gateName,
-      this.anpr,
-      this.plateNumber,
-      this.memberId,
-      this.member,
-      this.captureTime,
-      this.captureImage,
-      this.licensePlateImage});
+  GateLogModel(
+    this.id, {
+    this.createdAt,
+    this.gateName,
+    this.anpr,
+    this.plateNumber,
+    this.memberId,
+    this.member,
+    this.captureTime,
+    this.captureImage,
+    this.licensePlateImage,
+  });
 
   factory GateLogModel.fromJson(Map<String, dynamic> json) =>
       _$GateLogModelFromJson(json);

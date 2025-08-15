@@ -18,18 +18,19 @@ class GateLogResult {
   final int visitorMemberId;
   final String visitorMemberName;
 
-  const GateLogResult(
-      {required this.id,
-      required this.createdAt,
-      required this.gateName,
-      required this.anpr,
-      required this.plateNumber,
-      required this.captureImage,
-      required this.memberId,
-      required this.memberName,
-      required this.visitorId,
-      required this.visitorMemberId,
-      required this.visitorMemberName});
+  const GateLogResult({
+    required this.id,
+    required this.createdAt,
+    required this.gateName,
+    required this.anpr,
+    required this.plateNumber,
+    required this.captureImage,
+    required this.memberId,
+    required this.memberName,
+    required this.visitorId,
+    required this.visitorMemberId,
+    required this.visitorMemberName,
+  });
 
   factory GateLogResult.fromJson(Map<String, dynamic> json) =>
       _$GateLogResultFromJson(json);

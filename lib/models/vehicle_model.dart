@@ -13,15 +13,16 @@ class VehicleModel {
   String? telephone;
   String? resemble;
 
-  VehicleModel(
-      {this.id,
-      this.memberId,
-      this.plateNumber,
-      this.plateProvince,
-      this.brand,
-      this.color,
-      this.telephone,
-      this.resemble});
+  VehicleModel({
+    this.id,
+    this.memberId,
+    this.plateNumber,
+    this.plateProvince,
+    this.brand,
+    this.color,
+    this.telephone,
+    this.resemble,
+  });
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) =>
       _$VehicleModelFromJson(json);

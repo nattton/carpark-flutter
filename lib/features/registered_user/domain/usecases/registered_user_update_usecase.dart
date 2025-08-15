@@ -16,13 +16,12 @@ class RegisteredUserUpdateUsecase
 
   @override
   Future<Either<Failure, RegisteredUser>> call(
-      UpdateRegisteredUserRequest params) async {
+    UpdateRegisteredUserRequest params,
+  ) async {
     try {
       final result = await repository.updateRegisteredUser(params);
       return result.fold((l) => Left(l), (r) {
-        return Right(
-          RegisteredUserModel.responseMapper(r.data!),
-        );
+        return Right(RegisteredUserModel.responseMapper(r.data!));
       });
     } catch (e) {
       return Left(Failure.fromException(e));

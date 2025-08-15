@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 class LivePlayerSection extends StatelessWidget {
-  const LivePlayerSection(
-      {super.key, required this.mainController, required this.sideController});
+  const LivePlayerSection({
+    super.key,
+    required this.mainController,
+    required this.sideController,
+  });
 
   final VideoController mainController;
   final VideoController sideController;
@@ -23,21 +26,13 @@ class LivePlayerSection extends StatelessWidget {
         SizedBox(
           width: width,
           height: height,
-          child: Video(
-            controller: mainController,
-            controls: null,
-          ),
+          child: Video(controller: mainController, controls: null),
         ),
-        const SizedBox(
-          height: 4.0,
-        ),
+        const SizedBox(height: 4.0),
         SizedBox(
           width: width,
           height: height,
-          child: Video(
-            controller: sideController,
-            controls: null,
-          ),
+          child: Video(controller: sideController, controls: null),
         ),
       ],
     );

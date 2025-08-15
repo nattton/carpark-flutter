@@ -12,15 +12,9 @@ part 'last_gate.g.dart';
 class LastGate {
   final GateLogModel gateIn;
   final GateLogModel gateOut;
-  const LastGate({
-    required this.gateIn,
-    required this.gateOut,
-  });
+  const LastGate({required this.gateIn, required this.gateOut});
 
-  LastGate copyWith({
-    GateLogModel? gateIn,
-    GateLogModel? gateOut,
-  }) {
+  LastGate copyWith({GateLogModel? gateIn, GateLogModel? gateOut}) {
     return LastGate(
       gateIn: gateIn ?? this.gateIn,
       gateOut: gateOut ?? this.gateOut,

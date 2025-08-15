@@ -18,9 +18,11 @@ class GetRegisteredUserLogNotCheckOutResponseUsecase
     try {
       final result = await repository.getNotCheckOutRegisteredUser();
       return result.fold(
-          (l) => Left(l),
-          (r) => Right(RegisteredUserLogModel.responseMapperNotCheckOutList(
-              r.data!.logs)));
+        (l) => Left(l),
+        (r) => Right(
+          RegisteredUserLogModel.responseMapperNotCheckOutList(r.data!.logs),
+        ),
+      );
     } catch (e) {
       return Left(Failure(e.toString()));
     }
