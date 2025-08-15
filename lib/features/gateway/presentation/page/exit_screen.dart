@@ -1,17 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
-import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/checkout_model.dart';
-import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +9,18 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../../data/services/api_service.dart';
+import '../../../../injector/injector.dart';
+import '../../../../models/checkout_model.dart';
+import '../../../../models/visitor_model.dart';
+import '../../../../screens/main_screen.dart';
+import '../../../../services/app_service.dart';
+import '../../../registered_user/domain/entity/registered_user.dart';
+import '../../../registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
+import '../../../registered_user/presentation/page/registered_user_logs_screen.dart';
+import '../widget/exit_card.dart';
+import '../widget/live_player_section.dart';
 
 class ExitScreen extends StatefulHookConsumerWidget {
   const ExitScreen({super.key});
@@ -155,12 +156,12 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
   void addImageToVisitor(VisitorModel visitor) async {
     final cameraPlayer = ref.read(cameraPlayerProvider);
-    File outSideImage = await _tempImage("out_side");
-    File exitImage = await _tempImage("exit");
+    final outSideImage = await _tempImage("out_side");
+    final exitImage = await _tempImage("exit");
 
-    final Uint8List? sideScreenshot = await cameraPlayer.sidePlayer
+    final sideScreenshot = await cameraPlayer.sidePlayer
         .screenshot();
-    final Uint8List? mainScreenshot = await cameraPlayer.mainPlayer
+    final mainScreenshot = await cameraPlayer.mainPlayer
         .screenshot();
 
     if (sideScreenshot != null) {
@@ -193,7 +194,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   void checkout() async {
     if (_barcodeController.text.isNotEmpty) {
       final gateLog = ref.watch(lastGateProvider).gateOut;
-      var barcode = _barcodeController.text;
+      final barcode = _barcodeController.text;
       _barcodeController.clear();
       focusNode.requestFocus();
       if (Uuid.isValidUUID(fromString: barcode)) {

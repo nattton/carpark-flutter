@@ -1,11 +1,12 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/member_model.dart';
-import 'package:carpark/models/null_time_model.dart';
-import 'package:carpark/models/visitor_image_model.dart';
 import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../constants.dart';
+import 'gate_log_model.dart';
+import 'member_model.dart';
+import 'null_time_model.dart';
+import 'visitor_image_model.dart';
 
 part 'visitor_model.g.dart';
 
@@ -70,17 +71,17 @@ class VisitorModel {
   }
 
   String dateTimeFormat() {
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
   }
 
   String dateTimeNanoFormat() {
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
   }
 
   String dateTimeNanoShortFormat() {
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyyMMddHHmmss.SSS").format(dt);
   }
 

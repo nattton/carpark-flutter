@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/registered_user/data/datasources/registered_user_service_datasource.dart';
-import 'package:carpark/features/registered_user/data/network/registered_user_service.dart';
-import 'package:carpark/features/registered_user/domain/models/models.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../core/data/model/generic_response_data.dart';
+import '../../../../services/app_service.dart';
+import '../../domain/models/models.dart';
+import '../network/registered_user_service.dart';
+import 'registered_user_service_datasource.dart';
 
 @Injectable(as: RegisteredUserServiceDataSource)
 class RegisteredUserServiceDataSourceImpl

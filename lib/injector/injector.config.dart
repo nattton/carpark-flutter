@@ -15,6 +15,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../core/presentation/bloc/app_title/app_title_cubit.dart' as _i314;
+import '../data/services/api_service.dart' as _i315;
 import '../features/gateway/data/datasource/id_card_service_datasource.dart'
     as _i680;
 import '../features/gateway/data/datasource/id_card_service_datasource_impl.dart'
@@ -72,7 +73,6 @@ import '../features/registered_user/presentation/bloc/registered_user_not_check_
     as _i813;
 import '../features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart'
     as _i92;
-import '../services/api_service.dart' as _i137;
 import '../services/app_service.dart' as _i479;
 import 'injector.dart' as _i811;
 
@@ -86,9 +86,9 @@ extension GetItInjectableX on _i174.GetIt {
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final dioModule = _$DioModule();
     final appServiceModule = _$AppServiceModule();
+    final apiServiceModule = _$ApiServiceModule();
     final idCardServiceModule = _$IdCardServiceModule();
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
-    final apiServiceModule = _$ApiServiceModule();
     gh.factory<_i314.AppTitleCubit>(() => _i314.AppTitleCubit());
     gh.factory<_i207.MemberListBloc>(() => _i207.MemberListBloc());
     await gh.factoryAsync<_i460.SharedPreferences>(
@@ -99,14 +99,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i479.AppService>(
       () => appServiceModule.create(gh<_i460.SharedPreferences>()),
     );
+    gh.singleton<_i315.ApiService>(
+      () => apiServiceModule.create(gh<_i361.Dio>()),
+    );
     gh.singleton<_i313.IdCardService>(
       () => idCardServiceModule.create(gh<_i361.Dio>()),
     );
     gh.singleton<_i636.RegisteredUserService>(
       () => registeredUserServiceModule.create(gh<_i361.Dio>()),
-    );
-    gh.singleton<_i137.ApiService>(
-      () => apiServiceModule.create(gh<_i361.Dio>()),
     );
     gh.factory<_i680.IdCardServiceDataSource>(
       () => _i440.IdCardServiceDataSourceImpl(gh<_i313.IdCardService>()),
@@ -226,8 +226,8 @@ class _$DioModule extends _i811.DioModule {}
 
 class _$AppServiceModule extends _i479.AppServiceModule {}
 
+class _$ApiServiceModule extends _i315.ApiServiceModule {}
+
 class _$IdCardServiceModule extends _i313.IdCardServiceModule {}
 
 class _$RegisteredUserServiceModule extends _i636.RegisteredUserServiceModule {}
-
-class _$ApiServiceModule extends _i137.ApiServiceModule {}

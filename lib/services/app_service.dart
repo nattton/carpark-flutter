@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:carpark/models/login_user_model.dart';
-import 'package:carpark/models/user_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/services/model/login_response/login_response.dart';
+import '../data/services/model/login_response/user_model.dart';
 
 const kTokenKey = 'TOKEN_KEY';
 const kUserKey = 'USER_KEY';
@@ -25,7 +26,7 @@ class AppService {
   UserModel get user =>
       UserModel.fromJson(jsonDecode(prefs.getString(kUserKey) ?? ''));
 
-  Future<void> saveLogin(LoginUserModel login) async {
+  Future<void> saveLogin(LoginResponse login) async {
     await prefs.setString(kTokenKey, "Bearer ${login.token}");
     await prefs.setString(kUserKey, jsonEncode(login.user.toJson()));
   }
@@ -39,7 +40,7 @@ class AppService {
   }
 
   UserModel? getUser() {
-    String? userString = prefs.getString(kUserKey);
+    final userString = prefs.getString(kUserKey);
     if (userString != null) {
       try {
         return UserModel.fromJson(jsonDecode(userString));

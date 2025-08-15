@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../../../../core/data/model/generic_response_data.dart';
+import '../../domain/models/models.dart';
 
 part 'registered_user_service.g.dart';
 

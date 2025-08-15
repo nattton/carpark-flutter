@@ -1,7 +1,8 @@
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
 import 'package:duration/duration.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+
+import 'registered_user.dart';
 
 typedef RegisteredUserLogList = List<RegisteredUserLog>;
 

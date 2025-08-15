@@ -1,23 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
-import 'package:carpark/features/gateway/domain/repository/id_card_service_repository.dart';
-import 'package:carpark/features/gateway/presentation/widget/entrance_card.dart';
-import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
-import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
-import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/gate_log_model.dart';
-import 'package:carpark/models/member_model.dart';
-import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -35,6 +18,24 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
+
+import '../../../../constants.dart';
+import '../../../../data/services/api_service.dart';
+import '../../../../injector/injector.dart';
+import '../../../../models/gate_log_model.dart';
+import '../../../../models/member_model.dart';
+import '../../../../models/visitor_model.dart';
+import '../../../../screens/main_screen.dart';
+import '../../../../services/app_service.dart';
+import '../../../member/presentation/bloc/member_list/member_list_bloc.dart';
+import '../../../registered_user/domain/entity/registered_user.dart';
+import '../../../registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
+import '../../../registered_user/presentation/page/registered_user_logs_screen.dart';
+import '../../domain/entity/id_card_entity.dart';
+import '../../domain/repository/id_card_service_repository.dart';
+import '../widget/entrance_card.dart';
+import '../widget/exit_card.dart';
+import '../widget/live_player_section.dart';
 
 enum EntranceScreenLeftState { initial, visitor, checkIn }
 
@@ -609,7 +610,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   void readDrivingLicence(String value) {
-    int count = '\n'.allMatches(value).length;
+    final count = '\n'.allMatches(value).length;
     print('count: $count');
     if (count == 6) {
       final lines = value.split("\n");
@@ -622,7 +623,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       print("idNumber : $idNumber");
       print("licenceNumber : $licenceNumber");
 
-      var nameList = name.split("\$").reversed.toList();
+      final nameList = name.split("\$").reversed.toList();
       for (var i = 0; i < nameList.length; i++) {
         nameList[i] = nameList[i].replaceAll("\n", " ");
         print(nameList[i]);
@@ -665,22 +666,22 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   Future<List<int>> _generateTicket(VisitorModel visitor) async {
     final gateLog = ref.watch(lastGateProvider).gateIn;
-    List<int> bytes = [];
+    var bytes = <int>[];
     // Using default profile
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm80, profile, spaceBetweenRows: 8);
     bytes += generator.setGlobalCodeTable('CP874');
 
     // Print image:
-    final ByteData data = await rootBundle.load('images/logo.png');
-    final Uint8List imgBytes = data.buffer.asUint8List();
+    final data = await rootBundle.load('images/logo.png');
+    final imgBytes = data.buffer.asUint8List();
     final image = img.decodeImage(imgBytes)!;
     bytes += generator.image(image);
 
     bytes += generator.qrcode(visitor.dateTimeNanoShortFormat());
 
     if (kVehicleTypeMap.containsKey(visitor.type)) {
-      var vehicleType = kVehicleTypeMap[visitor.type];
+      final vehicleType = kVehicleTypeMap[visitor.type];
       bytes += generator.textEncoded(
         await charsetConvert("ประเภท : $vehicleType"),
         styles: const PosStyles(
@@ -748,8 +749,8 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       );
     }
 
-    final ByteData dataFrame = await rootBundle.load('images/frame_stamp.png');
-    final Uint8List imgFrameBytes = dataFrame.buffer.asUint8List();
+    final dataFrame = await rootBundle.load('images/frame_stamp.png');
+    final imgFrameBytes = dataFrame.buffer.asUint8List();
     final imageFrame = img.decodeImage(imgFrameBytes)!;
     bytes += generator.image(imageFrame);
 
@@ -783,7 +784,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       return;
     }
 
-    var visitor = VisitorModel(
+    final visitor = VisitorModel(
       0,
       type: _vehicleType,
       plateNumber: _plateNumberController.text,
@@ -828,15 +829,15 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   void addImageToVisitor(VisitorModel visitor) async {
     final cameraPlayer = ref.watch(cameraPlayerProvider);
-    File cardImage = await _tempImage("card");
-    File inSideImage = await _tempImage("in_side");
-    File entranceImage = await _tempImage("entrance");
+    final cardImage = await _tempImage("card");
+    final inSideImage = await _tempImage("in_side");
+    final entranceImage = await _tempImage("entrance");
 
-    final Uint8List? cardScreenshot = await cameraPlayer.cardPlayer
+    final cardScreenshot = await cameraPlayer.cardPlayer
         .screenshot();
-    final Uint8List? sideScreenshot = await cameraPlayer.sidePlayer
+    final sideScreenshot = await cameraPlayer.sidePlayer
         .screenshot();
-    final Uint8List? mainScreenshot = await cameraPlayer.mainPlayer
+    final mainScreenshot = await cameraPlayer.mainPlayer
         .screenshot();
 
     if (cardScreenshot != null) {
@@ -879,7 +880,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   void printTicket(VisitorModel visitor) async {
-    var printerManager = PrinterManager.instance;
+    final printerManager = PrinterManager.instance;
     printerManager.connect(
       type: PrinterType.usb,
       model: UsbPrinterInput(

@@ -1,15 +1,6 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/components/gate_log_card.dart';
-import 'package:carpark/components/gate_log_header_card.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/gate_log_result.dart';
-import 'package:carpark/providers/gate_logs_notifier.dart';
-import 'package:carpark/screens/visitor_detail_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -19,6 +10,16 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import '../components/gate_log_card.dart';
+import '../components/gate_log_header_card.dart';
+import '../constants.dart';
+import '../data/services/api_service.dart';
+import '../injector/injector.dart';
+import '../models/gate_log_result.dart';
+import '../providers/gate_logs_notifier.dart';
+import '../services/app_service.dart';
+import 'visitor_detail_screen.dart';
 
 final gateLogsProvider =
     StateNotifierProvider<GateLogsNotifier, List<GateLogResult>>((ref) {
@@ -33,7 +34,7 @@ final filteredGateLogsProvider = Provider<List<GateLogResult>>((ref) {
   final sortBy = ref.watch(sortByProvider);
   final gateLogs = ref.watch(gateLogsProvider);
 
-  List<GateLogResult> filterGateLogs = [];
+  var filterGateLogs = <GateLogResult>[];
   if (filter.isEmpty) {
     filterGateLogs = gateLogs;
   }
@@ -103,7 +104,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
+    final var now = DateTime.now();
     _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 
@@ -118,7 +119,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   }
 
   void sortBy(String fieldName) {
-    var sortBy = ref.read(sortByProvider.notifier);
+    final sortBy = ref.read(sortByProvider.notifier);
     sortBy.state == fieldName
         ? sortBy.state = "-${sortBy.state}"
         : sortBy.state = fieldName;
@@ -128,7 +129,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     EasyLoading.show(status: 'loading...');
     final gateLogs = ref.read(gateLogsProvider.notifier);
     if (selectedDate.isNotEmpty) {
-      var date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
+      final date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
       var dateTo = date;
       if (selectedDate.length > 1) {
         dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
@@ -161,7 +162,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
             children: [
               OutlinedButton(
                 onPressed: () async {
-                  var results = await showCalendarDatePicker2Dialog(
+                  final results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
                       calendarType: CalendarDatePicker2Type.range,
@@ -269,11 +270,11 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
   Excel generateExcel() {
     final gateLogs = ref.read(filteredGateLogsProvider);
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Sheet1'];
+    final excel = Excel.createExcel();
+    final sheetObject = excel['Sheet1'];
 
-    int currentRow = 0;
-    List<CellValue> columnName = [
+    var currentRow = 0;
+    final columnName = <CellValue>[
       TextCellValue("createdAt"),
       TextCellValue("gateName"),
       TextCellValue("anpr"),
@@ -283,12 +284,12 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       TextCellValue("captureImage"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(
+    final cellStyle = CellStyle(
       backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
       bold: true,
     );
     for (var i = 0; i < columnName.length; i++) {
-      var cell = sheetObject.cell(
+      final cell = sheetObject.cell(
         CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
       );
       cell.cellStyle = cellStyle;
@@ -296,8 +297,8 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
     for (var i = 0; i < gateLogs.length; i++) {
       currentRow++;
-      var m = gateLogs[i];
-      List<CellValue> dataList = [
+      final m = gateLogs[i];
+      final dataList = <CellValue>[
         TextCellValue(m.dateTimeFormat()),
         TextCellValue(m.gateName),
         TextCellValue(m.anpr),
@@ -312,12 +313,12 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   }
 
   void onPressedExportGateLog() async {
-    String fileName = "gate_log";
-    String date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
+    var fileName = "gate_log";
+    final date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
     fileName = "$fileName$date";
 
     if (_dates.length > 1) {
-      String dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
+      final dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
       fileName = "$fileName-$dateTo";
     }
 
@@ -327,10 +328,10 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     }
 
     if (kIsWeb) {
-      var excel = generateExcel();
+      final excel = generateExcel();
       excel.save(fileName: '$fileName.xlsx');
     } else {
-      String? outputFile = await FilePicker.platform.saveFile(
+      final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Please select an output file:',
         fileName: '$fileName.xlsx',
       );

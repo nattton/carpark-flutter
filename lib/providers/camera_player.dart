@@ -19,12 +19,12 @@ class CameraPlayer {
   });
 
   factory CameraPlayer.initialize() {
-    final Player mainPlayer = Player();
-    final VideoController mainController = VideoController(mainPlayer);
-    final Player sidePlayer = Player();
-    final VideoController sideController = VideoController(sidePlayer);
-    final Player cardPlayer = Player();
-    final VideoController cardController = VideoController(cardPlayer);
+    final mainPlayer = Player();
+    final mainController = VideoController(mainPlayer);
+    final sidePlayer = Player();
+    final sideController = VideoController(sidePlayer);
+    final cardPlayer = Player();
+    final cardController = VideoController(cardPlayer);
     return CameraPlayer(
       mainPlayer: mainPlayer,
       mainController: mainController,

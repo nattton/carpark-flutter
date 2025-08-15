@@ -1,12 +1,13 @@
-import 'package:carpark/components/user_list_card.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/save_user_model.dart';
-import 'package:carpark/models/user_model.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import '../components/user_list_card.dart';
+import '../data/services/api_service.dart';
+import '../data/services/model/login_response/user_model.dart';
+import '../injector/injector.dart';
+import '../models/save_user_model.dart';
+import '../services/app_service.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -64,7 +65,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void saveUser(UserModel user) {
-    var saveUser = SaveUserModel(
+    final saveUser = SaveUserModel(
       id: user.id,
       username: _usernameController.text,
       password: _passwordController.text,

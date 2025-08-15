@@ -1,14 +1,5 @@
 import 'dart:io';
 
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
-import 'package:carpark/features/member/presentation/page/member_screen.dart';
-import 'package:carpark/features/member/presentation/widget/member_header_card.dart';
-import 'package:carpark/features/member/presentation/widget/member_list_card.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/member_model.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +9,16 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import '../../../../constants.dart';
+import '../../../../data/services/api_service.dart';
+import '../../../../injector/injector.dart';
+import '../../../../models/member_model.dart';
+import '../../../../services/app_service.dart';
+import '../bloc/member_list/member_list_bloc.dart';
+import '../widget/member_header_card.dart';
+import '../widget/member_list_card.dart';
+import 'member_screen.dart';
 
 class MemberListScreen extends StatefulWidget {
   const MemberListScreen({super.key});
@@ -284,11 +285,11 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
   Excel generateExcel() {
     final members = _memberListBloc.state.members;
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Sheet1'];
+    final excel = Excel.createExcel();
+    final sheetObject = excel['Sheet1'];
 
-    int currentRow = 0;
-    List<CellValue> columnName = [
+    var currentRow = 0;
+    final columnName = <CellValue>[
       TextCellValue("id"),
       TextCellValue("name"),
       TextCellValue("telephone"),
@@ -303,12 +304,12 @@ class _MemberListScreenState extends State<MemberListScreen> {
       TextCellValue("telephone"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(
+    final cellStyle = CellStyle(
       backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
       bold: true,
     );
     for (var i = 0; i < columnName.length; i++) {
-      var cell = sheetObject.cell(
+      final cell = sheetObject.cell(
         CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
       );
       cell.cellStyle = cellStyle;
@@ -316,8 +317,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
     for (var i = 0; i < members.length; i++) {
       currentRow++;
-      var m = members[i];
-      List<CellValue> dataList = [
+      final m = members[i];
+      final dataList = <CellValue>[
         TextCellValue(m.id.toString()),
         TextCellValue(m.name!),
         TextCellValue(m.telephone!),
@@ -329,8 +330,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
         if (j > 0) {
           currentRow++;
         }
-        var v = m.vehicles?[j];
-        List<CellValue> vehicleList = [
+        final v = m.vehicles?[j];
+        final vehicleList = <CellValue>[
           TextCellValue(v!.id.toString()),
           TextCellValue(v.plateNumber!),
           TextCellValue(v.resemble!),
@@ -350,8 +351,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   void onPressedExportMember() async {
-    String dateTime = DateFormat("yyyy-MM-dd_HH-mm").format(DateTime.now());
-    String? outputFile = await FilePicker.platform.saveFile(
+    final dateTime = DateFormat("yyyy-MM-dd_HH-mm").format(DateTime.now());
+    final outputFile = await FilePicker.platform.saveFile(
       dialogTitle: 'Please select an output file:',
       fileName: 'member_list_$dateTime.xlsx',
     );

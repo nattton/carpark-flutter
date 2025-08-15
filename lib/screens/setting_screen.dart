@@ -1,16 +1,17 @@
-import 'package:carpark/components/camera_list_card.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:thermal_printer/thermal_printer.dart';
+
+import '../components/camera_list_card.dart';
+import '../constants.dart';
+import '../data/services/api_service.dart';
+import '../injector/injector.dart';
+import '../models/camera_model.dart';
+import '../services/app_service.dart';
+import 'main_screen.dart';
 
 class SettingScreen extends ConsumerStatefulWidget {
   const SettingScreen({super.key});
@@ -121,7 +122,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
 
   void _scan(PrinterType type, {bool isBle = false}) {
     // Find printers
-    var printerManager = PrinterManager.instance;
+    final printerManager = PrinterManager.instance;
     printerManager.discovery(type: type, isBle: isBle).listen((device) {
       if (!devices.contains(device.name)) {
         devices.add(device.name);
@@ -141,7 +142,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
             cameraList = value;
           });
           final camera = ref.read(cameraMapProvider);
-          for (CameraModel cam in cameraList) {
+          for (final cam in cameraList) {
             camera[cam.name] = cam;
           }
         })

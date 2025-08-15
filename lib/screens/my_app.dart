@@ -1,6 +1,7 @@
-import 'package:carpark/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import '../core/router/app_router.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -1,5 +1,6 @@
-import 'package:carpark/models/gate_log_model.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'gate_log_model.dart';
 
 part 'gate_in_model.g.dart';
 

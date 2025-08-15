@@ -1,13 +1,14 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+
+import '../../../../constants.dart';
+import '../../domain/models/update_registered_user_request.dart';
+import '../bloc/registered_user_list/registered_user_list_bloc.dart';
+import '../bloc/registered_user_update/registered_user_update_bloc.dart';
 
 class RegisteredUserUpdateScreen extends StatefulWidget {
   const RegisteredUserUpdateScreen({super.key});
@@ -334,7 +335,7 @@ class _RegisteredUserUpdateScreenState
           Expanded(
             child: GestureDetector(
               onTap: () async {
-                var results = await showCalendarDatePicker2Dialog(
+                final results = await showCalendarDatePicker2Dialog(
                   context: context,
                   config: CalendarDatePicker2WithActionButtonsConfig(
                     calendarType: CalendarDatePicker2Type.single,
@@ -353,7 +354,7 @@ class _RegisteredUserUpdateScreenState
               },
               child: TextField(
                 onTap: () async {
-                  var results = await showCalendarDatePicker2Dialog(
+                  final results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
                       calendarType: CalendarDatePicker2Type.single,

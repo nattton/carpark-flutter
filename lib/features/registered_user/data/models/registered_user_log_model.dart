@@ -1,6 +1,6 @@
-import 'package:carpark/features/registered_user/data/models/registered_user_model.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_logs_response.dart';
+import '../../domain/entity/registered_user_log.dart';
+import '../../domain/models/registered_user_logs_response.dart';
+import 'registered_user_model.dart';
 
 class RegisteredUserLogModel extends RegisteredUserLog {
   const RegisteredUserLogModel({

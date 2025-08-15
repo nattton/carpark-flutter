@@ -1,10 +1,11 @@
 // ignore: depend_on_referenced_packages
 import "dart:ui";
 
-import "package:carpark/constants.dart";
-import "package:carpark/models/member_model.dart";
 import "package:intl/intl.dart";
 import 'package:json_annotation/json_annotation.dart';
+
+import "../constants.dart";
+import "member_model.dart";
 
 part 'gate_log_model.g.dart';
 
@@ -48,24 +49,24 @@ class GateLogModel {
   }
 
   String dateTimeFormat() {
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
   }
 
   String dateTimeNanoFormat() {
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
   }
 
   String dateFormat() {
     if (createdAt == null) return '';
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("dd/MM/yyyy").format(dt);
   }
 
   String timeFormat() {
     if (createdAt == null) return '';
-    DateTime dt = createdAt!.add(const Duration(hours: 7));
+    final dt = createdAt!.add(const Duration(hours: 7));
     return DateFormat("HH:mm:ss").format(dt);
   }
 

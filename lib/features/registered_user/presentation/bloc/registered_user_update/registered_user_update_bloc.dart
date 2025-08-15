@@ -1,12 +1,13 @@
-import 'package:carpark/features/registered_user/data/models/registered_user_model.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/models/update_registered_user_request.dart';
-import 'package:carpark/features/registered_user/domain/usecases/registered_user_get_usecase.dart';
-import 'package:carpark/features/registered_user/domain/usecases/registered_user_update_usecase.dart';
-import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../../models/null_time_model.dart';
+import '../../../data/models/registered_user_model.dart';
+import '../../../domain/entity/registered_user.dart';
+import '../../../domain/models/update_registered_user_request.dart';
+import '../../../domain/usecases/registered_user_get_usecase.dart';
+import '../../../domain/usecases/registered_user_update_usecase.dart';
 
 part 'registered_user_update_event.dart';
 part 'registered_user_update_state.dart';

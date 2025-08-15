@@ -13,8 +13,8 @@ class LivePlayerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width / 2 - 60;
-    double height = ((MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0);
+    var width = MediaQuery.of(context).size.width / 2 - 60;
+    var height = ((MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0);
 
     if ((height * 2) + 100 > MediaQuery.of(context).size.height) {
       height = (MediaQuery.of(context).size.height / 2 - 50);

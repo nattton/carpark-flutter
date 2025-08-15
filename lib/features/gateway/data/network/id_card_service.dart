@@ -1,9 +1,10 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../../../../constants.dart';
+import '../../../../core/data/model/generic_response_data.dart';
+import '../../domain/entity/id_card_entity.dart';
 
 part 'id_card_service.g.dart';
 

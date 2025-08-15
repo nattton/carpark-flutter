@@ -1,5 +1,6 @@
-import 'package:carpark/features/registered_user/domain/models/registered_user_logs_response.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'registered_user_logs_response.dart';
 
 part 'get_registered_user_log_not_check_out_response.g.dart';
 

@@ -1,11 +1,12 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/screens/login_screen.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:go_router/go_router.dart';
+
+import '../constants.dart';
+import '../injector/injector.dart';
+import '../services/app_service.dart';
+import 'login_screen.dart';
+import 'main_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -24,7 +25,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void checkLogin() async {
-    var app = getIt<AppService>();
+    final app = getIt<AppService>();
     await Future.delayed(const Duration(seconds: 1));
     if (!app.isLogIn()) {
       app.logout().then((value) {

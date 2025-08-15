@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/user_model.dart';
 import 'package:flutter/material.dart';
+
+import '../constants.dart';
+import '../data/services/model/login_response/user_model.dart';
 
 class UserListCard extends StatelessWidget {
   const UserListCard({super.key, required this.user, required this.onTap});

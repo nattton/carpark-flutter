@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../constants.dart';
+import '../../domain/entity/registered_user_log.dart';
 
 class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
   const RegisteredUserNotCheckOutRowWidget({

@@ -1,6 +1,7 @@
-import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:carpark/constants.dart';
+
+import '../../../../constants.dart';
+import '../../../../models/member_model.dart';
 
 class MemberListSearch extends StatelessWidget {
   const MemberListSearch({

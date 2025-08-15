@@ -1,16 +1,17 @@
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_create.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_update_screen.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_header_widget.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_list_row_widget.dart';
-import 'package:carpark/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../injector/injector.dart';
+import '../../domain/entity/registered_user.dart';
+import '../bloc/registered_user_create/registered_user_create_bloc.dart';
+import '../bloc/registered_user_list/registered_user_list_bloc.dart';
+import '../bloc/registered_user_update/registered_user_update_bloc.dart';
+import '../widget/registered_user_list_header_widget.dart';
+import '../widget/registered_user_list_row_widget.dart';
+import 'registered_user_create.dart';
+import 'registered_user_logs_screen.dart';
+import 'registered_user_update_screen.dart';
 
 class RegisteredUserListScreen extends StatefulWidget {
   const RegisteredUserListScreen({super.key});

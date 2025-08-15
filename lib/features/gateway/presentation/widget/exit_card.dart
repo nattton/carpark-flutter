@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/gate_log_model.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../constants.dart';
+import '../../../../models/gate_log_model.dart';
 
 class ExitCard extends StatelessWidget {
   const ExitCard({super.key, required this.gateLog});

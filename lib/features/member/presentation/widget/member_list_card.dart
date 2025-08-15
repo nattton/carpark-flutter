@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../constants.dart';
+import '../../../../models/member_model.dart';
 
 class MemberListCard extends StatelessWidget {
   const MemberListCard({super.key, required this.member, required this.onTap});

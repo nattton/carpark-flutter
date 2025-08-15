@@ -1,6 +1,7 @@
-import "package:carpark/constants.dart";
 import "package:intl/intl.dart";
 import 'package:json_annotation/json_annotation.dart';
+
+import "../constants.dart";
 
 part 'gate_log_result.g.dart';
 
@@ -42,22 +43,22 @@ class GateLogResult {
   }
 
   String dateTimeFormat() {
-    DateTime dt = createdAt.add(const Duration(hours: 7));
+    final dt = createdAt.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss").format(dt);
   }
 
   String dateTimeNanoFormat() {
-    DateTime dt = createdAt.add(const Duration(hours: 7));
+    final dt = createdAt.add(const Duration(hours: 7));
     return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dt);
   }
 
   String dateFormat() {
-    DateTime dt = createdAt.add(const Duration(hours: 7));
+    final dt = createdAt.add(const Duration(hours: 7));
     return DateFormat("dd/MM/yyyy").format(dt);
   }
 
   String timeFormat() {
-    DateTime dt = createdAt.add(const Duration(hours: 7));
+    final dt = createdAt.add(const Duration(hours: 7));
     return DateFormat("HH:mm:ss").format(dt);
   }
 }

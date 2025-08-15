@@ -1,10 +1,11 @@
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/member_model.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../../data/services/api_service.dart';
+import '../../../../../injector/injector.dart';
+import '../../../../../models/member_model.dart';
+import '../../../../../services/app_service.dart';
 
 part 'member_list_event.dart';
 part 'member_list_state.dart';

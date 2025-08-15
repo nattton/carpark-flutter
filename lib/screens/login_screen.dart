@@ -1,12 +1,13 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import '../constants.dart';
+import '../data/services/api_service.dart';
+import '../injector/injector.dart';
+import '../services/app_service.dart';
+import 'main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
@@ -32,8 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SizedBox(
         height: height,
@@ -210,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void alertLogin(String desc) {
-    var alertStyle = AlertStyle(
+    final alertStyle = AlertStyle(
       animationType: AnimationType.fromTop,
       isCloseButton: false,
       isOverlayTapDismiss: true,

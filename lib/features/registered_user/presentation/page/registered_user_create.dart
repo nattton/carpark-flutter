@@ -1,15 +1,16 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../constants.dart';
+import '../../domain/models/create_registered_user_request.dart';
+import '../bloc/registered_user_create/registered_user_create_bloc.dart';
+import '../bloc/registered_user_list/registered_user_list_bloc.dart';
+import 'registered_user_logs_screen.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -345,7 +346,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           Expanded(
             child: TextField(
               onTap: () async {
-                var results = await showCalendarDatePicker2Dialog(
+                final results = await showCalendarDatePicker2Dialog(
                   context: context,
                   config: CalendarDatePicker2WithActionButtonsConfig(
                     calendarType: CalendarDatePicker2Type.single,

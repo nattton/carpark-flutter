@@ -1,5 +1,5 @@
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_response.dart';
+import '../../domain/entity/registered_user.dart';
+import '../../domain/models/registered_user_response.dart';
 
 class RegisteredUserModel extends RegisteredUser {
   const RegisteredUserModel({

@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_logs/registered_user_logs_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_logs_list_header_widget.dart';
-import 'package:carpark/features/registered_user/presentation/widget/registered_user_logs_list_row_widget.dart';
-import 'package:carpark/injector/injector.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../../../../constants.dart';
+import '../../../../injector/injector.dart';
+import '../../domain/entity/registered_user.dart';
+import '../../domain/entity/registered_user_log.dart';
+import '../bloc/registered_user_logs/registered_user_logs_bloc.dart';
+import '../widget/registered_user_logs_list_header_widget.dart';
+import '../widget/registered_user_logs_list_row_widget.dart';
 
 class RegisteredUserLogsScreen extends StatefulWidget {
   const RegisteredUserLogsScreen({super.key});
@@ -154,18 +154,18 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
               ),
               GestureDetector(
                 onTap: () async {
-                  String filename =
+                  final filename =
                       "${user.idCard}_${user.thaiName}_${user.engName}.png"
                           .replaceAll(" ", "_");
 
-                  String? outputFile = await FilePicker.platform.saveFile(
+                  final outputFile = await FilePicker.platform.saveFile(
                     dialogTitle: 'Please select an output file:',
                     fileName: filename,
                   );
 
                   if (outputFile != null) {
                     final file = File(outputFile);
-                    ByteData? qrBytes = await QrPainter(
+                    final qrBytes = await QrPainter(
                       data: user.generatedId,
                       version: QrVersions.auto,
                     ).toImageData(878);

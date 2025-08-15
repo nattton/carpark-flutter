@@ -1,5 +1,6 @@
-import 'package:carpark/models/vehicle_model.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'vehicle_model.dart';
 
 part 'member_model.g.dart';
 

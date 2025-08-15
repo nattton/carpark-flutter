@@ -1,10 +1,11 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import '../constants.dart';
+import '../data/services/api_service.dart';
+import '../injector/injector.dart';
+import '../models/visitor_model.dart';
+import '../services/app_service.dart';
 
 class VisitorDetailScreen extends StatefulWidget {
   static const routeName = "/visitor_detail";
@@ -60,7 +61,7 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
                     ),
                     Text("ที่อยู่ : ${visitor.address!}", style: kContentStyle),
                     const SizedBox(height: 10.0),
-                    for (var image in visitor.visitorImages!)
+                    for (final image in visitor.visitorImages!)
                       Image.network(image.imageUrl()),
                     visitor.gateLog!.captureImage! != ""
                         ? Image.network(visitor.gateLog!.captureImageUrl())

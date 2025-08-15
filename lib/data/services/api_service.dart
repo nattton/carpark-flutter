@@ -1,21 +1,22 @@
 import 'dart:io';
 
-import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/models/checkout_model.dart';
-import 'package:carpark/models/gate_in_model.dart';
-import 'package:carpark/models/gate_log_result.dart';
-import 'package:carpark/models/last_gate.dart';
-import 'package:carpark/models/login_user_model.dart';
-import 'package:carpark/models/member_model.dart';
-import 'package:carpark/models/report_traffic_model.dart';
-import 'package:carpark/models/response_model.dart';
-import 'package:carpark/models/save_user_model.dart';
-import 'package:carpark/models/user_model.dart';
-import 'package:carpark/models/vehicle_model.dart';
-import 'package:carpark/models/visitor_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../../models/camera_model.dart';
+import '../../models/checkout_model.dart';
+import '../../models/gate_in_model.dart';
+import '../../models/gate_log_result.dart';
+import '../../models/last_gate.dart';
+import '../../models/member_model.dart';
+import '../../models/report_traffic_model.dart';
+import '../../models/response_model.dart';
+import '../../models/save_user_model.dart';
+import '../../models/vehicle_model.dart';
+import '../../models/visitor_model.dart';
+import 'model/login_response/login_response.dart';
+import 'model/login_response/user_model.dart';
 
 part 'api_service.g.dart';
 
@@ -30,7 +31,7 @@ abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
   @POST("/api/login")
-  Future<LoginUserModel> login(
+  Future<LoginResponse> login(
     @Field() String username,
     @Field() String password,
   );

@@ -1,9 +1,10 @@
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
-import 'package:carpark/features/registered_user/domain/usecases/get_registered_user_logs_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../domain/entity/registered_user.dart';
+import '../../../domain/entity/registered_user_log.dart';
+import '../../../domain/usecases/get_registered_user_logs_usecase.dart';
 
 part 'registered_user_logs_event.dart';
 part 'registered_user_logs_state.dart';

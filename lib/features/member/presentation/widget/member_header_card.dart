@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:carpark/constants.dart';
+import '../../../../constants.dart';
 
 class MemberHeaderCard extends StatelessWidget {
   const MemberHeaderCard({super.key});

@@ -1,10 +1,11 @@
-import 'package:carpark/core/error/failures.dart';
-import 'package:carpark/core/utils/usecases/usecase.dart';
-import 'package:carpark/features/registered_user/data/models/registered_user_logs_model.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user_logs.dart';
-import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/utils/usecases/usecase.dart';
+import '../../data/models/registered_user_logs_model.dart';
+import '../entity/registered_user_logs.dart';
+import '../repositories/registered_user_service_repository.dart';
 
 @Injectable()
 class GetRegisteredUserLogsUsecase extends UseCase<RegisteredUserLogs, int> {

@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../constants.dart';
+import '../../../../models/null_time_model.dart';
 
 class RegisteredUser extends Equatable {
   final int id;

@@ -1,10 +1,11 @@
-import 'package:carpark/features/member/presentation/page/member_screen.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
-import 'package:carpark/screens/login_screen.dart';
-import 'package:carpark/screens/main_screen.dart';
-import 'package:carpark/screens/visitor_detail_screen.dart';
-import 'package:carpark/screens/welcome_screen.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/member/presentation/page/member_screen.dart';
+import '../../features/registered_user/presentation/page/registered_user_logs_screen.dart';
+import '../../screens/login_screen.dart';
+import '../../screens/main_screen.dart';
+import '../../screens/visitor_detail_screen.dart';
+import '../../screens/welcome_screen.dart';
 
 final appRouter = GoRouter(
   routes: [

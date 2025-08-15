@@ -1,15 +1,6 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/components/visitor_header_card.dart';
-import 'package:carpark/components/visitor_list_card.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/providers/visitors_notifier.dart';
-import 'package:carpark/screens/visitor_detail_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -18,6 +9,16 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import '../components/visitor_header_card.dart';
+import '../components/visitor_list_card.dart';
+import '../constants.dart';
+import '../data/services/api_service.dart';
+import '../injector/injector.dart';
+import '../models/visitor_model.dart';
+import '../providers/visitors_notifier.dart';
+import '../services/app_service.dart';
+import 'visitor_detail_screen.dart';
 
 final visitorsProvider =
     StateNotifierProvider<VisitorsNotifier, List<VisitorModel>>((ref) {
@@ -31,7 +32,7 @@ final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
   final filter = ref.watch(filterProvider);
   final sortBy = ref.watch(sortByProvider);
   final visitors = ref.watch(visitorsProvider);
-  List<VisitorModel> filterVisitor = [];
+  var filterVisitor = <VisitorModel>[];
   if (filter.isEmpty) {
     filterVisitor = visitors;
   }
@@ -107,7 +108,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
     _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 
@@ -116,7 +117,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   void sortBy(String fieldName) {
-    var sortBy = ref.read(sortByProvider.notifier);
+    final sortBy = ref.read(sortByProvider.notifier);
     sortBy.state == fieldName
         ? sortBy.state = "-${sortBy.state}"
         : sortBy.state = fieldName;
@@ -126,7 +127,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     EasyLoading.show(status: 'loading...');
     final visitors = ref.read(visitorsProvider.notifier);
     if (selectedDate.isNotEmpty) {
-      var date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
+      final date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
       var dateTo = date;
       if (selectedDate.length > 1) {
         dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
@@ -159,7 +160,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
             children: [
               OutlinedButton(
                 onPressed: () async {
-                  var results = await showCalendarDatePicker2Dialog(
+                  final results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
                       calendarType: CalendarDatePicker2Type.range,
@@ -263,11 +264,11 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
 
   Excel generateExcel() {
     final visitors = ref.read(filteredVisitorsProvider);
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Sheet1'];
+    final excel = Excel.createExcel();
+    final sheetObject = excel['Sheet1'];
 
-    int currentRow = 0;
-    List<CellValue> columnName = [
+    var currentRow = 0;
+    final columnName = <CellValue>[
       TextCellValue("createdAt"),
       TextCellValue("type"),
       TextCellValue("plateNumber"),
@@ -284,12 +285,12 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
       TextCellValue("image"),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
-    CellStyle cellStyle = CellStyle(
+    final cellStyle = CellStyle(
       backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
       bold: true,
     );
     for (var i = 0; i < columnName.length; i++) {
-      var cell = sheetObject.cell(
+      final cell = sheetObject.cell(
         CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
       );
       cell.cellStyle = cellStyle;
@@ -297,8 +298,8 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
 
     for (var i = 0; i < visitors.length; i++) {
       currentRow++;
-      var v = visitors[i];
-      List<CellValue> dataList = [
+      final v = visitors[i];
+      final dataList = <CellValue>[
         TextCellValue(v.dateTimeFormat()),
         TextCellValue(v.type!),
         TextCellValue(v.plateNumber!),
@@ -319,8 +320,8 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         if (j > 0) {
           currentRow++;
         }
-        var image = v.visitorImages?[j];
-        List<CellValue> vehicleList = [
+        final image = v.visitorImages?[j];
+        final vehicleList = <CellValue>[
           TextCellValue(image!.type),
           TextCellValue(image.imageUrl()),
         ];
@@ -336,12 +337,12 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   void onPressedExportVisitor() async {
-    String fileName = "visitor";
-    String date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
+    var fileName = "visitor";
+    final date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
     fileName = "$fileName$date";
 
     if (_dates.length > 1) {
-      String dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
+      final dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
       fileName = "$fileName-$dateTo";
     }
 
@@ -351,10 +352,10 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     }
 
     if (kIsWeb) {
-      var excel = generateExcel();
+      final excel = generateExcel();
       excel.save(fileName: '$fileName.xlsx');
     } else {
-      String? outputFile = await FilePicker.platform.saveFile(
+      final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Please select an output file:',
         fileName: '$fileName.xlsx',
       );

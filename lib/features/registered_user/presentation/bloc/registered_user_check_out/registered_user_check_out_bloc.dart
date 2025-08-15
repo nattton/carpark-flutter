@@ -1,10 +1,11 @@
-import 'package:carpark/core/error/failures.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/models/registered_user_check_out_request.dart';
-import 'package:carpark/features/registered_user/domain/usecases/registered_user_check_out_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../../core/error/failures.dart';
+import '../../../domain/entity/registered_user.dart';
+import '../../../domain/models/registered_user_check_out_request.dart';
+import '../../../domain/usecases/registered_user_check_out_usecase.dart';
 
 part 'registered_user_check_out_event.dart';
 part 'registered_user_check_out_state.dart';

@@ -1,5 +1,6 @@
-import 'package:carpark/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../../constants.dart';
 
 part 'id_card_entity.g.dart';
 

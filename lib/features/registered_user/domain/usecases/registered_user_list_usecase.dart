@@ -1,11 +1,12 @@
-import 'package:carpark/core/error/failures.dart';
-import 'package:carpark/core/utils/usecases/usecase.dart';
-import 'package:carpark/features/registered_user/data/models/registered_user_model.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user.dart';
-import 'package:carpark/features/registered_user/domain/models/list_registered_user_param.dart';
-import 'package:carpark/features/registered_user/domain/repositories/registered_user_service_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/utils/usecases/usecase.dart';
+import '../../data/models/registered_user_model.dart';
+import '../entity/registered_user.dart';
+import '../models/list_registered_user_param.dart';
+import '../repositories/registered_user_service_repository.dart';
 
 @Injectable()
 class RegisteredUserListUsecase

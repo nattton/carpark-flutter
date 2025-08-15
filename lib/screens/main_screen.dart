@@ -1,25 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carpark/constants.dart';
-import 'package:carpark/core/presentation/bloc/app_title/app_title_cubit.dart';
-import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart';
-import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
-import 'package:carpark/features/member/presentation/bloc/member_list/member_list_bloc.dart';
-import 'package:carpark/features/member/presentation/page/member_list_screen.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_list_screen.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_not_check_out_screen.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/models.dart';
-import 'package:carpark/providers/camera_player.dart';
-import 'package:carpark/screens/gate_log_screen.dart';
-import 'package:carpark/screens/login_screen.dart';
-import 'package:carpark/screens/report_screen.dart';
-import 'package:carpark/screens/setting_screen.dart';
-import 'package:carpark/screens/user_screen.dart';
-import 'package:carpark/screens/visitor_screen.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -27,6 +8,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../constants.dart';
+import '../core/presentation/bloc/app_title/app_title_cubit.dart';
+import '../data/services/api_service.dart';
+import '../features/gateway/presentation/page/entrance_screen.dart';
+import '../features/gateway/presentation/page/exit_screen.dart';
+import '../features/member/presentation/bloc/member_list/member_list_bloc.dart';
+import '../features/member/presentation/page/member_list_screen.dart';
+import '../features/registered_user/presentation/page/registered_user_list_screen.dart';
+import '../features/registered_user/presentation/page/registered_user_not_check_out_screen.dart';
+import '../injector/injector.dart';
+import '../models/models.dart';
+import '../providers/camera_player.dart';
+import '../services/app_service.dart';
+import 'gate_log_screen.dart';
+import 'login_screen.dart';
+import 'report_screen.dart';
+import 'setting_screen.dart';
+import 'user_screen.dart';
+import 'visitor_screen.dart';
 
 final lastGateProvider = StateNotifierProvider<LastGateNotifier, LastGate>(
   (ref) => LastGateNotifier(
@@ -71,7 +72,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
-    var channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+    final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
     channel.stream.listen((streamData) {
       print(streamData);
       lastGate.setFromJson(streamData);
@@ -132,9 +133,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     getLastGate();
     getCameraList().then((value) {
       if (!kIsWeb) {
-        var camera = value['ENTRANCE'];
-        var cameraSide = value['IN_SIDE'];
-        var cameraCard = value['CARD'];
+        final camera = value['ENTRANCE'];
+        final cameraSide = value['IN_SIDE'];
+        final cameraCard = value['CARD'];
         final player = ref.watch(cameraPlayerProvider);
         player.setMainPlayer(camera!.toUrl());
         player.setSidePlayer(cameraSide!.toUrl());
@@ -156,7 +157,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final data = await getIt<ApiService>().getCameraList(
       getIt<AppService>().token,
     );
-    for (CameraModel cam in data) {
+    for (final cam in data) {
       camera[cam.name] = cam;
     }
     return camera;
@@ -206,15 +207,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       case 'ENTRANCE':
         getLastGateIn();
         if (!kIsWeb) {
-          var cam = camera['ENTRANCE'];
+          final cam = camera['ENTRANCE'];
           if (cam != null) {
             player.setMainPlayer(cam.toUrl());
           }
-          var cameraSide = camera['IN_SIDE'];
+          final cameraSide = camera['IN_SIDE'];
           if (cameraSide != null) {
             player.setSidePlayer(cameraSide.toUrl());
           }
-          var cameraCard = camera['CARD'];
+          final cameraCard = camera['CARD'];
           if (cameraCard != null) {
             player.setCardPlayer(cameraCard.toUrl());
           }
@@ -223,11 +224,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       case 'EXIT':
         getLastGateOut();
         if (!kIsWeb) {
-          var cam = camera['EXIT'];
+          final cam = camera['EXIT'];
           if (cam != null) {
             player.setMainPlayer(cam.toUrl());
           }
-          var cameraSide = camera['OUT_SIDE'];
+          final cameraSide = camera['OUT_SIDE'];
           if (cameraSide != null) {
             player.setSidePlayer(cameraSide.toUrl());
           }

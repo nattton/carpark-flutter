@@ -1,10 +1,6 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -12,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
+
+import '../constants.dart';
+import '../data/services/api_service.dart';
+import '../injector/injector.dart';
+import '../services/app_service.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -31,7 +32,7 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
     _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 
@@ -49,7 +50,7 @@ class _ReportScreenState extends State<ReportScreen> {
             children: [
               OutlinedButton(
                 onPressed: () async {
-                  var results = await showCalendarDatePicker2Dialog(
+                  final results = await showCalendarDatePicker2Dialog(
                     context: context,
                     config: CalendarDatePicker2WithActionButtonsConfig(
                       calendarType: CalendarDatePicker2Type.range,
@@ -102,18 +103,18 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   String createFileName(String fileName) {
-    String date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
+    final date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
     fileName = "$fileName$date";
 
     if (_dates.length > 1) {
-      String dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
+      final dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
       fileName = "$fileName-$dateTo";
     }
     return "$fileName.xlsx";
   }
 
   void downloadMemberTrafficExcel() async {
-    var date = DateFormat('yyyy-MM-dd').format(_dates[0]!);
+    final date = DateFormat('yyyy-MM-dd').format(_dates[0]!);
     var dateTo = date;
     if (_dates.length > 1) {
       dateTo = DateFormat('yyyy-MM-dd').format(_dates[1]!);
@@ -121,11 +122,11 @@ class _ReportScreenState extends State<ReportScreen> {
     getIt<ApiService>()
         .reportTraffic(getIt<AppService>().token, _reportType, date, dateTo)
         .then((report) async {
-          Excel excel = Excel.createExcel();
-          Sheet sheetObject = excel['Sheet1'];
+          final excel = Excel.createExcel();
+          final sheetObject = excel['Sheet1'];
 
-          int currentRow = 0;
-          List<CellValue> columnName = [
+          var currentRow = 0;
+          final columnName = <CellValue>[
             TextCellValue("ID"),
             TextCellValue("Name"),
             TextCellValue("Vehicle ID"),
@@ -133,12 +134,12 @@ class _ReportScreenState extends State<ReportScreen> {
             TextCellValue("Traffic"),
           ];
           sheetObject.insertRowIterables(columnName, currentRow);
-          CellStyle cellStyle = CellStyle(
+          final cellStyle = CellStyle(
             backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
             bold: true,
           );
           for (var i = 0; i < columnName.length; i++) {
-            var cell = sheetObject.cell(
+            final cell = sheetObject.cell(
               CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
             );
             cell.cellStyle = cellStyle;
@@ -146,8 +147,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
           for (var i = 0; i < report.length; i++) {
             currentRow++;
-            var m = report[i];
-            List<CellValue> dataList = [
+            final m = report[i];
+            final dataList = <CellValue>[
               TextCellValue(m.id.toString()),
               TextCellValue(m.name),
               TextCellValue(m.vehicleId.toString()),
@@ -165,11 +166,11 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Future<void> saveExcelFile(Excel excel, String reportType) async {
-    String filename = createFileName(_reportType);
+    final filename = createFileName(_reportType);
     if (kIsWeb) {
       excel.save(fileName: filename);
     } else {
-      String? outputFile = await FilePicker.platform.saveFile(
+      final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Please select an output file:',
         fileName: filename,
       );
