@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/services/model/login_response/login_response.dart';
-import '../data/services/model/login_response/user_model.dart';
+import '../data/services/api/model/login_response/login_response.dart';
+import '../data/services/api/model/login_response/user_model.dart';
 
 const kTokenKey = 'TOKEN_KEY';
 const kUserKey = 'USER_KEY';

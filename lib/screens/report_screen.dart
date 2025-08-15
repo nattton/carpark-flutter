@@ -10,7 +10,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../services/app_service.dart';
 

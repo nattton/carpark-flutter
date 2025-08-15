@@ -10,7 +10,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../../components/vehicle_header_card.dart';
 import '../../../../components/vehicle_list_card.dart';
 import '../../../../constants.dart';
-import '../../../../data/services/api_service.dart';
+import '../../../../data/services/api/api_service.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/member_model.dart';
 import '../../../../models/vehicle_model.dart';

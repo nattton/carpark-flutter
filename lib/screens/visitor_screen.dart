@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 import '../components/visitor_header_card.dart';
 import '../components/visitor_list_card.dart';
 import '../constants.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/visitor_model.dart';
 import '../providers/visitors_notifier.dart';

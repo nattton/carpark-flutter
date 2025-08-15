@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../components/user_list_card.dart';
-import '../data/services/api_service.dart';
-import '../data/services/model/login_response/user_model.dart';
+import '../data/services/api/api_service.dart';
+import '../data/services/api/model/login_response/user_model.dart';
 import '../injector/injector.dart';
 import '../models/save_user_model.dart';
 import '../services/app_service.dart';

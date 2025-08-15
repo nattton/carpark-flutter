@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../data/services/api_service.dart';
+import '../../../../../data/services/api/api_service.dart';
 import '../../../../../injector/injector.dart';
 import '../../../../../models/member_model.dart';
 import '../../../../../services/app_service.dart';

@@ -20,7 +20,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
 
 import '../../../../constants.dart';
-import '../../../../data/services/api_service.dart';
+import '../../../../data/services/api/api_service.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/gate_log_model.dart';
 import '../../../../models/member_model.dart';
@@ -833,12 +833,9 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     final inSideImage = await _tempImage("in_side");
     final entranceImage = await _tempImage("entrance");
 
-    final cardScreenshot = await cameraPlayer.cardPlayer
-        .screenshot();
-    final sideScreenshot = await cameraPlayer.sidePlayer
-        .screenshot();
-    final mainScreenshot = await cameraPlayer.mainPlayer
-        .screenshot();
+    final cardScreenshot = await cameraPlayer.cardPlayer.screenshot();
+    final sideScreenshot = await cameraPlayer.sidePlayer.screenshot();
+    final mainScreenshot = await cameraPlayer.mainPlayer.screenshot();
 
     if (cardScreenshot != null) {
       await cardImage.writeAsBytes(cardScreenshot);

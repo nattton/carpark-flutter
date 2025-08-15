@@ -11,7 +11,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../constants.dart';
 import '../core/presentation/bloc/app_title/app_title_cubit.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../features/gateway/presentation/page/entrance_screen.dart';
 import '../features/gateway/presentation/page/exit_screen.dart';
 import '../features/member/presentation/bloc/member_list/member_list_bloc.dart';

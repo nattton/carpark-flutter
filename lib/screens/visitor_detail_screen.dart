@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../constants.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/visitor_model.dart';
 import '../services/app_service.dart';

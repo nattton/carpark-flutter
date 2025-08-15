@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../constants.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../services/app_service.dart';
 import 'main_screen.dart';

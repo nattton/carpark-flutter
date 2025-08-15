@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../../../constants.dart';
-import '../../../../data/services/api_service.dart';
+import '../../../../data/services/api/api_service.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/member_model.dart';
 import '../../../../services/app_service.dart';

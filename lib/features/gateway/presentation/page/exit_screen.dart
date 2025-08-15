@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../data/services/api_service.dart';
+import '../../../../data/services/api/api_service.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/checkout_model.dart';
 import '../../../../models/visitor_model.dart';
@@ -159,10 +159,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     final outSideImage = await _tempImage("out_side");
     final exitImage = await _tempImage("exit");
 
-    final sideScreenshot = await cameraPlayer.sidePlayer
-        .screenshot();
-    final mainScreenshot = await cameraPlayer.mainPlayer
-        .screenshot();
+    final sideScreenshot = await cameraPlayer.sidePlayer.screenshot();
+    final mainScreenshot = await cameraPlayer.mainPlayer.screenshot();
 
     if (sideScreenshot != null) {
       outSideImage.writeAsBytes(sideScreenshot);

@@ -14,7 +14,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import '../components/gate_log_card.dart';
 import '../components/gate_log_header_card.dart';
 import '../constants.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/gate_log_result.dart';
 import '../providers/gate_logs_notifier.dart';
@@ -104,7 +104,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   @override
   void initState() {
     super.initState();
-    final var now = DateTime.now();
+    final now = DateTime.now();
     _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 

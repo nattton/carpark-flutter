@@ -7,7 +7,7 @@ import 'package:thermal_printer/thermal_printer.dart';
 
 import '../components/camera_list_card.dart';
 import '../constants.dart';
-import '../data/services/api_service.dart';
+import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/camera_model.dart';
 import '../services/app_service.dart';

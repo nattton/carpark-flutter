@@ -4,17 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../models/camera_model.dart';
-import '../../models/checkout_model.dart';
-import '../../models/gate_in_model.dart';
-import '../../models/gate_log_result.dart';
-import '../../models/last_gate.dart';
-import '../../models/member_model.dart';
-import '../../models/report_traffic_model.dart';
-import '../../models/response_model.dart';
-import '../../models/save_user_model.dart';
-import '../../models/vehicle_model.dart';
-import '../../models/visitor_model.dart';
+import '../../../models/models.dart';
 import 'model/login_response/login_response.dart';
 import 'model/login_response/user_model.dart';
 
