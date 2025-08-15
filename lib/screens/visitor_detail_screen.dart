@@ -53,21 +53,13 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
                       "English Name : ${visitor.engName!}",
                       style: kContentStyle,
                     ),
-                    Text(
-                      "เพศ : ${visitor.gender!}",
-                      style: kContentStyle,
-                    ),
+                    Text("เพศ : ${visitor.gender!}", style: kContentStyle),
                     Text(
                       "วันเกิด : ${visitor.birthdate!}",
                       style: kContentStyle,
                     ),
-                    Text(
-                      "ที่อยู่ : ${visitor.address!}",
-                      style: kContentStyle,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
+                    Text("ที่อยู่ : ${visitor.address!}", style: kContentStyle),
+                    const SizedBox(height: 10.0),
                     for (var image in visitor.visitorImages!)
                       Image.network(image.imageUrl()),
                     visitor.gateLog!.captureImage! != ""
