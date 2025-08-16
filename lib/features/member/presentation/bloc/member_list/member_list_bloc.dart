@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import '../../../../../data/services/api/api_service.dart';
 import '../../../../../domain/models/member/member_model.dart';
 import '../../../../../injector/injector.dart';
-import '../../../../../services/app_service.dart';
 
 part 'member_list_event.dart';
 part 'member_list_state.dart';
@@ -24,9 +23,7 @@ class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
   ) async {
     emit(state.copyWith(status: MemberListStatus.loading));
     try {
-      final memberList = await getIt<ApiService>().getMemberList(
-        getIt<AppService>().token,
-      );
+      final memberList = await getIt<ApiService>().getMemberList();
       emit(
         state.copyWith(
           status: MemberListStatus.success,

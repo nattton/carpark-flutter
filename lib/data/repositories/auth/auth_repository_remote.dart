@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 
 import '../../../utils/result.dart';
@@ -7,11 +8,14 @@ import 'auth_repository.dart';
 
 class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
+    required Dio dio,
     required ApiService apiService,
     required SharedPreferencesService sharedPreferencesService,
-  }) : _apiService = apiService,
+  }) : _dio = dio,
+       _apiService = apiService,
        _sharedPreferencesService = sharedPreferencesService;
 
+  final Dio _dio;
   final ApiService _apiService;
   final SharedPreferencesService _sharedPreferencesService;
 
@@ -24,6 +28,7 @@ class AuthRepositoryRemote extends AuthRepository {
     switch (result) {
       case Ok<String?>():
         _authToken = result.value;
+        _dio.options.headers['Authorization'] = 'Bearer ${result.value}';
         _isAuthenticated = result.value != null;
       case Error<String?>():
         _log.severe(
@@ -55,6 +60,7 @@ class AuthRepositoryRemote extends AuthRepository {
       // Set auth status
       _isAuthenticated = true;
       _authToken = result.token;
+      _dio.options.headers['Authorization'] = 'Bearer ${result.token}';
       return await _sharedPreferencesService.saveToken(result.token);
     } on Exception catch (error) {
       return Result.error(error);
@@ -74,7 +80,7 @@ class AuthRepositoryRemote extends AuthRepository {
 
       // Clear token in ApiClient
       _authToken = null;
-
+      _dio.options.headers['Authorization'] = null;
       // Clear authenticated status
       _isAuthenticated = false;
       return result;

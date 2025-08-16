@@ -18,7 +18,6 @@ import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/gate_log_result.dart';
 import '../providers/gate_logs_notifier.dart';
-import '../services/app_service.dart';
 import 'visitor_detail_screen.dart';
 
 final gateLogsProvider =
@@ -135,7 +134,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
         dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
       }
       getIt<ApiService>()
-          .searchGateLog(getIt<AppService>().token, date, dateTo)
+          .searchGateLog(date, dateTo)
           .then((value) {
             EasyLoading.dismiss();
             gateLogs.setState(value);

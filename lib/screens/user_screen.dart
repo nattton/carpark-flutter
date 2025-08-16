@@ -7,7 +7,6 @@ import '../data/services/api/api_service.dart';
 import '../data/services/api/model/login_response/user_model.dart';
 import '../injector/injector.dart';
 import '../models/save_user_model.dart';
-import '../services/app_service.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -55,7 +54,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> getUser() async {
     getIt<ApiService>()
-        .getUserList(getIt<AppService>().token)
+        .getUserList()
         .then((value) {
           setState(() {
             userList = value;
@@ -72,7 +71,7 @@ class _UserScreenState extends State<UserScreen> {
       role: user.role,
     );
     getIt<ApiService>()
-        .updateUser(getIt<AppService>().token, saveUser.id, saveUser)
+        .updateUser(saveUser.id, saveUser)
         .then((value) {
           GoRouter.of(context).pop();
           getUser();

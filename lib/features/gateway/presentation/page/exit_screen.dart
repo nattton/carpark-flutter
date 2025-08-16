@@ -15,7 +15,6 @@ import '../../../../injector/injector.dart';
 import '../../../../models/checkout_model.dart';
 import '../../../../models/visitor_model.dart';
 import '../../../../screens/main_screen.dart';
-import '../../../../services/app_service.dart';
 import '../../../registered_user/domain/entity/registered_user.dart';
 import '../../../registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
 import '../../../registered_user/presentation/page/registered_user_logs_screen.dart';
@@ -171,7 +170,6 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
     if (await outSideImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-        getIt<AppService>().token,
         visitor.id,
         "out_side",
         outSideImage,
@@ -180,7 +178,6 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     }
     if (await exitImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-        getIt<AppService>().token,
         visitor.id,
         "exit",
         exitImage,
@@ -202,7 +199,6 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       } else {
         try {
           final visitor = await getIt<ApiService>().checkoutVisitor(
-            getIt<AppService>().token,
             CheckoutModel(barcode: barcode, gateLogId: gateLog.id),
           );
 

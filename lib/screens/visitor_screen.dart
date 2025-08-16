@@ -17,7 +17,6 @@ import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/visitor_model.dart';
 import '../providers/visitors_notifier.dart';
-import '../services/app_service.dart';
 import 'visitor_detail_screen.dart';
 
 final visitorsProvider =
@@ -133,7 +132,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
       }
       getIt<ApiService>()
-          .listVisitor(getIt<AppService>().token, date, dateTo)
+          .listVisitor(date, dateTo)
           .then((value) {
             EasyLoading.dismiss();
             visitors.setState(value);

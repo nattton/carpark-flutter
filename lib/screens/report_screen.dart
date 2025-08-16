@@ -12,7 +12,6 @@ import 'package:intl/intl.dart';
 import '../constants.dart';
 import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
-import '../services/app_service.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -119,50 +118,46 @@ class _ReportScreenState extends State<ReportScreen> {
     if (_dates.length > 1) {
       dateTo = DateFormat('yyyy-MM-dd').format(_dates[1]!);
     }
-    getIt<ApiService>()
-        .reportTraffic(getIt<AppService>().token, _reportType, date, dateTo)
-        .then((report) async {
-          final excel = Excel.createExcel();
-          final sheetObject = excel['Sheet1'];
+    getIt<ApiService>().reportTraffic(_reportType, date, dateTo).then((
+      report,
+    ) async {
+      final excel = Excel.createExcel();
+      final sheetObject = excel['Sheet1'];
 
-          var currentRow = 0;
-          final columnName = <CellValue>[
-            TextCellValue("ID"),
-            TextCellValue("Name"),
-            TextCellValue("Vehicle ID"),
-            TextCellValue("PlateNumber"),
-            TextCellValue("Traffic"),
-          ];
-          sheetObject.insertRowIterables(columnName, currentRow);
-          final cellStyle = CellStyle(
-            backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
-            bold: true,
-          );
-          for (var i = 0; i < columnName.length; i++) {
-            final cell = sheetObject.cell(
-              CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
-            );
-            cell.cellStyle = cellStyle;
-          }
+      var currentRow = 0;
+      final columnName = <CellValue>[
+        TextCellValue("ID"),
+        TextCellValue("Name"),
+        TextCellValue("Vehicle ID"),
+        TextCellValue("PlateNumber"),
+        TextCellValue("Traffic"),
+      ];
+      sheetObject.insertRowIterables(columnName, currentRow);
+      final cellStyle = CellStyle(
+        backgroundColorHex: ExcelColor.fromHexString('#C4D9C3'),
+        bold: true,
+      );
+      for (var i = 0; i < columnName.length; i++) {
+        final cell = sheetObject.cell(
+          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
+        );
+        cell.cellStyle = cellStyle;
+      }
 
-          for (var i = 0; i < report.length; i++) {
-            currentRow++;
-            final m = report[i];
-            final dataList = <CellValue>[
-              TextCellValue(m.id.toString()),
-              TextCellValue(m.name),
-              TextCellValue(m.vehicleId.toString()),
-              TextCellValue(m.plateNumber),
-              TextCellValue(m.traffic.toString()),
-            ];
-            sheetObject.insertRowIterables(
-              dataList,
-              currentRow,
-              startingColumn: 0,
-            );
-          }
-          saveExcelFile(excel, _reportType);
-        });
+      for (var i = 0; i < report.length; i++) {
+        currentRow++;
+        final m = report[i];
+        final dataList = <CellValue>[
+          TextCellValue(m.id.toString()),
+          TextCellValue(m.name),
+          TextCellValue(m.vehicleId.toString()),
+          TextCellValue(m.plateNumber),
+          TextCellValue(m.traffic.toString()),
+        ];
+        sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
+      }
+      saveExcelFile(excel, _reportType);
+    });
   }
 
   Future<void> saveExcelFile(Excel excel, String reportType) async {

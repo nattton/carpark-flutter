@@ -20,7 +20,6 @@ import '../features/registered_user/presentation/page/registered_user_not_check_
 import '../injector/injector.dart';
 import '../models/models.dart';
 import '../providers/camera_player.dart';
-import '../services/app_service.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
 import 'gate_log_screen.dart';
 import 'report_screen.dart';
@@ -147,9 +146,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<Map<String, CameraModel>> getCameraList() async {
     final camera = ref.read(cameraMapProvider);
-    final data = await getIt<ApiService>().getCameraList(
-      getIt<AppService>().token,
-    );
+    final data = await getIt<ApiService>().getCameraList();
     for (final cam in data) {
       camera[cam.name] = cam;
     }
@@ -159,9 +156,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> getLastGate() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
-      final result = await getIt<ApiService>().getLastGate(
-        getIt<AppService>().token,
-      );
+      final result = await getIt<ApiService>().getLastGate();
       lastGate.setGateIn(result.gateIn);
       lastGate.setGateOut(result.gateOut);
     } catch (e) {
@@ -172,9 +167,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> getLastGateIn() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
-      final result = await getIt<ApiService>().getGateIn(
-        getIt<AppService>().token,
-      );
+      final result = await getIt<ApiService>().getGateIn();
       lastGate.setGateIn(result.gateLog);
     } catch (e) {
       alertError(e.toString());
@@ -184,9 +177,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> getLastGateOut() async {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
-      final result = await getIt<ApiService>().getGateOut(
-        getIt<AppService>().token,
-      );
+      final result = await getIt<ApiService>().getGateOut();
       lastGate.setGateOut(result.gateLog);
     } catch (e) {
       alertError(e.toString());

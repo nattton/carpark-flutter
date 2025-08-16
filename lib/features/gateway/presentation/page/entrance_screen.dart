@@ -580,12 +580,12 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Future<void> manualCapture(String door) async {
-    getIt<ApiService>()
-        .manualCapture(getIt<AppService>().token, door)
-        .then((value) {})
-        .onError((error, stackTrace) {
-          alertError(error.toString());
-        });
+    getIt<ApiService>().manualCapture(door).then((value) {}).onError((
+      error,
+      stackTrace,
+    ) {
+      alertError(error.toString());
+    });
   }
 
   void clearForm() {
@@ -800,7 +800,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     );
 
     getIt<ApiService>()
-        .createVisitor(getIt<AppService>().token, visitor)
+        .createVisitor(visitor)
         .then((value) async {
           if (value.idCard != "") {
             addPhotoToVisitor(value);
@@ -821,7 +821,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     if (_idCardModel != null && _photoFile != null) {
       if (await _photoFile!.exists()) {
         getIt<ApiService>()
-            .addPhotoVisitor(getIt<AppService>().token, visitor.id, _photoFile!)
+            .addPhotoVisitor(visitor.id, _photoFile!)
             .then((value) => {});
       }
     }
@@ -849,7 +849,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
     if (await cardImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-        getIt<AppService>().token,
         visitor.id,
         "card",
         cardImage,
@@ -858,7 +857,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     }
     if (await inSideImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-        getIt<AppService>().token,
         visitor.id,
         "in_side",
         inSideImage,
@@ -867,7 +865,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     }
     if (await entranceImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
-        getIt<AppService>().token,
         visitor.id,
         "entrance",
         entranceImage,

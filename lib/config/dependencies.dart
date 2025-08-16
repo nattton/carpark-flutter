@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -14,6 +15,7 @@ List<SingleChildWidget> get providersRemote {
     ChangeNotifierProvider(
       create: (context) =>
           AuthRepositoryRemote(
+                dio: getIt<Dio>(),
                 apiService: getIt<ApiService>(),
                 sharedPreferencesService: context.read(),
               )

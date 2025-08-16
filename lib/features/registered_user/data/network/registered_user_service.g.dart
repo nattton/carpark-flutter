@@ -19,13 +19,11 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
-    String token,
     String searchText,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'search': searchText};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<GenericResponseData<List<RegisteredUserResponse>>>(
@@ -64,13 +62,11 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(
-    String token,
     int id,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<GenericResponseData<RegisteredUserResponse>>(
@@ -101,13 +97,11 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
-    String token,
     CreateRegisteredUserRequest request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _options =
@@ -139,14 +133,12 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
-    String token,
     int id,
     File photo,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = FormData();
     _data.files.add(
       MapEntry(
@@ -186,14 +178,12 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-    String token,
     int id,
     UpdateRegisteredUserRequest request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _options =
@@ -225,13 +215,11 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> checkInRegisteredUser(
-    String token,
     RegisteredUserCheckInRequest request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _options =
@@ -263,13 +251,11 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> checkOutRegisteredUser(
-    String token,
     RegisteredUserCheckOutRequest request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _options =
@@ -301,13 +287,11 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
-    String token,
     int id,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<GenericResponseData<RegisteredUserLogsResponse>>(
@@ -339,11 +323,10 @@ class _RegisteredUserService implements RegisteredUserService {
 
   @override
   Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
-  getNotCheckOutRegisteredUser(String token) async {
+  getNotCheckOutRegisteredUser() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<

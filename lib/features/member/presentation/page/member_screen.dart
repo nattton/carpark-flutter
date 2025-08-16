@@ -16,7 +16,6 @@ import '../../../../data/services/api/model/vehicle/vehicle.dart';
 import '../../../../domain/models/member/member_model.dart';
 import '../../../../domain/models/member/vehicle_model.dart';
 import '../../../../injector/injector.dart';
-import '../../../../services/app_service.dart';
 
 final memberModelProvider = StateProvider<MemberModel>(
   (ref) => MemberModel(id: 0, vehicles: []),
@@ -66,7 +65,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
   void getMember() {
     EasyLoading.show(status: 'loading...');
     getIt<ApiService>()
-        .getMember(getIt<AppService>().token, widget.memberId)
+        .getMember(widget.memberId)
         .then((value) {
           ref.read(memberModelProvider.notifier).state = value;
           setState(() {
@@ -526,7 +525,6 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     final member = ref.read(memberModelProvider);
     try {
       await getIt<ApiService>().updateMember(
-        getIt<AppService>().token,
         widget.memberId,
         UpdateMemberRequest(
           name: member.name,
@@ -569,7 +567,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     );
 
     getIt<ApiService>()
-        .createVehicle(getIt<AppService>().token, widget.memberId, vehicle)
+        .createVehicle(widget.memberId, vehicle)
         .then((value) {
           SnackBar(content: Text('เพิ่มข้อมูลทะเบียนเรียบร้อย'));
           showDialog<String>(
@@ -608,7 +606,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     );
 
     getIt<ApiService>()
-        .updateVehicle(getIt<AppService>().token, vehicle.id!, updateVehicle)
+        .updateVehicle(vehicle.id!, updateVehicle)
         .then((value) {
           getMember();
           showDialog<String>(
@@ -665,7 +663,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
 
   void deleteVehicle(VehicleModel vehicle) {
     getIt<ApiService>()
-        .deleteVehicle(getIt<AppService>().token, vehicle.id!)
+        .deleteVehicle(vehicle.id!)
         .then((value) {
           showDialog<String>(
             context: context,

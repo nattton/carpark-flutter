@@ -5,7 +5,6 @@ import '../constants.dart';
 import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/visitor_model.dart';
-import '../services/app_service.dart';
 
 class VisitorDetailScreen extends StatefulWidget {
   static const routeName = "/visitor_detail";
@@ -80,7 +79,7 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
   void getVisitor() {
     EasyLoading.show(status: 'loading...');
     getIt<ApiService>()
-        .getVisitor(getIt<AppService>().token, visitorId)
+        .getVisitor(visitorId)
         .then((value) {
           setState(() {
             visitor = value;

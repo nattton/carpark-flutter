@@ -111,6 +111,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i680.IdCardServiceDataSource>(
       () => _i440.IdCardServiceDataSourceImpl(gh<_i313.IdCardService>()),
     );
+    gh.factory<_i798.RegisteredUserServiceDataSource>(
+      () => _i790.RegisteredUserServiceDataSourceImpl(
+        gh<_i636.RegisteredUserService>(),
+      ),
+    );
     gh.factory<_i325.IdCardServiceRepository>(
       () => _i1028.IdCardServiceRepositoryImpl(
         gh<_i680.IdCardServiceDataSource>(),
@@ -118,12 +123,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i399.ReadIdCardUsecase>(
       () => _i399.ReadIdCardUsecase(gh<_i325.IdCardServiceRepository>()),
-    );
-    gh.factory<_i798.RegisteredUserServiceDataSource>(
-      () => _i790.RegisteredUserServiceDataSourceImpl(
-        gh<_i636.RegisteredUserService>(),
-        gh<_i479.AppService>(),
-      ),
     );
     gh.factory<_i960.RegisteredUserServiceRepository>(
       () => _i296.RegisteredUserServiceRepositoryImpl(

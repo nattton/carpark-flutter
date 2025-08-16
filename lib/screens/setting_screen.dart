@@ -136,7 +136,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
 
   Future<void> getCamera() async {
     getIt<ApiService>()
-        .getCameraList(getIt<AppService>().token)
+        .getCameraList()
         .then((value) {
           setState(() {
             cameraList = value;
@@ -160,7 +160,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       path: _pathController.text,
     );
     getIt<ApiService>()
-        .updateCamera(getIt<AppService>().token, camera.id, camera)
+        .updateCamera(camera.id, camera)
         .then((value) {
           GoRouter.of(context).pop();
           getCamera();

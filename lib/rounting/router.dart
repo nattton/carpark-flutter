@@ -9,7 +9,6 @@ import '../features/registered_user/presentation/page/registered_user_logs_scree
 import '../injector/injector.dart';
 import '../screens/main_screen.dart';
 import '../screens/visitor_detail_screen.dart';
-import '../screens/welcome_screen.dart';
 import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/login/widgets/login_screen.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
@@ -20,10 +19,6 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
   redirect: _redirect,
   refreshListenable: authRepository,
   routes: [
-    GoRoute(
-      path: WelcomeScreen.routeName,
-      builder: (context, state) => const WelcomeScreen(),
-    ),
     GoRoute(
       path: LoginScreen.routeName,
       builder: (context, state) => LoginScreen(

@@ -45,11 +45,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<UserModel>> getUserList(String token) async {
+  Future<List<UserModel>> getUserList() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<UserModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -75,15 +74,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<ResponseModel> updateUser(
-    String token,
-    int id,
-    SaveUserModel user,
-  ) async {
+  Future<ResponseModel> updateUser(int id, SaveUserModel user) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(user.toJson());
     final _options = _setStreamType<ResponseModel>(
@@ -108,11 +102,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<void> openDoor(String token, String name) async {
+  Future<void> openDoor(String name) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -128,11 +121,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<void> manualCapture(String token, String name) async {
+  Future<void> manualCapture(String name) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -148,11 +140,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<LastGate> getLastGate(String token) async {
+  Future<LastGate> getLastGate() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<LastGate>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -176,11 +167,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GateInModel> getGateIn(String token) async {
+  Future<GateInModel> getGateIn() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<GateInModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -204,11 +194,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GateInModel> getGateOut(String token) async {
+  Future<GateInModel> getGateOut() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<GateInModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -232,15 +221,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<GateLogResult>> searchGateLog(
-    String token,
-    String date,
-    String dateTo,
-  ) async {
+  Future<List<GateLogResult>> searchGateLog(String date, String dateTo) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'date': date, r'dateTo': dateTo};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<GateLogResult>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -266,11 +250,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<CameraModel>> getCameraList(String token) async {
+  Future<List<CameraModel>> getCameraList() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<CameraModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -296,15 +279,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CameraModel> updateCamera(
-    String token,
-    int id,
-    CameraModel camera,
-  ) async {
+  Future<CameraModel> updateCamera(int id, CameraModel camera) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(camera.toJson());
     final _options = _setStreamType<CameraModel>(
@@ -329,14 +307,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<MemberModel> createMember(
-    String token,
-    CreateMemberRequest member,
-  ) async {
+  Future<MemberModel> createMember(CreateMemberRequest member) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(member.toJson());
     final _options = _setStreamType<MemberModel>(
@@ -361,15 +335,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<ResponseModel> updateMember(
-    String token,
-    int id,
-    UpdateMemberRequest member,
-  ) async {
+  Future<ResponseModel> updateMember(int id, UpdateMemberRequest member) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(member.toJson());
     final _options = _setStreamType<ResponseModel>(
@@ -394,11 +363,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<ResponseModel> deleteMember(String token, int id) async {
+  Future<ResponseModel> deleteMember(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<ResponseModel>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
@@ -422,11 +390,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<MemberModel> getMember(String token, int id) async {
+  Future<MemberModel> getMember(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<MemberModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -450,11 +417,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<MemberModel>> getMemberList(String token) async {
+  Future<List<MemberModel>> getMemberList() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<MemberModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -481,14 +447,12 @@ class _ApiService implements ApiService {
 
   @override
   Future<ResponseModel> createVehicle(
-    String token,
     int memberId,
     CreateVehicleRequest vehicle,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(vehicle.toJson());
     final _options = _setStreamType<ResponseModel>(
@@ -514,14 +478,12 @@ class _ApiService implements ApiService {
 
   @override
   Future<ResponseModel> updateVehicle(
-    String token,
     int id,
     UpdateVehicleRequest vehicle,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(vehicle.toJson());
     final _options = _setStreamType<ResponseModel>(
@@ -546,11 +508,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<void> deleteVehicle(String token, int id) async {
+  Future<void> deleteVehicle(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
@@ -566,11 +527,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<VisitorModel> createVisitor(String token, VisitorModel visitor) async {
+  Future<VisitorModel> createVisitor(VisitorModel visitor) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(visitor.toJson());
     final _options = _setStreamType<VisitorModel>(
@@ -595,15 +555,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<VisitorModel>> listVisitor(
-    String token,
-    String date,
-    String dateTo,
-  ) async {
+  Future<List<VisitorModel>> listVisitor(String date, String dateTo) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'date': date, r'dateTo': dateTo};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<VisitorModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -629,11 +584,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<VisitorModel> getVisitor(String token, int id) async {
+  Future<VisitorModel> getVisitor(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<VisitorModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -657,11 +611,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<VisitorModel> addPhotoVisitor(String token, int id, File photo) async {
+  Future<VisitorModel> addPhotoVisitor(int id, File photo) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = FormData();
     _data.files.add(
       MapEntry(
@@ -694,16 +647,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<VisitorModel> addImageToVisitor(
-    String token,
-    int id,
-    String type,
-    File file,
-  ) async {
+  Future<VisitorModel> addImageToVisitor(int id, String type, File file) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = FormData();
     _data.files.add(
       MapEntry(
@@ -736,14 +683,10 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<VisitorModel> checkoutVisitor(
-    String token,
-    CheckoutModel checkout,
-  ) async {
+  Future<VisitorModel> checkoutVisitor(CheckoutModel checkout) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(checkout.toJson());
     final _options = _setStreamType<VisitorModel>(
@@ -769,15 +712,13 @@ class _ApiService implements ApiService {
 
   @override
   Future<List<ReportTrafficModel>> reportTraffic(
-    String token,
     String type,
     String date,
     String dateTo,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'date': date, r'dateTo': dateTo};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<ReportTrafficModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)

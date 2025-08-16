@@ -1,13 +1,6 @@
-import 'dart:convert';
-
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/services/api/model/login_response/login_response.dart';
-import '../data/services/api/model/login_response/user_model.dart';
-
-const kTokenKey = 'TOKEN_KEY';
-const kUserKey = 'USER_KEY';
 const kPrinterKey = 'PRINTER_KEY';
 
 @module
@@ -21,38 +14,9 @@ class AppService {
 
   AppService({required this.prefs});
 
-  String get token => prefs.getString(kTokenKey) ?? '';
   String get printer => prefs.getString(kPrinterKey) ?? '';
-  UserModel get user =>
-      UserModel.fromJson(jsonDecode(prefs.getString(kUserKey) ?? ''));
-
-  Future<void> saveLogin(LoginResponse login) async {
-    await prefs.setString(kTokenKey, "Bearer ${login.token}");
-    await prefs.setString(kUserKey, jsonEncode(login.user.toJson()));
-  }
 
   Future<void> savePrinter(String printerName) async {
     await prefs.setString(kPrinterKey, printerName);
-  }
-
-  bool isLogIn() {
-    return token != '';
-  }
-
-  UserModel? getUser() {
-    final userString = prefs.getString(kUserKey);
-    if (userString != null) {
-      try {
-        return UserModel.fromJson(jsonDecode(userString));
-      } catch (e) {
-        logout();
-      }
-    }
-    return null;
-  }
-
-  Future<void> logout() async {
-    await prefs.remove(kUserKey);
-    await prefs.remove(kTokenKey);
   }
 }
