@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../data/services/api/api_service.dart';
+import '../../../../../domain/models/member/member_model.dart';
 import '../../../../../injector/injector.dart';
-import '../../../../../models/member_model.dart';
 import '../../../../../services/app_service.dart';
 
 part 'member_list_event.dart';

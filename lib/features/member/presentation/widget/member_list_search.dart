@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../constants.dart';
-import '../../../../models/member_model.dart';
+import '../../../../domain/models/member/member_model.dart';
 
 class MemberListSearch extends StatelessWidget {
   const MemberListSearch({

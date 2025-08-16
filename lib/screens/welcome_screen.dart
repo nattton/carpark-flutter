@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../constants.dart';
 import '../injector/injector.dart';
 import '../services/app_service.dart';
-import 'login_screen.dart';
+import '../ui/auth/login/widgets/login_screen.dart';
 import 'main_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {

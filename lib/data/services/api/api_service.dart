@@ -7,6 +7,8 @@ import 'package:retrofit/retrofit.dart';
 import '../../../models/models.dart';
 import 'model/login_response/login_response.dart';
 import 'model/login_response/user_model.dart';
+import 'model/member/member.dart';
+import 'model/vehicle/vehicle.dart';
 
 part 'api_service.g.dart';
 
@@ -82,21 +84,20 @@ abstract class ApiService {
   @POST("/api/members")
   Future<MemberModel> createMember(
     @Header('Authorization') String token,
-    @Body() MemberModel member,
+    @Body() CreateMemberRequest member,
   );
 
   @PATCH("/api/members/{id}")
   Future<ResponseModel> updateMember(
     @Header('Authorization') String token,
     @Path() int id,
-    @Body() MemberModel member,
+    @Body() UpdateMemberRequest member,
   );
 
   @DELETE("/api/members/{id}")
   Future<ResponseModel> deleteMember(
     @Header('Authorization') String token,
     @Path() int id,
-    @Body() MemberModel member,
   );
 
   @GET("/api/members/{id}")
@@ -115,14 +116,14 @@ abstract class ApiService {
   Future<ResponseModel> createVehicle(
     @Header('Authorization') String token,
     @Path() int memberId,
-    @Body() VehicleModel vehicle,
+    @Body() CreateVehicleRequest vehicle,
   );
 
   @PATCH("/api/vehicles/{id}")
   Future<ResponseModel> updateVehicle(
     @Header('Authorization') String token,
     @Path() int id,
-    @Body() VehicleModel member,
+    @Body() UpdateVehicleRequest vehicle,
   );
 
   @DELETE("/api/vehicles/{id}")

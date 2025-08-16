@@ -21,9 +21,9 @@ import 'package:thermal_printer/thermal_printer.dart';
 
 import '../../../../constants.dart';
 import '../../../../data/services/api/api_service.dart';
+import '../../../../domain/models/member/member_model.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/gate_log_model.dart';
-import '../../../../models/member_model.dart';
 import '../../../../models/visitor_model.dart';
 import '../../../../screens/main_screen.dart';
 import '../../../../services/app_service.dart';
@@ -894,7 +894,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildSearchMember() {
-    final memberList = BlocProvider.of<MemberListBloc>(context).state.members;
+    final members = context.read<MemberListBloc>().state.members;
     return Autocomplete<MemberModel>(
       initialValue:
           _selectedMember != null && _selectedMember!.status == "overdue"
@@ -907,7 +907,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         if (textEditingValue.text.isEmpty) {
           return const Iterable.empty();
         }
-        return memberList.where(
+        return members.where(
           (MemberModel member) => member.name!.contains(textEditingValue.text),
         );
       },
@@ -923,12 +923,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
               final option = options.elementAt(index);
-              // List<String> plates = [];
-              // if (option.vehicles != null) {
-              //   for (var vehicle in option.vehicles!) {
-              //     plates.add(vehicle.plateNumber!);
-              //   }
-              // }
               return ListTile(
                 title: SubstringHighlight(
                   text: option.name!,

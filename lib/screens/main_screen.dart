@@ -5,7 +5,6 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -22,8 +21,8 @@ import '../injector/injector.dart';
 import '../models/models.dart';
 import '../providers/camera_player.dart';
 import '../services/app_service.dart';
+import '../ui/auth/logout/view_models/logout_viewmodel.dart';
 import 'gate_log_screen.dart';
-import 'login_screen.dart';
 import 'report_screen.dart';
 import 'setting_screen.dart';
 import 'user_screen.dart';
@@ -46,19 +45,12 @@ final cameraPlayerProvider = Provider<CameraPlayer>(
 class MainScreen extends StatefulHookConsumerWidget {
   static const String routeName = '/main';
 
-  const MainScreen({super.key});
+  const MainScreen({super.key, required this.logoutViewModel});
+
+  final LogoutViewModel logoutViewModel;
 
   @override
   ConsumerState<MainScreen> createState() => _MainScreenState();
-
-  static Widget get page => MultiBlocProvider(
-    providers: [
-      BlocProvider<MemberListBloc>(
-        create: (context) => getIt<MemberListBloc>()..add(LoadMemberList()),
-      ),
-    ],
-    child: MainScreen(),
-  );
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
@@ -68,7 +60,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
-  late AppTitleCubit _appTitleCubit;
+  AppTitleCubit get _appTitleCubit => context.read<AppTitleCubit>();
+  MemberListBloc get _memberListBloc => context.read<MemberListBloc>();
 
   Future<void> initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
@@ -122,7 +115,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _appTitleCubit = context.read<AppTitleCubit>();
+    _memberListBloc.add(LoadMemberList());
     _appTitleCubit.changeTitle('Car Park');
     if (kIsWeb) {
       initWebSocketChannelConnection();
@@ -363,9 +356,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     icon: const Icon(Icons.exit_to_app),
                     onTap: (page, _) {
                       selectedPage('LOGOUT');
-                      getIt<AppService>().logout().then((value) {
-                        goLoginScreen();
-                      });
+                      widget.logoutViewModel.logoutCommand.execute();
                     },
                   ),
                 ],
@@ -416,9 +407,5 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         );
       },
     );
-  }
-
-  void goLoginScreen() {
-    context.go(LoginScreen.routeName);
   }
 }

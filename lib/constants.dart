@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as html;
 
-const kHost = 'localhost:4000';
+const kHost = '127.0.0.1:4000';
 // const kHost = '192.168.1.50:4000';
 // const kHost = 'cyptpr.ddns.net';
 

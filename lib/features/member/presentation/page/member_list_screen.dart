@@ -12,8 +12,9 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../../../constants.dart';
 import '../../../../data/services/api/api_service.dart';
+import '../../../../data/services/api/model/member/member.dart';
+import '../../../../domain/models/member/member_model.dart';
 import '../../../../injector/injector.dart';
-import '../../../../models/member_model.dart';
 import '../../../../services/app_service.dart';
 import '../bloc/member_list/member_list_bloc.dart';
 import '../widget/member_header_card.dart';
@@ -29,7 +30,7 @@ class MemberListScreen extends StatefulWidget {
 
 class _MemberListScreenState extends State<MemberListScreen> {
   late MemberListBloc _memberListBloc;
-  final MemberModel _memberModel = MemberModel(id: 0, vehicles: []);
+  MemberModel _memberModel = MemberModel(id: 0, vehicles: []);
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
   final _filterController = TextEditingController();
@@ -125,10 +126,12 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   void onPressedAddMember() {
-    _memberModel.name = '';
-    _memberModel.telephone = '';
-    _memberModel.type = 'resident';
-    _memberModel.status = 'active';
+    _memberModel = _memberModel.copyWith(
+      name: '',
+      telephone: '',
+      type: 'resident',
+      status: 'active',
+    );
 
     _nameController.text = '';
     _telController.text = '';
@@ -143,7 +146,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
             child: TextField(
               controller: _nameController,
               onChanged: (value) {
-                _memberModel.name = value;
+                _memberModel = _memberModel.copyWith(name: value);
               },
               autofocus: false,
               autocorrect: false,
@@ -168,7 +171,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
             child: TextField(
               controller: _telController,
               onChanged: (value) {
-                _memberModel.telephone = value;
+                _memberModel = _memberModel.copyWith(telephone: value);
               },
               autofocus: false,
               autocorrect: false,
@@ -206,7 +209,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
               initialValue: _memberModel.type,
               name: 'type',
               onChanged: (value) {
-                _memberModel.type = value;
+                _memberModel = _memberModel.copyWith(type: value);
               },
               validator: FormBuilderValidators.required(),
               options: kMemberTypeList
@@ -232,7 +235,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
               initialValue: _memberModel.status,
               name: 'status',
               onChanged: (value) {
-                _memberModel.status = value;
+                _memberModel = _memberModel.copyWith(status: value);
               },
               validator: FormBuilderValidators.required(),
               options: kStatusList
@@ -258,7 +261,15 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
   void createMember() {
     getIt<ApiService>()
-        .createMember(getIt<AppService>().token, _memberModel)
+        .createMember(
+          getIt<AppService>().token,
+          CreateMemberRequest(
+            name: _memberModel.name!,
+            telephone: _memberModel.telephone!,
+            type: _memberModel.type!,
+            status: _memberModel.status!,
+          ),
+        )
         .then((value) {
           showDialog<String>(
             context: context,

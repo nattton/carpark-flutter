@@ -11,12 +11,14 @@ import '../../../../components/vehicle_header_card.dart';
 import '../../../../components/vehicle_list_card.dart';
 import '../../../../constants.dart';
 import '../../../../data/services/api/api_service.dart';
+import '../../../../data/services/api/model/member/member.dart';
+import '../../../../data/services/api/model/vehicle/vehicle.dart';
+import '../../../../domain/models/member/member_model.dart';
+import '../../../../domain/models/member/vehicle_model.dart';
 import '../../../../injector/injector.dart';
-import '../../../../models/member_model.dart';
-import '../../../../models/vehicle_model.dart';
 import '../../../../services/app_service.dart';
 
-final memberModelProvider = Provider<MemberModel>(
+final memberModelProvider = StateProvider<MemberModel>(
   (ref) => MemberModel(id: 0, vehicles: []),
 );
 
@@ -63,14 +65,13 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
 
   void getMember() {
     EasyLoading.show(status: 'loading...');
-    final member = ref.read(memberModelProvider);
     getIt<ApiService>()
         .getMember(getIt<AppService>().token, widget.memberId)
         .then((value) {
-          member.setMember(value);
+          ref.read(memberModelProvider.notifier).state = value;
           setState(() {
-            _nameController.text = member.name!;
-            _telController.text = member.telephone!;
+            _nameController.text = value.name!;
+            _telController.text = value.telephone!;
           });
         })
         .onError((error, stackTrace) {
@@ -101,7 +102,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                     child: TextField(
                       controller: _nameController,
                       onChanged: (value) {
-                        member.name = value;
+                        ref.read(memberModelProvider.notifier).state = member
+                            .copyWith(name: value);
                       },
                       autofocus: false,
                       autocorrect: false,
@@ -126,7 +128,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                     child: TextField(
                       controller: _telController,
                       onChanged: (value) {
-                        member.telephone = value;
+                        ref.read(memberModelProvider.notifier).state = member
+                            .copyWith(telephone: value);
                       },
                       autofocus: false,
                       autocorrect: false,
@@ -134,12 +137,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                       decoration: InputDecoration(
                         labelText: 'Tel.',
                         suffixIcon: const Icon(Icons.phone),
-                        contentPadding: const EdgeInsets.fromLTRB(
-                          20.0,
-                          20.0,
-                          20.0,
-                          20.0,
-                        ),
+                        contentPadding: const EdgeInsets.all(20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
@@ -169,7 +167,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                             initialValue: member.type,
                             name: 'type',
                             onChanged: (value) {
-                              member.type = value;
+                              ref.read(memberModelProvider.notifier).state =
+                                  member.copyWith(type: value);
                             },
                             validator: FormBuilderValidators.required(),
                             options: kMemberTypeList
@@ -197,7 +196,8 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                             initialValue: member.status,
                             name: 'status',
                             onChanged: (value) {
-                              member.status = value;
+                              ref.read(memberModelProvider.notifier).state =
+                                  member.copyWith(status: value);
                             },
                             validator: FormBuilderValidators.required(),
                             options: kStatusList
@@ -528,7 +528,12 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
       await getIt<ApiService>().updateMember(
         getIt<AppService>().token,
         widget.memberId,
-        member,
+        UpdateMemberRequest(
+          name: member.name,
+          telephone: member.telephone,
+          type: member.type,
+          status: member.status,
+        ),
       );
       showDialog<String>(
         context: context,
@@ -553,7 +558,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
   }
 
   void createVehicle() {
-    final vehicle = VehicleModel(
+    final vehicle = CreateVehicleRequest(
       memberId: widget.memberId,
       plateNumber: _plateNumberController.text,
       plateProvince: _plateProvinceController.text,
@@ -566,6 +571,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     getIt<ApiService>()
         .createVehicle(getIt<AppService>().token, widget.memberId, vehicle)
         .then((value) {
+          SnackBar(content: Text('เพิ่มข้อมูลทะเบียนเรียบร้อย'));
           showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -590,16 +596,19 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
   }
 
   void updateVehicle(VehicleModel vehicle) {
-    vehicle.memberId = widget.memberId;
-    vehicle.plateNumber = _plateNumberController.text;
-    vehicle.plateProvince = _plateProvinceController.text;
-    vehicle.brand = _brandController.text;
-    vehicle.color = _colorController.text;
-    vehicle.telephone = _telephoneController.text;
-    vehicle.resemble = _resembleController.text;
+    final updateVehicle = UpdateVehicleRequest(
+      id: vehicle.id,
+      memberId: widget.memberId,
+      plateNumber: _plateNumberController.text,
+      plateProvince: _plateProvinceController.text,
+      brand: _brandController.text,
+      color: _colorController.text,
+      telephone: _telephoneController.text,
+      resemble: _resembleController.text,
+    );
 
     getIt<ApiService>()
-        .updateVehicle(getIt<AppService>().token, vehicle.id!, vehicle)
+        .updateVehicle(getIt<AppService>().token, vehicle.id!, updateVehicle)
         .then((value) {
           getMember();
           showDialog<String>(

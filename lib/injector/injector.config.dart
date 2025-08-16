@@ -86,9 +86,9 @@ extension GetItInjectableX on _i174.GetIt {
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final dioModule = _$DioModule();
     final appServiceModule = _$AppServiceModule();
+    final apiServiceModule = _$ApiServiceModule();
     final idCardServiceModule = _$IdCardServiceModule();
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
-    final apiServiceModule = _$ApiServiceModule();
     gh.factory<_i314.AppTitleCubit>(() => _i314.AppTitleCubit());
     gh.factory<_i207.MemberListBloc>(() => _i207.MemberListBloc());
     await gh.factoryAsync<_i460.SharedPreferences>(
@@ -99,14 +99,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i479.AppService>(
       () => appServiceModule.create(gh<_i460.SharedPreferences>()),
     );
+    gh.singleton<_i552.ApiService>(
+      () => apiServiceModule.create(gh<_i361.Dio>()),
+    );
     gh.singleton<_i313.IdCardService>(
       () => idCardServiceModule.create(gh<_i361.Dio>()),
     );
     gh.singleton<_i636.RegisteredUserService>(
       () => registeredUserServiceModule.create(gh<_i361.Dio>()),
-    );
-    gh.singleton<_i552.ApiService>(
-      () => apiServiceModule.create(gh<_i361.Dio>()),
     );
     gh.factory<_i680.IdCardServiceDataSource>(
       () => _i440.IdCardServiceDataSourceImpl(gh<_i313.IdCardService>()),
@@ -226,8 +226,8 @@ class _$DioModule extends _i811.DioModule {}
 
 class _$AppServiceModule extends _i479.AppServiceModule {}
 
+class _$ApiServiceModule extends _i552.ApiServiceModule {}
+
 class _$IdCardServiceModule extends _i313.IdCardServiceModule {}
 
 class _$RegisteredUserServiceModule extends _i636.RegisteredUserServiceModule {}
-
-class _$ApiServiceModule extends _i552.ApiServiceModule {}

@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../constants.dart';
-import '../data/services/api/api_service.dart';
-import '../injector/injector.dart';
-import '../services/app_service.dart';
-import 'main_screen.dart';
+import '../../../../constants.dart';
+import '../view_models/login_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
 
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.loginViewModel});
+
+  final LoginViewModel loginViewModel;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -22,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool examineeForm = true;
 
   @override
   void dispose() {
@@ -168,26 +166,20 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     try {
-      final login = await getIt<ApiService>().login(
+      widget.loginViewModel.loginCommand.execute((
         _usernameController.text,
         _passwordController.text,
-      );
+      ));
 
       setState(() {
         _usernameController.text = '';
         _passwordController.text = '';
       });
-      await getIt<AppService>().saveLogin(login);
-      goAdminScreen();
     } on DioException catch (e) {
       alertError(e.response?.data['message'] ?? 'ไม่สามารถเข้าสู่ระบบได้');
     } catch (e) {
       alertError(e.toString());
     }
-  }
-
-  void goAdminScreen() {
-    context.go(MainScreen.routeName);
   }
 
   void alertError(String msg) {

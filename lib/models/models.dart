@@ -1,3 +1,5 @@
+export '../domain/models/member/member_model.dart';
+export '../domain/models/member/vehicle_model.dart';
 export 'camera_model.dart';
 export 'checkout_model.dart';
 export 'gate_in_model.dart';
@@ -5,9 +7,7 @@ export 'gate_log_model.dart';
 export 'gate_log_result.dart';
 export 'gate_out_model.dart';
 export 'last_gate.dart';
-export 'member_model.dart';
 export 'report_traffic_model.dart';
 export 'response_model.dart';
 export 'save_user_model.dart';
-export 'vehicle_model.dart';
 export 'visitor_model.dart';
