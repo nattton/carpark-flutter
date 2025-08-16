@@ -14,10 +14,10 @@ import '../../../../data/services/api/api_service.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/checkout_model.dart';
 import '../../../../models/visitor_model.dart';
-import '../../../../screens/main_screen.dart';
+import '../../../../rounting/routes.dart';
+import '../../../../screens/home_screen.dart';
 import '../../../registered_user/domain/entity/registered_user.dart';
 import '../../../registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
-import '../../../registered_user/presentation/page/registered_user_logs_screen.dart';
 import '../widget/exit_card.dart';
 import '../widget/live_player_section.dart';
 
@@ -234,7 +234,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
               onPressed: () {
                 context.pop();
                 context.push(
-                  "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}",
+                  Routes.registeredUserLogsWithId(registeredUser.id),
                 );
               },
               child: const Text('ดูประวัติการเข้าใช้งาน'),

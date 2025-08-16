@@ -13,7 +13,6 @@ import '../core/presentation/bloc/app_title/app_title_cubit.dart';
 import '../data/services/api/api_service.dart';
 import '../features/gateway/presentation/page/entrance_screen.dart';
 import '../features/gateway/presentation/page/exit_screen.dart';
-import '../features/member/presentation/bloc/member_list/member_list_bloc.dart';
 import '../features/member/presentation/page/member_list_screen.dart';
 import '../features/registered_user/presentation/page/registered_user_list_screen.dart';
 import '../features/registered_user/presentation/page/registered_user_not_check_out_screen.dart';
@@ -41,18 +40,16 @@ final cameraPlayerProvider = Provider<CameraPlayer>(
   (ref) => CameraPlayer.initialize(),
 );
 
-class MainScreen extends StatefulHookConsumerWidget {
-  static const String routeName = '/main';
-
-  const MainScreen({super.key, required this.logoutViewModel});
+class HomeScreen extends StatefulHookConsumerWidget {
+  const HomeScreen({super.key, required this.logoutViewModel});
 
   final LogoutViewModel logoutViewModel;
 
   @override
-  ConsumerState<MainScreen> createState() => _MainScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MainScreenState extends ConsumerState<MainScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final wsUrl = '$kCurrentHost/ws'.replaceAll('http', 'ws');
   late WebSocket channel;
 
@@ -60,7 +57,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   SideMenuController sideMenu = SideMenuController();
 
   AppTitleCubit get _appTitleCubit => context.read<AppTitleCubit>();
-  MemberListBloc get _memberListBloc => context.read<MemberListBloc>();
 
   Future<void> initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
@@ -114,7 +110,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _memberListBloc.add(LoadMemberList());
     _appTitleCubit.changeTitle('Car Park');
     if (kIsWeb) {
       initWebSocketChannelConnection();

@@ -24,11 +24,12 @@ class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
     emit(state.copyWith(status: MemberListStatus.loading));
     try {
       final memberList = await getIt<ApiService>().getMemberList();
+      final memberListModel = memberList.map((e) => e.toDomain()).toList();
       emit(
         state.copyWith(
           status: MemberListStatus.success,
-          members: memberList,
-          filteredMembers: memberList,
+          members: memberListModel,
+          filteredMembers: memberListModel,
         ),
       );
     } catch (e) {

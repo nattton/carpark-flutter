@@ -16,8 +16,6 @@ import '../widget/registered_user_logs_list_row_widget.dart';
 class RegisteredUserLogsScreen extends StatefulWidget {
   const RegisteredUserLogsScreen({super.key});
 
-  static const String routeName = '/registered_user_logs';
-
   @override
   State<RegisteredUserLogsScreen> createState() =>
       _RegisteredUserLogsScreenState();

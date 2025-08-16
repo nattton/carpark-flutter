@@ -17,7 +17,7 @@ import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/visitor_model.dart';
 import '../providers/visitors_notifier.dart';
-import 'visitor_detail_screen.dart';
+import '../rounting/routes.dart';
 
 final visitorsProvider =
     StateNotifierProvider<VisitorsNotifier, List<VisitorModel>>((ref) {
@@ -258,7 +258,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   void viewDetail(VisitorModel visitor) {
-    context.push("${VisitorDetailScreen.routeName}/${visitor.id}");
+    context.push(Routes.visitorWithId(visitor.id));
   }
 
   Excel generateExcel() {

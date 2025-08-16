@@ -11,7 +11,7 @@ import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/camera_model.dart';
 import '../services/app_service.dart';
-import 'main_screen.dart';
+import 'home_screen.dart';
 
 class SettingScreen extends ConsumerStatefulWidget {
   const SettingScreen({super.key});

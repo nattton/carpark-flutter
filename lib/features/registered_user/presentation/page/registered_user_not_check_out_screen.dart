@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../injector/injector.dart';
+import '../../../../rounting/routes.dart';
 import '../../domain/entity/registered_user_log.dart';
 import '../bloc/registered_user_not_check_out/registered_user_not_check_out_bloc.dart';
 import '../widget/registered_user_not_check_out_header_widget.dart';
 import '../widget/registered_user_not_check_out_row_widget.dart';
-import 'registered_user_logs_screen.dart';
 
 class RegisteredUserNotCheckOutScreen extends StatefulWidget {
   const RegisteredUserNotCheckOutScreen({super.key});
@@ -15,8 +15,6 @@ class RegisteredUserNotCheckOutScreen extends StatefulWidget {
   @override
   State<RegisteredUserNotCheckOutScreen> createState() =>
       _RegisteredUserNotCheckOutScreenState();
-
-  static const routeName = '/registered-user-not-check-out';
 
   static Widget get page => BlocProvider(
     create: (context) =>
@@ -63,7 +61,9 @@ class _RegisteredUserNotCheckOutScreenState
                 log: registeredUserLog[index],
                 onTap: () {
                   context.push(
-                    "${RegisteredUserLogsScreen.routeName}/${registeredUserLog[index].registeredUser!.id}",
+                    Routes.registeredUserLogsWithId(
+                      registeredUserLog[index].registeredUser!.id,
+                    ),
                   );
                 },
               );

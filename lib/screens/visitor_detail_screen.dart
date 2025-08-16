@@ -7,7 +7,6 @@ import '../injector/injector.dart';
 import '../models/visitor_model.dart';
 
 class VisitorDetailScreen extends StatefulWidget {
-  static const routeName = "/visitor_detail";
   const VisitorDetailScreen({super.key, required this.visitorId});
 
   final int visitorId;

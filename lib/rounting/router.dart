@@ -7,47 +7,48 @@ import '../features/member/presentation/bloc/member_list/member_list_bloc.dart';
 import '../features/member/presentation/page/member_screen.dart';
 import '../features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import '../injector/injector.dart';
-import '../screens/main_screen.dart';
+import '../rounting/routes.dart';
+import '../screens/home_screen.dart';
 import '../screens/visitor_detail_screen.dart';
 import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/login/widgets/login_screen.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: MainScreen.routeName,
+  initialLocation: Routes.home,
   debugLogDiagnostics: true,
   redirect: _redirect,
   refreshListenable: authRepository,
   routes: [
     GoRoute(
-      path: LoginScreen.routeName,
+      path: Routes.login,
       builder: (context, state) => LoginScreen(
         loginViewModel: LoginViewModel(authRepository: context.read()),
       ),
     ),
     GoRoute(
-      path: MainScreen.routeName,
+      path: Routes.home,
       builder: (context, state) => BlocProvider(
         create: (context) => getIt<MemberListBloc>(),
-        child: MainScreen(
+        child: HomeScreen(
           logoutViewModel: LogoutViewModel(authRepository: context.read()),
         ),
       ),
     ),
     GoRoute(
-      path: '${MemberScreen.routeName}/:memberId',
+      path: '${Routes.member}/:memberId',
       builder: (context, state) => MemberScreen(
         memberId: int.parse(state.pathParameters['memberId'] ?? '0'),
       ),
     ),
     GoRoute(
-      path: '${VisitorDetailScreen.routeName}/:visitorId',
+      path: '${Routes.visitorDetail}/:visitorId',
       builder: (context, state) => VisitorDetailScreen(
         visitorId: int.parse(state.pathParameters['visitorId'] ?? '0'),
       ),
     ),
     GoRoute(
-      path: '${RegisteredUserLogsScreen.routeName}/:userId',
+      path: '${Routes.registeredUserLogs}/:userId',
       builder: (context, state) => RegisteredUserLogsScreen.page(
         userId: int.parse(state.pathParameters['userId'] ?? '0'),
       ),
@@ -58,15 +59,15 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
   // if the user is not logged in, they need to login
   final loggedIn = await context.read<AuthRepository>().isAuthenticated;
-  final loggingIn = state.matchedLocation == LoginScreen.routeName;
+  final loggingIn = state.matchedLocation == Routes.login;
   if (!loggedIn) {
-    return LoginScreen.routeName;
+    return Routes.login;
   }
 
   // if the user is logged in but still on the login page, send them to
   // the home page
   if (loggingIn) {
-    return MainScreen.routeName;
+    return Routes.home;
   }
 
   // no need to redirect at all

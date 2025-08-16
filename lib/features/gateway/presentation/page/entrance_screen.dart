@@ -25,12 +25,12 @@ import '../../../../domain/models/member/member_model.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/gate_log_model.dart';
 import '../../../../models/visitor_model.dart';
-import '../../../../screens/main_screen.dart';
+import '../../../../rounting/routes.dart';
+import '../../../../screens/home_screen.dart';
 import '../../../../services/app_service.dart';
 import '../../../member/presentation/bloc/member_list/member_list_bloc.dart';
 import '../../../registered_user/domain/entity/registered_user.dart';
 import '../../../registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
-import '../../../registered_user/presentation/page/registered_user_logs_screen.dart';
 import '../../domain/entity/id_card_entity.dart';
 import '../../domain/repository/id_card_service_repository.dart';
 import '../widget/entrance_card.dart';
@@ -910,7 +910,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       },
       onSelected: (MemberModel member) {
         _selectedMember = member;
-        debugPrint(member.name!);
       },
       optionsViewBuilder: (context, onSelected, options) {
         return Material(
@@ -1009,7 +1008,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
               onPressed: () {
                 context.pop();
                 context.push(
-                  "${RegisteredUserLogsScreen.routeName}/${registeredUser.id}",
+                  Routes.registeredUserLogsWithId(registeredUser.id),
                 );
               },
               child: const Text('ดูประวัติการเข้าใช้งาน'),

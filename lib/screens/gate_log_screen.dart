@@ -18,7 +18,7 @@ import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/gate_log_result.dart';
 import '../providers/gate_logs_notifier.dart';
-import 'visitor_detail_screen.dart';
+import '../rounting/routes.dart';
 
 final gateLogsProvider =
     StateNotifierProvider<GateLogsNotifier, List<GateLogResult>>((ref) {
@@ -253,9 +253,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
   void viewDetail(GateLogResult gateLog) {
     if (gateLog.visitorMemberId > 0) {
-      GoRouter.of(
-        context,
-      ).pushNamed(VisitorDetailScreen.routeName, extra: gateLog.visitorId);
+      context.push(Routes.visitorWithId(gateLog.visitorId));
     } else {
       Alert(
         context: context,

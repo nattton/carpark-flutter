@@ -78,7 +78,7 @@ abstract class ApiService {
   Future<MemberModel> getMember(@Path() int id);
 
   @GET("/api/members")
-  Future<List<MemberModel>> getMemberList();
+  Future<List<GetMemberResponse>> getMemberList();
 
   // Vehicle
   @POST("/api/members/{memberId}/vehicles")

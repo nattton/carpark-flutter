@@ -7,10 +7,10 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../constants.dart';
+import '../../../../rounting/routes.dart';
 import '../../domain/models/create_registered_user_request.dart';
 import '../bloc/registered_user_create/registered_user_create_bloc.dart';
 import '../bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'registered_user_logs_screen.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -72,7 +72,7 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
               const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
             );
             context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
-            context.push('${RegisteredUserLogsScreen.routeName}/${state.id}');
+            context.push(Routes.registeredUserLogsWithId(state.id));
           case RegisteredUserCreateStatus.savePhotoSuccess:
             EasyLoading.dismiss();
             ScaffoldMessenger.of(context).clearSnackBars();

@@ -7,8 +7,6 @@ import '../../../../constants.dart';
 import '../view_models/login_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String routeName = '/login';
-
   const LoginScreen({super.key, required this.loginViewModel});
 
   final LoginViewModel loginViewModel;
