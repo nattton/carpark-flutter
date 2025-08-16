@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../../models/models.dart';
+import 'model/login_request/login_request.dart';
 import 'model/login_response/login_response.dart';
 import 'model/login_response/user_model.dart';
 import 'model/member/member.dart';
@@ -23,10 +24,7 @@ abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
   @POST("/api/login")
-  Future<LoginResponse> login(
-    @Field() String username,
-    @Field() String password,
-  );
+  Future<LoginResponse> login(@Body() LoginRequest request);
 
   @GET("/api/admin/users")
   Future<List<UserModel>> getUserList();

@@ -18,11 +18,12 @@ class _ApiService implements ApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<LoginResponse> login(String username, String password) async {
+  Future<LoginResponse> login(LoginRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = {'username': username, 'password': password};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
     final _options = _setStreamType<LoginResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

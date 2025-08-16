@@ -3,8 +3,11 @@ import 'package:logging/logging.dart';
 
 import '../../../utils/result.dart';
 import '../../services/api/api_service.dart';
+import '../../services/api/model/login_request/login_request.dart';
 import '../../services/shared_preferences_service.dart';
 import 'auth_repository.dart';
+
+const String authorizationHeader = 'Authorization';
 
 class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
@@ -28,7 +31,7 @@ class AuthRepositoryRemote extends AuthRepository {
     switch (result) {
       case Ok<String?>():
         _authToken = result.value;
-        _dio.options.headers['Authorization'] = 'Bearer ${result.value}';
+        _dio.options.headers[authorizationHeader] = 'Bearer $_authToken';
         _isAuthenticated = result.value != null;
       case Error<String?>():
         _log.severe(
@@ -55,12 +58,14 @@ class AuthRepositoryRemote extends AuthRepository {
     required String password,
   }) async {
     try {
-      final result = await _apiService.login(username, password);
+      final result = await _apiService.login(
+        LoginRequest(username: username, password: password),
+      );
       _log.info('User logged in');
       // Set auth status
       _isAuthenticated = true;
       _authToken = result.token;
-      _dio.options.headers['Authorization'] = 'Bearer ${result.token}';
+      _dio.options.headers[authorizationHeader] = 'Bearer $_authToken';
       return await _sharedPreferencesService.saveToken(result.token);
     } on Exception catch (error) {
       return Result.error(error);
@@ -80,7 +85,8 @@ class AuthRepositoryRemote extends AuthRepository {
 
       // Clear token in ApiClient
       _authToken = null;
-      _dio.options.headers['Authorization'] = null;
+      // Remove token from headers
+      _dio.options.headers.remove(authorizationHeader);
       // Clear authenticated status
       _isAuthenticated = false;
       return result;
