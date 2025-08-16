@@ -63,7 +63,7 @@ abstract class ApiService {
 
   // Member
   @POST("/api/members")
-  Future<MemberModel> createMember(@Body() CreateMemberRequest member);
+  Future<GetMemberResponse> createMember(@Body() CreateMemberRequest member);
 
   @PATCH("/api/members/{id}")
   Future<ResponseModel> updateMember(
@@ -75,7 +75,7 @@ abstract class ApiService {
   Future<ResponseModel> deleteMember(@Path() int id);
 
   @GET("/api/members/{id}")
-  Future<MemberModel> getMember(@Path() int id);
+  Future<GetMemberResponse> getMember(@Path() int id);
 
   @GET("/api/members")
   Future<List<GetMemberResponse>> getMemberList();

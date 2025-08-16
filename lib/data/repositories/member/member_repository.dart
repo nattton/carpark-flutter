@@ -10,7 +10,7 @@ abstract class MemberRepository extends ChangeNotifier {
 
   Future<Result<MemberModel>> createMember(MemberModel member);
 
-  Future<Result<MemberModel>> updateMember(MemberModel member);
+  Future<Result<ResponseModel>> updateMember(MemberModel member);
 
-  Future<Result<void>> deleteMember(int id);
+  Future<Result<ResponseModel>> deleteMember(int id);
 }

@@ -67,7 +67,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
     getIt<ApiService>()
         .getMember(widget.memberId)
         .then((value) {
-          ref.read(memberModelProvider.notifier).state = value;
+          ref.read(memberModelProvider.notifier).state = value.toDomain();
           setState(() {
             _nameController.text = value.name!;
             _telController.text = value.telephone!;

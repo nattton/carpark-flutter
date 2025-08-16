@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../models/models.dart';
 import '../../../utils/result.dart';
 import '../../services/api/api_service.dart';
+import '../../services/api/model/member/member.dart';
 import 'member_repository.dart';
 
 class MemberRepositoryRemote extends MemberRepository {
@@ -22,26 +23,57 @@ class MemberRepositoryRemote extends MemberRepository {
   }
 
   @override
-  Future<Result<MemberModel>> createMember(MemberModel member) {
-    // TODO: implement createMember
-    throw UnimplementedError();
+  Future<Result<MemberModel>> createMember(MemberModel member) async {
+    try {
+      final response = await _apiService.createMember(
+        CreateMemberRequest(
+          name: member.name,
+          telephone: member.telephone,
+          type: member.type,
+          status: member.status,
+        ),
+      );
+      return Result.ok(response.toDomain());
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
   }
 
   @override
-  Future<Result<void>> deleteMember(int id) {
-    // TODO: implement deleteMember
-    throw UnimplementedError();
+  Future<Result<MemberModel>> getMember(int id) async {
+    try {
+      final response = await _apiService.getMember(id);
+      return Result.ok(response.toDomain());
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
   }
 
   @override
-  Future<Result<MemberModel>> getMember(int id) {
-    // TODO: implement getMember
-    throw UnimplementedError();
+  Future<Result<ResponseModel>> updateMember(MemberModel member) async {
+    try {
+      final response = await _apiService.updateMember(
+        member.id!,
+        UpdateMemberRequest(
+          name: member.name,
+          telephone: member.telephone,
+          type: member.type,
+          status: member.status,
+        ),
+      );
+      return Result.ok(response);
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
   }
 
   @override
-  Future<Result<MemberModel>> updateMember(MemberModel member) {
-    // TODO: implement updateMember
-    throw UnimplementedError();
+  Future<Result<ResponseModel>> deleteMember(int id) async {
+    try {
+      final response = await _apiService.deleteMember(id);
+      return Result.ok(response);
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:thermal_printer/thermal_printer.dart';
 
@@ -21,6 +22,7 @@ class SettingScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingScreenState extends ConsumerState<SettingScreen> {
+  final _log = Logger('SettingScreen');
   List<String> devices = ["Select Printer..."];
   List<CameraModel> cameraList = [];
   final _ipAddressController = TextEditingController();
@@ -126,7 +128,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     printerManager.discovery(type: type, isBle: isBle).listen((device) {
       if (!devices.contains(device.name)) {
         devices.add(device.name);
-        print(
+        _log.info(
           'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}',
         );
         setState(() {});

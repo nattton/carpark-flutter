@@ -14,6 +14,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image/image.dart' as img;
+import 'package:logging/logging.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
@@ -54,6 +55,8 @@ class EntranceScreen extends StatefulHookConsumerWidget {
 }
 
 class _EntranceScreenState extends ConsumerState<EntranceScreen> {
+  final _log = Logger('EntranceScreen');
+
   late RegisteredUserCheckInBloc _registeredUserCheckInBloc;
   late FocusNode focusNode;
 
@@ -83,6 +86,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<MemberListBloc>().add(LoadMemberList());
     _registeredUserCheckInBloc = context.read<RegisteredUserCheckInBloc>();
     focusNode = FocusNode();
   }
@@ -146,13 +150,9 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                                             Icons.barcode_reader,
                                           ),
                                         ),
-                                        contentPadding:
-                                            const EdgeInsets.fromLTRB(
-                                              8.0,
-                                              8.0,
-                                              8.0,
-                                              8.0,
-                                            ),
+                                        contentPadding: const EdgeInsets.all(
+                                          8.0,
+                                        ),
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(
                                             0.0,
@@ -611,7 +611,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   void readDrivingLicence(String value) {
     final count = '\n'.allMatches(value).length;
-    print('count: $count');
+    _log.info('count: $count');
     if (count == 6) {
       final lines = value.split("\n");
 
@@ -619,17 +619,17 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
       final idNumber = lines[2];
       final licenceNumber = lines[4];
 
-      print("Name : $name");
-      print("idNumber : $idNumber");
-      print("licenceNumber : $licenceNumber");
+      _log.info("Name : $name");
+      _log.info("idNumber : $idNumber");
+      _log.info("licenceNumber : $licenceNumber");
 
       final nameList = name.split("\$").reversed.toList();
       for (var i = 0; i < nameList.length; i++) {
         nameList[i] = nameList[i].replaceAll("\n", " ");
-        print(nameList[i]);
+        _log.info(nameList[i]);
       }
       final nameEng = nameList.join(" ");
-      print("NameEng : $nameEng");
+      _log.info("NameEng : $nameEng");
     }
   }
 

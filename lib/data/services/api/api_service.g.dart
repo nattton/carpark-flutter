@@ -308,13 +308,13 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<MemberModel> createMember(CreateMemberRequest member) async {
+  Future<GetMemberResponse> createMember(CreateMemberRequest member) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(member.toJson());
-    final _options = _setStreamType<MemberModel>(
+    final _options = _setStreamType<GetMemberResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -325,9 +325,9 @@ class _ApiService implements ApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MemberModel _value;
+    late GetMemberResponse _value;
     try {
-      _value = MemberModel.fromJson(_result.data!);
+      _value = GetMemberResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -391,12 +391,12 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<MemberModel> getMember(int id) async {
+  Future<GetMemberResponse> getMember(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<MemberModel>(
+    final _options = _setStreamType<GetMemberResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -407,9 +407,9 @@ class _ApiService implements ApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MemberModel _value;
+    late GetMemberResponse _value;
     try {
-      _value = MemberModel.fromJson(_result.data!);
+      _value = GetMemberResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

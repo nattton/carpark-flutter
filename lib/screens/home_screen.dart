@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../constants.dart';
@@ -50,6 +51,7 @@ class HomeScreen extends StatefulHookConsumerWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final _log = Logger('HomeScreen');
   final wsUrl = '$kCurrentHost/ws'.replaceAll('http', 'ws');
   late WebSocket channel;
 
@@ -62,15 +64,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final lastGate = ref.read(lastGateProvider.notifier);
     final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
     channel.stream.listen((streamData) {
-      print(streamData);
+      _log.info(streamData);
       lastGate.setFromJson(streamData);
     });
   }
 
   Future<void> initWebSocketConnection() async {
-    print("conecting...");
+    _log.info("conecting...");
     channel = await connectWs();
-    print("socket connection initializied");
+    _log.info("socket connection initializied");
     channel.done.then((dynamic _) => _onDisconnected());
     broadcastNotifications();
   }
@@ -79,15 +81,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final lastGate = ref.read(lastGateProvider.notifier);
     channel.listen(
       (streamData) {
-        print(streamData);
+        _log.info(streamData);
         lastGate.setFromJson(streamData);
       },
       onDone: () {
-        print("conecting aborted");
+        _log.info("conecting aborted");
         initWebSocketConnection();
       },
       onError: (e) {
-        print('Server error: $e');
+        _log.info('Server error: $e');
         initWebSocketConnection();
       },
     );
@@ -97,7 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       return await WebSocket.connect(wsUrl);
     } catch (e) {
-      print("Error! can not connect WS connectWs $e");
+      _log.warning('Error! can not connect WS connectWs $e');
       await Future.delayed(const Duration(milliseconds: 5000));
       return await connectWs();
     }

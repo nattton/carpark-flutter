@@ -1,9 +1,11 @@
+import 'package:command_it/command_it.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../../../constants.dart';
+import '../../../../utils/result.dart';
 import '../view_models/login_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,14 +18,35 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  ListenableSubscription? loginViewModelSubscription;
+
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
+  void didChangeDependencies() {
+    loginViewModelSubscription ??= widget.loginViewModel.loginCommand.listen((
+      event,
+      _,
+    ) {
+      switch (event) {
+        case Ok<void>():
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Login Success')));
+        case Error<void>():
+          alertError(event.error.toString());
+      }
+    });
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    loginViewModelSubscription?.cancel();
     super.dispose();
   }
 
@@ -140,9 +163,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               MaterialTapTargetSize.shrinkWrap,
                           shape: const StadiumBorder(),
                           onPressed: loginUser,
-                          child: const Text(
-                            '   Login   ',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0,
+                              vertical: 8.0,
+                            ),
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
                         ),
                       ),

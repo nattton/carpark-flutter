@@ -23,7 +23,7 @@ abstract class GetMemberResponse with _$GetMemberResponse {
       _$GetMemberResponseFromJson(json);
 
   MemberModel toDomain() => MemberModel(
-    id: id,
+    id: id ?? 0,
     name: name,
     telephone: telephone,
     type: type,
