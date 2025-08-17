@@ -7,23 +7,21 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../../components/vehicle_header_card.dart';
-import '../../../../components/vehicle_list_card.dart';
-import '../../../../constants.dart';
-import '../../../../data/services/api/api_service.dart';
-import '../../../../data/services/api/model/member/member.dart';
-import '../../../../data/services/api/model/vehicle/vehicle.dart';
-import '../../../../domain/models/member/member_model.dart';
-import '../../../../domain/models/member/vehicle_model.dart';
-import '../../../../injector/injector.dart';
+import '../../../components/vehicle_header_card.dart';
+import '../../../components/vehicle_list_card.dart';
+import '../../../constants.dart';
+import '../../../data/services/api/api_service.dart';
+import '../../../data/services/api/model/member/member.dart';
+import '../../../data/services/api/model/vehicle/vehicle.dart';
+import '../../../domain/models/member/member_model.dart';
+import '../../../domain/models/member/vehicle_model.dart';
+import '../../../injector/injector.dart';
 
 final memberModelProvider = StateProvider<MemberModel>(
   (ref) => MemberModel(id: 0, vehicles: []),
 );
 
 class MemberScreen extends ConsumerStatefulWidget {
-  static const String routeName = "/member";
-
   const MemberScreen({super.key, required this.memberId});
 
   final int memberId;

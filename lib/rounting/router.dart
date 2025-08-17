@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
 import '../features/member/presentation/bloc/member_list/member_list_bloc.dart';
-import '../features/member/presentation/page/member_screen.dart';
 import '../features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import '../injector/injector.dart';
 import '../rounting/routes.dart';
@@ -13,6 +12,7 @@ import '../screens/visitor_detail_screen.dart';
 import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/login/widgets/login_screen.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
+import '../ui/member/widgets/member_screen.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
   initialLocation: Routes.home,
@@ -34,6 +34,10 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
           logoutViewModel: LogoutViewModel(authRepository: context.read()),
         ),
       ),
+    ),
+    GoRoute(
+      path: Routes.memberCreate,
+      builder: (context, state) => MemberScreen(memberId: 0),
     ),
     GoRoute(
       path: '${Routes.member}/:memberId',

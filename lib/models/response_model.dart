@@ -1,16 +1,13 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'response_model.freezed.dart';
 part 'response_model.g.dart';
 
-@JsonSerializable()
-class ResponseModel {
-  final String? message;
-  final String? error;
-
-  ResponseModel(this.message, this.error);
+@freezed
+abstract class ResponseModel with _$ResponseModel {
+  const factory ResponseModel({String? message, String? error}) =
+      _ResponseModel;
 
   factory ResponseModel.fromJson(Map<String, dynamic> json) =>
       _$ResponseModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ResponseModelToJson(this);
 }

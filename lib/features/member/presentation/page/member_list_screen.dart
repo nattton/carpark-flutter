@@ -15,10 +15,10 @@ import '../../../../data/services/api/api_service.dart';
 import '../../../../data/services/api/model/member/member.dart';
 import '../../../../domain/models/member/member_model.dart';
 import '../../../../injector/injector.dart';
+import '../../../../rounting/routes.dart';
 import '../bloc/member_list/member_list_bloc.dart';
 import '../widget/member_header_card.dart';
 import '../widget/member_list_card.dart';
-import 'member_screen.dart';
 
 class MemberListScreen extends StatefulWidget {
   const MemberListScreen({super.key});
@@ -115,9 +115,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   void onPressedRow(BuildContext context, MemberModel member) async {
-    context.push("${MemberScreen.routeName}/${member.id}").then((value) {
-      _memberListBloc.add(LoadMemberList());
-    });
+    await context.push(Routes.memberWithId(member.id));
+    _memberListBloc.add(LoadMemberList());
   }
 
   void onSearchTextChanged(String text) async {
