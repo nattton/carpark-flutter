@@ -267,84 +267,65 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
         padding: const EdgeInsets.all(6.0),
         child: Column(
           children: [
-            Table(
-              border: TableBorder.all(),
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(),
-                1: FlexColumnWidth(),
-              },
-              defaultVerticalAlignment: TableCellVerticalAlignment.bottom,
-              children: <TableRow>[
-                TableRow(
-                  children: <Widget>[
-                    Container(
-                      height: 60.0,
-                      color: Colors.indigo[300],
-                      child: const Center(
-                        child: Text("ประเภท", style: kGateStyle),
-                      ),
-                    ),
-                    FormBuilderRadioGroup(
-                      initialValue: _vehicleType,
-                      name: 'type',
-                      onChanged: (value) {
-                        _vehicleType = value!;
-                      },
-                      validator: FormBuilderValidators.required(),
-                      options: kVehicleTypeMap.entries
-                          .map(
-                            (e) => FormBuilderFieldOption(
-                              value: e.key,
-                              child: Text(e.value),
-                            ),
-                          )
-                          .toList(growable: false),
-                    ),
-                  ],
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Center(child: Text("ประเภท", style: kGateStyle)),
                 ),
-                TableRow(
-                  children: <Widget>[
-                    Container(
-                      height: 54,
-                      color: Colors.indigo[300],
-                      child: const Center(
-                        child: Text("เลขทะเบียน", style: kGateStyle),
+                Expanded(
+                  child: FormBuilderRadioGroup(
+                    initialValue: _vehicleType,
+                    name: 'type',
+                    onChanged: (value) {
+                      _vehicleType = value!;
+                    },
+                    validator: FormBuilderValidators.required(),
+                    options: kVehicleTypeMap.entries
+                        .map(
+                          (e) => FormBuilderFieldOption(
+                            value: e.key,
+                            child: Text(e.value),
+                          ),
+                        )
+                        .toList(growable: false),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
                       ),
                     ),
-                    TextField(
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                spacing: 8.0,
+                children: [
+                  Expanded(
+                    child: TextField(
                       controller: _plateNumberController,
                       autofocus: false,
                       autocorrect: false,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        suffixIcon: const Icon(Icons.directions_car),
-                        contentPadding: const EdgeInsets.fromLTRB(
-                          8.0,
-                          8.0,
-                          8.0,
-                          8.0,
-                        ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(0.0),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
                         ),
+                        labelText: 'เลขทะเบียน',
+                        suffixIcon: const Icon(Icons.directions_car),
+                        contentPadding: const EdgeInsets.all(8.0),
                       ),
                     ),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    Container(
-                      height: 54,
-                      color: Colors.indigo[300],
-                      child: const Center(
-                        child: Text("ติดต่อ", style: kGateStyle),
-                      ),
-                    ),
-                    _buildSearchMember(),
-                  ],
-                ),
-              ],
+                  ),
+                  Expanded(child: _buildSearchMember()),
+                ],
+              ),
             ),
+
             Container(
               height: 60,
               color: Colors.white10,
@@ -393,7 +374,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                 maxLines: 7,
                 decoration: const InputDecoration(
                   labelText: 'ข้อมูลใบขับขี่',
-                  contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                  contentPadding: EdgeInsets.all(8.0),
                 ),
                 onChanged: (value) => readDrivingLicence(value),
                 focusNode: focusNode,
@@ -423,12 +404,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         decoration: const InputDecoration(
                           labelText: 'เลขประจำตัวประชาชน',
                           suffixIcon: Icon(Icons.text_fields),
-                          contentPadding: EdgeInsets.fromLTRB(
-                            8.0,
-                            8.0,
-                            8.0,
-                            8.0,
-                          ),
+                          contentPadding: EdgeInsets.all(8.0),
                         ),
                       ),
                     ],
@@ -443,12 +419,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         decoration: const InputDecoration(
                           labelText: 'ชื่อไทย',
                           suffixIcon: Icon(Icons.text_fields),
-                          contentPadding: EdgeInsets.fromLTRB(
-                            8.0,
-                            8.0,
-                            8.0,
-                            8.0,
-                          ),
+                          contentPadding: EdgeInsets.all(8.0),
                         ),
                       ),
                       TextField(
@@ -459,12 +430,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         decoration: const InputDecoration(
                           labelText: 'ชื่ออังกฤษ',
                           suffixIcon: Icon(Icons.text_fields),
-                          contentPadding: EdgeInsets.fromLTRB(
-                            8.0,
-                            8.0,
-                            8.0,
-                            8.0,
-                          ),
+                          contentPadding: EdgeInsets.all(8.0),
                         ),
                         textInputAction: TextInputAction.next,
                       ),
@@ -480,12 +446,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         decoration: const InputDecoration(
                           labelText: 'วันเกิด',
                           suffixIcon: Icon(Icons.cake),
-                          contentPadding: EdgeInsets.fromLTRB(
-                            8.0,
-                            8.0,
-                            8.0,
-                            8.0,
-                          ),
+                          contentPadding: EdgeInsets.all(8.0),
                         ),
                       ),
                       TextField(
@@ -497,12 +458,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         decoration: const InputDecoration(
                           labelText: 'เพศ',
                           suffixIcon: Icon(Icons.wc),
-                          contentPadding: EdgeInsets.fromLTRB(
-                            8.0,
-                            8.0,
-                            8.0,
-                            8.0,
-                          ),
+                          contentPadding: EdgeInsets.all(8.0),
                         ),
                       ),
                     ],
@@ -517,12 +473,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                         decoration: const InputDecoration(
                           labelText: 'ที่อยู่',
                           suffixIcon: Icon(Icons.location_city),
-                          contentPadding: EdgeInsets.fromLTRB(
-                            8.0,
-                            8.0,
-                            8.0,
-                            8.0,
-                          ),
+                          contentPadding: EdgeInsets.all(8.0),
                         ),
                         textInputAction: TextInputAction.next,
                       ),
@@ -956,15 +907,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey[300]!),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            hintText: "ค้นหา เลขที่บ้าน",
+            labelText: "ติดต่อ",
             prefixIcon: const Icon(Icons.search),
           ),
         );
