@@ -53,7 +53,7 @@ class MemberRepositoryRemote extends MemberRepository {
   Future<Result<ResponseModel>> updateMember(MemberModel member) async {
     try {
       final response = await _apiService.updateMember(
-        member.id!,
+        member.id,
         UpdateMemberRequest(
           name: member.name,
           telephone: member.telephone,

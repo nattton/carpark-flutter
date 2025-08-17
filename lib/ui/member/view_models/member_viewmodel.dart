@@ -12,7 +12,7 @@ class MemberViewModel extends ChangeNotifier {
   final _log = Logger('MemberViewModel');
 
   late Command<MemberModel, Result<MemberModel>> createMemberCommand;
-  late Command<int, Result<MemberModel>> getMemberCommand;
+  late Command<int, MemberModel> getMemberCommand;
   late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
 
   MemberViewModel({required MemberRepository memberRepository})
@@ -28,14 +28,17 @@ class MemberViewModel extends ChangeNotifier {
       },
     );
 
-    getMemberCommand = Command.createAsync<int, Result<MemberModel>>(
-      initialValue: Result.ok(MemberModel.empty()),
+    getMemberCommand = Command.createAsync<int, MemberModel>(
+      initialValue: MemberModel.empty(),
       (params) async {
         final result = await _memberRepository.getMember(params);
-        if (result is Error<MemberModel>) {
-          _log.warning('Get member failed! ${result.error}');
+        switch (result) {
+          case Ok<MemberModel>():
+            return result.value;
+          case Error<MemberModel>():
+            _log.warning('Get member failed! ${result.error}');
+            throw result.error;
         }
-        return result;
       },
     );
 

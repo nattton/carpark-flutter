@@ -12,6 +12,7 @@ import '../screens/visitor_detail_screen.dart';
 import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/login/widgets/login_screen.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
+import '../ui/member/view_models/member_viewmodel.dart';
 import '../ui/member/widgets/member_screen.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
@@ -22,39 +23,55 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
   routes: [
     GoRoute(
       path: Routes.login,
-      builder: (context, state) => LoginScreen(
-        loginViewModel: LoginViewModel(authRepository: context.read()),
-      ),
-    ),
-    GoRoute(
-      path: Routes.home,
-      builder: (context, state) => BlocProvider(
-        create: (context) => getIt<MemberListBloc>(),
-        child: HomeScreen(
-          logoutViewModel: LogoutViewModel(authRepository: context.read()),
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: LoginScreen(
+          loginViewModel: LoginViewModel(authRepository: context.read()),
         ),
       ),
     ),
     GoRoute(
-      path: Routes.memberCreate,
-      builder: (context, state) => MemberScreen(memberId: 0),
+      path: Routes.home,
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: BlocProvider(
+          create: (context) => getIt<MemberListBloc>(),
+          child: HomeScreen(
+            logoutViewModel: LogoutViewModel(authRepository: context.read()),
+          ),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: Routes.member,
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: MemberScreen(
+          memberViewModel: MemberViewModel(memberRepository: context.read()),
+          memberId: 0,
+        ),
+      ),
     ),
     GoRoute(
       path: '${Routes.member}/:memberId',
-      builder: (context, state) => MemberScreen(
-        memberId: int.parse(state.pathParameters['memberId'] ?? '0'),
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: MemberScreen(
+          memberViewModel: MemberViewModel(memberRepository: context.read()),
+          memberId: int.parse(state.pathParameters['memberId'] ?? '0'),
+        ),
       ),
     ),
     GoRoute(
       path: '${Routes.visitorDetail}/:visitorId',
-      builder: (context, state) => VisitorDetailScreen(
-        visitorId: int.parse(state.pathParameters['visitorId'] ?? '0'),
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: VisitorDetailScreen(
+          visitorId: int.parse(state.pathParameters['visitorId'] ?? '0'),
+        ),
       ),
     ),
     GoRoute(
       path: '${Routes.registeredUserLogs}/:userId',
-      builder: (context, state) => RegisteredUserLogsScreen.page(
-        userId: int.parse(state.pathParameters['userId'] ?? '0'),
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: RegisteredUserLogsScreen.page(
+          userId: int.parse(state.pathParameters['userId'] ?? '0'),
+        ),
       ),
     ),
   ],

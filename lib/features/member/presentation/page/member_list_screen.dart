@@ -4,17 +4,10 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../../constants.dart';
-import '../../../../data/services/api/api_service.dart';
-import '../../../../data/services/api/model/member/member.dart';
 import '../../../../domain/models/member/member_model.dart';
-import '../../../../injector/injector.dart';
 import '../../../../rounting/routes.dart';
 import '../bloc/member_list/member_list_bloc.dart';
 import '../widget/member_header_card.dart';
@@ -29,9 +22,6 @@ class MemberListScreen extends StatefulWidget {
 
 class _MemberListScreenState extends State<MemberListScreen> {
   late MemberListBloc _memberListBloc;
-  MemberModel _memberModel = MemberModel(id: 0, vehicles: []);
-  final _nameController = TextEditingController();
-  final _telController = TextEditingController();
   final _filterController = TextEditingController();
   @override
   void initState() {
@@ -124,171 +114,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
   }
 
   void onPressedAddMember() {
-    _memberModel = _memberModel.copyWith(
-      name: '',
-      telephone: '',
-      type: 'resident',
-      status: 'active',
-    );
-
-    _nameController.text = '';
-    _telController.text = '';
-
-    Alert(
-      context: context,
-      title: "สร้างสมาชิกใหม่",
-      content: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _nameController,
-              onChanged: (value) {
-                _memberModel = _memberModel.copyWith(name: value);
-              },
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                labelText: 'ชื่อ',
-                suffixIcon: const Icon(Icons.account_circle),
-                contentPadding: const EdgeInsets.fromLTRB(
-                  20.0,
-                  20.0,
-                  20.0,
-                  20.0,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _telController,
-              onChanged: (value) {
-                _memberModel = _memberModel.copyWith(telephone: value);
-              },
-              autofocus: false,
-              autocorrect: false,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'โทรศัพท์.',
-                suffixIcon: const Icon(Icons.phone),
-                contentPadding: const EdgeInsets.fromLTRB(
-                  20.0,
-                  20.0,
-                  20.0,
-                  20.0,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FormBuilderRadioGroup(
-              decoration: InputDecoration(
-                labelText: 'ประเภท',
-                contentPadding: const EdgeInsets.fromLTRB(
-                  20.0,
-                  20.0,
-                  20.0,
-                  20.0,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              initialValue: _memberModel.type,
-              name: 'type',
-              onChanged: (value) {
-                _memberModel = _memberModel.copyWith(type: value);
-              },
-              validator: FormBuilderValidators.required(),
-              options: kMemberTypeList
-                  .map((lang) => FormBuilderFieldOption(value: lang))
-                  .toList(growable: false),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FormBuilderRadioGroup(
-              decoration: InputDecoration(
-                labelText: 'สถานะ',
-                contentPadding: const EdgeInsets.fromLTRB(
-                  20.0,
-                  20.0,
-                  20.0,
-                  20.0,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              initialValue: _memberModel.status,
-              name: 'status',
-              onChanged: (value) {
-                _memberModel = _memberModel.copyWith(status: value);
-              },
-              validator: FormBuilderValidators.required(),
-              options: kStatusList
-                  .map((lang) => FormBuilderFieldOption(value: lang))
-                  .toList(growable: false),
-            ),
-          ),
-        ],
-      ),
-      buttons: [
-        DialogButton(
-          onPressed: () {
-            createMember();
-          },
-          child: const Text(
-            "สร้าง",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ],
-    ).show();
-  }
-
-  void createMember() {
-    getIt<ApiService>()
-        .createMember(
-          CreateMemberRequest(
-            name: _memberModel.name!,
-            telephone: _memberModel.telephone!,
-            type: _memberModel.type!,
-            status: _memberModel.status!,
-          ),
-        )
-        .then((value) {
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Create Member'),
-              content: const Text('สร้างข้อมูลสมาชิกเรียบร้อย'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    context.pop();
-                    context.pop();
-                    _memberListBloc.add(LoadMemberList());
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          );
-        })
-        .onError((error, stackTrace) {
-          alertError(error.toString());
-        });
+    context.push(Routes.member);
   }
 
   Excel generateExcel() {
@@ -369,9 +195,5 @@ class _MemberListScreenState extends State<MemberListScreen> {
       final file = File(outputFile);
       file.writeAsBytes(generateExcel().encode()!);
     }
-  }
-
-  void alertError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }
