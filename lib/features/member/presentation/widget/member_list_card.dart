@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../constants.dart';
+import '../../../../domain/models/member/member_model.dart';
 
 class MemberListCard extends StatelessWidget {
   const MemberListCard({super.key, required this.member, required this.onTap});
@@ -140,8 +141,8 @@ class MemberListCard extends StatelessWidget {
                       child: Text(
                         member.vehicles != null
                             ? member.vehicles!
-                                .map((vehicle) => vehicle.plateNumber!)
-                                .join(', ')
+                                  .map((vehicle) => vehicle.plateNumber!)
+                                  .join(', ')
                             : '',
                         style: const TextStyle(
                           fontFamily: kDefaultFont,

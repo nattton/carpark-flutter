@@ -1,10 +1,14 @@
-import 'package:carpark/models/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:carpark/constants.dart';
+
+import '../../../../constants.dart';
+import '../../../../domain/models/member/member_model.dart';
 
 class MemberListSearch extends StatelessWidget {
-  const MemberListSearch(
-      {super.key, required this.member, required this.onTap});
+  const MemberListSearch({
+    super.key,
+    required this.member,
+    required this.onTap,
+  });
 
   final MemberModel member;
   final VoidCallback onTap;
@@ -24,9 +28,10 @@ class MemberListSearch extends StatelessWidget {
                       child: Text(
                         "Name",
                         style: TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Expanded(
@@ -54,9 +59,10 @@ class MemberListSearch extends StatelessWidget {
                       child: Text(
                         member.name!,
                         style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Expanded(

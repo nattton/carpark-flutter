@@ -1,13 +1,12 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/services/api_service.dart';
-import 'package:carpark/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../constants.dart';
+import '../data/services/api/api_service.dart';
+import '../injector/injector.dart';
+import '../models/visitor_model.dart';
+
 class VisitorDetailScreen extends StatefulWidget {
-  static const routeName = "/visitor_detail";
   const VisitorDetailScreen({super.key, required this.visitorId});
 
   final int visitorId;
@@ -16,7 +15,7 @@ class VisitorDetailScreen extends StatefulWidget {
 }
 
 class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
-  get visitorId => widget.visitorId;
+  int get visitorId => widget.visitorId;
 
   VisitorModel visitor = VisitorModel(0);
 
@@ -53,22 +52,14 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
                       "English Name : ${visitor.engName!}",
                       style: kContentStyle,
                     ),
-                    Text(
-                      "เพศ : ${visitor.gender!}",
-                      style: kContentStyle,
-                    ),
+                    Text("เพศ : ${visitor.gender!}", style: kContentStyle),
                     Text(
                       "วันเกิด : ${visitor.birthdate!}",
                       style: kContentStyle,
                     ),
-                    Text(
-                      "ที่อยู่ : ${visitor.address!}",
-                      style: kContentStyle,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    for (var image in visitor.visitorImages!)
+                    Text("ที่อยู่ : ${visitor.address!}", style: kContentStyle),
+                    const SizedBox(height: 10.0),
+                    for (final image in visitor.visitorImages!)
                       Image.network(image.imageUrl()),
                     visitor.gateLog!.captureImage! != ""
                         ? Image.network(visitor.gateLog!.captureImageUrl())
@@ -84,14 +75,15 @@ class _VisitorDetailScreenState extends State<VisitorDetailScreen> {
         : const SizedBox();
   }
 
-  getVisitor() {
+  void getVisitor() {
     EasyLoading.show(status: 'loading...');
     getIt<ApiService>()
-        .getVisitor(getIt<AppService>().token, visitorId)
+        .getVisitor(visitorId)
         .then((value) {
-      setState(() {
-        visitor = value;
-      });
-    }).whenComplete(() => EasyLoading.dismiss());
+          setState(() {
+            visitor = value;
+          });
+        })
+        .whenComplete(() => EasyLoading.dismiss());
   }
 }

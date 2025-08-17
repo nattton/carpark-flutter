@@ -1,0 +1,79 @@
+import 'package:dio/dio.dart';
+
+import '../../../models/models.dart';
+import '../../../utils/result.dart';
+import '../../services/api/api_service.dart';
+import '../../services/api/model/member/member.dart';
+import 'member_repository.dart';
+
+class MemberRepositoryRemote extends MemberRepository {
+  MemberRepositoryRemote({required ApiService apiService})
+    : _apiService = apiService;
+
+  final ApiService _apiService;
+
+  @override
+  Future<Result<List<MemberModel>>> getMemberList() async {
+    try {
+      final response = await _apiService.getMemberList();
+      return Result.ok(response.map((e) => e.toDomain()).toList());
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  @override
+  Future<Result<MemberModel>> createMember(MemberModel member) async {
+    try {
+      final response = await _apiService.createMember(
+        CreateMemberRequest(
+          name: member.name,
+          telephone: member.telephone,
+          type: member.type,
+          status: member.status,
+        ),
+      );
+      return Result.ok(response.toDomain());
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  @override
+  Future<Result<MemberModel>> getMember(int id) async {
+    try {
+      final response = await _apiService.getMember(id);
+      return Result.ok(response.toDomain());
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  @override
+  Future<Result<ResponseModel>> updateMember(MemberModel member) async {
+    try {
+      final response = await _apiService.updateMember(
+        member.id!,
+        UpdateMemberRequest(
+          name: member.name,
+          telephone: member.telephone,
+          type: member.type,
+          status: member.status,
+        ),
+      );
+      return Result.ok(response);
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  @override
+  Future<Result<ResponseModel>> deleteMember(int id) async {
+    try {
+      final response = await _apiService.deleteMember(id);
+      return Result.ok(response);
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
+  }
+}

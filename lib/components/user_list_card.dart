@@ -1,6 +1,7 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/user_model.dart';
 import 'package:flutter/material.dart';
+
+import '../constants.dart';
+import '../data/services/api/model/login_response/user_model.dart';
 
 class UserListCard extends StatelessWidget {
   const UserListCard({super.key, required this.user, required this.onTap});
@@ -23,9 +24,10 @@ class UserListCard extends StatelessWidget {
                       child: Text(
                         user.name,
                         style: const TextStyle(
-                            fontFamily: kDefaultFont,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: kDefaultFont,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Expanded(

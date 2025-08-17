@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/registered_user/domain/models/models.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../../../../core/data/model/generic_response_data.dart';
+import '../../domain/models/models.dart';
 
 part 'registered_user_service.g.dart';
 
@@ -20,45 +21,47 @@ abstract class RegisteredUserService {
 
   @GET('/api/registered-users')
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
-      @Header('Authorization') String token,
-      @Query('search') String searchText);
+    @Query('search') String searchText,
+  );
 
   @GET('/api/registered-users/{id}')
   Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(
-      @Header('Authorization') String token, @Path() int id);
+    @Path() int id,
+  );
 
   @POST('/api/registered-users')
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
-      @Header('Authorization') String token,
-      @Body() CreateRegisteredUserRequest request);
+    @Body() CreateRegisteredUserRequest request,
+  );
 
   @PATCH('/api/registered-users/{id}/photo')
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
-      @Header('Authorization') String token,
-      @Path() int id,
-      @Part() File photo);
+    @Path() int id,
+    @Part() File photo,
+  );
 
   @PATCH('/api/registered-users/{id}')
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      @Header('Authorization') String token,
-      @Path() int id,
-      @Body() UpdateRegisteredUserRequest request);
+    @Path() int id,
+    @Body() UpdateRegisteredUserRequest request,
+  );
 
   @POST('/api/registered-users-logs/check-in')
   Future<GenericResponseData<RegisteredUserResponse>> checkInRegisteredUser(
-      @Header('Authorization') String token,
-      @Body() RegisteredUserCheckInRequest request);
+    @Body() RegisteredUserCheckInRequest request,
+  );
 
   @POST('/api/registered-users-logs/check-out')
   Future<GenericResponseData<RegisteredUserResponse>> checkOutRegisteredUser(
-      @Header('Authorization') String token,
-      @Body() RegisteredUserCheckOutRequest request);
+    @Body() RegisteredUserCheckOutRequest request,
+  );
 
   @GET('/api/registered-users-logs/{id}')
   Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
-      @Header('Authorization') String token, @Path() int id);
+    @Path() int id,
+  );
 
   @GET('/api/registered-users-logs/not-check-out')
   Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
-      getNotCheckOutRegisteredUser(@Header('Authorization') String token);
+  getNotCheckOutRegisteredUser();
 }

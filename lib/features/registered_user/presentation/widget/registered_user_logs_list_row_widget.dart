@@ -1,10 +1,14 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/entity/registered_user_log.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../constants.dart';
+import '../../domain/entity/registered_user_log.dart';
+
 class RegisteredUserLogsRowWidget extends StatelessWidget {
-  const RegisteredUserLogsRowWidget(
-      {super.key, required this.log, required this.onTap});
+  const RegisteredUserLogsRowWidget({
+    super.key,
+    required this.log,
+    required this.onTap,
+  });
 
   final RegisteredUserLog log;
   final VoidCallback onTap;

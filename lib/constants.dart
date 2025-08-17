@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as html;
 
-const kHost = 'localhost:4000';
+const kHost = '127.0.0.1:4000';
 // const kHost = '192.168.1.50:4000';
 // const kHost = 'cyptpr.ddns.net';
 
@@ -25,10 +25,7 @@ const kReportTypeMap = {
   'visitor_traffic': 'จำนวนผู้ติดต่อสมาชิก',
 };
 
-const kGenderMap = {
-  '1': 'ชาย',
-  '2': 'หญิง',
-};
+const kGenderMap = {'1': 'ชาย', '2': 'หญิง'};
 
 const kRegisteredUserTypeList = ["รปภ.", "ผู้รับเหมาประจำ", "ขนส่ง", "อื่นๆ"];
 
@@ -47,47 +44,54 @@ const kBackgroundGradiant = LinearGradient(
 );
 
 const kGateStyle = TextStyle(
-    color: kColorTextBlack,
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-    fontFamily: kDefaultFont,
-    height: 2);
+  color: kColorTextBlack,
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+  fontFamily: kDefaultFont,
+  height: 2,
+);
 
 const kHeaderStyle = TextStyle(
-    color: kColorTextGrey,
-    fontSize: 15,
-    fontWeight: FontWeight.bold,
-    fontFamily: kDefaultFont);
+  color: kColorTextGrey,
+  fontSize: 15,
+  fontWeight: FontWeight.bold,
+  fontFamily: kDefaultFont,
+);
 const kContentStyleHeader = TextStyle(
-    color: Color(0xff999999),
-    fontSize: 14,
-    fontWeight: FontWeight.w700,
-    fontFamily: kDefaultFont);
+  color: Color(0xff999999),
+  fontSize: 14,
+  fontWeight: FontWeight.w700,
+  fontFamily: kDefaultFont,
+);
 const kContentStyle = TextStyle(
-    color: kColorTextBlack,
-    fontSize: 18,
-    fontWeight: FontWeight.normal,
-    fontFamily: kDefaultFont);
+  color: kColorTextBlack,
+  fontSize: 18,
+  fontWeight: FontWeight.normal,
+  fontFamily: kDefaultFont,
+);
 
 const kButtonStyle = TextStyle(
-    color: kColorTextBlack,
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    fontFamily: kDefaultFont,
-    height: 2);
+  color: kColorTextBlack,
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+  fontFamily: kDefaultFont,
+  height: 2,
+);
 const kButton2Style = TextStyle(
-    color: kColorTop,
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    fontFamily: kDefaultFont,
-    height: 2);
+  color: kColorTop,
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  fontFamily: kDefaultFont,
+  height: 2,
+);
 
 const kOverdueTextStyle = TextStyle(
-    color: Color.fromARGB(255, 255, 0, 0),
-    fontSize: 30,
-    fontWeight: FontWeight.bold,
-    fontFamily: kDefaultFont,
-    height: 2);
+  color: Color.fromARGB(255, 255, 0, 0),
+  fontSize: 30,
+  fontWeight: FontWeight.bold,
+  fontFamily: kDefaultFont,
+  height: 2,
+);
 
 const kColorOpened = Color(0xFFE5E5E5);
 const kImageEvent = Image(image: AssetImage('images/event.jpg'));
@@ -105,15 +109,9 @@ const kDialogTitleStyle = TextStyle(
   color: kColorTextGrey,
 );
 
-const kIconPin = Icon(
-  Icons.pin_drop,
-  size: 16.0,
-  color: Colors.teal,
-);
+const kIconPin = Icon(Icons.pin_drop, size: 16.0, color: Colors.teal);
 
-const kSpaceTextEvent = SizedBox(
-  height: 8.0,
-);
+const kSpaceTextEvent = SizedBox(height: 8.0);
 const kOverdueText = 'ค้างชำระค่าส่วนกลาง';
 const kOverdue2Text = 'กรุณาติดต่อนิติบุคคล';
 

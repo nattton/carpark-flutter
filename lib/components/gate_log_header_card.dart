@@ -1,12 +1,14 @@
-import 'package:carpark/constants.dart';
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
+
 class GateLogHeaderCard extends StatelessWidget {
-  const GateLogHeaderCard(
-      {super.key,
-      required this.onTapDate,
-      required this.onTapPlateNumber,
-      required this.onTapMemberName});
+  const GateLogHeaderCard({
+    super.key,
+    required this.onTapDate,
+    required this.onTapPlateNumber,
+    required this.onTapMemberName,
+  });
   final VoidCallback onTapDate;
   final VoidCallback onTapPlateNumber;
   final VoidCallback onTapMemberName;
@@ -24,9 +26,10 @@ class GateLogHeaderCard extends StatelessWidget {
                 child: const Text(
                   "วันที่ เวลา",
                   style: TextStyle(
-                      fontFamily: kDefaultFont,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
+                    fontFamily: kDefaultFont,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

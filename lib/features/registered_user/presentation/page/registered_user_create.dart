@@ -1,15 +1,16 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:carpark/constants.dart';
-import 'package:carpark/features/registered_user/domain/models/create_registered_user_request.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_create/registered_user_create_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/bloc/registered_user_list/registered_user_list_bloc.dart';
-import 'package:carpark/features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../constants.dart';
+import '../../../../rounting/routes.dart';
+import '../../domain/models/create_registered_user_request.dart';
+import '../bloc/registered_user_create/registered_user_create_bloc.dart';
+import '../bloc/registered_user_list/registered_user_list_bloc.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -49,95 +50,102 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   Widget build(BuildContext context) {
     _registeredUserCreateBloc = context.read<RegisteredUserCreateBloc>();
     return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
-        listener: (context, state) {
-      switch (state.status) {
-        case RegisteredUserCreateStatus.initial:
-        case RegisteredUserCreateStatus.savingPhoto:
-        case RegisteredUserCreateStatus.selectingExpiredDate:
-        case RegisteredUserCreateStatus.selectExpiredDateSuccess:
-          break;
-        case RegisteredUserCreateStatus.reading:
-        case RegisteredUserCreateStatus.creating:
-          EasyLoading.show();
-        case RegisteredUserCreateStatus.readSuccess:
-          EasyLoading.dismiss();
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('อ่านบัตรสำเร็จ')),
-          );
-        case RegisteredUserCreateStatus.createSuccess:
-          EasyLoading.dismiss();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
-          );
-          context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
-          context.push('${RegisteredUserLogsScreen.routeName}/${state.id}');
-        case RegisteredUserCreateStatus.savePhotoSuccess:
-          EasyLoading.dismiss();
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('บันทึกภาพสำเร็จ')),
-          );
-        case RegisteredUserCreateStatus.readFailure:
-        case RegisteredUserCreateStatus.createFailure:
-        case RegisteredUserCreateStatus.savePhotoFailure:
-        case RegisteredUserCreateStatus.failure:
-          EasyLoading.dismiss();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-      }
-    }, builder: (context, state) {
-      if (state.status == RegisteredUserCreateStatus.readSuccess) {
-        _idCardController.text = state.idCard;
-        _thaiNameController.text = state.thaiName;
-        _engNameController.text = state.engName;
-        _birthdateController.text = state.birthdate;
-        _genderController.text = state.gender;
-        _addressNameController.text = state.address;
-      }
+      listener: (context, state) {
+        switch (state.status) {
+          case RegisteredUserCreateStatus.initial:
+          case RegisteredUserCreateStatus.savingPhoto:
+          case RegisteredUserCreateStatus.selectingExpiredDate:
+          case RegisteredUserCreateStatus.selectExpiredDateSuccess:
+            break;
+          case RegisteredUserCreateStatus.reading:
+          case RegisteredUserCreateStatus.creating:
+            EasyLoading.show();
+          case RegisteredUserCreateStatus.readSuccess:
+            EasyLoading.dismiss();
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('อ่านบัตรสำเร็จ')));
+          case RegisteredUserCreateStatus.createSuccess:
+            EasyLoading.dismiss();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
+            );
+            context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+            context.push(Routes.registeredUserLogsWithId(state.id));
+          case RegisteredUserCreateStatus.savePhotoSuccess:
+            EasyLoading.dismiss();
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('บันทึกภาพสำเร็จ')));
+          case RegisteredUserCreateStatus.readFailure:
+          case RegisteredUserCreateStatus.createFailure:
+          case RegisteredUserCreateStatus.savePhotoFailure:
+          case RegisteredUserCreateStatus.failure:
+            EasyLoading.dismiss();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      builder: (context, state) {
+        if (state.status == RegisteredUserCreateStatus.readSuccess) {
+          _idCardController.text = state.idCard;
+          _thaiNameController.text = state.thaiName;
+          _engNameController.text = state.engName;
+          _birthdateController.text = state.birthdate;
+          _genderController.text = state.gender;
+          _addressNameController.text = state.address;
+        }
 
-      if (state.status == RegisteredUserCreateStatus.initial ||
-          state.status == RegisteredUserCreateStatus.selectExpiredDateSuccess) {
-        _expiredDateController.text = state.expiredDate;
-      }
+        if (state.status == RegisteredUserCreateStatus.initial ||
+            state.status ==
+                RegisteredUserCreateStatus.selectExpiredDateSuccess) {
+          _expiredDateController.text = state.expiredDate;
+        }
 
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            ..._buildInputFields(state),
-            const SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              ..._buildInputFields(state),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
                     onPressed: () {
                       _registeredUserCreateBloc.add(ReadIdCard());
                     },
-                    child: const Text('อ่านบัตร')),
-                ElevatedButton(
+                    child: const Text('อ่านบัตร'),
+                  ),
+                  ElevatedButton(
                     onPressed: () {
-                      _registeredUserCreateBloc.add(CreateRegisteredUser(
-                        CreateRegisteredUserRequest(
-                          idCard: _idCardController.text,
-                          engName: _engNameController.text,
-                          thaiName: _thaiNameController.text,
-                          birthdate: _birthdateController.text,
-                          gender: _genderController.text,
-                          address: _addressNameController.text,
-                          telephone: _telephoneController.text,
-                          type: _typeController.text,
-                          expiredDate: _expiredDateController.text,
+                      _registeredUserCreateBloc.add(
+                        CreateRegisteredUser(
+                          CreateRegisteredUserRequest(
+                            idCard: _idCardController.text,
+                            engName: _engNameController.text,
+                            thaiName: _thaiNameController.text,
+                            birthdate: _birthdateController.text,
+                            gender: _genderController.text,
+                            address: _addressNameController.text,
+                            telephone: _telephoneController.text,
+                            type: _typeController.text,
+                            expiredDate: _expiredDateController.text,
+                          ),
                         ),
-                      ));
+                      );
                     },
-                    child: const Text('ยืนยัน')),
-                ElevatedButton(
+                    child: const Text('ยืนยัน'),
+                  ),
+                  ElevatedButton(
                     onPressed: () {
-                      _registeredUserCreateBloc
-                          .add(InitialCreateRegisteredUser());
+                      _registeredUserCreateBloc.add(
+                        InitialCreateRegisteredUser(),
+                      );
                       _idCardController.clear();
                       _thaiNameController.clear();
                       _engNameController.clear();
@@ -147,22 +155,26 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                       _telephoneController.clear();
                       _typeController.clear();
                     },
-                    child: const Text('ล้างข้อมูล')),
-                ElevatedButton(
+                    child: const Text('ล้างข้อมูล'),
+                  ),
+                  ElevatedButton(
                     onPressed: () {
-                      _registeredUserCreateBloc
-                          .add(InitialCreateRegisteredUser());
-                      context
-                          .read<RegisteredUserListBloc>()
-                          .add(GetRegisteredUserList());
+                      _registeredUserCreateBloc.add(
+                        InitialCreateRegisteredUser(),
+                      );
+                      context.read<RegisteredUserListBloc>().add(
+                        GetRegisteredUserList(),
+                      );
                     },
-                    child: const Text('ยกเลิก')),
-              ],
-            ),
-          ],
-        ),
-      );
-    });
+                    child: const Text('ยกเลิก'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   List<Widget> _buildInputFields(RegisteredUserCreateState state) {
@@ -204,35 +216,38 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           ),
         ],
       ),
-      Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Expanded(
-          child: TextField(
-            controller: _thaiNameController,
-            autofocus: false,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: const InputDecoration(
-              labelText: 'ชื่อไทย',
-              prefixIcon: Icon(Icons.text_fields),
-              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _thaiNameController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.name,
+              decoration: const InputDecoration(
+                labelText: 'ชื่อไทย',
+                prefixIcon: Icon(Icons.text_fields),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: TextField(
-            controller: _engNameController,
-            autofocus: false,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: const InputDecoration(
-              labelText: 'ชื่ออังกฤษ',
-              prefixIcon: Icon(Icons.text_fields),
-              contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+          Expanded(
+            child: TextField(
+              controller: _engNameController,
+              autofocus: false,
+              autocorrect: false,
+              keyboardType: TextInputType.name,
+              decoration: const InputDecoration(
+                labelText: 'ชื่ออังกฤษ',
+                prefixIcon: Icon(Icons.text_fields),
+                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              ),
+              textInputAction: TextInputAction.next,
             ),
-            textInputAction: TextInputAction.next,
           ),
-        ),
-      ]),
+        ],
+      ),
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -290,12 +305,13 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
                   prefixIcon: Icon(Icons.group),
                   contentPadding: const EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
                 initialValue:
                     kRegisteredUserTypeList.any((type) => type == state.type)
-                        ? state.type
-                        : "อื่นๆ",
+                    ? state.type
+                    : "อื่นๆ",
                 name: 'type',
                 onChanged: (value) {
                   _typeController.text = value ?? "";
@@ -314,8 +330,9 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           Expanded(
             child: TextField(
               controller: _typeController,
-              readOnly: kRegisteredUserTypeList
-                  .any((type) => type == _typeController.text),
+              readOnly: kRegisteredUserTypeList.any(
+                (type) => type == _typeController.text,
+              ),
               autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.text,
@@ -329,10 +346,11 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
           Expanded(
             child: TextField(
               onTap: () async {
-                var results = await showCalendarDatePicker2Dialog(
+                final results = await showCalendarDatePicker2Dialog(
                   context: context,
                   config: CalendarDatePicker2WithActionButtonsConfig(
-                      calendarType: CalendarDatePicker2Type.single),
+                    calendarType: CalendarDatePicker2Type.single,
+                  ),
                   dialogSize: const Size(325, 400),
                   value: [DateTime.parse(state.expiredDate)],
                   borderRadius: BorderRadius.circular(15),

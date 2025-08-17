@@ -1,5 +1,6 @@
-import 'package:carpark/constants.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../constants.dart';
 
 class RegisteredUserListHeaderWidget extends StatelessWidget {
   const RegisteredUserListHeaderWidget({super.key});
@@ -15,46 +16,31 @@ class RegisteredUserListHeaderWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 "รหัสบัตรประชาชน",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "ชื่อภาษาไทย",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "เบอร์โทรศัพท์",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "ประเภท",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             Expanded(
               child: Text(
                 "วันหมดอายุ",
-                style: TextStyle(
-                  fontFamily: kDefaultFont,
-                  fontSize: 16.0,
-                ),
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
               ),
             ),
             SizedBox(width: 24.0),

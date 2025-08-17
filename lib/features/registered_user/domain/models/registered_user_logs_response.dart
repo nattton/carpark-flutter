@@ -1,6 +1,7 @@
-import 'package:carpark/features/registered_user/domain/models/registered_user_response.dart';
-import 'package:carpark/models/null_time_model.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../../models/null_time_model.dart';
+import 'registered_user_response.dart';
 
 part 'registered_user_logs_response.g.dart';
 

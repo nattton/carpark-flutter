@@ -1,10 +1,14 @@
-import 'package:carpark/constants.dart';
-import 'package:carpark/models/vehicle_model.dart';
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
+import '../domain/models/member/vehicle_model.dart';
+
 class VehicleListCard extends StatelessWidget {
-  const VehicleListCard(
-      {super.key, required this.vehicle, required this.onTap});
+  const VehicleListCard({
+    super.key,
+    required this.vehicle,
+    required this.onTap,
+  });
 
   final VehicleModel vehicle;
   final VoidCallback onTap;

@@ -11,8 +11,9 @@ class GenericResponseData<T> extends Equatable {
   const GenericResponseData({this.message, this.data});
 
   factory GenericResponseData.fromJson(
-          Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
-      _$GenericResponseDataFromJson(json, fromJsonT);
+    Map<String, dynamic> json,
+    T Function(Object?) fromJsonT,
+  ) => _$GenericResponseDataFromJson(json, fromJsonT);
 
   Map<String, dynamic> toJson(Object? Function(T value) toJsonT) =>
       _$GenericResponseDataToJson(this, toJsonT);

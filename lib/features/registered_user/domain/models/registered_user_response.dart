@@ -1,6 +1,7 @@
-import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../../models/null_time_model.dart';
 
 part 'registered_user_response.g.dart';
 
@@ -45,19 +46,19 @@ class RegisteredUserResponse extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        generatedId,
-        type,
-        telephone,
-        idCard,
-        thaiName,
-        engName,
-        birthdate,
-        gender,
-        address,
-        photo,
-        createdAt,
-        updatedAt,
-        expiredDate,
-      ];
+    id,
+    generatedId,
+    type,
+    telephone,
+    idCard,
+    thaiName,
+    engName,
+    birthdate,
+    gender,
+    address,
+    photo,
+    createdAt,
+    updatedAt,
+    expiredDate,
+  ];
 }

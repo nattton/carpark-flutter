@@ -1,5 +1,6 @@
-import 'package:carpark/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../constants.dart';
 
 part 'visitor_image_model.g.dart';
 

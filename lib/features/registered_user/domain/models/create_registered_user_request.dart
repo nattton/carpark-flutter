@@ -34,14 +34,14 @@ class CreateRegisteredUserRequest extends Equatable {
 
   @override
   List<Object?> get props => [
-        type,
-        telephone,
-        idCard,
-        thaiName,
-        engName,
-        birthdate,
-        gender,
-        address,
-        expiredDate,
-      ];
+    type,
+    telephone,
+    idCard,
+    thaiName,
+    engName,
+    birthdate,
+    gender,
+    address,
+    expiredDate,
+  ];
 }

@@ -1,11 +1,6 @@
 part of 'member_list_bloc.dart';
 
-enum MemberListStatus {
-  initial,
-  loading,
-  success,
-  failure,
-}
+enum MemberListStatus { initial, loading, success, failure }
 
 class MemberListState extends Equatable {
   final MemberListStatus status;
@@ -23,8 +18,13 @@ class MemberListState extends Equatable {
   });
 
   @override
-  List<Object> get props =>
-      [status, members, errorMessage, filter, filteredMembers];
+  List<Object> get props => [
+    status,
+    members,
+    errorMessage,
+    filter,
+    filteredMembers,
+  ];
 
   MemberListState copyWith({
     MemberListStatus? status,

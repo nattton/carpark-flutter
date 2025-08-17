@@ -1,9 +1,10 @@
-import 'package:carpark/core/error/failures.dart';
-import 'package:carpark/core/utils/usecases/usecase.dart';
-import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
-import 'package:carpark/features/gateway/domain/repository/id_card_service_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/utils/usecases/usecase.dart';
+import '../../../gateway/domain/entity/id_card_entity.dart';
+import '../../../gateway/domain/repository/id_card_service_repository.dart';
 
 @Injectable()
 class ReadIdCardUsecase extends UseCase<IDCardEntity, NoParams> {

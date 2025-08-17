@@ -1,32 +1,41 @@
 import 'dart:io';
 
-import 'package:carpark/core/data/model/generic_response_data.dart';
-import 'package:carpark/features/registered_user/domain/models/models.dart';
+import '../../../../core/data/model/generic_response_data.dart';
+import '../../domain/models/models.dart';
 
 abstract class RegisteredUserServiceDataSource {
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(
-      ListRegisteredUserParam param);
+    ListRegisteredUserParam param,
+  );
 
   Future<GenericResponseData<RegisteredUserResponse>> getRegisteredUser(int id);
 
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(
-      int id, File photo);
+    int id,
+    File photo,
+  );
 
   Future<GenericResponseData<RegisteredUserResponse>> checkInRegisteredUser(
-      RegisteredUserCheckInRequest request);
+    RegisteredUserCheckInRequest request,
+  );
 
   Future<GenericResponseData<RegisteredUserResponse>> checkOutRegisteredUser(
-      RegisteredUserCheckOutRequest request);
+    RegisteredUserCheckOutRequest request,
+  );
 
   Future<GenericResponseData<RegisteredUserResponse>> createRegisteredUser(
-      CreateRegisteredUserRequest request);
+    CreateRegisteredUserRequest request,
+  );
 
   Future<GenericResponseData<RegisteredUserLogsResponse>> getRegisteredUserLogs(
-      int id);
+    int id,
+  );
 
   Future<GenericResponseData<RegisteredUserResponse>> updateRegisteredUser(
-      int id, UpdateRegisteredUserRequest request);
+    int id,
+    UpdateRegisteredUserRequest request,
+  );
 
   Future<GenericResponseData<GetRegisteredUserLogNotCheckOutResponse>>
-      getNotCheckOutRegisteredUser();
+  getNotCheckOutRegisteredUser();
 }
