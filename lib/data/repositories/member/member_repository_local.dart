@@ -69,4 +69,10 @@ class MemberRepositoryLocal extends MemberRepository {
     final response = ResponseModel(message: 'Delete Successfully');
     return Result.ok(response);
   }
+
+  @override
+  Future<Result<ResponseModel>> createVehicle(VehicleModel vehicle) async {
+    final response = ResponseModel(message: 'Create vehicle Successfully');
+    return Result.ok(response);
+  }
 }

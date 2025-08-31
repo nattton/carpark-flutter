@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 
 import '../../../data/repositories/member/member_repository.dart';
 import '../../../domain/models/member/member_model.dart';
+import '../../../domain/models/member/vehicle_model.dart';
 import '../../../models/response_model.dart';
 import '../../../utils/result.dart';
 
@@ -16,6 +17,7 @@ class MemberViewModel extends ChangeNotifier {
   late Command<MemberModel, Result<MemberModel>> createMemberCommand;
   late Command<int, MemberModel> getMemberCommand;
   late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
+  late Command<VehicleModel, Result<ResponseModel>> createVehicleCommand;
 
   MemberViewModel({required MemberRepository memberRepository})
     : _memberRepository = memberRepository {
@@ -51,6 +53,18 @@ class MemberViewModel extends ChangeNotifier {
             final result = await _memberRepository.updateMember(params);
             if (result is Error<ResponseModel>) {
               _log.warning('Update member failed! ${result.error}');
+            }
+            return result;
+          },
+        );
+
+    createVehicleCommand =
+        Command.createAsync<VehicleModel, Result<ResponseModel>>(
+          initialValue: Result.ok(ResponseModel()),
+          (params) async {
+            final result = await _memberRepository.createVehicle(params);
+            if (result is Error<ResponseModel>) {
+              _log.warning('Create vehicle failed! ${result.error}');
             }
             return result;
           },

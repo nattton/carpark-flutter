@@ -42,6 +42,9 @@ class _MemberScreenState extends State<MemberScreen> {
   ListenableSubscription? updateMemberCommandSubscription;
   ListenableSubscription? updateMemberCommandErrorSubscription;
 
+  ListenableSubscription? createVehicleCommandSubscription;
+  ListenableSubscription? createVehicleCommandErrorSubscription;
+
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
   final _typeFieldKey = GlobalKey<FormBuilderFieldState>();
@@ -119,6 +122,24 @@ class _MemberScreenState extends State<MemberScreen> {
           );
         });
 
+    createVehicleCommandSubscription ??= memberViewModel.createVehicleCommand
+        .listen((event, state) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')));
+          GoRouter.of(context).pop();
+        });
+
+    createVehicleCommandErrorSubscription ??= memberViewModel
+        .createVehicleCommand
+        .errors
+        .where((error) => error != null)
+        .listen((event, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง')),
+          );
+        });
+
     super.didChangeDependencies();
   }
 
@@ -139,6 +160,8 @@ class _MemberScreenState extends State<MemberScreen> {
     getMemberCommandErrorSubscription?.cancel();
     updateMemberCommandSubscription?.cancel();
     updateMemberCommandErrorSubscription?.cancel();
+    createVehicleCommandSubscription?.cancel();
+    createVehicleCommandErrorSubscription?.cancel();
     super.dispose();
   }
 
@@ -615,7 +638,7 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void createVehicle() {
-    final vehicle = CreateVehicleRequest(
+    final vehicle = VehicleModel(
       memberId: widget.memberId,
       plateNumber: _plateNumberController.text,
       plateProvince: _plateProvinceController.text,
@@ -625,31 +648,7 @@ class _MemberScreenState extends State<MemberScreen> {
       resemble: _resembleController.text,
     );
 
-    getIt<ApiService>()
-        .createVehicle(widget.memberId, vehicle)
-        .then((value) {
-          SnackBar(content: Text('เพิ่มข้อมูลทะเบียนเรียบร้อย'));
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Create Vehicle'),
-              content: const Text('เพิ่มข้อมูลทะเบียนเรียบร้อย'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).pop();
-                    GoRouter.of(context).pop();
-                    memberViewModel.getMemberCommand.execute(widget.memberId);
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          );
-        })
-        .catchError((error) {
-          alertError(error);
-        });
+    memberViewModel.createVehicleCommand.execute(vehicle);
   }
 
   void updateVehicle(VehicleModel vehicle) {

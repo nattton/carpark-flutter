@@ -11,4 +11,6 @@ abstract class MemberRepository {
   Future<Result<ResponseModel>> updateMember(MemberModel member);
 
   Future<Result<ResponseModel>> deleteMember(int id);
+
+  Future<Result<ResponseModel>> createVehicle(VehicleModel vehicle);
 }

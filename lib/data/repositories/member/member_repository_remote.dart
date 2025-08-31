@@ -5,6 +5,7 @@ import '../../../models/models.dart';
 import '../../../utils/result.dart';
 import '../../services/api/api_service.dart';
 import '../../services/api/model/member/member.dart';
+import '../../services/api/model/vehicle/create_vehicle_request/create_vehicle_request.dart';
 import 'member_repository.dart';
 
 @prod
@@ -74,6 +75,27 @@ class MemberRepositoryRemote extends MemberRepository {
   Future<Result<ResponseModel>> deleteMember(int id) async {
     try {
       final response = await _apiService.deleteMember(id);
+      return Result.ok(response);
+    } on DioException catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  @override
+  Future<Result<ResponseModel>> createVehicle(VehicleModel vehicle) async {
+    try {
+      final response = await _apiService.createVehicle(
+        vehicle.memberId!,
+        CreateVehicleRequest(
+          memberId: vehicle.memberId,
+          plateNumber: vehicle.plateNumber,
+          plateProvince: vehicle.plateProvince,
+          brand: vehicle.brand,
+          color: vehicle.color,
+          telephone: vehicle.telephone,
+          resemble: vehicle.resemble,
+        ),
+      );
       return Result.ok(response);
     } on DioException catch (e) {
       return Result.error(e);
