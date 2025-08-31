@@ -21,6 +21,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
 
 import '../../../../constants.dart';
+import '../../../../data/repositories/printer/printer_repository.dart';
 import '../../../../data/services/api/api_service.dart';
 import '../../../../domain/models/member/member_model.dart';
 import '../../../../injector/injector.dart';
@@ -28,7 +29,6 @@ import '../../../../models/gate_log_model.dart';
 import '../../../../models/visitor_model.dart';
 import '../../../../rounting/routes.dart';
 import '../../../../screens/home_screen.dart';
-import '../../../../services/app_service.dart';
 import '../../../member/presentation/bloc/member_list/member_list_bloc.dart';
 import '../../../registered_user/domain/entity/registered_user.dart';
 import '../../../registered_user/presentation/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
@@ -56,6 +56,8 @@ class EntranceScreen extends StatefulHookConsumerWidget {
 
 class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   final _log = Logger('EntranceScreen');
+
+  PrinterRepository get _printerRepository => context.read<PrinterRepository>();
 
   late RegisteredUserCheckInBloc _registeredUserCheckInBloc;
   late FocusNode focusNode;
@@ -829,7 +831,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     printerManager.connect(
       type: PrinterType.usb,
       model: UsbPrinterInput(
-        name: getIt<AppService>().printer,
+        name: await _printerRepository.printerName,
         productId: null,
         vendorId: null,
       ),

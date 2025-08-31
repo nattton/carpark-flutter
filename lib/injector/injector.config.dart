@@ -14,8 +14,16 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
-import '../core/presentation/bloc/app_title/app_title_cubit.dart' as _i314;
+import '../data/repositories/auth/auth_repository.dart' as _i401;
+import '../data/repositories/auth/auth_repository_dev.dart' as _i860;
+import '../data/repositories/auth/auth_repository_remote.dart' as _i399;
+import '../data/repositories/member/member_repository.dart' as _i379;
+import '../data/repositories/member/member_repository_local.dart' as _i176;
+import '../data/repositories/member/member_repository_remote.dart' as _i155;
+import '../data/repositories/printer/printer_repository.dart' as _i413;
+import '../data/repositories/printer/printer_repository_local.dart' as _i228;
 import '../data/services/api/api_service.dart' as _i552;
+import '../data/services/shared_preferences_service.dart' as _i375;
 import '../features/gateway/data/datasource/id_card_service_datasource.dart'
     as _i680;
 import '../features/gateway/data/datasource/id_card_service_datasource_impl.dart'
@@ -73,8 +81,15 @@ import '../features/registered_user/presentation/bloc/registered_user_not_check_
     as _i813;
 import '../features/registered_user/presentation/bloc/registered_user_update/registered_user_update_bloc.dart'
     as _i92;
-import '../services/app_service.dart' as _i479;
+import '../ui/auth/login/view_models/login_viewmodel.dart' as _i1068;
+import '../ui/auth/logout/view_models/logout_viewmodel.dart' as _i337;
+import '../ui/home/view_models/home_viewmodel.dart' as _i152;
+import '../ui/member/view_models/member_viewmodel.dart' as _i692;
+import '../ui/setting/printer/view_models/printer_viewmodel.dart' as _i151;
 import 'injector.dart' as _i811;
+
+const String _dev = 'dev';
+const String _prod = 'prod';
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -85,28 +100,34 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final dioModule = _$DioModule();
-    final appServiceModule = _$AppServiceModule();
-    final apiServiceModule = _$ApiServiceModule();
-    final idCardServiceModule = _$IdCardServiceModule();
     final registeredUserServiceModule = _$RegisteredUserServiceModule();
-    gh.factory<_i314.AppTitleCubit>(() => _i314.AppTitleCubit());
-    gh.factory<_i207.MemberListBloc>(() => _i207.MemberListBloc());
+    final idCardServiceModule = _$IdCardServiceModule();
+    final apiServiceModule = _$ApiServiceModule();
+    gh.factory<_i375.SharedPreferencesService>(
+      () => _i375.SharedPreferencesService(),
+    );
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.sharedPreferences,
       preResolve: true,
     );
+    gh.factory<_i152.HomeViewModel>(() => _i152.HomeViewModel());
     gh.singleton<_i361.Dio>(() => dioModule.dio);
-    gh.singleton<_i479.AppService>(
-      () => appServiceModule.create(gh<_i460.SharedPreferences>()),
+    gh.singleton<_i401.AuthRepository>(
+      () => _i860.AuthRepositoryDev(),
+      registerFor: {_dev},
     );
-    gh.singleton<_i552.ApiService>(
-      () => apiServiceModule.create(gh<_i361.Dio>()),
+    gh.factory<_i379.MemberRepository>(
+      () => _i176.MemberRepositoryLocal(),
+      registerFor: {_dev},
+    );
+    gh.singleton<_i636.RegisteredUserService>(
+      () => registeredUserServiceModule.create(gh<_i361.Dio>()),
     );
     gh.singleton<_i313.IdCardService>(
       () => idCardServiceModule.create(gh<_i361.Dio>()),
     );
-    gh.singleton<_i636.RegisteredUserService>(
-      () => registeredUserServiceModule.create(gh<_i361.Dio>()),
+    gh.singleton<_i552.ApiService>(
+      () => apiServiceModule.create(gh<_i361.Dio>()),
     );
     gh.factory<_i680.IdCardServiceDataSource>(
       () => _i440.IdCardServiceDataSourceImpl(gh<_i313.IdCardService>()),
@@ -121,18 +142,49 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i680.IdCardServiceDataSource>(),
       ),
     );
+    gh.factory<_i379.MemberRepository>(
+      () => _i155.MemberRepositoryRemote(apiService: gh<_i552.ApiService>()),
+      registerFor: {_prod},
+    );
     gh.factory<_i399.ReadIdCardUsecase>(
       () => _i399.ReadIdCardUsecase(gh<_i325.IdCardServiceRepository>()),
+    );
+    gh.singleton<_i413.PrinterRepository>(
+      () => _i228.PrinterRepositoryLocal(
+        sharedPreferencesService: gh<_i375.SharedPreferencesService>(),
+      ),
+    );
+    gh.singleton<_i401.AuthRepository>(
+      () => _i399.AuthRepositoryRemote(
+        dio: gh<_i361.Dio>(),
+        apiService: gh<_i552.ApiService>(),
+        sharedPreferencesService: gh<_i375.SharedPreferencesService>(),
+      ),
+      registerFor: {_prod},
     );
     gh.factory<_i960.RegisteredUserServiceRepository>(
       () => _i296.RegisteredUserServiceRepositoryImpl(
         gh<_i798.RegisteredUserServiceDataSource>(),
       ),
     );
-    gh.factory<_i287.GetRegisteredUserLogsUsecase>(
-      () => _i287.GetRegisteredUserLogsUsecase(
-        gh<_i960.RegisteredUserServiceRepository>(),
+    gh.factory<_i151.PrinterViewModel>(
+      () => _i151.PrinterViewModel(
+        printerRepository: gh<_i413.PrinterRepository>(),
       ),
+    );
+    gh.factory<_i337.LogoutViewModel>(
+      () => _i337.LogoutViewModel(authRepository: gh<_i401.AuthRepository>()),
+    );
+    gh.factory<_i1068.LoginViewModel>(
+      () => _i1068.LoginViewModel(authRepository: gh<_i401.AuthRepository>()),
+    );
+    gh.factory<_i692.MemberViewModel>(
+      () =>
+          _i692.MemberViewModel(memberRepository: gh<_i379.MemberRepository>()),
+    );
+    gh.factory<_i207.MemberListBloc>(
+      () =>
+          _i207.MemberListBloc(memberRepository: gh<_i379.MemberRepository>()),
     );
     gh.factory<_i1039.GetRegisteredUserLogNotCheckOutResponseUsecase>(
       () => _i1039.GetRegisteredUserLogNotCheckOutResponseUsecase(
@@ -144,18 +196,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i960.RegisteredUserServiceRepository>(),
       ),
     );
-    gh.factory<_i1063.RegisteredUserCheckInUsecase>(
-      () => _i1063.RegisteredUserCheckInUsecase(
-        gh<_i960.RegisteredUserServiceRepository>(),
-      ),
-    );
     gh.factory<_i815.RegisteredUserCheckOutUsecase>(
       () => _i815.RegisteredUserCheckOutUsecase(
-        gh<_i960.RegisteredUserServiceRepository>(),
-      ),
-    );
-    gh.factory<_i589.RegisteredUserCreateUsecase>(
-      () => _i589.RegisteredUserCreateUsecase(
         gh<_i960.RegisteredUserServiceRepository>(),
       ),
     );
@@ -169,6 +211,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i960.RegisteredUserServiceRepository>(),
       ),
     );
+    gh.factory<_i1063.RegisteredUserCheckInUsecase>(
+      () => _i1063.RegisteredUserCheckInUsecase(
+        gh<_i960.RegisteredUserServiceRepository>(),
+      ),
+    );
+    gh.factory<_i287.GetRegisteredUserLogsUsecase>(
+      () => _i287.GetRegisteredUserLogsUsecase(
+        gh<_i960.RegisteredUserServiceRepository>(),
+      ),
+    );
     gh.factory<_i908.RegisteredUserLogsUsecase>(
       () => _i908.RegisteredUserLogsUsecase(
         gh<_i960.RegisteredUserServiceRepository>(),
@@ -176,6 +228,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i544.RegisteredUserUpdateUsecase>(
       () => _i544.RegisteredUserUpdateUsecase(
+        gh<_i960.RegisteredUserServiceRepository>(),
+      ),
+    );
+    gh.factory<_i589.RegisteredUserCreateUsecase>(
+      () => _i589.RegisteredUserCreateUsecase(
         gh<_i960.RegisteredUserServiceRepository>(),
       ),
     );
@@ -223,10 +280,8 @@ class _$SharedPreferencesModule extends _i811.SharedPreferencesModule {}
 
 class _$DioModule extends _i811.DioModule {}
 
-class _$AppServiceModule extends _i479.AppServiceModule {}
-
-class _$ApiServiceModule extends _i552.ApiServiceModule {}
+class _$RegisteredUserServiceModule extends _i636.RegisteredUserServiceModule {}
 
 class _$IdCardServiceModule extends _i313.IdCardServiceModule {}
 
-class _$RegisteredUserServiceModule extends _i636.RegisteredUserServiceModule {}
+class _$ApiServiceModule extends _i552.ApiServiceModule {}

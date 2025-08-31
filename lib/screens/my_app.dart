@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
 
+import '../data/repositories/auth/auth_repository.dart';
+import '../injector/injector.dart';
 import '../rounting/router.dart';
 import '../ui/core/ui/scroll_behavior.dart';
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       scrollBehavior: AppCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
-      routerConfig: router(context.read()),
+      routerConfig: router(getIt<AuthRepository>()),
       builder: EasyLoading.init(),
     );
   }

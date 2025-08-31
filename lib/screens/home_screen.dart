@@ -4,13 +4,12 @@ import 'dart:io';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:logging/logging.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../constants.dart';
-import '../core/presentation/bloc/app_title/app_title_cubit.dart';
 import '../data/services/api/api_service.dart';
 import '../features/gateway/presentation/page/entrance_screen.dart';
 import '../features/gateway/presentation/page/exit_screen.dart';
@@ -21,6 +20,8 @@ import '../injector/injector.dart';
 import '../models/models.dart';
 import '../providers/camera_player.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
+import '../ui/home/view_models/home_viewmodel.dart';
+import '../ui/setting/printer/view_models/printer_viewmodel.dart';
 import 'gate_log_screen.dart';
 import 'report_screen.dart';
 import 'setting_screen.dart';
@@ -42,8 +43,13 @@ final cameraPlayerProvider = Provider<CameraPlayer>(
 );
 
 class HomeScreen extends StatefulHookConsumerWidget {
-  const HomeScreen({super.key, required this.logoutViewModel});
+  const HomeScreen({
+    super.key,
+    required this.homeViewModel,
+    required this.logoutViewModel,
+  });
 
+  final HomeViewModel homeViewModel;
   final LogoutViewModel logoutViewModel;
 
   @override
@@ -52,13 +58,14 @@ class HomeScreen extends StatefulHookConsumerWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _log = Logger('HomeScreen');
+  HomeViewModel get homeViewModel => widget.homeViewModel;
+  LogoutViewModel get logoutViewModel => widget.logoutViewModel;
+
   final wsUrl = '$kCurrentHost/ws'.replaceAll('http', 'ws');
   late WebSocket channel;
 
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
-
-  AppTitleCubit get _appTitleCubit => context.read<AppTitleCubit>();
 
   Future<void> initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
@@ -112,7 +119,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _appTitleCubit.changeTitle('Car Park');
     if (kIsWeb) {
       initWebSocketChannelConnection();
     } else {
@@ -222,14 +228,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AppTitleCubit, AppTitleState, String>(
-      selector: (state) => state.title,
-      builder: (context, title) {
+    return ListenableBuilder(
+      listenable: homeViewModel,
+      builder: (context, _) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
             backgroundColor: kColorPrimary,
-            title: Text(title, style: TextStyle(color: Colors.white)),
+            title: Text(
+              homeViewModel.title,
+              style: TextStyle(color: Colors.white),
+            ),
             automaticallyImplyLeading: false,
           ),
           body: Row(
@@ -250,7 +259,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'ทางเข้า',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('ทางเข้า');
+                      homeViewModel.setTitleCommand('ทางเข้า');
                       selectedPage('ENTRANCE');
                       sideMenu.changePage(page);
                     },
@@ -260,7 +269,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'ทางออก',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('ทางออก');
+                      homeViewModel.setTitleCommand('ทางออก');
                       selectedPage('EXIT');
                       sideMenu.changePage(page);
                     },
@@ -270,7 +279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'ผู้ติดต่อ',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('รายชื่อผู้ติดต่อ');
+                      homeViewModel.setTitleCommand('รายชื่อผู้ติดต่อ');
                       selectedPage('VISITOR');
                       sideMenu.changePage(page);
                     },
@@ -279,7 +288,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'บันทึกผู้ติดต่อลงทะเบียน',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('บันทึกผู้ติดต่อลงทะเบียน');
+                      homeViewModel.setTitleCommand('บันทึกผู้ติดต่อลงทะเบียน');
                       selectedPage('REGISTERED_USER_NOT_CHECK_OUT');
                       sideMenu.changePage(page);
                     },
@@ -288,7 +297,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'บันทึกเข้า-ออก',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('บันทึกเข้า-ออก');
+                      homeViewModel.setTitleCommand('บันทึกเข้า-ออก');
                       selectedPage('LOG');
                       sideMenu.changePage(page);
                     },
@@ -297,7 +306,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'สมาชิก',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('รายชื่อสมาชิก');
+                      homeViewModel.setTitleCommand('รายชื่อสมาชิก');
                       selectedPage('MEMBER');
                       sideMenu.changePage(page);
                     },
@@ -306,7 +315,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'ผู้ติดต่อลงทะเบียน',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('รายชื่อผู้ติดต่อลงทะเบียน');
+                      homeViewModel.setTitleCommand(
+                        'รายชื่อผู้ติดต่อลงทะเบียน',
+                      );
                       selectedPage('REGISTERED_USER');
                       sideMenu.changePage(page);
                     },
@@ -315,7 +326,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'รายงาน',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('รายงาน');
+                      homeViewModel.setTitleCommand('รายงาน');
                       selectedPage('REPORT');
                       sideMenu.changePage(page);
                     },
@@ -324,7 +335,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'ตั้งค่า',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('ตั้งค่า');
+                      homeViewModel.setTitleCommand('ตั้งค่า');
                       selectedPage('SETTING');
                       sideMenu.changePage(page);
                     },
@@ -333,7 +344,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SideMenuItem(
                     title: 'ผู้ใช้งาน',
                     onTap: (page, _) {
-                      _appTitleCubit.changeTitle('รายชื่อผู้ใช้งาน');
+                      homeViewModel.setTitleCommand('รายชื่อผู้ใช้งาน');
                       selectedPage('USER');
                       sideMenu.changePage(page);
                     },
@@ -344,7 +355,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     icon: const Icon(Icons.exit_to_app),
                     onTap: (page, _) {
                       selectedPage('LOGOUT');
-                      widget.logoutViewModel.logoutCommand.execute();
+                      logoutViewModel.logoutCommand.execute();
                     },
                   ),
                 ],
@@ -378,7 +389,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Container(color: Colors.white, child: const ReportScreen()),
                     Container(
                       color: Colors.white,
-                      child: const SettingScreen(),
+                      child: SettingScreen(
+                        printerViewModel: getIt<PrinterViewModel>(),
+                      ),
                     ),
                     Container(color: Colors.white, child: const UserScreen()),
                     Container(

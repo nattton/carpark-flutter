@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../models/models.dart';
 import '../../../utils/result.dart';
@@ -6,6 +7,8 @@ import '../../services/api/api_service.dart';
 import '../../services/api/model/member/member.dart';
 import 'member_repository.dart';
 
+@prod
+@Injectable(as: MemberRepository)
 class MemberRepositoryRemote extends MemberRepository {
   MemberRepositoryRemote({required ApiService apiService})
     : _apiService = apiService;

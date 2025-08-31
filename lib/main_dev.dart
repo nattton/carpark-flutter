@@ -9,6 +9,6 @@ import 'screens/my_app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
-  await configureDependencies(env: Environment.prod);
+  await configureDependencies(env: Environment.dev);
   runApp(const ProviderScope(child: MyApp()));
 }

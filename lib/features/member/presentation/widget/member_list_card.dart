@@ -94,7 +94,7 @@ class MemberListCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        member.id!.toString(),
+                        member.id.toString(),
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
                           fontSize: 16.0,

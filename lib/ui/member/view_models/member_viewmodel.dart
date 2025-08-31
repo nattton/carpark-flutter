@@ -1,5 +1,6 @@
 import 'package:command_it/command_it.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 import '../../../data/repositories/member/member_repository.dart';
@@ -7,6 +8,7 @@ import '../../../domain/models/member/member_model.dart';
 import '../../../models/response_model.dart';
 import '../../../utils/result.dart';
 
+@injectable
 class MemberViewModel extends ChangeNotifier {
   final MemberRepository _memberRepository;
   final _log = Logger('MemberViewModel');

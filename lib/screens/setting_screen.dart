@@ -4,18 +4,19 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:thermal_printer/thermal_printer.dart';
 
 import '../components/camera_list_card.dart';
 import '../constants.dart';
 import '../data/services/api/api_service.dart';
 import '../injector/injector.dart';
 import '../models/camera_model.dart';
-import '../services/app_service.dart';
+import '../ui/setting/printer/view_models/printer_viewmodel.dart';
 import 'home_screen.dart';
 
 class SettingScreen extends ConsumerStatefulWidget {
-  const SettingScreen({super.key});
+  final PrinterViewModel printerViewModel;
+
+  const SettingScreen({super.key, required this.printerViewModel});
 
   @override
   ConsumerState<SettingScreen> createState() => _SettingScreenState();
@@ -23,7 +24,7 @@ class SettingScreen extends ConsumerStatefulWidget {
 
 class _SettingScreenState extends ConsumerState<SettingScreen> {
   final _log = Logger('SettingScreen');
-  List<String> devices = ["Select Printer..."];
+  PrinterViewModel get printerViewModel => widget.printerViewModel;
   List<CameraModel> cameraList = [];
   final _ipAddressController = TextEditingController();
   final _portController = TextEditingController();
@@ -31,23 +32,18 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   final _passwordController = TextEditingController();
   final _pathController = TextEditingController();
 
+  void alertError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
   @override
   void initState() {
     super.initState();
     if (!kIsWeb) {
-      _scan(PrinterType.usb);
+      printerViewModel.getPrinterListCommand.execute();
+      printerViewModel.getPrinterCommand.execute();
     }
     getCamera();
-  }
-
-  @override
-  void dispose() {
-    _ipAddressController.dispose();
-    _portController.dispose();
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _pathController.dispose();
-    super.dispose();
   }
 
   @override
@@ -70,31 +66,37 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                     ),
                   ),
                 ),
-                DropdownButton<String>(
-                  value:
-                      getIt<AppService>().printer.isEmpty ||
-                          !devices.contains(getIt<AppService>().printer)
-                      ? devices.first
-                      : getIt<AppService>().printer,
-                  icon: const Icon(Icons.print),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  onChanged: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      getIt<AppService>().savePrinter(value!);
-                    });
-                  },
-                  items: devices.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                ValueListenableBuilder(
+                  valueListenable: printerViewModel.getPrinterListCommand,
+                  builder: (context, printerList, _) {
+                    return ValueListenableBuilder(
+                      valueListenable: printerViewModel.getPrinterCommand,
+                      builder: (context, printerName, _) {
+                        return DropdownButton<String>(
+                          hint: Text('Select Printer ...'),
+                          value: printerName,
+                          icon: const Icon(Icons.print),
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String? value) {
+                            printerViewModel.updatePrinterCommand(value);
+                          },
+                          items: printerList.map<DropdownMenuItem<String>>((
+                            String value,
+                          ) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        );
+                      },
                     );
-                  }).toList(),
+                  },
                 ),
               ],
             ),
@@ -122,18 +124,14 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     );
   }
 
-  void _scan(PrinterType type, {bool isBle = false}) {
-    // Find printers
-    final printerManager = PrinterManager.instance;
-    printerManager.discovery(type: type, isBle: isBle).listen((device) {
-      if (!devices.contains(device.name)) {
-        devices.add(device.name);
-        _log.info(
-          'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}',
-        );
-        setState(() {});
-      }
-    });
+  @override
+  void dispose() {
+    _ipAddressController.dispose();
+    _portController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _pathController.dispose();
+    super.dispose();
   }
 
   Future<void> getCamera() async {
@@ -147,25 +145,6 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
           for (final cam in cameraList) {
             camera[cam.name] = cam;
           }
-        })
-        .onError((error, stackTrace) {
-          alertError(error.toString());
-        });
-  }
-
-  void saveCamera(CameraModel camera) {
-    camera = camera.copyWith(
-      ipAddress: _ipAddressController.text,
-      port: _portController.text,
-      username: _usernameController.text,
-      password: _passwordController.text,
-      path: _pathController.text,
-    );
-    getIt<ApiService>()
-        .updateCamera(camera.id, camera)
-        .then((value) {
-          GoRouter.of(context).pop();
-          getCamera();
         })
         .onError((error, stackTrace) {
           alertError(error.toString());
@@ -276,7 +255,22 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     ).show();
   }
 
-  void alertError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  void saveCamera(CameraModel camera) {
+    camera = camera.copyWith(
+      ipAddress: _ipAddressController.text,
+      port: _portController.text,
+      username: _usernameController.text,
+      password: _passwordController.text,
+      path: _pathController.text,
+    );
+    getIt<ApiService>()
+        .updateCamera(camera.id, camera)
+        .then((value) {
+          GoRouter.of(context).pop();
+          getCamera();
+        })
+        .onError((error, stackTrace) {
+          alertError(error.toString());
+        });
   }
 }

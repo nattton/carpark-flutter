@@ -12,6 +12,7 @@ import '../screens/visitor_detail_screen.dart';
 import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/login/widgets/login_screen.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
+import '../ui/home/view_models/home_viewmodel.dart';
 import '../ui/member/view_models/member_viewmodel.dart';
 import '../ui/member/widgets/member_screen.dart';
 
@@ -24,9 +25,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     GoRoute(
       path: Routes.login,
       pageBuilder: (context, state) => NoTransitionPage(
-        child: LoginScreen(
-          loginViewModel: LoginViewModel(authRepository: context.read()),
-        ),
+        child: LoginScreen(loginViewModel: getIt<LoginViewModel>()),
       ),
     ),
     GoRoute(
@@ -35,7 +34,8 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
         child: BlocProvider(
           create: (context) => getIt<MemberListBloc>(),
           child: HomeScreen(
-            logoutViewModel: LogoutViewModel(authRepository: context.read()),
+            homeViewModel: getIt<HomeViewModel>(),
+            logoutViewModel: getIt<LogoutViewModel>(),
           ),
         ),
       ),
@@ -44,7 +44,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: Routes.member,
       pageBuilder: (context, state) => NoTransitionPage(
         child: MemberScreen(
-          memberViewModel: MemberViewModel(memberRepository: context.read()),
+          memberViewModel: getIt<MemberViewModel>(),
           memberId: 0,
         ),
       ),
@@ -53,7 +53,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: '${Routes.member}/:memberId',
       pageBuilder: (context, state) => NoTransitionPage(
         child: MemberScreen(
-          memberViewModel: MemberViewModel(memberRepository: context.read()),
+          memberViewModel: getIt<MemberViewModel>(),
           memberId: int.parse(state.pathParameters['memberId'] ?? '0'),
         ),
       ),
@@ -79,7 +79,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
 
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
   // if the user is not logged in, they need to login
-  final loggedIn = await context.read<AuthRepository>().isAuthenticated;
+  final loggedIn = await getIt<AuthRepository>().isAuthenticated;
   final loggingIn = state.matchedLocation == Routes.login;
   if (!loggedIn) {
     return Routes.login;

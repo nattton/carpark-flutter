@@ -1,10 +1,12 @@
 import 'package:command_it/command_it.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 import '../../../../data/repositories/auth/auth_repository.dart';
 import '../../../../utils/result.dart';
 
+@injectable
 class LogoutViewModel extends ChangeNotifier {
   final AuthRepository _authRepository;
   final _log = Logger('LogoutViewModel');

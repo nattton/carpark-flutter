@@ -1,8 +1,10 @@
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/result.dart';
 
+@injectable
 class SharedPreferencesService {
   static const _tokenKey = 'TOKEN';
   static const _printerKey = 'PRINTER';
@@ -47,7 +49,7 @@ class SharedPreferencesService {
     }
   }
 
-  Future<Result<void>> savePrinter(String? printer) async {
+  Future<Result<void>> updatePrinter(String? printer) async {
     try {
       final sharedPreferences = await SharedPreferences.getInstance();
       if (printer == null) {
