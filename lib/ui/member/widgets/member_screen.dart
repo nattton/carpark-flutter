@@ -1,17 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:listen_it/listen_it.dart';
+import 'package:logging/logging.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../data/services/api/model/vehicle/vehicle.dart';
 import '../../../domain/models/member/member_model.dart';
 import '../../../domain/models/member/vehicle_model.dart';
-import '../../../injector/injector.dart';
 import '../../../rounting/routes.dart';
 import '../../../utils/result.dart';
 import '../view_models/member_viewmodel.dart';
@@ -32,6 +29,8 @@ class MemberScreen extends StatefulWidget {
 }
 
 class _MemberScreenState extends State<MemberScreen> {
+  final _log = Logger('MemberScreen');
+
   MemberViewModel get memberViewModel => widget.memberViewModel;
 
   ListenableSubscription? createMemberCommandSubscription;
@@ -44,6 +43,12 @@ class _MemberScreenState extends State<MemberScreen> {
 
   ListenableSubscription? createVehicleCommandSubscription;
   ListenableSubscription? createVehicleCommandErrorSubscription;
+
+  ListenableSubscription? updateVehicleCommandSubscription;
+  ListenableSubscription? updateVehicleCommandErrorSubscription;
+
+  ListenableSubscription? deleteVehicleCommandSubscription;
+  ListenableSubscription? deleteVehicleCommandErrorSubscription;
 
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
@@ -109,7 +114,7 @@ class _MemberScreenState extends State<MemberScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')));
-          GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
         });
 
     updateMemberCommandErrorSubscription ??= memberViewModel
@@ -128,6 +133,7 @@ class _MemberScreenState extends State<MemberScreen> {
             context,
           ).showSnackBar(SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')));
           GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
         });
 
     createVehicleCommandErrorSubscription ??= memberViewModel
@@ -137,6 +143,44 @@ class _MemberScreenState extends State<MemberScreen> {
         .listen((event, _) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง')),
+          );
+        });
+
+    updateVehicleCommandSubscription ??= memberViewModel.updateVehicleCommand
+        .listen((event, state) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')));
+          GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
+        });
+
+    updateVehicleCommandErrorSubscription ??= memberViewModel
+        .updateVehicleCommand
+        .errors
+        .where((error) => error != null)
+        .listen((event, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง')),
+          );
+        });
+
+    deleteVehicleCommandSubscription ??= memberViewModel.deleteVehicleCommand
+        .listen((event, state) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
+          GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
+        });
+
+    deleteVehicleCommandErrorSubscription ??= memberViewModel
+        .deleteVehicleCommand
+        .errors
+        .where((error) => error != null)
+        .listen((event, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง')),
           );
         });
 
@@ -162,6 +206,10 @@ class _MemberScreenState extends State<MemberScreen> {
     updateMemberCommandErrorSubscription?.cancel();
     createVehicleCommandSubscription?.cancel();
     createVehicleCommandErrorSubscription?.cancel();
+    updateVehicleCommandSubscription?.cancel();
+    updateVehicleCommandErrorSubscription?.cancel();
+    deleteVehicleCommandSubscription?.cancel();
+    deleteVehicleCommandErrorSubscription?.cancel();
     super.dispose();
   }
 
@@ -652,7 +700,7 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void updateVehicle(VehicleModel vehicle) {
-    final updateVehicle = UpdateVehicleRequest(
+    final updateVehicle = VehicleModel(
       id: vehicle.id,
       memberId: widget.memberId,
       plateNumber: _plateNumberController.text,
@@ -663,20 +711,7 @@ class _MemberScreenState extends State<MemberScreen> {
       resemble: _resembleController.text,
     );
 
-    getIt<ApiService>()
-        .updateVehicle(vehicle.id!, updateVehicle)
-        .then((value) {
-          if (context.mounted) {
-            context.pop();
-            memberViewModel.getMemberCommand.execute(widget.memberId);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('แก้ไขข้อมูลทะเบียนเรียบร้อย')),
-            );
-          }
-        })
-        .onError((error, stack) {
-          alertError(error.toString());
-        });
+    memberViewModel.updateVehicleCommand.execute(updateVehicle);
   }
 
   void alertDelete(VehicleModel vehicle) {
@@ -709,39 +744,6 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void deleteVehicle(VehicleModel vehicle) {
-    getIt<ApiService>()
-        .deleteVehicle(vehicle.id!)
-        .then((value) {
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Edit Vehicle'),
-              content: const Text('ลบข้อมูลทะเบียนเรียบร้อย'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).pop();
-                    GoRouter.of(context).pop();
-                    memberViewModel.getMemberCommand.execute(widget.memberId);
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          );
-        })
-        .catchError((Object obj) {
-          // non-200 error goes here.
-          switch (obj.runtimeType) {
-            case DioException _:
-              final res = (obj as DioException).response;
-              alertError(
-                "Got error : ${res!.statusCode} -> ${res.statusMessage}",
-              );
-              break;
-            default:
-              break;
-          }
-        });
+    memberViewModel.deleteVehicleCommand.execute(vehicle.id);
   }
 }

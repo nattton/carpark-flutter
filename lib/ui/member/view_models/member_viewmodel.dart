@@ -18,6 +18,8 @@ class MemberViewModel extends ChangeNotifier {
   late Command<int, MemberModel> getMemberCommand;
   late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
   late Command<VehicleModel, Result<ResponseModel>> createVehicleCommand;
+  late Command<VehicleModel, Result<ResponseModel>> updateVehicleCommand;
+  late Command<int, Result<void>> deleteVehicleCommand;
 
   MemberViewModel({required MemberRepository memberRepository})
     : _memberRepository = memberRepository {
@@ -69,5 +71,26 @@ class MemberViewModel extends ChangeNotifier {
             return result;
           },
         );
+
+    updateVehicleCommand = Command.createAsync(
+      initialValue: Result.ok(ResponseModel()),
+      (params) async {
+        final result = await _memberRepository.updateVehicle(params);
+        if (result is Error<ResponseModel>) {
+          _log.warning('Update vehicle failed! ${result.error}');
+        }
+        return result;
+      },
+    );
+
+    deleteVehicleCommand = Command.createAsync(initialValue: Result.ok(null), (
+      vehicleId,
+    ) async {
+      final result = await _memberRepository.deleteVehicle(vehicleId);
+      if (result is Error<ResponseModel>) {
+        _log.warning('Delete vehicle failed! ${result.error}');
+      }
+      return result;
+    });
   }
 }
