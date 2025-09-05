@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../../constants.dart';
+import '../../../../config/constants.dart';
 import '../../../../utils/result.dart';
 import '../view_models/login_viewmodel.dart';
 

@@ -6,9 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:listen_it/listen_it.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../components/vehicle_header_card.dart';
-import '../../../components/vehicle_list_card.dart';
-import '../../../constants.dart';
+import '../../../config/constants.dart';
 import '../../../data/services/api/api_service.dart';
 import '../../../data/services/api/model/vehicle/vehicle.dart';
 import '../../../domain/models/member/member_model.dart';
@@ -17,6 +15,8 @@ import '../../../injector/injector.dart';
 import '../../../rounting/routes.dart';
 import '../../../utils/result.dart';
 import '../view_models/member_viewmodel.dart';
+import 'vehicle_header_card.dart';
+import 'vehicle_list_card.dart';
 
 class MemberScreen extends StatefulWidget {
   const MemberScreen({

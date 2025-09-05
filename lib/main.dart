@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:media_kit/media_kit.dart';
 
 import 'injector/injector.dart';
-import 'screens/my_app.dart';
+import 'my_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

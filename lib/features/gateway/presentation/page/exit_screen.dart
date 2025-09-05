@@ -11,13 +11,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../data/services/api/api_service.dart';
+import '../../../../domain/models/registered_user/registered_user.dart';
 import '../../../../injector/injector.dart';
 import '../../../../models/checkout_model.dart';
 import '../../../../models/visitor_model.dart';
 import '../../../../rounting/routes.dart';
-import '../../../../screens/home_screen.dart';
-import '../../../registered_user/domain/entity/registered_user.dart';
-import '../../../registered_user/presentation/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
+import '../../../../ui/home/widgets/home_screen.dart';
+import '../../../../ui/registered_user/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
 import '../widget/exit_card.dart';
 import '../widget/live_player_section.dart';
 

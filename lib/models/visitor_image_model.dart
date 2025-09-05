@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../constants.dart';
+import '../config/constants.dart';
 
 part 'visitor_image_model.g.dart';
 

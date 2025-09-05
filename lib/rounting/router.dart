@@ -3,18 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
-import '../features/member/presentation/bloc/member_list/member_list_bloc.dart';
-import '../features/registered_user/presentation/page/registered_user_logs_screen.dart';
 import '../injector/injector.dart';
 import '../rounting/routes.dart';
-import '../screens/home_screen.dart';
-import '../screens/visitor_detail_screen.dart';
 import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/login/widgets/login_screen.dart';
 import '../ui/auth/logout/view_models/logout_viewmodel.dart';
 import '../ui/home/view_models/home_viewmodel.dart';
+import '../ui/home/widgets/home_screen.dart';
+import '../ui/member/bloc/member_list/member_list_bloc.dart';
 import '../ui/member/view_models/member_viewmodel.dart';
 import '../ui/member/widgets/member_screen.dart';
+import '../ui/registered_user/widgets/page/registered_user_logs_screen.dart';
+import '../ui/visitor/widgets/visitor_detail_screen.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
   initialLocation: Routes.home,
