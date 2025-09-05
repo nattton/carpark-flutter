@@ -1,9 +1,12 @@
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:thermal_printer/thermal_printer.dart';
 
 import '../../../utils/result.dart';
 import '../../services/shared_preferences_service.dart';
 import 'printer_repository.dart';
 
+@Singleton(as: PrinterRepository)
 class PrinterRepositoryLocal extends PrinterRepository {
   PrinterRepositoryLocal({
     required SharedPreferencesService sharedPreferencesService,
@@ -34,14 +37,34 @@ class PrinterRepositoryLocal extends PrinterRepository {
   }
 
   @override
-  Future<Result<void>> savePrinter(String printerName) async {
+  Future<Result<void>> updatePrinter(String printerName) async {
     try {
       _printerName = printerName;
-      return await _sharedPreferencesService.savePrinter(printerName);
+      return await _sharedPreferencesService.updatePrinter(printerName);
     } on Exception catch (error) {
       return Result.error(error);
     } finally {
       notifyListeners();
     }
+  }
+
+  @override
+  Future<List<String>> getPrinterList() async {
+    // Find printers
+    final devices = <String>[];
+    final printerManager = PrinterManager.instance;
+    final streamDevice = printerManager.discovery(
+      type: PrinterType.usb,
+      isBle: false,
+    );
+    await for (final device in streamDevice) {
+      if (!devices.contains(device.name)) {
+        devices.add(device.name);
+        _log.info(
+          'Printer Device ${device.name} | ${device.productId} | ${device.vendorId}',
+        );
+      }
+    }
+    return devices;
   }
 }

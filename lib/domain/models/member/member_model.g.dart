@@ -7,7 +7,7 @@ part of 'member_model.dart';
 // **************************************************************************
 
 _MemberModel _$MemberModelFromJson(Map<String, dynamic> json) => _MemberModel(
-  id: (json['id'] as num?)?.toInt(),
+  id: (json['id'] as num).toInt(),
   name: json['name'] as String?,
   telephone: json['telephone'] as String?,
   type: json['type'] as String?,

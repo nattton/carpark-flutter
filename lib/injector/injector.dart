@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
-// import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constants.dart';
+import '../config/constants.dart';
 // import 'package:universal_html/html.dart' as html;
 
 import 'injector.config.dart';
@@ -16,7 +15,12 @@ final getIt = GetIt.instance;
   preferRelativeImports: true,
   asExtension: true,
 )
-Future<void> configureDependencies() async => getIt.init();
+Future<void> configureDependencies({
+  String? env = Environment.prod,
+  EnvironmentFilter? environmentFilter,
+}) async {
+  await getIt.init(environment: env, environmentFilter: environmentFilter);
+}
 
 @module
 abstract class SharedPreferencesModule {

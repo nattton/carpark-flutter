@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/data/model/generic_response_data.dart';
+import '../../../../utils/generic_response_data.dart';
 import '../../domain/entity/id_card_entity.dart';
 import '../network/id_card_service.dart';
 import 'id_card_service_datasource.dart';

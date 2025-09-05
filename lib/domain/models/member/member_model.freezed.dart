@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MemberModel {
 
- int? get id; String? get name; String? get telephone; String? get type; String? get status; List<VehicleModel>? get vehicles;
+ int get id; String? get name; String? get telephone; String? get type; String? get status; List<VehicleModel>? get vehicles;
 /// Create a copy of MemberModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $MemberModelCopyWith<$Res>  {
   factory $MemberModelCopyWith(MemberModel value, $Res Function(MemberModel) _then) = _$MemberModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? name, String? telephone, String? type, String? status, List<VehicleModel>? vehicles
+ int id, String? name, String? telephone, String? type, String? status, List<VehicleModel>? vehicles
 });
 
 
@@ -65,10 +65,10 @@ class _$MemberModelCopyWithImpl<$Res>
 
 /// Create a copy of MemberModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? telephone = freezed,Object? type = freezed,Object? status = freezed,Object? vehicles = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = freezed,Object? telephone = freezed,Object? type = freezed,Object? status = freezed,Object? vehicles = freezed,}) {
   return _then(_self.copyWith(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,telephone: freezed == telephone ? _self.telephone : telephone // ignore: cast_nullable_to_non_nullable
 as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? name,  String? telephone,  String? type,  String? status,  List<VehicleModel>? vehicles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String? name,  String? telephone,  String? type,  String? status,  List<VehicleModel>? vehicles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberModel() when $default != null:
 return $default(_that.id,_that.name,_that.telephone,_that.type,_that.status,_that.vehicles);case _:
@@ -179,7 +179,7 @@ return $default(_that.id,_that.name,_that.telephone,_that.type,_that.status,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? name,  String? telephone,  String? type,  String? status,  List<VehicleModel>? vehicles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String? name,  String? telephone,  String? type,  String? status,  List<VehicleModel>? vehicles)  $default,) {final _that = this;
 switch (_that) {
 case _MemberModel():
 return $default(_that.id,_that.name,_that.telephone,_that.type,_that.status,_that.vehicles);case _:
@@ -199,7 +199,7 @@ return $default(_that.id,_that.name,_that.telephone,_that.type,_that.status,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? name,  String? telephone,  String? type,  String? status,  List<VehicleModel>? vehicles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String? name,  String? telephone,  String? type,  String? status,  List<VehicleModel>? vehicles)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberModel() when $default != null:
 return $default(_that.id,_that.name,_that.telephone,_that.type,_that.status,_that.vehicles);case _:
@@ -214,10 +214,10 @@ return $default(_that.id,_that.name,_that.telephone,_that.type,_that.status,_tha
 @JsonSerializable()
 
 class _MemberModel implements MemberModel {
-  const _MemberModel({this.id, this.name, this.telephone, this.type, this.status, final  List<VehicleModel>? vehicles}): _vehicles = vehicles;
+  const _MemberModel({required this.id, this.name, this.telephone, this.type, this.status, final  List<VehicleModel>? vehicles}): _vehicles = vehicles;
   factory _MemberModel.fromJson(Map<String, dynamic> json) => _$MemberModelFromJson(json);
 
-@override final  int? id;
+@override final  int id;
 @override final  String? name;
 @override final  String? telephone;
 @override final  String? type;
@@ -265,7 +265,7 @@ abstract mixin class _$MemberModelCopyWith<$Res> implements $MemberModelCopyWith
   factory _$MemberModelCopyWith(_MemberModel value, $Res Function(_MemberModel) _then) = __$MemberModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? name, String? telephone, String? type, String? status, List<VehicleModel>? vehicles
+ int id, String? name, String? telephone, String? type, String? status, List<VehicleModel>? vehicles
 });
 
 
@@ -282,10 +282,10 @@ class __$MemberModelCopyWithImpl<$Res>
 
 /// Create a copy of MemberModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? telephone = freezed,Object? type = freezed,Object? status = freezed,Object? vehicles = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = freezed,Object? telephone = freezed,Object? type = freezed,Object? status = freezed,Object? vehicles = freezed,}) {
   return _then(_MemberModel(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,telephone: freezed == telephone ? _self.telephone : telephone // ignore: cast_nullable_to_non_nullable
 as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable

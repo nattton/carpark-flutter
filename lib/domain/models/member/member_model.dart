@@ -8,7 +8,7 @@ part 'member_model.g.dart';
 @freezed
 abstract class MemberModel with _$MemberModel {
   const factory MemberModel({
-    int? id,
+    required int id,
     String? name,
     String? telephone,
     String? type,
@@ -18,4 +18,6 @@ abstract class MemberModel with _$MemberModel {
 
   factory MemberModel.fromJson(Map<String, dynamic> json) =>
       _$MemberModelFromJson(json);
+
+  factory MemberModel.empty() => const MemberModel(id: 0);
 }

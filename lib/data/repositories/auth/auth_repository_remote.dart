@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 import '../../../utils/result.dart';
@@ -9,6 +10,8 @@ import 'auth_repository.dart';
 
 const String authorizationHeader = 'Authorization';
 
+@prod
+@Singleton(as: AuthRepository)
 class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
     required Dio dio,

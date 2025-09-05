@@ -1,0 +1,42 @@
+import 'package:json_annotation/json_annotation.dart';
+
+import '../../../../../models/null_time_model.dart';
+import 'registered_user_response.dart';
+
+part 'registered_user_logs_response.g.dart';
+
+@JsonSerializable()
+class RegisteredUserLogsResponse {
+  final RegisteredUserResponse registeredUser;
+  final List<RegisteredUserLogResponse> logs;
+
+  const RegisteredUserLogsResponse({
+    required this.registeredUser,
+    required this.logs,
+  });
+
+  factory RegisteredUserLogsResponse.fromJson(Map<String, dynamic> json) =>
+      _$RegisteredUserLogsResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RegisteredUserLogsResponseToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class RegisteredUserLogResponse {
+  final int id;
+  final NullTimeModel checkInTime;
+  final NullTimeModel checkOutTime;
+  final RegisteredUserResponse? registeredUser;
+
+  const RegisteredUserLogResponse({
+    required this.id,
+    required this.checkInTime,
+    required this.checkOutTime,
+    required this.registeredUser,
+  });
+
+  factory RegisteredUserLogResponse.fromJson(Map<String, dynamic> json) =>
+      _$RegisteredUserLogResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RegisteredUserLogResponseToJson(this);
+}

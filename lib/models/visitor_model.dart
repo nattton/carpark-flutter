@@ -2,7 +2,7 @@ import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../constants.dart';
+import '../config/constants.dart';
 import '../domain/models/member/member_model.dart';
 import 'gate_log_model.dart';
 import 'null_time_model.dart';

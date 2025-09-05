@@ -1,6 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../constants.dart';
+import '../../../../config/constants.dart';
 import '../../../../models/gate_log_model.dart';
 
 class EntranceCard extends StatelessWidget {
@@ -136,7 +137,10 @@ class EntranceCard extends StatelessWidget {
                   Container(
                     height: 60,
                     color: Colors.amberAccent,
-                    child: Image.network(gateLog.licensePlateImageUrl()),
+                    child: CachedNetworkImage(
+                      imageUrl: gateLog.licensePlateImageUrl(),
+                      errorWidget: (_, url, _) => Text('error loading : $url'),
+                    ),
                   ),
                   Container(
                     height: 60,
@@ -150,7 +154,10 @@ class EntranceCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10.0),
-          Image.network(gateLog.captureImageUrl()),
+          CachedNetworkImage(
+            imageUrl: gateLog.captureImageUrl(),
+            errorWidget: (_, url, _) => Text('error loading : $url'),
+          ),
         ],
       ),
     );

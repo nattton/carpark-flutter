@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../models/models.dart';
 import '../../../utils/result.dart';
 
-abstract class MemberRepository extends ChangeNotifier {
+abstract class MemberRepository {
   Future<Result<List<MemberModel>>> getMemberList();
 
   Future<Result<MemberModel>> getMember(int id);
@@ -13,4 +11,6 @@ abstract class MemberRepository extends ChangeNotifier {
   Future<Result<ResponseModel>> updateMember(MemberModel member);
 
   Future<Result<ResponseModel>> deleteMember(int id);
+
+  Future<Result<ResponseModel>> createVehicle(VehicleModel vehicle);
 }

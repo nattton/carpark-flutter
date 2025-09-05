@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../constants.dart';
+import '../../../../config/constants.dart';
 
 part 'id_card_entity.g.dart';
 

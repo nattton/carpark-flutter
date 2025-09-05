@@ -1,6 +1,10 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../utils/result.dart';
 import 'auth_repository.dart';
 
+@dev
+@Singleton(as: AuthRepository)
 class AuthRepositoryDev extends AuthRepository {
   /// User is always authenticated in dev scenarios
   @override

@@ -1,7 +1,7 @@
 import "package:intl/intl.dart";
 import 'package:json_annotation/json_annotation.dart';
 
-import "../constants.dart";
+import "../config/constants.dart";
 
 part 'gate_log_result.g.dart';
 

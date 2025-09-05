@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/data/model/generic_response_data.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../utils/failures.dart';
+import '../../../../utils/generic_response_data.dart';
 import '../../domain/entity/id_card_entity.dart';
 import '../../domain/repository/id_card_service_repository.dart';
 import '../datasource/id_card_service_datasource.dart';
