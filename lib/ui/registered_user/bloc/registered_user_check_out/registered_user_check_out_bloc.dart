@@ -1,11 +1,10 @@
+import 'package:carpark/data/services/api/model/registered_user/registered_user_check_out_request.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_check_out_usecase.dart';
+import 'package:carpark/utils/failures.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../data/services/api/model/registered_user/registered_user_check_out_request.dart';
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_check_out_usecase.dart';
-import '../../../../utils/failures.dart';
 
 part 'registered_user_check_out_event.dart';
 part 'registered_user_check_out_state.dart';
@@ -13,7 +12,6 @@ part 'registered_user_check_out_state.dart';
 @Injectable()
 class RegisteredUserCheckOutBloc
     extends Bloc<RegisteredUserCheckOutEvent, RegisteredUserCheckOutState> {
-  final RegisteredUserCheckOutUsecase registeredUserCheckOutUsecase;
   RegisteredUserCheckOutBloc(this.registeredUserCheckOutUsecase)
     : super(RegisteredUserCheckOutInitial()) {
     on<RegisteredUserCheckOutEvent>((event, emit) {});
@@ -29,4 +27,5 @@ class RegisteredUserCheckOutBloc
       );
     });
   }
+  final RegisteredUserCheckOutUsecase registeredUserCheckOutUsecase;
 }

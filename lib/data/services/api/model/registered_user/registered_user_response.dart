@@ -1,26 +1,11 @@
+import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../../../../../models/null_time_model.dart';
 
 part 'registered_user_response.g.dart';
 
 @JsonSerializable()
 class RegisteredUserResponse extends Equatable {
-  final int id;
-  final String generatedId;
-  final String type;
-  final String telephone;
-  final String idCard;
-  final String thaiName;
-  final String engName;
-  final String birthdate;
-  final String gender;
-  final String address;
-  final String photo;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final NullTimeModel expiredDate;
 
   const RegisteredUserResponse({
     required this.id,
@@ -41,6 +26,20 @@ class RegisteredUserResponse extends Equatable {
 
   factory RegisteredUserResponse.fromJson(Map<String, dynamic> json) =>
       _$RegisteredUserResponseFromJson(json);
+  final int id;
+  final String generatedId;
+  final String type;
+  final String telephone;
+  final String idCard;
+  final String thaiName;
+  final String engName;
+  final String birthdate;
+  final String gender;
+  final String address;
+  final String photo;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final NullTimeModel expiredDate;
 
   Map<String, dynamic> toJson() => _$RegisteredUserResponseToJson(this);
 

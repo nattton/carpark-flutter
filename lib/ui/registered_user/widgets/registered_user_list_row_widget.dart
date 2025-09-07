@@ -1,14 +1,10 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
-import '../../../domain/models/registered_user/registered_user.dart';
 
 class RegisteredUserRowWidget extends StatelessWidget {
   const RegisteredUserRowWidget({
-    super.key,
-    required this.user,
-    required this.onTapViewLogs,
-    required this.onEditTap,
+    required this.user, required this.onTapViewLogs, required this.onEditTap, super.key,
   });
 
   final RegisteredUser user;
@@ -22,7 +18,7 @@ class RegisteredUserRowWidget extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -32,7 +28,7 @@ class RegisteredUserRowWidget extends StatelessWidget {
                     user.idCard,
                     style: const TextStyle(
                       fontFamily: kDefaultFont,
-                      fontSize: 16.0,
+                      fontSize: 16,
                     ),
                   ),
                 ),
@@ -42,7 +38,7 @@ class RegisteredUserRowWidget extends StatelessWidget {
                   user.thaiName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -51,7 +47,7 @@ class RegisteredUserRowWidget extends StatelessWidget {
                   user.telephone,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -60,22 +56,22 @@ class RegisteredUserRowWidget extends StatelessWidget {
                   user.type,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
               Expanded(
                 child: Text(
-                  user.expiredDate?.toDateString() ?? "",
+                  user.expiredDate?.toDateString() ?? '',
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
               GestureDetector(
                 onTap: onEditTap,
-                child: const Icon(Icons.edit, size: 24.0),
+                child: const Icon(Icons.edit, size: 24),
               ),
             ],
           ),

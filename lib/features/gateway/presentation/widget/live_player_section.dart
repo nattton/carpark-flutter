@@ -3,9 +3,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 class LivePlayerSection extends StatelessWidget {
   const LivePlayerSection({
-    super.key,
-    required this.mainController,
-    required this.sideController,
+    required this.mainController, required this.sideController, super.key,
   });
 
   final VideoController mainController;
@@ -14,21 +12,20 @@ class LivePlayerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width / 2 - 60;
-    var height = ((MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0);
+    var height = (MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0;
 
     if ((height * 2) + 100 > MediaQuery.of(context).size.height) {
-      height = (MediaQuery.of(context).size.height / 2 - 50);
+      height = MediaQuery.of(context).size.height / 2 - 50;
       width = (MediaQuery.of(context).size.width / 2 - 50) * 16.0 / 9.0;
     }
     return Column(
-      mainAxisSize: MainAxisSize.max,
       children: [
         SizedBox(
           width: width,
           height: height,
           child: Video(controller: mainController, controls: null),
         ),
-        const SizedBox(height: 4.0),
+        const SizedBox(height: 4),
         SizedBox(
           width: width,
           height: height,

@@ -1,25 +1,15 @@
+import 'package:carpark/data/repositories/member/member_repository.dart';
+import 'package:carpark/domain/models/member/member_model.dart';
+import 'package:carpark/domain/models/member/vehicle_model.dart';
+import 'package:carpark/models/response_model.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:command_it/command_it.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
-import '../../../data/repositories/member/member_repository.dart';
-import '../../../domain/models/member/member_model.dart';
-import '../../../domain/models/member/vehicle_model.dart';
-import '../../../models/response_model.dart';
-import '../../../utils/result.dart';
-
 @injectable
 class MemberViewModel extends ChangeNotifier {
-  final MemberRepository _memberRepository;
-  final _log = Logger('MemberViewModel');
-
-  late Command<MemberModel, Result<MemberModel>> createMemberCommand;
-  late Command<int, MemberModel> getMemberCommand;
-  late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
-  late Command<VehicleModel, Result<ResponseModel>> createVehicleCommand;
-  late Command<VehicleModel, Result<ResponseModel>> updateVehicleCommand;
-  late Command<int, Result<void>> deleteVehicleCommand;
 
   MemberViewModel({required MemberRepository memberRepository})
     : _memberRepository = memberRepository {
@@ -50,7 +40,7 @@ class MemberViewModel extends ChangeNotifier {
 
     updateMemberCommand =
         Command.createAsync<MemberModel, Result<ResponseModel>>(
-          initialValue: Result.ok(ResponseModel()),
+          initialValue: const Result.ok(ResponseModel()),
           (params) async {
             final result = await _memberRepository.updateMember(params);
             if (result is Error<ResponseModel>) {
@@ -62,7 +52,7 @@ class MemberViewModel extends ChangeNotifier {
 
     createVehicleCommand =
         Command.createAsync<VehicleModel, Result<ResponseModel>>(
-          initialValue: Result.ok(ResponseModel()),
+          initialValue: const Result.ok(ResponseModel()),
           (params) async {
             final result = await _memberRepository.createVehicle(params);
             if (result is Error<ResponseModel>) {
@@ -73,7 +63,7 @@ class MemberViewModel extends ChangeNotifier {
         );
 
     updateVehicleCommand = Command.createAsync(
-      initialValue: Result.ok(ResponseModel()),
+      initialValue: const Result.ok(ResponseModel()),
       (params) async {
         final result = await _memberRepository.updateVehicle(params);
         if (result is Error<ResponseModel>) {
@@ -83,7 +73,7 @@ class MemberViewModel extends ChangeNotifier {
       },
     );
 
-    deleteVehicleCommand = Command.createAsync(initialValue: Result.ok(null), (
+    deleteVehicleCommand = Command.createAsync(initialValue: const Result.ok(null), (
       vehicleId,
     ) async {
       final result = await _memberRepository.deleteVehicle(vehicleId);
@@ -93,4 +83,13 @@ class MemberViewModel extends ChangeNotifier {
       return result;
     });
   }
+  final MemberRepository _memberRepository;
+  final _log = Logger('MemberViewModel');
+
+  late Command<MemberModel, Result<MemberModel>> createMemberCommand;
+  late Command<int, MemberModel> getMemberCommand;
+  late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
+  late Command<VehicleModel, Result<ResponseModel>> createVehicleCommand;
+  late Command<VehicleModel, Result<ResponseModel>> updateVehicleCommand;
+  late Command<int, Result<void>> deleteVehicleCommand;
 }

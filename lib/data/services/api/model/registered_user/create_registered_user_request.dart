@@ -5,15 +5,6 @@ part 'create_registered_user_request.g.dart';
 
 @JsonSerializable()
 class CreateRegisteredUserRequest extends Equatable {
-  final String type;
-  final String telephone;
-  final String idCard;
-  final String thaiName;
-  final String engName;
-  final String birthdate;
-  final String gender;
-  final String address;
-  final String expiredDate;
 
   const CreateRegisteredUserRequest({
     required this.type,
@@ -29,6 +20,15 @@ class CreateRegisteredUserRequest extends Equatable {
 
   factory CreateRegisteredUserRequest.fromJson(Map<String, dynamic> json) =>
       _$CreateRegisteredUserRequestFromJson(json);
+  final String type;
+  final String telephone;
+  final String idCard;
+  final String thaiName;
+  final String engName;
+  final String birthdate;
+  final String gender;
+  final String address;
+  final String expiredDate;
 
   Map<String, dynamic> toJson() => _$CreateRegisteredUserRequestToJson(this);
 

@@ -1,10 +1,9 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/model/login_response/user_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../config/constants.dart';
-import '../../../data/services/api/model/login_response/user_model.dart';
-
 class UserListCard extends StatelessWidget {
-  const UserListCard({super.key, required this.user, required this.onTap});
+  const UserListCard({required this.user, required this.onTap, super.key});
 
   final UserModel user;
   final VoidCallback onTap;
@@ -17,7 +16,7 @@ class UserListCard extends StatelessWidget {
           ? Card(
               color: Colors.blue.shade200,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Expanded(
@@ -25,7 +24,7 @@ class UserListCard extends StatelessWidget {
                         user.name,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -35,12 +34,12 @@ class UserListCard extends StatelessWidget {
                         user.role,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 30.0),
+                    const SizedBox(width: 30),
                   ],
                 ),
               ),
@@ -48,7 +47,7 @@ class UserListCard extends StatelessWidget {
           : Card(
               color: Colors.white,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Expanded(
@@ -56,7 +55,7 @@ class UserListCard extends StatelessWidget {
                         user.name,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -65,7 +64,7 @@ class UserListCard extends StatelessWidget {
                         user.role,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                         ),
                       ),
                     ),

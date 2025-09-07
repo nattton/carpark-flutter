@@ -1,8 +1,7 @@
+import 'package:carpark/utils/result.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../utils/result.dart';
 
 @injectable
 class SharedPreferencesService {

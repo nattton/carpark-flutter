@@ -1,10 +1,9 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/models/camera_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../config/constants.dart';
-import '../../../models/camera_model.dart';
-
 class CameraListCard extends StatelessWidget {
-  const CameraListCard({super.key, required this.camera, required this.onTap});
+  const CameraListCard({required this.camera, required this.onTap, super.key});
 
   final CameraModel camera;
   final VoidCallback onTap;
@@ -17,7 +16,7 @@ class CameraListCard extends StatelessWidget {
           ? Card(
               color: Colors.blue.shade200,
               child: const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Expanded(
@@ -25,7 +24,7 @@ class CameraListCard extends StatelessWidget {
                         'Name',
                         style: TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -35,12 +34,12 @@ class CameraListCard extends StatelessWidget {
                         'IP Address',
                         style: TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(width: 30.0),
+                    SizedBox(width: 30),
                   ],
                 ),
               ),
@@ -48,7 +47,7 @@ class CameraListCard extends StatelessWidget {
           : Card(
               color: Colors.white,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Expanded(
@@ -56,7 +55,7 @@ class CameraListCard extends StatelessWidget {
                         camera.name,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -65,7 +64,7 @@ class CameraListCard extends StatelessWidget {
                         camera.ipAddress,
                         style: const TextStyle(
                           fontFamily: kDefaultFont,
-                          fontSize: 16.0,
+                          fontSize: 16,
                         ),
                       ),
                     ),

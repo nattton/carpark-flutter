@@ -1,5 +1,5 @@
-import '../../../models/models.dart';
-import '../../../utils/result.dart';
+import 'package:carpark/models/models.dart';
+import 'package:carpark/utils/result.dart';
 
 abstract class MemberRepository {
   Future<Result<List<MemberModel>>> getMemberList();

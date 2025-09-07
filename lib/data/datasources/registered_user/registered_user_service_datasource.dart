@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import '../../../utils/generic_response_data.dart';
-import '../../services/api/model/registered_user/models.dart';
+import 'package:carpark/data/services/api/model/registered_user/models.dart';
+import 'package:carpark/utils/generic_response_data.dart';
 
 abstract class RegisteredUserServiceDataSource {
   Future<GenericResponseData<List<RegisteredUserResponse>>> getRegisteredUsers(

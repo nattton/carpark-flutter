@@ -8,8 +8,8 @@ sealed class RegisteredUserCheckInEvent extends Equatable {
 }
 
 class PostRegisteredUserCheckInEvent extends RegisteredUserCheckInEvent {
-  final String generatedId;
   const PostRegisteredUserCheckInEvent({required this.generatedId});
+  final String generatedId;
 
   @override
   List<Object> get props => [generatedId];

@@ -1,27 +1,26 @@
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
 import 'package:duration/duration.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
-import 'registered_user.dart';
-
 typedef RegisteredUserLogList = List<RegisteredUserLog>;
 
-const String dateFormat = "yyyy-MM-dd HH:mm:ss";
+const String dateFormat = 'yyyy-MM-dd HH:mm:ss';
 
 class RegisteredUserLog extends Equatable {
+
+  const RegisteredUserLog({
+    this.id = 0,
+    this.generatedId = '',
+    this.checkInTime,
+    this.checkOutTime,
+    this.registeredUser,
+  });
   final int id;
   final String generatedId;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
   final RegisteredUser? registeredUser;
-
-  const RegisteredUserLog({
-    this.id = 0,
-    this.generatedId = "",
-    this.checkInTime,
-    this.checkOutTime,
-    this.registeredUser,
-  });
 
   @override
   List<Object?> get props => [
@@ -37,16 +36,16 @@ class RegisteredUserLog extends Equatable {
           checkInTime != null &&
           checkOutTime!.isAfter(checkInTime!)
       ? checkOutTime!.difference(checkInTime!).pretty()
-      : "";
+      : '';
 
   String get checkInTimeString => checkInTime != null
       ? DateFormat(
           dateFormat,
         ).format(checkInTime!.add(const Duration(hours: 7)))
-      : "";
+      : '';
   String get checkOutTimeString => checkOutTime != null
       ? DateFormat(
           dateFormat,
         ).format(checkOutTime!.add(const Duration(hours: 7)))
-      : "";
+      : '';
 }

@@ -1,20 +1,19 @@
 import 'dart:io';
 
+import 'package:carpark/data/datasources/registered_user/registered_user_service_datasource.dart';
+import 'package:carpark/data/repositories/registered_user/registered_user_service_repository.dart';
+import 'package:carpark/data/services/api/model/registered_user/models.dart';
+import 'package:carpark/utils/failures.dart';
+import 'package:carpark/utils/generic_response_data.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../utils/failures.dart';
-import '../../../utils/generic_response_data.dart';
-import '../../datasources/registered_user/registered_user_service_datasource.dart';
-import '../../services/api/model/registered_user/models.dart';
-import 'registered_user_service_repository.dart';
 
 @Injectable(as: RegisteredUserServiceRepository)
 class RegisteredUserServiceRepositoryImpl
     extends RegisteredUserServiceRepository {
-  final RegisteredUserServiceDataSource dataSource;
 
   RegisteredUserServiceRepositoryImpl(this.dataSource);
+  final RegisteredUserServiceDataSource dataSource;
 
   @override
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>
@@ -97,7 +96,7 @@ class RegisteredUserServiceRepositoryImpl
   >
   getNotCheckOutRegisteredUser() async {
     return TaskEither.tryCatch(
-      () => dataSource.getNotCheckOutRegisteredUser(),
+      dataSource.getNotCheckOutRegisteredUser,
       (e, _) => Failure.fromException(e),
     ).run();
   }

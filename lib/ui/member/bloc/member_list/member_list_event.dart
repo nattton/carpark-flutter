@@ -10,7 +10,7 @@ sealed class MemberListEvent extends Equatable {
 class LoadMemberList extends MemberListEvent {}
 
 class FilterMemberList extends MemberListEvent {
-  final String filter;
 
   const FilterMemberList(this.filter);
+  final String filter;
 }

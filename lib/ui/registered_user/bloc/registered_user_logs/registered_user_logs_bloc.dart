@@ -1,10 +1,9 @@
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_log.dart';
+import 'package:carpark/domain/use_cases/registered_user/get_registered_user_logs_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../domain/models/registered_user/registered_user_log.dart';
-import '../../../../domain/use_cases/registered_user/get_registered_user_logs_usecase.dart';
 
 part 'registered_user_logs_event.dart';
 part 'registered_user_logs_state.dart';
@@ -12,10 +11,10 @@ part 'registered_user_logs_state.dart';
 @Injectable()
 class RegisteredUserLogsBloc
     extends Bloc<RegisteredUserLogsEvent, RegisteredUserLogsState> {
-  final GetRegisteredUserLogsUsecase usecase;
   RegisteredUserLogsBloc(this.usecase) : super(RegisteredUserLogsInitial()) {
     on<GetRegisteredUserLogs>(_onGetRegisteredUserLogs);
   }
+  final GetRegisteredUserLogsUsecase usecase;
 
   Future<void> _onGetRegisteredUserLogs(
     GetRegisteredUserLogs event,

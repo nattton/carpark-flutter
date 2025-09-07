@@ -1,14 +1,12 @@
+import 'package:carpark/domain/models/member/member_model.dart';
+import 'package:carpark/domain/models/member/vehicle_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../../../../../domain/models/member/member_model.dart';
-import '../../../../../../domain/models/member/vehicle_model.dart';
 
 part 'get_member_response.freezed.dart';
 part 'get_member_response.g.dart';
 
 @freezed
 abstract class GetMemberResponse with _$GetMemberResponse {
-  const GetMemberResponse._();
 
   const factory GetMemberResponse({
     int? id,
@@ -18,6 +16,7 @@ abstract class GetMemberResponse with _$GetMemberResponse {
     String? status,
     List<VehicleResponse>? vehicles,
   }) = _GetMemberResponse;
+  const GetMemberResponse._();
 
   factory GetMemberResponse.fromJson(Map<String, dynamic> json) =>
       _$GetMemberResponseFromJson(json);

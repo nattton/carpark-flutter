@@ -1,8 +1,7 @@
+import 'package:carpark/data/repositories/member/member_repository.dart';
+import 'package:carpark/models/models.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../models/models.dart';
-import '../../../utils/result.dart';
-import 'member_repository.dart';
 
 @dev
 @Injectable(as: MemberRepository)
@@ -12,20 +11,20 @@ class MemberRepositoryLocal extends MemberRepository {
   @override
   Future<Result<List<MemberModel>>> getMemberList() async {
     final members = [
-      MemberModel(
+      const MemberModel(
         id: 1,
-        name: "ABC",
-        telephone: "0895470000",
-        type: "visitor",
-        status: "active",
+        name: 'ABC',
+        telephone: '0895470000',
+        type: 'visitor',
+        status: 'active',
         vehicles: [],
       ),
-      MemberModel(
+      const MemberModel(
         id: 2,
-        name: "DEF",
-        telephone: "0895470000",
-        type: "visitor",
-        status: "active",
+        name: 'DEF',
+        telephone: '0895470000',
+        type: 'visitor',
+        status: 'active',
         vehicles: [],
       ),
     ];
@@ -34,56 +33,56 @@ class MemberRepositoryLocal extends MemberRepository {
 
   @override
   Future<Result<MemberModel>> createMember(MemberModel member) async {
-    final member = MemberModel(
+    const member = MemberModel(
       id: 1,
-      name: "HIJ",
-      telephone: "0895470000",
-      type: "visitor",
-      status: "active",
+      name: 'HIJ',
+      telephone: '0895470000',
+      type: 'visitor',
+      status: 'active',
       vehicles: [],
     );
-    return Result.ok(member);
+    return const Result.ok(member);
   }
 
   @override
   Future<Result<MemberModel>> getMember(int id) async {
-    final member = MemberModel(
+    const member = MemberModel(
       id: 1,
-      name: "KLM",
-      telephone: "0895470000",
-      type: "visitor",
-      status: "active",
+      name: 'KLM',
+      telephone: '0895470000',
+      type: 'visitor',
+      status: 'active',
       vehicles: [],
     );
-    return Result.ok(member);
+    return const Result.ok(member);
   }
 
   @override
   Future<Result<ResponseModel>> updateMember(MemberModel member) async {
-    final response = ResponseModel(message: 'Update Successfully');
-    return Result.ok(response);
+    const response = ResponseModel(message: 'Update Successfully');
+    return const Result.ok(response);
   }
 
   @override
   Future<Result<ResponseModel>> deleteMember(int id) async {
-    final response = ResponseModel(message: 'Delete Successfully');
-    return Result.ok(response);
+    const response = ResponseModel(message: 'Delete Successfully');
+    return const Result.ok(response);
   }
 
   @override
   Future<Result<ResponseModel>> createVehicle(VehicleModel vehicle) async {
-    final response = ResponseModel(message: 'Create vehicle Successfully');
-    return Result.ok(response);
+    const response = ResponseModel(message: 'Create vehicle Successfully');
+    return const Result.ok(response);
   }
 
   @override
   Future<Result<ResponseModel>> updateVehicle(VehicleModel vehicle) async {
-    final response = ResponseModel(message: 'Update vehicle Successfully');
-    return Result.ok(response);
+    const response = ResponseModel(message: 'Update vehicle Successfully');
+    return const Result.ok(response);
   }
 
   @override
   Future<Result<void>> deleteVehicle(int vehicleId) async {
-    return Result.ok(null);
+    return const Result.ok(null);
   }
 }

@@ -17,6 +17,21 @@ enum RegisteredUserCreateStatus {
 }
 
 final class RegisteredUserCreateState extends Equatable {
+  const RegisteredUserCreateState({
+    this.status = RegisteredUserCreateStatus.initial,
+    this.message = '',
+    this.id = 0,
+    this.idCard = '',
+    this.engName = '',
+    this.thaiName = '',
+    this.birthdate = '',
+    this.gender = '',
+    this.address = '',
+    this.photoUrl = '',
+    this.telephone = '',
+    this.type = '',
+    this.expiredDate = '',
+  });
   final RegisteredUserCreateStatus status;
   final String message;
   final int id;
@@ -30,21 +45,6 @@ final class RegisteredUserCreateState extends Equatable {
   final String telephone;
   final String type;
   final String expiredDate;
-  const RegisteredUserCreateState({
-    this.status = RegisteredUserCreateStatus.initial,
-    this.message = "",
-    this.id = 0,
-    this.idCard = "",
-    this.engName = "",
-    this.thaiName = "",
-    this.birthdate = "",
-    this.gender = "",
-    this.address = "",
-    this.photoUrl = "",
-    this.telephone = "",
-    this.type = "",
-    this.expiredDate = "",
-  });
 
   @override
   List<Object> get props => [

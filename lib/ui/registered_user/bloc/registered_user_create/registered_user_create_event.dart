@@ -14,13 +14,13 @@ class ReadIdCard extends RegisteredUserCreateEvent {}
 class SavePhoto extends RegisteredUserCreateEvent {}
 
 class SelectExpiredDate extends RegisteredUserCreateEvent {
-  final List<DateTime?> expiredDates;
 
   const SelectExpiredDate(this.expiredDates);
+  final List<DateTime?> expiredDates;
 }
 
 class CreateRegisteredUser extends RegisteredUserCreateEvent {
-  final CreateRegisteredUserRequest request;
 
   const CreateRegisteredUser(this.request);
+  final CreateRegisteredUserRequest request;
 }

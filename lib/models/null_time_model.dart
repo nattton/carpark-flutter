@@ -5,45 +5,45 @@ part 'null_time_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class NullTimeModel {
-  @JsonKey(name: "Time")
-  DateTime? time;
-  @JsonKey(name: "Valid")
-  bool? valid;
 
   NullTimeModel({this.time, this.valid});
 
   factory NullTimeModel.fromJson(Map<String, dynamic> json) =>
       _$NullTimeModelFromJson(json);
+  @JsonKey(name: 'Time')
+  DateTime? time;
+  @JsonKey(name: 'Valid')
+  bool? valid;
 
   Map<String, dynamic> toJson() => _$NullTimeModelToJson(this);
 
   @override
   String toString() {
     if (time == null) {
-      return "";
+      return '';
     }
-    return DateFormat("yyyy-MM-dd HH:mm:ss").format(time!);
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(time!);
   }
 
   String toDateString() {
     if (time == null) {
-      return "";
+      return '';
     }
-    return DateFormat("yyyy-MM-dd").format(time!);
+    return DateFormat('yyyy-MM-dd').format(time!);
   }
 
   String toDateTimeString() {
     if (valid == false || time == null) {
-      return "";
+      return '';
     }
-    return DateFormat("yyyy-MM-dd HH:mm:ss").format(time!);
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(time!);
   }
 
   String toDateTimeNanoString() {
     if (valid == false || time == null) {
-      return "";
+      return '';
     }
-    return DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(time!);
+    return DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(time!);
   }
 
   NullTimeModel copyWith({DateTime? time, bool? valid}) {

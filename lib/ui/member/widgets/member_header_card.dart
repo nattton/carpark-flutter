@@ -1,6 +1,5 @@
+import 'package:carpark/config/constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
 
 class MemberHeaderCard extends StatelessWidget {
   const MemberHeaderCard({super.key});
@@ -10,70 +9,70 @@ class MemberHeaderCard extends StatelessWidget {
     return Card(
       color: Colors.blue.shade200,
       child: const Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8),
         child: Row(
           children: [
             Expanded(
               child: Text(
-                "ID",
+                'ID',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "ชื่อ",
+                'ชื่อ',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "โทรศัพท์",
+                'โทรศัพท์',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "ประเภท",
+                'ประเภท',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "สถานะ",
+                'สถานะ',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "ทะเบียน",
+                'ทะเบียน',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(width: 30.0),
+            SizedBox(width: 30),
           ],
         ),
       ),

@@ -2,12 +2,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 class CameraPlayer {
-  final Player mainPlayer;
-  final VideoController mainController;
-  final Player sidePlayer;
-  final VideoController sideController;
-  final Player cardPlayer;
-  final VideoController cardController;
 
   CameraPlayer({
     required this.mainPlayer,
@@ -34,6 +28,12 @@ class CameraPlayer {
       cardController: cardController,
     );
   }
+  final Player mainPlayer;
+  final VideoController mainController;
+  final Player sidePlayer;
+  final VideoController sideController;
+  final Player cardPlayer;
+  final VideoController cardController;
 
   void setMainPlayer(String url) {
     mainPlayer.open(Media(url));

@@ -1,13 +1,10 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/models/visitor_model.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
-import '../../../models/visitor_model.dart';
 
 class VisitorListCard extends StatelessWidget {
   const VisitorListCard({
-    super.key,
-    required this.visitor,
-    required this.onTap,
+    required this.visitor, required this.onTap, super.key,
   });
 
   final VisitorModel visitor;
@@ -20,7 +17,7 @@ class VisitorListCard extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -28,7 +25,7 @@ class VisitorListCard extends StatelessWidget {
                   visitor.dateTimeNanoFormat(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -37,7 +34,7 @@ class VisitorListCard extends StatelessWidget {
                   visitor.exitTime!.toDateTimeNanoString(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -46,7 +43,7 @@ class VisitorListCard extends StatelessWidget {
                   visitor.durationString(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -55,7 +52,7 @@ class VisitorListCard extends StatelessWidget {
                   visitor.plateNumber!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -64,7 +61,7 @@ class VisitorListCard extends StatelessWidget {
                   visitor.member!.name!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -73,7 +70,7 @@ class VisitorListCard extends StatelessWidget {
                   visitor.thaiName!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),

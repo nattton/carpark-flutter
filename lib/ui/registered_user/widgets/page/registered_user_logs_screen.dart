@@ -1,17 +1,16 @@
 import 'dart:io';
 
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_log.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_logs/registered_user_logs_bloc.dart';
+import 'package:carpark/ui/registered_user/widgets/registered_user_logs_list_header_widget.dart';
+import 'package:carpark/ui/registered_user/widgets/registered_user_logs_list_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
-import '../../../../config/constants.dart';
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../domain/models/registered_user/registered_user_log.dart';
-import '../../../../injector/injector.dart';
-import '../../bloc/registered_user_logs/registered_user_logs_bloc.dart';
-import '../registered_user_logs_list_header_widget.dart';
-import '../registered_user_logs_list_row_widget.dart';
 
 class RegisteredUserLogsScreen extends StatefulWidget {
   const RegisteredUserLogsScreen({super.key});
@@ -51,63 +50,63 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
 
   List<Widget> _buildHeader(RegisteredUser user) {
     return [
-      Card(
-        margin: const EdgeInsets.only(left: 8.0, right: 8.0),
+      const Card(
+        margin: EdgeInsets.only(left: 8, right: 8),
         color: Colors.blueGrey,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
                 child: Text(
-                  "ID Card",
-                  style: const TextStyle(
+                  'ID Card',
+                  style: TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
               Expanded(
                 child: Text(
-                  "ชื่อภาษาไทย",
-                  style: const TextStyle(
+                  'ชื่อภาษาไทย',
+                  style: TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
               Expanded(
                 child: Text(
-                  "Eng Name",
-                  style: const TextStyle(
+                  'Eng Name',
+                  style: TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
               Expanded(
                 child: Text(
-                  "Telephone",
-                  style: const TextStyle(
+                  'Telephone',
+                  style: TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
-              SizedBox(width: 24.0),
+              SizedBox(width: 24),
             ],
           ),
         ),
       ),
       Card(
-        margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2.0),
+        margin: const EdgeInsets.only(left: 8, right: 8, top: 2),
         color: Colors.blueGrey,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -116,7 +115,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -126,7 +125,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -136,7 +135,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -146,15 +145,15 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
               GestureDetector(
                 onTap: () async {
                   final filename =
-                      "${user.idCard}_${user.thaiName}_${user.engName}.png"
-                          .replaceAll(" ", "_");
+                      '${user.idCard}_${user.thaiName}_${user.engName}.png'
+                          .replaceAll(' ', '_');
 
                   final outputFile = await FilePicker.platform.saveFile(
                     dialogTitle: 'Please select an output file:',
@@ -178,7 +177,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                     }
                   }
                 },
-                child: const Icon(Icons.qr_code_scanner, size: 24.0),
+                child: const Icon(Icons.qr_code_scanner, size: 24),
               ),
             ],
           ),

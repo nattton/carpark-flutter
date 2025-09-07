@@ -1,6 +1,5 @@
+import 'package:carpark/config/constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
 
 class RegisteredUserLogListHeaderWidget extends StatelessWidget {
   const RegisteredUserLogListHeaderWidget({super.key});
@@ -10,34 +9,34 @@ class RegisteredUserLogListHeaderWidget extends StatelessWidget {
     return Card(
       color: Colors.blue.shade200,
       child: const Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8),
         child: Row(
           children: [
             Expanded(
               child: Text(
-                "ID",
-                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
+                'ID',
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16),
               ),
             ),
             Expanded(
               child: Text(
-                "เวลาเข้า",
-                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
+                'เวลาเข้า',
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16),
               ),
             ),
             Expanded(
               child: Text(
-                "เวลาออก",
-                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
+                'เวลาออก',
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16),
               ),
             ),
             Expanded(
               child: Text(
-                "ระยะเวลา",
-                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16.0),
+                'ระยะเวลา',
+                style: TextStyle(fontFamily: kDefaultFont, fontSize: 16),
               ),
             ),
-            SizedBox(width: 30.0),
+            SizedBox(width: 30),
           ],
         ),
       ),

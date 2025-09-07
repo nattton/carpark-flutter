@@ -1,13 +1,12 @@
+import 'package:carpark/data/repositories/member/member_repository.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/data/services/api/model/member/member.dart';
+import 'package:carpark/data/services/api/model/vehicle/create_vehicle_request/create_vehicle_request.dart';
+import 'package:carpark/data/services/api/model/vehicle/update_vehicle_request/update_vehicle_request.dart';
+import 'package:carpark/models/models.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../models/models.dart';
-import '../../../utils/result.dart';
-import '../../services/api/api_service.dart';
-import '../../services/api/model/member/member.dart';
-import '../../services/api/model/vehicle/create_vehicle_request/create_vehicle_request.dart';
-import '../../services/api/model/vehicle/update_vehicle_request/update_vehicle_request.dart';
-import 'member_repository.dart';
 
 @prod
 @Injectable(as: MemberRepository)
@@ -129,7 +128,7 @@ class MemberRepositoryRemote extends MemberRepository {
   Future<Result<void>> deleteVehicle(int vehicleId) async {
     try {
       await _apiService.deleteVehicle(vehicleId);
-      return Result.ok(null);
+      return const Result.ok(null);
     } on DioException catch (e) {
       return Result.error(e);
     }

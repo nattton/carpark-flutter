@@ -1,29 +1,25 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/models/camera_model.dart';
+import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/setting/printer/view_models/printer_viewmodel.dart';
+import 'package:carpark/ui/setting/widgets/camera_list_card.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:logging/logging.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../injector/injector.dart';
-import '../../../models/camera_model.dart';
-import '../../home/widgets/home_screen.dart';
-import '../printer/view_models/printer_viewmodel.dart';
-import 'camera_list_card.dart';
-
 class SettingScreen extends ConsumerStatefulWidget {
+  const SettingScreen({required this.printerViewModel, super.key});
   final PrinterViewModel printerViewModel;
-
-  const SettingScreen({super.key, required this.printerViewModel});
 
   @override
   ConsumerState<SettingScreen> createState() => _SettingScreenState();
 }
 
 class _SettingScreenState extends ConsumerState<SettingScreen> {
-  final _log = Logger('SettingScreen');
   PrinterViewModel get printerViewModel => widget.printerViewModel;
   List<CameraModel> cameraList = [];
   final _ipAddressController = TextEditingController();
@@ -56,12 +52,12 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
             child: Row(
               children: [
                 const Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8),
                   child: Text(
                     'Printer : ',
                     style: TextStyle(
                       fontFamily: kDefaultFont,
-                      fontSize: 16.0,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -73,7 +69,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                       valueListenable: printerViewModel.getPrinterCommand,
                       builder: (context, printerName, _) {
                         return DropdownButton<String>(
-                          hint: Text('Select Printer ...'),
+                          hint: const Text('Select Printer ...'),
                           value: printerName,
                           icon: const Icon(Icons.print),
                           elevation: 16,
@@ -135,7 +131,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   }
 
   Future<void> getCamera() async {
-    getIt<ApiService>()
+    await getIt<ApiService>()
         .getCameraList()
         .then((value) {
           setState(() {
@@ -160,82 +156,77 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
 
     Alert(
       context: context,
-      title: "Camera : ${camera.name}",
+      title: 'Camera : ${camera.name}',
       content: Column(
         children: [
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _ipAddressController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.url,
             decoration: InputDecoration(
               labelText: 'IP Address',
               suffixIcon: const Icon(Icons.account_circle),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _portController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Port',
               suffixIcon: const Icon(Icons.account_circle),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _usernameController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: 'Username',
               suffixIcon: const Icon(Icons.account_circle),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _passwordController,
-            autofocus: false,
             autocorrect: false,
             obscureText: true,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: 'Password',
               suffixIcon: const Icon(Icons.lock),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _pathController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.url,
             decoration: InputDecoration(
               labelText: 'Path',
               suffixIcon: const Icon(Icons.account_circle),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
@@ -247,7 +238,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
             saveCamera(camera);
           },
           child: const Text(
-            "Save",
+            'Save',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),

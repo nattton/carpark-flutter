@@ -1,24 +1,23 @@
+import 'package:carpark/data/repositories/member/member_repository.dart';
+import 'package:carpark/domain/models/member/member_model.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../data/repositories/member/member_repository.dart';
-import '../../../../domain/models/member/member_model.dart';
-import '../../../../utils/result.dart';
 
 part 'member_list_event.dart';
 part 'member_list_state.dart';
 
 @Injectable()
 class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
-  final MemberRepository _memberRepository;
   MemberListBloc({required MemberRepository memberRepository})
     : _memberRepository = memberRepository,
-      super(MemberListState()) {
+      super(const MemberListState()) {
     on<MemberListEvent>((event, emit) {});
     on<LoadMemberList>(_onLoadMemberList);
     on<FilterMemberList>(_onFilterMemberList);
   }
+  final MemberRepository _memberRepository;
 
   Future<void> _onLoadMemberList(
     LoadMemberList event,

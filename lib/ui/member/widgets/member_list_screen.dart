@@ -1,17 +1,16 @@
 import 'dart:io';
 
+import 'package:carpark/domain/models/member/member_model.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/ui/member/widgets/member_header_card.dart';
+import 'package:carpark/ui/member/widgets/member_list_card.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
-import '../../../domain/models/member/member_model.dart';
-import '../../../rounting/routes.dart';
-import '../bloc/member_list/member_list_bloc.dart';
-import 'member_header_card.dart';
-import 'member_list_card.dart';
 
 class MemberListScreen extends StatefulWidget {
   const MemberListScreen({super.key});
@@ -44,10 +43,9 @@ class _MemberListScreenState extends State<MemberListScreen> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: TextField(
                   controller: _filterController,
-                  autofocus: false,
                   autocorrect: false,
                   onChanged: onSearchTextChanged,
                   decoration: InputDecoration(
@@ -59,25 +57,21 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       },
                       child: const Icon(Icons.clear),
                     ),
-                    contentPadding: const EdgeInsets.all(20.0),
+                    contentPadding: const EdgeInsets.all(20),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
               ),
             ),
             IconButton(
-              onPressed: () {
-                onPressedAddMember();
-              },
+              onPressed: onPressedAddMember,
               icon: const Icon(Icons.person_add),
               tooltip: 'สร้างสมาชิกใหม่',
             ),
             IconButton(
-              onPressed: () {
-                onPressedExportMember();
-              },
+              onPressed: onPressedExportMember,
               icon: const Icon(Icons.download),
               tooltip: 'Export Member',
             ),
@@ -104,12 +98,12 @@ class _MemberListScreenState extends State<MemberListScreen> {
     );
   }
 
-  void onPressedRow(BuildContext context, MemberModel member) async {
+  Future<void> onPressedRow(BuildContext context, MemberModel member) async {
     await context.push(Routes.memberWithId(member.id));
     _memberListBloc.add(LoadMemberList());
   }
 
-  void onSearchTextChanged(String text) async {
+  Future<void> onSearchTextChanged(String text) async {
     _memberListBloc.add(FilterMemberList(text));
   }
 
@@ -124,18 +118,18 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
     var currentRow = 0;
     final columnName = <CellValue>[
-      TextCellValue("id"),
-      TextCellValue("name"),
-      TextCellValue("telephone"),
-      TextCellValue("type"),
-      TextCellValue("status"),
-      TextCellValue("vehicleId"),
-      TextCellValue("plateNumber"),
-      TextCellValue("resemble"),
-      TextCellValue("plateProvince"),
-      TextCellValue("brand"),
-      TextCellValue("color"),
-      TextCellValue("telephone"),
+      TextCellValue('id'),
+      TextCellValue('name'),
+      TextCellValue('telephone'),
+      TextCellValue('type'),
+      TextCellValue('status'),
+      TextCellValue('vehicleId'),
+      TextCellValue('plateNumber'),
+      TextCellValue('resemble'),
+      TextCellValue('plateProvince'),
+      TextCellValue('brand'),
+      TextCellValue('color'),
+      TextCellValue('telephone'),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     final cellStyle = CellStyle(
@@ -159,7 +153,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
         TextCellValue(m.type!),
         TextCellValue(m.status!),
       ];
-      sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
+      sheetObject.insertRowIterables(dataList, currentRow);
       for (var j = 0; j < m.vehicles!.length; j++) {
         if (j > 0) {
           currentRow++;
@@ -184,8 +178,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
     return excel;
   }
 
-  void onPressedExportMember() async {
-    final dateTime = DateFormat("yyyy-MM-dd_HH-mm").format(DateTime.now());
+  Future<void> onPressedExportMember() async {
+    final dateTime = DateFormat('yyyy-MM-dd_HH-mm').format(DateTime.now());
     final outputFile = await FilePicker.platform.saveFile(
       dialogTitle: 'Please select an output file:',
       fileName: 'member_list_$dateTime.xlsx',

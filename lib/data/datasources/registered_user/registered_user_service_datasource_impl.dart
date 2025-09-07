@@ -1,18 +1,17 @@
 import 'dart:io';
 
+import 'package:carpark/data/datasources/registered_user/registered_user_service_datasource.dart';
+import 'package:carpark/data/services/api/model/registered_user/models.dart';
+import 'package:carpark/data/services/api/registered_user_service.dart';
+import 'package:carpark/utils/generic_response_data.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../utils/generic_response_data.dart';
-import '../../services/api/model/registered_user/models.dart';
-import '../../services/api/registered_user_service.dart';
-import 'registered_user_service_datasource.dart';
 
 @Injectable(as: RegisteredUserServiceDataSource)
 class RegisteredUserServiceDataSourceImpl
     extends RegisteredUserServiceDataSource {
-  final RegisteredUserService registeredUserService;
 
   RegisteredUserServiceDataSourceImpl(this.registeredUserService);
+  final RegisteredUserService registeredUserService;
 
   @override
   Future<GenericResponseData<RegisteredUserResponse>> addPhotoToRegisteredUser(

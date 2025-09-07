@@ -1,14 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/model/registered_user/update_registered_user_request.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_list/registered_user_list_bloc.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_update/registered_user_update_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-
-import '../../../../config/constants.dart';
-import '../../../../data/services/api/model/registered_user/update_registered_user_request.dart';
-import '../../bloc/registered_user_list/registered_user_list_bloc.dart';
-import '../../bloc/registered_user_update/registered_user_update_bloc.dart';
 
 class RegisteredUserUpdateScreen extends StatefulWidget {
   const RegisteredUserUpdateScreen({super.key});
@@ -114,11 +113,11 @@ class _RegisteredUserUpdateScreenState
         }
 
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: <Widget>[
               ..._buildInputFields(state),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -144,7 +143,7 @@ class _RegisteredUserUpdateScreenState
                     },
                     child: const Text('ยืนยัน'),
                   ),
-                  const SizedBox(width: 32.0),
+                  const SizedBox(width: 32),
                   ElevatedButton(
                     onPressed: () {
                       context.read<RegisteredUserListBloc>().add(
@@ -165,68 +164,62 @@ class _RegisteredUserUpdateScreenState
   List<Widget> _buildInputFields(RegisteredUserUpdateState state) {
     return [
       SizedBox(
-        height: 120.0,
+        height: 120,
         child: state.registeredUser.photoUrl().isNotEmpty
             ? Image.network(state.registeredUser.photoUrl(), fit: BoxFit.cover)
-            : const Icon(size: 120.0, Icons.face),
+            : const Icon(size: 120, Icons.face),
       ),
       Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: TextField(
               controller: _idCardController,
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.name,
               decoration: const InputDecoration(
                 labelText: 'เลขประจำตัวประชาชน',
                 prefixIcon: Icon(Icons.text_fields),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
             ),
           ),
           Expanded(
             child: TextField(
               controller: _birthdateController,
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 labelText: 'วันเกิด',
                 prefixIcon: Icon(Icons.cake),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
             ),
           ),
         ],
       ),
       Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: TextField(
               controller: _thaiNameController,
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.name,
               decoration: const InputDecoration(
                 labelText: 'ชื่อไทย',
                 prefixIcon: Icon(Icons.text_fields),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
             ),
           ),
           Expanded(
             child: TextField(
               controller: _engNameController,
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.name,
               decoration: const InputDecoration(
                 labelText: 'ชื่ออังกฤษ',
                 prefixIcon: Icon(Icons.text_fields),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
               textInputAction: TextInputAction.next,
             ),
@@ -234,18 +227,16 @@ class _RegisteredUserUpdateScreenState
         ],
       ),
       Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: TextField(
               controller: _telephoneController,
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: 'เบอร์โทรศัพท์',
                 prefixIcon: Icon(Icons.phone),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
               textInputAction: TextInputAction.next,
             ),
@@ -253,14 +244,13 @@ class _RegisteredUserUpdateScreenState
           Expanded(
             child: TextField(
               controller: _genderController,
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
                 labelText: 'เพศ',
                 prefixIcon: Icon(Icons.wc),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
             ),
           ),
@@ -268,29 +258,27 @@ class _RegisteredUserUpdateScreenState
       ),
       TextField(
         controller: _addressNameController,
-        autofocus: false,
         autocorrect: false,
         keyboardType: TextInputType.streetAddress,
         decoration: const InputDecoration(
           labelText: 'ที่อยู่',
           prefixIcon: Icon(Icons.location_city),
-          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+          contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
         ),
         textInputAction: TextInputAction.next,
       ),
       Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 8),
               child: FormBuilderRadioGroup(
                 decoration: InputDecoration(
                   labelText: 'ประเภท',
-                  prefixIcon: Icon(Icons.group),
-                  contentPadding: const EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
+                  prefixIcon: const Icon(Icons.group),
+                  contentPadding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 initialValue:
@@ -298,17 +286,17 @@ class _RegisteredUserUpdateScreenState
                       (type) => type == state.registeredUser.type,
                     )
                     ? state.registeredUser.type
-                    : "อื่นๆ",
+                    : 'อื่นๆ',
                 name: 'type',
                 onChanged: (value) {
-                  _typeController.text = value ?? "";
-                  if (value == "อื่นๆ") {
-                    _typeController.text = "";
+                  _typeController.text = value ?? '';
+                  if (value == 'อื่นๆ') {
+                    _typeController.text = '';
                   }
-                  _bloc.add(UpdateRegisteredUserSelectType(value ?? ""));
+                  _bloc.add(UpdateRegisteredUserSelectType(value ?? ''));
                   setState(() {});
                 },
-                validator: FormBuilderValidators.required(),
+                validator: FormBuilderValidators.required<String>(),
                 options: kRegisteredUserTypeList
                     .map((lang) => FormBuilderFieldOption(value: lang))
                     .toList(growable: false),
@@ -321,13 +309,12 @@ class _RegisteredUserUpdateScreenState
               readOnly: kRegisteredUserTypeList.any(
                 (type) => type == _typeController.text,
               ),
-              autofocus: false,
               autocorrect: false,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 labelText: 'ประเภท',
                 prefixIcon: Icon(Icons.group),
-                contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
               ),
               textInputAction: TextInputAction.next,
             ),
@@ -342,9 +329,10 @@ class _RegisteredUserUpdateScreenState
                   ),
                   dialogSize: const Size(325, 400),
                   value: [
-                    state.registeredUser.expiredDate!.valid!
-                        ? state.registeredUser.expiredDate!.time!
-                        : DateTime.now(),
+                    if (state.registeredUser.expiredDate!.valid!)
+                      state.registeredUser.expiredDate!.time!
+                    else
+                      DateTime.now(),
                   ],
                   borderRadius: BorderRadius.circular(15),
                 );
@@ -361,9 +349,10 @@ class _RegisteredUserUpdateScreenState
                     ),
                     dialogSize: const Size(325, 400),
                     value: [
-                      state.registeredUser.expiredDate!.valid!
-                          ? state.registeredUser.expiredDate!.time!
-                          : DateTime.now(),
+                      if (state.registeredUser.expiredDate!.valid!)
+                        state.registeredUser.expiredDate!.time!
+                      else
+                        DateTime.now(),
                     ],
                     borderRadius: BorderRadius.circular(15),
                   );
@@ -372,14 +361,13 @@ class _RegisteredUserUpdateScreenState
                   }
                 },
                 controller: _expiredDateController,
-                autofocus: false,
                 autocorrect: false,
                 readOnly: true,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: 'วันหมดอายุ',
-                  prefixIcon: GestureDetector(child: Icon(Icons.group)),
-                  contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                  prefixIcon: GestureDetector(child: const Icon(Icons.group)),
+                  contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                 ),
                 textInputAction: TextInputAction.next,
               ),

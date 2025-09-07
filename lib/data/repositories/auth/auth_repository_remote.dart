@@ -1,12 +1,11 @@
+import 'package:carpark/data/repositories/auth/auth_repository.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/data/services/api/model/login_request/login_request.dart';
+import 'package:carpark/data/services/shared_preferences_service.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
-
-import '../../../utils/result.dart';
-import '../../services/api/api_service.dart';
-import '../../services/api/model/login_request/login_request.dart';
-import '../../services/shared_preferences_service.dart';
-import 'auth_repository.dart';
 
 const String authorizationHeader = 'Authorization';
 

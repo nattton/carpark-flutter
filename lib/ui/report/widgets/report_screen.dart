@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -8,10 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
-
-import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../injector/injector.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -72,11 +71,9 @@ class _ReportScreenState extends State<ReportScreen> {
                   style: kButton2Style,
                 ),
               ),
-              const SizedBox(width: 10.0),
+              const SizedBox(width: 10),
               OutlinedButton(
-                onPressed: () {
-                  downloadMemberTrafficExcel();
-                },
+                onPressed: downloadMemberTrafficExcel,
                 child: const Text('Export to Excel', style: kButton2Style),
               ),
               Expanded(child: Container()),
@@ -89,7 +86,7 @@ class _ReportScreenState extends State<ReportScreen> {
           onChanged: (value) {
             _reportType = value!;
           },
-          validator: FormBuilderValidators.required(),
+          validator: FormBuilderValidators.required<String>(),
           options: kReportTypeMap.entries
               .map(
                 (e) =>
@@ -102,23 +99,24 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   String createFileName(String fileName) {
-    final date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
-    fileName = "$fileName$date";
-
-    if (_dates.length > 1) {
-      final dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
-      fileName = "$fileName-$dateTo";
-    }
-    return "$fileName.xlsx";
+    const dfConfig = 'yyyy-MM-dd';
+    final df1 = DateFormat('_$dfConfig');
+    final df2 = DateFormat('-$dfConfig');
+    final ext = switch (_dates.length) {
+      2 => '${df1.format(_dates[0]!)}${df2.format(_dates[1]!)}.xlsx',
+      1 => '${df1.format(_dates[0]!)}.xlsx',
+      _ => '.xlsx',
+    };
+    return fileName + ext;
   }
 
-  void downloadMemberTrafficExcel() async {
+  Future<void> downloadMemberTrafficExcel() async {
     final date = DateFormat('yyyy-MM-dd').format(_dates[0]!);
     var dateTo = date;
     if (_dates.length > 1) {
       dateTo = DateFormat('yyyy-MM-dd').format(_dates[1]!);
     }
-    getIt<ApiService>().reportTraffic(_reportType, date, dateTo).then((
+    await getIt<ApiService>().reportTraffic(_reportType, date, dateTo).then((
       report,
     ) async {
       final excel = Excel.createExcel();
@@ -126,11 +124,11 @@ class _ReportScreenState extends State<ReportScreen> {
 
       var currentRow = 0;
       final columnName = <CellValue>[
-        TextCellValue("ID"),
-        TextCellValue("Name"),
-        TextCellValue("Vehicle ID"),
-        TextCellValue("PlateNumber"),
-        TextCellValue("Traffic"),
+        TextCellValue('ID'),
+        TextCellValue('Name'),
+        TextCellValue('Vehicle ID'),
+        TextCellValue('PlateNumber'),
+        TextCellValue('Traffic'),
       ];
       sheetObject.insertRowIterables(columnName, currentRow);
       final cellStyle = CellStyle(
@@ -138,10 +136,15 @@ class _ReportScreenState extends State<ReportScreen> {
         bold: true,
       );
       for (var i = 0; i < columnName.length; i++) {
-        final cell = sheetObject.cell(
-          CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
-        );
-        cell.cellStyle = cellStyle;
+        sheetObject
+                .cell(
+                  CellIndex.indexByColumnRow(
+                    columnIndex: i,
+                    rowIndex: currentRow,
+                  ),
+                )
+                .cellStyle =
+            cellStyle;
       }
 
       for (var i = 0; i < report.length; i++) {
@@ -154,9 +157,9 @@ class _ReportScreenState extends State<ReportScreen> {
           TextCellValue(m.plateNumber),
           TextCellValue(m.traffic.toString()),
         ];
-        sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
+        sheetObject.insertRowIterables(dataList, currentRow);
       }
-      saveExcelFile(excel, _reportType);
+      await saveExcelFile(excel, _reportType);
     });
   }
 
@@ -172,7 +175,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
       if (outputFile != null) {
         final file = File(outputFile);
-        file.writeAsBytes(excel.encode()!);
+        await file.writeAsBytes(excel.encode()!);
       }
     }
   }

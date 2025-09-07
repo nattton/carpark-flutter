@@ -1,6 +1,5 @@
+import 'package:carpark/config/constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
 
 class VehicleHeaderCard extends StatelessWidget {
   const VehicleHeaderCard({super.key});
@@ -10,80 +9,80 @@ class VehicleHeaderCard extends StatelessWidget {
     return Card(
       color: Colors.blue.shade200,
       child: const Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8),
         child: Row(
           children: [
             Expanded(
               child: Text(
-                "ID",
+                'ID',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "เลขทะเบียน",
+                'เลขทะเบียน',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "เลขที่คล้าย",
+                'เลขที่คล้าย',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "จังหวัด",
+                'จังหวัด',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "ยี่ห้อ",
+                'ยี่ห้อ',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "สี",
+                'สี',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Expanded(
               child: Text(
-                "โทร.",
+                'โทร.',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(width: 30.0),
+            SizedBox(width: 30),
           ],
         ),
       ),

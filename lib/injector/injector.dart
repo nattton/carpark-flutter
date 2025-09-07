@@ -1,14 +1,13 @@
+import 'package:carpark/config/constants.dart';
+// import 'package:universal_html/html.dart' as html;
+
+import 'package:carpark/injector/injector.config.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../config/constants.dart';
-// import 'package:universal_html/html.dart' as html;
-
-import 'injector.config.dart';
-
-final getIt = GetIt.instance;
+final GetIt getIt = GetIt.instance;
 
 @InjectableInit(
   initializerName: 'init',

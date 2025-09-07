@@ -1,14 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/models/gate_log_model.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../config/constants.dart';
-import '../../../../models/gate_log_model.dart';
 
 class EntranceCard extends StatelessWidget {
   const EntranceCard({
-    super.key,
-    required this.gateLog,
-    required this.onTapSelectGateLog,
+    required this.gateLog, required this.onTapSelectGateLog, super.key,
   });
 
   final GateLogModel gateLog;
@@ -18,7 +15,7 @@ class EntranceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: gateLog.color(), width: 4.0),
+        side: BorderSide(color: gateLog.color(), width: 4),
       ),
       child: Column(
         children: [
@@ -37,7 +34,7 @@ class EntranceCard extends StatelessWidget {
                     color: Colors.grey,
                     child: Center(
                       child: Text(
-                        "วันที่: ${gateLog.dateFormat()}",
+                        'วันที่: ${gateLog.dateFormat()}',
                         style: kGateStyle,
                       ),
                     ),
@@ -47,21 +44,20 @@ class EntranceCard extends StatelessWidget {
                     color: Colors.grey,
                     child: Center(
                       child: Text(
-                        "เวลา: ${gateLog.timeFormat()}",
+                        'เวลา: ${gateLog.timeFormat()}',
                         style: kGateStyle,
                       ),
                     ),
                   ),
                 ],
               ),
-              gateLog.memberId! == 0
-                  ? TableRow(
+              if (gateLog.memberId! == 0) TableRow(
                       children: [
                         Container(
                           height: 50,
                           color: Colors.red,
                           child: const Center(
-                            child: Text("ผู้ติดต่อ", style: kGateStyle),
+                            child: Text('ผู้ติดต่อ', style: kGateStyle),
                           ),
                         ),
                         Container(
@@ -74,22 +70,21 @@ class EntranceCard extends StatelessWidget {
                                 backgroundColor: kColorButtonPrimary,
                               ),
                               child: const Text(
-                                "สร้างผู้ติดต่อจากรถคันนี้",
+                                'สร้างผู้ติดต่อจากรถคันนี้',
                                 style: kButtonStyle,
                               ),
                             ),
                           ),
                         ),
                       ],
-                    )
-                  : TableRow(
+                    ) else TableRow(
                       children: <Widget>[
                         Container(
                           height: 40,
                           color: Colors.green,
                           child: Center(
                             child: Text(
-                              "ชื่อ : ${gateLog.member!.name}",
+                              'ชื่อ : ${gateLog.member!.name}',
                               style: kGateStyle,
                             ),
                           ),
@@ -106,8 +101,7 @@ class EntranceCard extends StatelessWidget {
                         ),
                       ],
                     ),
-              gateLog.member?.status == 'overdue'
-                  ? TableRow(
+              if (gateLog.member?.status == 'overdue') TableRow(
                       children: <Widget>[
                         Container(
                           height: 40,
@@ -123,15 +117,14 @@ class EntranceCard extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: onTapSelectGateLog,
                               child: const Text(
-                                "สร้างบัตรผู้ติดต่อ",
+                                'สร้างบัตรผู้ติดต่อ',
                                 style: kButtonStyle,
                               ),
                             ),
                           ),
                         ),
                       ],
-                    )
-                  : TableRow(children: <Widget>[Container(), Container()]),
+                    ) else TableRow(children: <Widget>[Container(), Container()]),
               TableRow(
                 children: <Widget>[
                   Container(
@@ -153,7 +146,7 @@ class EntranceCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 10),
           CachedNetworkImage(
             imageUrl: gateLog.captureImageUrl(),
             errorWidget: (_, url, _) => Text('error loading : $url'),

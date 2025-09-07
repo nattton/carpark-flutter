@@ -1,10 +1,9 @@
 import 'dart:io';
 
+import 'package:carpark/data/services/api/model/registered_user/models.dart';
+import 'package:carpark/utils/failures.dart';
+import 'package:carpark/utils/generic_response_data.dart';
 import 'package:fpdart/fpdart.dart';
-
-import '../../../utils/failures.dart';
-import '../../../utils/generic_response_data.dart';
-import '../../services/api/model/registered_user/models.dart';
 
 abstract class RegisteredUserServiceRepository {
   Future<Either<Failure, GenericResponseData<List<RegisteredUserResponse>>>>

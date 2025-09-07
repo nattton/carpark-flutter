@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/models/gate_log_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../config/constants.dart';
-import '../../../../models/gate_log_model.dart';
-
 class ExitCard extends StatelessWidget {
-  const ExitCard({super.key, required this.gateLog});
+  const ExitCard({required this.gateLog, super.key});
 
   final GateLogModel gateLog;
 
@@ -13,7 +12,7 @@ class ExitCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: gateLog.color(), width: 4.0),
+        side: BorderSide(color: gateLog.color(), width: 4),
       ),
       child: Column(
         children: [
@@ -32,7 +31,7 @@ class ExitCard extends StatelessWidget {
                     color: Colors.grey,
                     child: Center(
                       child: Text(
-                        "วันที่: ${gateLog.dateFormat()}",
+                        'วันที่: ${gateLog.dateFormat()}',
                         style: kGateStyle,
                       ),
                     ),
@@ -42,34 +41,32 @@ class ExitCard extends StatelessWidget {
                     color: Colors.grey,
                     child: Center(
                       child: Text(
-                        "เวลา: ${gateLog.timeFormat()}",
+                        'เวลา: ${gateLog.timeFormat()}',
                         style: kGateStyle,
                       ),
                     ),
                   ),
                 ],
               ),
-              gateLog.memberId! == 0
-                  ? TableRow(
+              if (gateLog.memberId! == 0) TableRow(
                       children: <Widget>[
                         Container(
                           height: 40,
                           color: Colors.red,
                           child: const Center(
-                            child: Text("Visitor", style: kGateStyle),
+                            child: Text('Visitor', style: kGateStyle),
                           ),
                         ),
                         Container(height: 40, color: Colors.red),
                       ],
-                    )
-                  : TableRow(
+                    ) else TableRow(
                       children: <Widget>[
                         Container(
                           height: 40,
                           color: Colors.green,
                           child: Center(
                             child: Text(
-                              "ชื่อ : ${gateLog.member!.name!}",
+                              'ชื่อ : ${gateLog.member!.name!}',
                               style: kGateStyle,
                             ),
                           ),
@@ -86,8 +83,7 @@ class ExitCard extends StatelessWidget {
                         ),
                       ],
                     ),
-              gateLog.member?.status == 'overdue'
-                  ? TableRow(
+              if (gateLog.member?.status == 'overdue') TableRow(
                       children: <Widget>[
                         Container(
                           height: 40,
@@ -104,8 +100,7 @@ class ExitCard extends StatelessWidget {
                           ),
                         ),
                       ],
-                    )
-                  : TableRow(children: <Widget>[Container(), Container()]),
+                    ) else TableRow(children: <Widget>[Container(), Container()]),
               TableRow(
                 children: <Widget>[
                   Container(
@@ -127,7 +122,7 @@ class ExitCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 10),
           CachedNetworkImage(
             imageUrl: gateLog.captureImageUrl(),
             errorWidget: (_, url, _) => Text('error loading : $url'),
