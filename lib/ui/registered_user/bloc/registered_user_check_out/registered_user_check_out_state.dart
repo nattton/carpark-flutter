@@ -12,16 +12,16 @@ final class RegisteredUserCheckOutInitial extends RegisteredUserCheckOutState {}
 final class RegisteredUserCheckOutLoading extends RegisteredUserCheckOutState {}
 
 final class RegisteredUserCheckOutSuccess extends RegisteredUserCheckOutState {
-  final RegisteredUser registeredUser;
   const RegisteredUserCheckOutSuccess({required this.registeredUser});
+  final RegisteredUser registeredUser;
 
   @override
   List<Object> get props => [registeredUser];
 }
 
 final class RegisteredUserCheckOutFailure extends RegisteredUserCheckOutState {
-  final Failure failure;
   const RegisteredUserCheckOutFailure({required this.failure});
+  final Failure failure;
 
   @override
   List<Object> get props => [failure];

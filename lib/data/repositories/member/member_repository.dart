@@ -1,5 +1,5 @@
-import '../../../models/models.dart';
-import '../../../utils/result.dart';
+import 'package:carpark/models/models.dart';
+import 'package:carpark/utils/result.dart';
 
 abstract class MemberRepository {
   Future<Result<List<MemberModel>>> getMemberList();
@@ -13,4 +13,8 @@ abstract class MemberRepository {
   Future<Result<ResponseModel>> deleteMember(int id);
 
   Future<Result<ResponseModel>> createVehicle(VehicleModel vehicle);
+
+  Future<Result<ResponseModel>> updateVehicle(VehicleModel vehicle);
+
+  Future<Result<void>> deleteVehicle(int vehicleId);
 }

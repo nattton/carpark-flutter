@@ -1,20 +1,19 @@
+import 'package:carpark/data/repositories/auth/auth_repository.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/auth/login/view_models/login_viewmodel.dart';
+import 'package:carpark/ui/auth/login/widgets/login_screen.dart';
+import 'package:carpark/ui/auth/logout/view_models/logout_viewmodel.dart';
+import 'package:carpark/ui/home/view_models/home_viewmodel.dart';
+import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
+import 'package:carpark/ui/member/widgets/member_screen.dart';
+import 'package:carpark/ui/registered_user/widgets/page/registered_user_logs_screen.dart';
+import 'package:carpark/ui/visitor/widgets/visitor_detail_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../data/repositories/auth/auth_repository.dart';
-import '../injector/injector.dart';
-import '../rounting/routes.dart';
-import '../ui/auth/login/view_models/login_viewmodel.dart';
-import '../ui/auth/login/widgets/login_screen.dart';
-import '../ui/auth/logout/view_models/logout_viewmodel.dart';
-import '../ui/home/view_models/home_viewmodel.dart';
-import '../ui/home/widgets/home_screen.dart';
-import '../ui/member/bloc/member_list/member_list_bloc.dart';
-import '../ui/member/view_models/member_viewmodel.dart';
-import '../ui/member/widgets/member_screen.dart';
-import '../ui/registered_user/widgets/page/registered_user_logs_screen.dart';
-import '../ui/visitor/widgets/visitor_detail_screen.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
   initialLocation: Routes.home,

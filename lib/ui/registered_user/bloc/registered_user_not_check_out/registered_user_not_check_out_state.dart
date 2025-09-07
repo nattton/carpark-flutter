@@ -15,14 +15,14 @@ final class RegisteredUserNotCheckOutLoading
 
 final class RegisteredUserNotCheckOutLoaded
     extends RegisteredUserNotCheckOutState {
-  final List<RegisteredUserLog> registeredUserLog;
 
   const RegisteredUserNotCheckOutLoaded(this.registeredUserLog);
+  final List<RegisteredUserLog> registeredUserLog;
 }
 
 final class RegisteredUserNotCheckOutError
     extends RegisteredUserNotCheckOutState {
-  final Failure failure;
 
   const RegisteredUserNotCheckOutError(this.failure);
+  final Failure failure;
 }

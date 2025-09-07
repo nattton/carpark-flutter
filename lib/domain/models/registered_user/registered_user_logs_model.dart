@@ -1,7 +1,7 @@
-import '../../../data/services/api/model/registered_user/registered_user_logs_response.dart';
-import 'registered_user_log_model.dart';
-import 'registered_user_logs.dart';
-import 'registered_user_model.dart';
+import 'package:carpark/data/services/api/model/registered_user/registered_user_logs_response.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_log_model.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_logs.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_model.dart';
 
 class RegisteredUserLogsModel extends RegisteredUserLogs {
   const RegisteredUserLogsModel({required super.user, required super.logs});
@@ -12,7 +12,7 @@ class RegisteredUserLogsModel extends RegisteredUserLogs {
     return RegisteredUserLogs(
       user: RegisteredUserModel.responseMapper(response.registeredUser),
       logs: response.logs
-          .map((e) => RegisteredUserLogModel.responseMapper(e))
+          .map(RegisteredUserLogModel.responseMapper)
           .toList(),
     );
   }

@@ -1,12 +1,11 @@
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/data/services/api/model/login_response/user_model.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/models/save_user_model.dart';
+import 'package:carpark/ui/user/widgets/user_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
-import '../../../data/services/api/api_service.dart';
-import '../../../data/services/api/model/login_response/user_model.dart';
-import '../../../injector/injector.dart';
-import '../../../models/save_user_model.dart';
-import 'user_list_card.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -40,7 +39,7 @@ class _UserScreenState extends State<UserScreen> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return UserListCard(
-            user: UserModel(id: 0, name: "Name", role: "Role"),
+            user: const UserModel(id: 0, name: 'Name', role: 'Role'),
             onTap: () {},
           );
         }
@@ -87,37 +86,35 @@ class _UserScreenState extends State<UserScreen> {
 
     Alert(
       context: context,
-      title: "Change Password",
+      title: 'Change Password',
       content: Column(
         children: [
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _usernameController,
-            autofocus: false,
             autocorrect: false,
             enabled: false,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: 'User',
               suffixIcon: const Icon(Icons.account_circle),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _passwordController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: 'New Password',
               suffixIcon: const Icon(Icons.lock),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
@@ -129,7 +126,7 @@ class _UserScreenState extends State<UserScreen> {
             saveUser(user);
           },
           child: const Text(
-            "Save",
+            'Save',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
@@ -138,7 +135,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void alertError(String msg) {
-    showDialog(
+    showDialog<Widget>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(

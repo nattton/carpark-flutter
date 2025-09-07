@@ -1,6 +1,14 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/models/visitor_model.dart';
+import 'package:carpark/providers/visitors_notifier.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/visitor/widgets/visitor_header_card.dart';
+import 'package:carpark/ui/visitor/widgets/visitor_list_card.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -11,22 +19,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
 
-import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../injector/injector.dart';
-import '../../../models/visitor_model.dart';
-import '../../../providers/visitors_notifier.dart';
-import '../../../rounting/routes.dart';
-import 'visitor_header_card.dart';
-import 'visitor_list_card.dart';
-
 final visitorsProvider =
     StateNotifierProvider<VisitorsNotifier, List<VisitorModel>>((ref) {
       return VisitorsNotifier();
     });
 
-final filterProvider = StateProvider((ref) => "");
-final sortByProvider = StateProvider((ref) => "");
+final StateProvider<String> filterProvider = StateProvider((ref) => '');
+final StateProvider<String> sortByProvider = StateProvider((ref) => '');
 
 final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
   final filter = ref.watch(filterProvider);
@@ -43,46 +42,38 @@ final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
 
   if (sortBy.isNotEmpty) {
     switch (sortBy) {
-      case "date":
+      case 'date':
         filterVisitor.sort((a, b) {
           return a.createdAt!.compareTo(b.createdAt!);
         });
-        break;
-      case "-date":
+      case '-date':
         filterVisitor.sort((b, a) {
           return a.createdAt!.compareTo(b.createdAt!);
         });
-        break;
-      case "exitTime":
+      case 'exitTime':
         filterVisitor.sort((a, b) {
           return a.exitTime!.time!.compareTo(b.createdAt!);
         });
-        break;
-      case "-exitTime":
+      case '-exitTime':
         filterVisitor.sort((b, a) {
           return a.exitTime!.time!.compareTo(b.createdAt!);
         });
-        break;
-      case "plateNumber":
+      case 'plateNumber':
         filterVisitor.sort((a, b) {
           return a.plateNumber!.compareTo(b.plateNumber!);
         });
-        break;
-      case "-plateNumber":
+      case '-plateNumber':
         filterVisitor.sort((b, a) {
           return a.plateNumber!.compareTo(b.plateNumber!);
         });
-        break;
-      case "memberName":
+      case 'memberName':
         filterVisitor.sort((a, b) {
           return a.member!.name!.compareTo(b.member!.name!);
         });
-        break;
-      case "-memberName":
+      case '-memberName':
         filterVisitor.sort((b, a) {
           return a.member!.name!.compareTo(b.member!.name!);
         });
-        break;
       default:
     }
   }
@@ -112,14 +103,14 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     _selectDate([DateTime(now.year, now.month, now.day)]);
   }
 
-  void onSearchTextChanged(String text) async {
+  Future<void> onSearchTextChanged(String text) async {
     ref.read(filterProvider.notifier).state = text;
   }
 
   void sortBy(String fieldName) {
     final sortBy = ref.read(sortByProvider.notifier);
     sortBy.state == fieldName
-        ? sortBy.state = "-${sortBy.state}"
+        ? sortBy.state = '-${sortBy.state}'
         : sortBy.state = fieldName;
   }
 
@@ -184,7 +175,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                   style: kButton2Style,
                 ),
               ),
-              const SizedBox(width: 10.0),
+              const SizedBox(width: 10),
               OutlinedButton(
                 onPressed: () {
                   _selectDate(_dates);
@@ -193,19 +184,16 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
               ),
               Expanded(child: Container()),
               OutlinedButton(
-                onPressed: () {
-                  onPressedExportVisitor();
-                },
+                onPressed: onPressedExportVisitor,
                 child: const Text('Export to Excel', style: kButton2Style),
               ),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: TextField(
             controller: _searchController,
-            autofocus: false,
             autocorrect: false,
             onChanged: onSearchTextChanged,
             decoration: InputDecoration(
@@ -217,9 +205,9 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
                 },
                 child: const Icon(Icons.clear),
               ),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
@@ -228,19 +216,19 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
           selectedColumn: _selectedCol,
           onTapDate: () {
             _selectedCol = 0;
-            sortBy("date");
+            sortBy('date');
           },
           onTapExitTime: () {
             _selectedCol = 1;
-            sortBy("exitTime");
+            sortBy('exitTime');
           },
           onTapPlateNumber: () {
             _selectedCol = 2;
-            sortBy("plateNumber");
+            sortBy('plateNumber');
           },
           onTapMemberName: () {
             _selectedCol = 3;
-            sortBy("memberName");
+            sortBy('memberName');
           },
         ),
         Expanded(
@@ -269,20 +257,20 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
 
     var currentRow = 0;
     final columnName = <CellValue>[
-      TextCellValue("createdAt"),
-      TextCellValue("type"),
-      TextCellValue("plateNumber"),
-      TextCellValue("member.name"),
-      TextCellValue("idCard"),
-      TextCellValue("thaiName"),
-      TextCellValue("engName"),
-      TextCellValue("birthdate"),
-      TextCellValue("gender"),
-      TextCellValue("address"),
-      TextCellValue("age"),
-      TextCellValue("exitTime"),
-      TextCellValue("image.type"),
-      TextCellValue("image"),
+      TextCellValue('createdAt'),
+      TextCellValue('type'),
+      TextCellValue('plateNumber'),
+      TextCellValue('member.name'),
+      TextCellValue('idCard'),
+      TextCellValue('thaiName'),
+      TextCellValue('engName'),
+      TextCellValue('birthdate'),
+      TextCellValue('gender'),
+      TextCellValue('address'),
+      TextCellValue('age'),
+      TextCellValue('exitTime'),
+      TextCellValue('image.type'),
+      TextCellValue('image'),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     final cellStyle = CellStyle(
@@ -312,10 +300,10 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         TextCellValue(v.address!),
         TextCellValue(v.age!),
         TextCellValue(
-          v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : "",
+          v.exitTime!.valid! ? v.exitTime!.time!.toIso8601String() : '',
         ),
       ];
-      sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
+      sheetObject.insertRowIterables(dataList, currentRow);
       for (var j = 0; j < v.visitorImages!.length; j++) {
         if (j > 0) {
           currentRow++;
@@ -336,19 +324,19 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
     return excel;
   }
 
-  void onPressedExportVisitor() async {
-    var fileName = "visitor";
-    final date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
-    fileName = "$fileName$date";
+  Future<void> onPressedExportVisitor() async {
+    var fileName = 'visitor';
+    final date = DateFormat('_yyyy-MM-dd').format(_dates[0]!);
+    fileName = '$fileName$date';
 
     if (_dates.length > 1) {
-      final dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
-      fileName = "$fileName-$dateTo";
+      final dateTo = DateFormat('_yyyy-MM-dd').format(_dates[1]!);
+      fileName = '$fileName-$dateTo';
     }
 
     final filter = ref.read(filterProvider);
     if (filter.isNotEmpty) {
-      fileName = "$fileName-$filter";
+      fileName = '$fileName-$filter';
     }
 
     if (kIsWeb) {

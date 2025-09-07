@@ -1,14 +1,10 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:universal_html/html.dart' as html;
 
 const kHost = '127.0.0.1:4000';
 // const kHost = '192.168.1.50:4000';
 // const kHost = 'cyptpr.ddns.net';
 
 const kHostUrl = 'http://$kHost';
-
-final kCurrentHost = kIsWeb ? html.window.location.origin : kHostUrl;
 
 const kSmartCardReaderUrl = 'http://localhost:3000';
 
@@ -27,7 +23,7 @@ const kReportTypeMap = {
 
 const kGenderMap = {'1': 'ชาย', '2': 'หญิง'};
 
-const kRegisteredUserTypeList = ["รปภ.", "ผู้รับเหมาประจำ", "ขนส่ง", "อื่นๆ"];
+const kRegisteredUserTypeList = ['รปภ.', 'ผู้รับเหมาประจำ', 'ขนส่ง', 'อื่นๆ'];
 
 const kDefaultFont = 'NotoSerif';
 const kBoldFont = 'NotoSerif-Bold';
@@ -98,20 +94,20 @@ const kImageEvent = Image(image: AssetImage('images/event.jpg'));
 
 const kDialogTextStyle = TextStyle(
   fontFamily: kDefaultFont,
-  fontSize: 16.0,
+  fontSize: 16,
   color: kColorTextGrey,
 );
 
 const kDialogTitleStyle = TextStyle(
   fontFamily: kDefaultFont,
-  fontSize: 16.0,
+  fontSize: 16,
   fontWeight: FontWeight.bold,
   color: kColorTextGrey,
 );
 
-const kIconPin = Icon(Icons.pin_drop, size: 16.0, color: Colors.teal);
+const kIconPin = Icon(Icons.pin_drop, size: 16, color: Colors.teal);
 
-const kSpaceTextEvent = SizedBox(height: 8.0);
+const kSpaceTextEvent = SizedBox(height: 8);
 const kOverdueText = 'ค้างชำระค่าส่วนกลาง';
 const kOverdue2Text = 'กรุณาติดต่อนิติบุคคล';
 

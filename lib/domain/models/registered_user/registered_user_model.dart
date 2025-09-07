@@ -1,5 +1,5 @@
-import '../../../data/services/api/model/registered_user/registered_user_response.dart';
-import 'registered_user.dart';
+import 'package:carpark/data/services/api/model/registered_user/registered_user_response.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
 
 class RegisteredUserModel extends RegisteredUser {
   const RegisteredUserModel({

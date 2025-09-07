@@ -1,19 +1,18 @@
+import 'package:carpark/data/repositories/registered_user/registered_user_service_repository.dart';
+import 'package:carpark/data/services/api/model/registered_user/list_registered_user_param.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_model.dart';
+import 'package:carpark/utils/failures.dart';
+import 'package:carpark/utils/usecase.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../data/repositories/registered_user/registered_user_service_repository.dart';
-import '../../../data/services/api/model/registered_user/list_registered_user_param.dart';
-import '../../../utils/failures.dart';
-import '../../../utils/usecase.dart';
-import '../../models/registered_user/registered_user.dart';
-import '../../models/registered_user/registered_user_model.dart';
 
 @Injectable()
 class RegisteredUserListUsecase
     extends UseCase<List<RegisteredUser>, ListRegisteredUserParam> {
-  final RegisteredUserServiceRepository repository;
 
   RegisteredUserListUsecase(this.repository);
+  final RegisteredUserServiceRepository repository;
 
   @override
   Future<Either<Failure, List<RegisteredUser>>> call(
@@ -21,10 +20,10 @@ class RegisteredUserListUsecase
   ) async {
     final result = await repository.getRegisteredUsers(params);
     return result.fold(
-      (l) => Left(l),
+      Left.new,
       (r) => Right(
         (r.data ?? [])
-            .map((e) => RegisteredUserModel.responseMapper(e))
+            .map(RegisteredUserModel.responseMapper)
             .toList(),
       ),
     );

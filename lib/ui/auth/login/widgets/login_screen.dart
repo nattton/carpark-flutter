@@ -1,15 +1,14 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/ui/auth/login/view_models/login_viewmodel.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:command_it/command_it.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../../config/constants.dart';
-import '../../../../utils/result.dart';
-import '../view_models/login_viewmodel.dart';
-
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.loginViewModel});
+  const LoginScreen({required this.loginViewModel, super.key});
 
   final LoginViewModel loginViewModel;
 
@@ -67,11 +66,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(height: 48.0),
+                    SizedBox(height: 48),
                     Text(
                       'Car Park',
                       style: TextStyle(
-                        fontSize: 56.0,
+                        fontSize: 56,
                         fontFamily: kDefaultFont,
                         color: Colors.white,
                       ),
@@ -79,17 +78,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Car Park Management System',
                       style: TextStyle(
-                        fontSize: 26.0,
+                        fontSize: 26,
                         fontFamily: kDefaultFont,
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(height: 36.0),
+                    SizedBox(height: 36),
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 400),
                   child: Column(
@@ -97,36 +96,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text(
                         'User Login',
                         style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 20,
                           fontFamily: kDefaultFont,
                           fontWeight: FontWeight.bold,
                           color: kColorTextGrey,
                         ),
                       ),
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 30),
                       TextField(
                         controller: _usernameController,
-                        autofocus: false,
                         autocorrect: false,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Username',
                           suffixIcon: const Icon(Icons.account_circle),
                           contentPadding: const EdgeInsets.fromLTRB(
-                            20.0,
-                            20.0,
-                            20.0,
-                            20.0,
+                            20,
+                            20,
+                            20,
+                            20,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8.0),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _passwordController,
-                        autofocus: false,
                         autocorrect: false,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
@@ -140,18 +137,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Icon(Icons.lock),
                           ),
                           contentPadding: const EdgeInsets.fromLTRB(
-                            20.0,
-                            20.0,
-                            20.0,
-                            20.0,
+                            20,
+                            20,
+                            20,
+                            20,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         onSubmitted: (_) => loginUser(),
                       ),
-                      const SizedBox(height: 18.0),
+                      const SizedBox(height: 18),
                       Container(
                         height: 50,
                         decoration: const ShapeDecoration(
@@ -163,12 +160,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               MaterialTapTargetSize.shrinkWrap,
                           shape: const StadiumBorder(),
                           onPressed: loginUser,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24.0,
-                              vertical: 8.0,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 8,
                             ),
-                            child: const Text(
+                            child: Text(
                               'Login',
                               style: TextStyle(
                                 color: Colors.white,
@@ -189,10 +186,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void loginUser() async {
+  Future<void> loginUser() async {
     if (_usernameController.text.length < 3 ||
         _passwordController.text.length < 3) {
-      alertLogin("Please fill username and password");
+      alertLogin('Please fill username and password');
       return;
     }
     try {
@@ -205,15 +202,15 @@ class _LoginScreenState extends State<LoginScreen> {
         _usernameController.text = '';
         _passwordController.text = '';
       });
-    } on DioException catch (e) {
-      alertError(e.response?.data['message'] ?? 'ไม่สามารถเข้าสู่ระบบได้');
-    } catch (e) {
+    } on DioException catch (_) {
+      alertError('Network error: ไม่สามารถเข้าสู่ระบบได้');
+    } on Exception catch (e) {
       alertError(e.toString());
     }
   }
 
   void alertError(String msg) {
-    showDialog(
+    showDialog<Widget>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -236,30 +233,28 @@ class _LoginScreenState extends State<LoginScreen> {
     final alertStyle = AlertStyle(
       animationType: AnimationType.fromTop,
       isCloseButton: false,
-      isOverlayTapDismiss: true,
       descStyle: const TextStyle(fontWeight: FontWeight.bold),
       descTextAlign: TextAlign.start,
       animationDuration: const Duration(milliseconds: 400),
       alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0.0),
+        borderRadius: BorderRadius.circular(0),
         side: const BorderSide(color: Colors.grey),
       ),
       titleStyle: const TextStyle(color: Colors.red),
-      alertAlignment: Alignment.center,
     );
     Alert(
       context: context,
       style: alertStyle,
       type: AlertType.error,
-      title: "Login Failed",
+      title: 'Login Failed',
       desc: desc,
       buttons: [
         DialogButton(
           onPressed: () => context.pop(),
-          color: const Color.fromRGBO(0, 179, 134, 1.0),
-          radius: BorderRadius.circular(0.0),
+          color: const Color.fromRGBO(0, 179, 134, 1),
+          radius: BorderRadius.circular(0),
           child: const Text(
-            "Close",
+            'Close',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),

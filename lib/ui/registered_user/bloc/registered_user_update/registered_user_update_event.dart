@@ -8,25 +8,25 @@ sealed class RegisteredUserUpdateEvent extends Equatable {
 }
 
 class GetRegisteredUser extends RegisteredUserUpdateEvent {
-  final int id;
 
   const GetRegisteredUser(this.id);
+  final int id;
 }
 
 class UpdateRegisteredUser extends RegisteredUserUpdateEvent {
-  final UpdateRegisteredUserRequest request;
 
   const UpdateRegisteredUser(this.request);
+  final UpdateRegisteredUserRequest request;
 }
 
 class UpdateRegisteredUserSelectExpiredDate extends RegisteredUserUpdateEvent {
-  final List<DateTime?> expiredDates;
 
   const UpdateRegisteredUserSelectExpiredDate(this.expiredDates);
+  final List<DateTime?> expiredDates;
 }
 
 class UpdateRegisteredUserSelectType extends RegisteredUserUpdateEvent {
-  final String type;
 
   const UpdateRegisteredUserSelectType(this.type);
+  final String type;
 }

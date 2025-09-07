@@ -1,6 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
+import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/models/checkout_model.dart';
+import 'package:carpark/models/visitor_model.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,17 +19,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../../../data/services/api/api_service.dart';
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../injector/injector.dart';
-import '../../../../models/checkout_model.dart';
-import '../../../../models/visitor_model.dart';
-import '../../../../rounting/routes.dart';
-import '../../../../ui/home/widgets/home_screen.dart';
-import '../../../../ui/registered_user/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
-import '../widget/exit_card.dart';
-import '../widget/live_player_section.dart';
 
 class ExitScreen extends StatefulHookConsumerWidget {
   const ExitScreen({super.key});
@@ -71,15 +70,14 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       },
       child: gateLog.id != 0
           ? Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+              padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
               child: Row(
                 children: [
                   Expanded(
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8),
                           child: TextField(
                             controller: _barcodeController,
                             autofocus: true,
@@ -87,17 +85,17 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
-                                onTap: () => checkout(),
+                                onTap: checkout,
                                 child: const Icon(Icons.barcode_reader),
                               ),
                               contentPadding: const EdgeInsets.fromLTRB(
-                                8.0,
-                                8.0,
-                                8.0,
-                                8.0,
+                                8,
+                                8,
+                                8,
+                                8,
                               ),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(0.0),
+                                borderRadius: BorderRadius.circular(0),
                               ),
                             ),
                             onSubmitted: (value) => checkout(),
@@ -128,7 +126,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   }
 
   void alertError(String msg) {
-    showDialog(
+    showDialog<Widget>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -153,10 +151,10 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     return File('${directory.path}/$type.jpg');
   }
 
-  void addImageToVisitor(VisitorModel visitor) async {
+  Future<void> addImageToVisitor(VisitorModel visitor) async {
     final cameraPlayer = ref.read(cameraPlayerProvider);
-    final outSideImage = await _tempImage("out_side");
-    final exitImage = await _tempImage("exit");
+    final outSideImage = await _tempImage('out_side');
+    final exitImage = await _tempImage('exit');
 
     final sideScreenshot = await cameraPlayer.sidePlayer.screenshot();
     final mainScreenshot = await cameraPlayer.mainPlayer.screenshot();
@@ -171,7 +169,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     if (await outSideImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
         visitor.id,
-        "out_side",
+        'out_side',
         outSideImage,
       );
       outSideImage.delete();
@@ -179,14 +177,14 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
     if (await exitImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
         visitor.id,
-        "exit",
+        'exit',
         exitImage,
       );
       exitImage.delete();
     }
   }
 
-  void checkout() async {
+  Future<void> checkout() async {
     if (_barcodeController.text.isNotEmpty) {
       final gateLog = ref.watch(lastGateProvider).gateOut;
       final barcode = _barcodeController.text;
@@ -209,10 +207,10 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
           if (res != null) {
             if (res.statusCode == HttpStatus.badRequest) {
               alertError(
-                "ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ",
+                'ข้อมูลไม่ถูกต้อง หรือ ไม่ได้เปลี่ยนคีย์บอร์ดเป็นภาษาอังกฤษ',
               );
             } else if (res.statusCode == HttpStatus.notFound) {
-              alertError("ไม่พบข้อมูล");
+              alertError('ไม่พบข้อมูล');
             }
           }
         } catch (e) {
@@ -223,7 +221,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   }
 
   void alertCheckOut(RegisteredUser registeredUser) {
-    showDialog(
+    showDialog<Widget>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -232,10 +230,11 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                context.pop();
-                context.push(
-                  Routes.registeredUserLogsWithId(registeredUser.id),
-                );
+                context
+                  ..pop()
+                  ..push(
+                    Routes.registeredUserLogsWithId(registeredUser.id),
+                  );
               },
               child: const Text('ดูประวัติการเข้าใช้งาน'),
             ),

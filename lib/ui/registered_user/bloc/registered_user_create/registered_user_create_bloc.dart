@@ -1,5 +1,11 @@
 import 'dart:io';
 
+import 'package:carpark/data/services/api/model/registered_user/add_photo_registered_user_params.dart';
+import 'package:carpark/data/services/api/model/registered_user/create_registered_user_request.dart';
+import 'package:carpark/domain/use_cases/registered_user/read_id_card_usecase.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_add_photo_usecase.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_create_usecase.dart';
+import 'package:carpark/utils/usecase.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,22 +13,12 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../../data/services/api/model/registered_user/add_photo_registered_user_params.dart';
-import '../../../../data/services/api/model/registered_user/create_registered_user_request.dart';
-import '../../../../domain/use_cases/registered_user/read_id_card_usecase.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_add_photo_usecase.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_create_usecase.dart';
-import '../../../../utils/usecase.dart';
-
 part 'registered_user_create_event.dart';
 part 'registered_user_create_state.dart';
 
 @Injectable()
 class RegisteredUserCreateBloc
     extends Bloc<RegisteredUserCreateEvent, RegisteredUserCreateState> {
-  final RegisteredUserCreateUsecase usercase;
-  final ReadIdCardUsecase readIdCardUsecase;
-  final RegisteredUserAddPhotoUsecase addPhotoUsecase;
 
   RegisteredUserCreateBloc(
     this.usercase,
@@ -35,6 +31,9 @@ class RegisteredUserCreateBloc
     on<CreateRegisteredUser>(_createRegisteredUser);
     on<SelectExpiredDate>(_selectExpiredDate);
   }
+  final RegisteredUserCreateUsecase usercase;
+  final ReadIdCardUsecase readIdCardUsecase;
+  final RegisteredUserAddPhotoUsecase addPhotoUsecase;
 
   Future<void> _onInitial(
     InitialCreateRegisteredUser event,
@@ -44,16 +43,16 @@ class RegisteredUserCreateBloc
       state.copyWith(
         status: RegisteredUserCreateStatus.initial,
         id: 0,
-        idCard: "",
-        engName: "",
-        thaiName: "",
-        birthdate: "",
-        gender: "",
-        address: "",
-        telephone: "",
-        type: "",
-        expiredDate: DateFormat("yyyy-MM-dd").format(DateTime.now()),
-        photoUrl: "",
+        idCard: '',
+        engName: '',
+        thaiName: '',
+        birthdate: '',
+        gender: '',
+        address: '',
+        telephone: '',
+        type: '',
+        expiredDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        photoUrl: '',
       ),
     );
   }
@@ -177,6 +176,6 @@ class RegisteredUserCreateBloc
   }
 
   String _formatDate(DateTime date) {
-    return DateFormat("yyyy-MM-dd").format(date);
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 }

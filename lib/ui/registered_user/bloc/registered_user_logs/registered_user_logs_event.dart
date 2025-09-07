@@ -8,8 +8,8 @@ sealed class RegisteredUserLogsEvent extends Equatable {
 }
 
 class GetRegisteredUserLogs extends RegisteredUserLogsEvent {
-  final int userId;
   const GetRegisteredUserLogs({required this.userId});
+  final int userId;
 
   @override
   List<Object> get props => [userId];

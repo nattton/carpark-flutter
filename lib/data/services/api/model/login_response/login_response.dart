@@ -1,6 +1,5 @@
+import 'package:carpark/data/services/api/model/login_response/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import 'user_model.dart';
 
 part 'login_response.freezed.dart';
 part 'login_response.g.dart';

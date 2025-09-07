@@ -1,13 +1,12 @@
+import 'package:carpark/data/services/api/model/registered_user/update_registered_user_request.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_model.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_get_usecase.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_update_usecase.dart';
+import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../data/services/api/model/registered_user/update_registered_user_request.dart';
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../domain/models/registered_user/registered_user_model.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_get_usecase.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_update_usecase.dart';
-import '../../../../models/null_time_model.dart';
 
 part 'registered_user_update_event.dart';
 part 'registered_user_update_state.dart';
@@ -15,8 +14,6 @@ part 'registered_user_update_state.dart';
 @Injectable()
 class RegisteredUserUpdateBloc
     extends Bloc<RegisteredUserUpdateEvent, RegisteredUserUpdateState> {
-  final RegisteredUserGetUsecase readUsercase;
-  final RegisteredUserUpdateUsecase updateUsercase;
 
   RegisteredUserUpdateBloc(this.readUsercase, this.updateUsercase)
     : super(const RegisteredUserUpdateState()) {
@@ -25,6 +22,8 @@ class RegisteredUserUpdateBloc
     on<UpdateRegisteredUserSelectExpiredDate>(_selectExpiredDate);
     on<UpdateRegisteredUserSelectType>(_selectType);
   }
+  final RegisteredUserGetUsecase readUsercase;
+  final RegisteredUserUpdateUsecase updateUsercase;
 
   Future<void> _getRegisteredUser(
     GetRegisteredUser event,
@@ -94,7 +93,7 @@ class RegisteredUserUpdateBloc
       state.copyWith(
         status: RegisteredUserUpdateStatus.selectExpiredDateSuccess,
         registeredUser: state.registeredUser.copyWith(
-          expiredDate: NullTimeModel(valid: true, time: event.expiredDates[0]!),
+          expiredDate: NullTimeModel(valid: true, time: event.expiredDates[0]),
         ),
       ),
     );

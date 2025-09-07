@@ -1,10 +1,9 @@
+import 'package:carpark/data/repositories/printer/printer_repository.dart';
+import 'package:carpark/data/services/shared_preferences_service.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:thermal_printer/thermal_printer.dart';
-
-import '../../../utils/result.dart';
-import '../../services/shared_preferences_service.dart';
-import 'printer_repository.dart';
 
 @Singleton(as: PrinterRepository)
 class PrinterRepositoryLocal extends PrinterRepository {
@@ -55,7 +54,6 @@ class PrinterRepositoryLocal extends PrinterRepository {
     final printerManager = PrinterManager.instance;
     final streamDevice = printerManager.discovery(
       type: PrinterType.usb,
-      isBle: false,
     );
     await for (final device in streamDevice) {
       if (!devices.contains(device.name)) {

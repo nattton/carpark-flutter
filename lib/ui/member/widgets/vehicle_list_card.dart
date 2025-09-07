@@ -1,13 +1,10 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/domain/models/member/vehicle_model.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
-import '../../../domain/models/member/vehicle_model.dart';
 
 class VehicleListCard extends StatelessWidget {
   const VehicleListCard({
-    super.key,
-    required this.vehicle,
-    required this.onTap,
+    required this.vehicle, required this.onTap, super.key,
   });
 
   final VehicleModel vehicle;
@@ -20,7 +17,7 @@ class VehicleListCard extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -28,7 +25,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.id!.toString(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -37,7 +34,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.plateNumber!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -46,7 +43,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.resemble!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -55,7 +52,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.plateProvince!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -64,7 +61,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.brand!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -73,7 +70,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.color!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -82,7 +79,7 @@ class VehicleListCard extends StatelessWidget {
                   vehicle.telephone!,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),

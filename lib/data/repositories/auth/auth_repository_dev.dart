@@ -1,7 +1,6 @@
+import 'package:carpark/data/repositories/auth/auth_repository.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../utils/result.dart';
-import 'auth_repository.dart';
 
 @dev
 @Singleton(as: AuthRepository)

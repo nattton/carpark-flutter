@@ -1,4 +1,11 @@
-import 'package:dio/dio.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/domain/models/member/member_model.dart';
+import 'package:carpark/domain/models/member/vehicle_model.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
+import 'package:carpark/ui/member/widgets/vehicle_header_card.dart';
+import 'package:carpark/ui/member/widgets/vehicle_list_card.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -6,23 +13,11 @@ import 'package:go_router/go_router.dart';
 import 'package:listen_it/listen_it.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../data/services/api/model/vehicle/vehicle.dart';
-import '../../../domain/models/member/member_model.dart';
-import '../../../domain/models/member/vehicle_model.dart';
-import '../../../injector/injector.dart';
-import '../../../rounting/routes.dart';
-import '../../../utils/result.dart';
-import '../view_models/member_viewmodel.dart';
-import 'vehicle_header_card.dart';
-import 'vehicle_list_card.dart';
-
 class MemberScreen extends StatefulWidget {
   const MemberScreen({
-    super.key,
     required this.memberViewModel,
     required this.memberId,
+    super.key,
   });
 
   final MemberViewModel memberViewModel;
@@ -45,10 +40,18 @@ class _MemberScreenState extends State<MemberScreen> {
   ListenableSubscription? createVehicleCommandSubscription;
   ListenableSubscription? createVehicleCommandErrorSubscription;
 
+  ListenableSubscription? updateVehicleCommandSubscription;
+  ListenableSubscription? updateVehicleCommandErrorSubscription;
+
+  ListenableSubscription? deleteVehicleCommandSubscription;
+  ListenableSubscription? deleteVehicleCommandErrorSubscription;
+
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
-  final _typeFieldKey = GlobalKey<FormBuilderFieldState>();
-  final _statusFieldKey = GlobalKey<FormBuilderFieldState>();
+  final _typeFieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderRadioGroup<String>, String>>();
+  final _statusFieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderRadioGroup<String>, String>>();
 
   final _plateNumberController = TextEditingController();
   final _resembleController = TextEditingController();
@@ -86,7 +89,7 @@ class _MemberScreenState extends State<MemberScreen> {
                 ..push(Routes.memberWithId(event.value.id));
             case Error<MemberModel>():
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง'),
                 ),
               );
@@ -100,7 +103,9 @@ class _MemberScreenState extends State<MemberScreen> {
         .listen((event, _) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')));
+          ).showSnackBar(
+            const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
+          );
           GoRouter.of(context).pop();
         });
 
@@ -108,8 +113,10 @@ class _MemberScreenState extends State<MemberScreen> {
         .listen((event, state) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')));
-          GoRouter.of(context).pop();
+          ).showSnackBar(
+            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+          );
+          memberViewModel.getMemberCommand.execute(widget.memberId);
         });
 
     updateMemberCommandErrorSubscription ??= memberViewModel
@@ -118,7 +125,9 @@ class _MemberScreenState extends State<MemberScreen> {
         .where((error) => error != null)
         .listen((event, _) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง')),
+            const SnackBar(
+              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
+            ),
           );
         });
 
@@ -126,8 +135,11 @@ class _MemberScreenState extends State<MemberScreen> {
         .listen((event, state) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')));
+          ).showSnackBar(
+            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+          );
           GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
         });
 
     createVehicleCommandErrorSubscription ??= memberViewModel
@@ -136,7 +148,53 @@ class _MemberScreenState extends State<MemberScreen> {
         .where((error) => error != null)
         .listen((event, _) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง')),
+            const SnackBar(
+              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
+            ),
+          );
+        });
+
+    updateVehicleCommandSubscription ??= memberViewModel.updateVehicleCommand
+        .listen((event, state) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(
+            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+          );
+          GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
+        });
+
+    updateVehicleCommandErrorSubscription ??= memberViewModel
+        .updateVehicleCommand
+        .errors
+        .where((error) => error != null)
+        .listen((event, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
+            ),
+          );
+        });
+
+    deleteVehicleCommandSubscription ??= memberViewModel.deleteVehicleCommand
+        .listen((event, state) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
+          GoRouter.of(context).pop();
+          memberViewModel.getMemberCommand.execute(widget.memberId);
+        });
+
+    deleteVehicleCommandErrorSubscription ??= memberViewModel
+        .deleteVehicleCommand
+        .errors
+        .where((error) => error != null)
+        .listen((event, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
+            ),
           );
         });
 
@@ -162,6 +220,10 @@ class _MemberScreenState extends State<MemberScreen> {
     updateMemberCommandErrorSubscription?.cancel();
     createVehicleCommandSubscription?.cancel();
     createVehicleCommandErrorSubscription?.cancel();
+    updateVehicleCommandSubscription?.cancel();
+    updateVehicleCommandErrorSubscription?.cancel();
+    deleteVehicleCommandSubscription?.cancel();
+    deleteVehicleCommandErrorSubscription?.cancel();
     super.dispose();
   }
 
@@ -174,10 +236,10 @@ class _MemberScreenState extends State<MemberScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         return Scaffold(
-          appBar: AppBar(title: const Text("แก้ไขข้อมูลสมาชิก")),
+          appBar: AppBar(title: const Text('แก้ไขข้อมูลสมาชิก')),
           body: Column(
             children: [
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 10),
               ValueListenableBuilder(
                 valueListenable: memberViewModel.getMemberCommand,
                 builder: (context, member, _) {
@@ -191,35 +253,33 @@ class _MemberScreenState extends State<MemberScreen> {
                       TableRow(
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: TextField(
                               controller: _nameController,
-                              autofocus: false,
                               autocorrect: false,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
                                 labelText: 'Name',
                                 suffixIcon: const Icon(Icons.account_circle),
-                                contentPadding: const EdgeInsets.all(20.0),
+                                contentPadding: const EdgeInsets.all(20),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: TextField(
                               controller: _telController,
-                              autofocus: false,
                               autocorrect: false,
                               keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 labelText: 'Tel.',
                                 suffixIcon: const Icon(Icons.phone),
-                                contentPadding: const EdgeInsets.all(20.0),
+                                contentPadding: const EdgeInsets.all(20),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                             ),
@@ -229,19 +289,20 @@ class _MemberScreenState extends State<MemberScreen> {
                       TableRow(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FormBuilderRadioGroup(
+                            padding: const EdgeInsets.all(8),
+                            child: FormBuilderRadioGroup<String>(
                               key: _typeFieldKey,
                               decoration: InputDecoration(
                                 labelText: 'Type',
-                                contentPadding: const EdgeInsets.all(20.0),
+                                contentPadding: const EdgeInsets.all(20),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               initialValue: member.type,
                               name: 'type',
-                              validator: FormBuilderValidators.required(),
+                              validator:
+                                  FormBuilderValidators.required<String>(),
                               options: kMemberTypeList
                                   .map(
                                     (lang) =>
@@ -251,19 +312,20 @@ class _MemberScreenState extends State<MemberScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FormBuilderRadioGroup(
+                            padding: const EdgeInsets.all(8),
+                            child: FormBuilderRadioGroup<String>(
                               key: _statusFieldKey,
                               decoration: InputDecoration(
                                 labelText: 'Status',
-                                contentPadding: const EdgeInsets.all(20.0),
+                                contentPadding: const EdgeInsets.all(20),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               initialValue: member.status,
                               name: 'status',
-                              validator: FormBuilderValidators.required(),
+                              validator:
+                                  FormBuilderValidators.required<String>(),
                               options: kStatusList
                                   .map(
                                     (lang) =>
@@ -283,23 +345,23 @@ class _MemberScreenState extends State<MemberScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: Center(
                         child: ElevatedButton(
                           onPressed: _updateMember,
-                          child: const Text("บันทึกข้อมูล"),
+                          child: const Text('บันทึกข้อมูล'),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: Center(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green, // Background color
                           ),
                           onPressed: () => onPressedAdd(context),
-                          child: const Text("สร้างทะเบียนรถ"),
+                          child: const Text('สร้างทะเบียนรถ'),
                         ),
                       ),
                     ),
@@ -310,11 +372,11 @@ class _MemberScreenState extends State<MemberScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: Center(
                         child: ElevatedButton(
                           onPressed: _createMember,
-                          child: const Text("สร้างข้อมูลสมาชิก"),
+                          child: const Text('สร้างข้อมูลสมาชิก'),
                         ),
                       ),
                     ),
@@ -379,96 +441,90 @@ class _MemberScreenState extends State<MemberScreen> {
 
     Alert(
       context: context,
-      title: "สร้างทะเบียนรถ",
+      title: 'สร้างทะเบียนรถ',
       content: Column(
         children: [
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _plateNumberController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'เลขทะเบียน',
               suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _resembleController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'เลขทะเบียนที่คล้าย',
               suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _plateProvinceController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'จังหวัด',
               suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _brandController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'ยี่ห้อ',
               suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _colorController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'สี',
               suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _telephoneController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               labelText: 'โทร.',
               suffixIcon: const Icon(Icons.phone),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
@@ -476,11 +532,9 @@ class _MemberScreenState extends State<MemberScreen> {
       ),
       buttons: [
         DialogButton(
-          onPressed: () {
-            createVehicle();
-          },
+          onPressed: createVehicle,
           child: const Text(
-            "สร้าง",
+            'สร้าง',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
@@ -498,96 +552,90 @@ class _MemberScreenState extends State<MemberScreen> {
 
     Alert(
       context: context,
-      title: "แก้ไขทะเบียนรถ",
+      title: 'แก้ไขทะเบียนรถ',
       content: Column(
         children: [
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _plateNumberController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'เลขทะเบียน',
               suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _resembleController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'เลขทะเบียนที่คล้าย',
               suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _plateProvinceController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'จังหวัด',
               suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _brandController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'ยี่ห้อ',
               suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _colorController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               labelText: 'สี',
               suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           TextField(
             controller: _telephoneController,
-            autofocus: false,
             autocorrect: false,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               labelText: 'โทร.',
               suffixIcon: const Icon(Icons.phone),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
@@ -599,7 +647,7 @@ class _MemberScreenState extends State<MemberScreen> {
             updateVehicle(vehicle);
           },
           child: const Text(
-            "บันทึก",
+            'บันทึก',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
@@ -609,7 +657,7 @@ class _MemberScreenState extends State<MemberScreen> {
             alertDelete(vehicle);
           },
           child: const Text(
-            "ลบ",
+            'ลบ',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
@@ -618,7 +666,7 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void alertError(String msg) {
-    showDialog(
+    showDialog<Widget>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -652,7 +700,7 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void updateVehicle(VehicleModel vehicle) {
-    final updateVehicle = UpdateVehicleRequest(
+    final updateVehicle = VehicleModel(
       id: vehicle.id,
       memberId: widget.memberId,
       plateNumber: _plateNumberController.text,
@@ -663,28 +711,15 @@ class _MemberScreenState extends State<MemberScreen> {
       resemble: _resembleController.text,
     );
 
-    getIt<ApiService>()
-        .updateVehicle(vehicle.id!, updateVehicle)
-        .then((value) {
-          if (context.mounted) {
-            context.pop();
-            memberViewModel.getMemberCommand.execute(widget.memberId);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('แก้ไขข้อมูลทะเบียนเรียบร้อย')),
-            );
-          }
-        })
-        .onError((error, stack) {
-          alertError(error.toString());
-        });
+    memberViewModel.updateVehicleCommand.execute(updateVehicle);
   }
 
   void alertDelete(VehicleModel vehicle) {
     Alert(
       context: context,
       type: AlertType.warning,
-      title: "ยืนยัน การลบทะเบียน",
-      desc: "คุณต้องการลบทะเบียน : ${vehicle.plateNumber} ใช่หรือไม่",
+      title: 'ยืนยัน การลบทะเบียน',
+      desc: 'คุณต้องการลบทะเบียน : ${vehicle.plateNumber} ใช่หรือไม่',
       buttons: [
         DialogButton(
           color: Colors.red,
@@ -693,14 +728,14 @@ class _MemberScreenState extends State<MemberScreen> {
             deleteVehicle(vehicle);
           },
           child: const Text(
-            "ลบ",
+            'ลบ',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
         DialogButton(
           onPressed: () => GoRouter.of(context).pop(),
           child: const Text(
-            "ไม่",
+            'ไม่',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
@@ -709,39 +744,6 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void deleteVehicle(VehicleModel vehicle) {
-    getIt<ApiService>()
-        .deleteVehicle(vehicle.id!)
-        .then((value) {
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Edit Vehicle'),
-              content: const Text('ลบข้อมูลทะเบียนเรียบร้อย'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).pop();
-                    GoRouter.of(context).pop();
-                    memberViewModel.getMemberCommand.execute(widget.memberId);
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          );
-        })
-        .catchError((Object obj) {
-          // non-200 error goes here.
-          switch (obj.runtimeType) {
-            case DioException _:
-              final res = (obj as DioException).response;
-              alertError(
-                "Got error : ${res!.statusCode} -> ${res.statusMessage}",
-              );
-              break;
-            default:
-              break;
-          }
-        });
+    memberViewModel.deleteVehicleCommand.execute(vehicle.id);
   }
 }

@@ -1,10 +1,9 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/models/gate_log_result.dart';
 import 'package:flutter/material.dart';
 
-import '../../../config/constants.dart';
-import '../../../models/gate_log_result.dart';
-
 class GateLogCard extends StatelessWidget {
-  const GateLogCard({super.key, required this.gateLog, required this.onTap});
+  const GateLogCard({required this.gateLog, required this.onTap, super.key});
 
   final GateLogResult gateLog;
   final VoidCallback onTap;
@@ -16,7 +15,7 @@ class GateLogCard extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -24,7 +23,7 @@ class GateLogCard extends StatelessWidget {
                   gateLog.dateTimeFormat(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -33,7 +32,7 @@ class GateLogCard extends StatelessWidget {
                   gateLog.gateName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -42,7 +41,7 @@ class GateLogCard extends StatelessWidget {
                   gateLog.anpr,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -51,7 +50,7 @@ class GateLogCard extends StatelessWidget {
                   gateLog.plateNumber,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -60,7 +59,7 @@ class GateLogCard extends StatelessWidget {
                   gateLog.memberName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -69,7 +68,7 @@ class GateLogCard extends StatelessWidget {
                   gateLog.visitorMemberName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),

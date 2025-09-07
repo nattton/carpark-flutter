@@ -1,12 +1,11 @@
+import 'package:carpark/data/services/api/model/registered_user/registered_user_check_in_request.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_check_in_usecase.dart';
+import 'package:carpark/utils/failures.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../../../data/services/api/model/registered_user/registered_user_check_in_request.dart';
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_check_in_usecase.dart';
-import '../../../../utils/failures.dart';
 
 part 'registered_user_check_in_event.dart';
 part 'registered_user_check_in_state.dart';
@@ -14,7 +13,6 @@ part 'registered_user_check_in_state.dart';
 @Injectable()
 class RegisteredUserCheckInBloc
     extends Bloc<RegisteredUserCheckInEvent, RegisteredUserCheckInState> {
-  final RegisteredUserCheckInUsecase registeredUserCheckInUsecase;
   RegisteredUserCheckInBloc(this.registeredUserCheckInUsecase)
     : super(RegisteredUserCheckInInitial()) {
     on<RegisteredUserCheckInEvent>((event, emit) {});
@@ -24,13 +22,13 @@ class RegisteredUserCheckInBloc
       if (event.generatedId.isEmpty) {
         emit(
           RegisteredUserCheckInFailure(
-            failure: Failure("Generated ID is required"),
+            failure: Failure('Generated ID is required'),
           ),
         );
         return;
       }
       if (!Uuid.isValidUUID(fromString: event.generatedId)) {
-        emit(RegisteredUserCheckInFailure(failure: Failure("รหัสไม่ถูกต้อง")));
+        emit(RegisteredUserCheckInFailure(failure: Failure('รหัสไม่ถูกต้อง')));
         return;
       }
       final result = await registeredUserCheckInUsecase.call(
@@ -43,4 +41,5 @@ class RegisteredUserCheckInBloc
       );
     });
   }
+  final RegisteredUserCheckInUsecase registeredUserCheckInUsecase;
 }

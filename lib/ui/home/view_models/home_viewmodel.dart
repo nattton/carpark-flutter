@@ -5,12 +5,6 @@ import 'package:logging/logging.dart';
 
 @injectable
 class HomeViewModel extends ChangeNotifier {
-  final _log = Logger('HomeViewModel');
-  String _title = 'Car Park';
-
-  late Command<String, void> setTitleCommand;
-
-  String get title => _title;
 
   HomeViewModel() {
     setTitleCommand = Command.createSyncNoResult((param) {
@@ -19,4 +13,10 @@ class HomeViewModel extends ChangeNotifier {
       notifyListeners();
     });
   }
+  final _log = Logger('HomeViewModel');
+  String _title = 'Car Park';
+
+  late Command<String, void> setTitleCommand;
+
+  String get title => _title;
 }

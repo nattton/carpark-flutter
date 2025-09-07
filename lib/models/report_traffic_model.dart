@@ -4,11 +4,6 @@ part 'report_traffic_model.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class ReportTrafficModel {
-  final int id;
-  final String name;
-  final int vehicleId;
-  final String plateNumber;
-  final int traffic;
 
   ReportTrafficModel({
     required this.id,
@@ -20,6 +15,11 @@ class ReportTrafficModel {
 
   factory ReportTrafficModel.fromJson(Map<String, dynamic> json) =>
       _$ReportTrafficModelFromJson(json);
+  final int id;
+  final String name;
+  final int vehicleId;
+  final String plateNumber;
+  final int traffic;
 
   Map<String, dynamic> toJson() => _$ReportTrafficModelToJson(this);
 }

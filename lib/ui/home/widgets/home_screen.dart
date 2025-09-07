@@ -1,6 +1,25 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carpark/config/app_config_provider.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart';
+import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/models/models.dart';
+import 'package:carpark/providers/camera_player.dart';
+import 'package:carpark/ui/auth/logout/view_models/logout_viewmodel.dart';
+import 'package:carpark/ui/gate_log/widgets/gate_log_screen.dart';
+import 'package:carpark/ui/home/view_models/home_viewmodel.dart';
+import 'package:carpark/ui/member/widgets/member_list_screen.dart';
+import 'package:carpark/ui/registered_user/widgets/page/registered_user_list_screen.dart';
+import 'package:carpark/ui/registered_user/widgets/page/registered_user_not_check_out_screen.dart';
+import 'package:carpark/ui/report/widgets/report_screen.dart';
+import 'package:carpark/ui/setting/printer/view_models/printer_viewmodel.dart';
+import 'package:carpark/ui/setting/widgets/setting_screen.dart';
+import 'package:carpark/ui/user/widgets/user_screen.dart';
+import 'package:carpark/ui/visitor/widgets/visitor_screen.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -8,25 +27,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
 import 'package:logging/logging.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
-import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../features/gateway/presentation/page/entrance_screen.dart';
-import '../../../features/gateway/presentation/page/exit_screen.dart';
-import '../../../injector/injector.dart';
-import '../../../models/models.dart';
-import '../../../providers/camera_player.dart';
-import '../../auth/logout/view_models/logout_viewmodel.dart';
-import '../../gate_log/widgets/gate_log_screen.dart';
-import '../../member/widgets/member_list_screen.dart';
-import '../../registered_user/widgets/page/registered_user_list_screen.dart';
-import '../../registered_user/widgets/page/registered_user_not_check_out_screen.dart';
-import '../../report/widgets/report_screen.dart';
-import '../../setting/printer/view_models/printer_viewmodel.dart';
-import '../../setting/widgets/setting_screen.dart';
-import '../../user/widgets/user_screen.dart';
-import '../../visitor/widgets/visitor_screen.dart';
-import '../view_models/home_viewmodel.dart';
 
 final lastGateProvider = StateNotifierProvider<LastGateNotifier, LastGate>(
   (ref) => LastGateNotifier(
@@ -44,9 +44,9 @@ final cameraPlayerProvider = Provider<CameraPlayer>(
 
 class HomeScreen extends StatefulHookConsumerWidget {
   const HomeScreen({
-    super.key,
     required this.homeViewModel,
     required this.logoutViewModel,
+    super.key,
   });
 
   final HomeViewModel homeViewModel;
@@ -61,26 +61,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   HomeViewModel get homeViewModel => widget.homeViewModel;
   LogoutViewModel get logoutViewModel => widget.logoutViewModel;
 
-  final wsUrl = '$kCurrentHost/ws'.replaceAll('http', 'ws');
   late WebSocket channel;
 
   PageController page = PageController();
   SideMenuController sideMenu = SideMenuController();
 
+  String getWsUrl() {
+    final currentHost = AppConfigProvider().getCurrentHost();
+    return '$currentHost/ws'.replaceAll('http', 'ws');
+  }
+
   Future<void> initWebSocketChannelConnection() async {
     final lastGate = ref.read(lastGateProvider.notifier);
-    final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+    final channel = WebSocketChannel.connect(Uri.parse(getWsUrl()));
     channel.stream.listen((streamData) {
       _log.info(streamData);
-      lastGate.setFromJson(streamData);
+      lastGate.setFromJson(streamData as String);
     });
   }
 
   Future<void> initWebSocketConnection() async {
-    _log.info("conecting...");
+    _log.info('conecting...');
     channel = await connectWs();
-    _log.info("socket connection initializied");
-    channel.done.then((dynamic _) => _onDisconnected());
+    _log.info('socket connection initializied');
+    await channel.done.then((dynamic _) => _onDisconnected());
     broadcastNotifications();
   }
 
@@ -89,26 +93,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     channel.listen(
       (streamData) {
         _log.info(streamData);
-        lastGate.setFromJson(streamData);
+        lastGate.setFromJson(streamData as String);
       },
       onDone: () {
-        _log.info("conecting aborted");
+        _log.info('conecting aborted');
         initWebSocketConnection();
       },
-      onError: (e) {
+      onError: (Exception e) {
         _log.info('Server error: $e');
         initWebSocketConnection();
       },
     );
   }
 
-  Future connectWs() async {
+  Future<WebSocket> connectWs() async {
     try {
-      return await WebSocket.connect(wsUrl);
-    } catch (e) {
+      return await WebSocket.connect(getWsUrl());
+    } on Exception catch (e) {
       _log.warning('Error! can not connect WS connectWs $e');
-      await Future.delayed(const Duration(milliseconds: 5000));
-      return await connectWs();
+      await Future<void>.delayed(const Duration(milliseconds: 5000));
+      return connectWs();
     }
   }
 
@@ -131,10 +135,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final camera = value['ENTRANCE'];
         final cameraSide = value['IN_SIDE'];
         final cameraCard = value['CARD'];
-        final player = ref.watch(cameraPlayerProvider);
-        player.setMainPlayer(camera!.toUrl());
-        player.setSidePlayer(cameraSide!.toUrl());
-        player.setCardPlayer(cameraCard!.toUrl());
+        ref.watch(cameraPlayerProvider)
+          ..setMainPlayer(camera!.toUrl())
+          ..setSidePlayer(cameraSide!.toUrl())
+          ..setCardPlayer(cameraCard!.toUrl());
       }
     });
 
@@ -160,9 +164,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final lastGate = ref.read(lastGateProvider.notifier);
     try {
       final result = await getIt<ApiService>().getLastGate();
-      lastGate.setGateIn(result.gateIn);
-      lastGate.setGateOut(result.gateOut);
-    } catch (e) {
+      lastGate
+        ..setGateIn(result.gateIn)
+        ..setGateOut(result.gateOut);
+    } on Exception catch (e) {
       alertError(e.toString());
     }
   }
@@ -172,7 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       final result = await getIt<ApiService>().getGateIn();
       lastGate.setGateIn(result.gateLog);
-    } catch (e) {
+    } on Exception catch (e) {
       alertError(e.toString());
     }
   }
@@ -182,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       final result = await getIt<ApiService>().getGateOut();
       lastGate.setGateOut(result.gateLog);
-    } catch (e) {
+    } on Exception catch (e) {
       alertError(e.toString());
     }
   }
@@ -207,7 +212,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             player.setCardPlayer(cameraCard.toUrl());
           }
         }
-        break;
       case 'EXIT':
         getLastGateOut();
         if (!kIsWeb) {
@@ -220,7 +224,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             player.setSidePlayer(cameraSide.toUrl());
           }
         }
-        break;
       default:
         player.stopAll();
     }
@@ -237,12 +240,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             backgroundColor: kColorPrimary,
             title: Text(
               homeViewModel.title,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             automaticallyImplyLeading: false,
           ),
           body: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SideMenu(
                 controller: sideMenu,
@@ -264,7 +266,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       sideMenu.changePage(page);
                     },
                     icon: const Icon(Icons.door_front_door_outlined),
-                    tooltipContent: "ทางเข้า",
+                    tooltipContent: 'ทางเข้า',
                   ),
                   SideMenuItem(
                     title: 'ทางออก',
@@ -274,7 +276,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       sideMenu.changePage(page);
                     },
                     icon: const Icon(Icons.door_back_door_outlined),
-                    tooltipContent: "ทางออก",
+                    tooltipContent: 'ทางออก',
                   ),
                   SideMenuItem(
                     title: 'ผู้ติดต่อ',
@@ -364,39 +366,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: PageView(
                   controller: page,
                   children: [
-                    Container(color: Colors.white, child: EntranceScreen.page),
-                    Container(color: Colors.white, child: ExitScreen.page),
-                    Container(
+                    ColoredBox(color: Colors.white, child: EntranceScreen.page),
+                    ColoredBox(color: Colors.white, child: ExitScreen.page),
+                    const ColoredBox(
                       color: Colors.white,
-                      child: const VisitorScreen(),
+                      child: VisitorScreen(),
                     ),
-                    Container(
+                    ColoredBox(
                       color: Colors.white,
                       child: RegisteredUserNotCheckOutScreen.page,
                     ),
-                    Container(
+                    const ColoredBox(
                       color: Colors.white,
-                      child: const GateLogScreen(),
+                      child: GateLogScreen(),
                     ),
-                    Container(
+                    const ColoredBox(
                       color: Colors.white,
-                      child: const MemberListScreen(),
+                      child: MemberListScreen(),
                     ),
-                    Container(
+                    ColoredBox(
                       color: Colors.white,
                       child: RegisteredUserListScreen.page,
                     ),
-                    Container(color: Colors.white, child: const ReportScreen()),
-                    Container(
+                    const ColoredBox(
+                      color: Colors.white,
+                      child: ReportScreen(),
+                    ),
+                    ColoredBox(
                       color: Colors.white,
                       child: SettingScreen(
                         printerViewModel: getIt<PrinterViewModel>(),
                       ),
                     ),
-                    Container(color: Colors.white, child: const UserScreen()),
-                    Container(
+                    const ColoredBox(color: Colors.white, child: UserScreen()),
+                    const ColoredBox(
                       color: Colors.white,
-                      child: const Center(
+                      child: Center(
                         child: Text('Exit', style: TextStyle(fontSize: 35)),
                       ),
                     ),

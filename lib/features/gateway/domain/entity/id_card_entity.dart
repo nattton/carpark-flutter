@@ -1,18 +1,10 @@
+import 'package:carpark/config/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../../../../config/constants.dart';
 
 part 'id_card_entity.g.dart';
 
 @JsonSerializable()
 class IDCardEntity {
-  final String id;
-  final String engName;
-  final String thaiName;
-  final String birthdate;
-  final String gender;
-  final String address;
-  final String photoPath;
 
   const IDCardEntity({
     required this.id,
@@ -26,6 +18,13 @@ class IDCardEntity {
 
   factory IDCardEntity.fromJson(Map<String, dynamic> json) =>
       _$IDCardEntityFromJson(json);
+  final String id;
+  final String engName;
+  final String thaiName;
+  final String birthdate;
+  final String gender;
+  final String address;
+  final String photoPath;
 
   Map<String, dynamic> toJson() => _$IDCardEntityToJson(this);
 
@@ -37,6 +36,6 @@ class IDCardEntity {
   }
 
   String photoUrl() {
-    return "$kSmartCardReaderUrl$photoPath";
+    return '$kSmartCardReaderUrl$photoPath';
   }
 }

@@ -1,6 +1,5 @@
+import 'package:carpark/domain/models/member/vehicle_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import 'vehicle_model.dart';
 
 part 'member_model.freezed.dart';
 part 'member_model.g.dart';

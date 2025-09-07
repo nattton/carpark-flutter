@@ -1,10 +1,9 @@
+import 'package:carpark/data/services/api/model/registered_user/list_registered_user_param.dart';
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/domain/use_cases/registered_user/registered_user_list_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../data/services/api/model/registered_user/list_registered_user_param.dart';
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../domain/use_cases/registered_user/registered_user_list_usecase.dart';
 
 part 'registered_user_list_event.dart';
 part 'registered_user_list_state.dart';
@@ -12,7 +11,6 @@ part 'registered_user_list_state.dart';
 @Injectable()
 class RegisteredUserListBloc
     extends Bloc<RegisteredUserListEvent, RegisteredUserListState> {
-  final RegisteredUserListUsecase usecase;
 
   RegisteredUserListBloc(this.usecase) : super(RegisteredUserListInitial()) {
     on<GetRegisteredUserList>(_onGetRegisteredUserList);
@@ -20,6 +18,7 @@ class RegisteredUserListBloc
     on<RegisteredUserCreating>(_onGoToRegisteredUserCreateScreen);
     on<RegisteredUserUpdating>(_onGoToRegisteredUserUpdateScreen);
   }
+  final RegisteredUserListUsecase usecase;
 
   Future<void> _onGetRegisteredUserList(
     GetRegisteredUserList event,

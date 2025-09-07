@@ -1,9 +1,24 @@
+import 'package:carpark/config/app_config_provider.dart';
+import 'package:carpark/models/null_time_model.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../config/constants.dart';
-import '../../../models/null_time_model.dart';
-
 class RegisteredUser extends Equatable {
+  const RegisteredUser({
+    this.id = 0,
+    this.generatedId = '',
+    this.type = '',
+    this.telephone = '',
+    this.idCard = '',
+    this.thaiName = '',
+    this.engName = '',
+    this.birthdate = '',
+    this.gender = '',
+    this.address = '',
+    this.photo = '',
+    this.createdAt,
+    this.updatedAt,
+    this.expiredDate,
+  });
   final int id;
   final String generatedId;
   final String type;
@@ -18,23 +33,6 @@ class RegisteredUser extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final NullTimeModel? expiredDate;
-
-  const RegisteredUser({
-    this.id = 0,
-    this.generatedId = "",
-    this.type = "",
-    this.telephone = "",
-    this.idCard = "",
-    this.thaiName = "",
-    this.engName = "",
-    this.birthdate = "",
-    this.gender = "",
-    this.address = "",
-    this.photo = "",
-    this.createdAt,
-    this.updatedAt,
-    this.expiredDate,
-  });
 
   @override
   List<Object?> get props => [
@@ -56,9 +54,10 @@ class RegisteredUser extends Equatable {
 
   String photoUrl() {
     if (photo.isNotEmpty) {
-      return "$kCurrentHost/anpr_store$photo";
+      final currentHost = AppConfigProvider().getCurrentHost();
+      return '$currentHost/anpr_store$photo';
     }
-    return "";
+    return '';
   }
 
   RegisteredUser copyWith({

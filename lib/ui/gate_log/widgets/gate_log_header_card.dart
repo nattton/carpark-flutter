@@ -1,13 +1,9 @@
+import 'package:carpark/config/constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
 
 class GateLogHeaderCard extends StatelessWidget {
   const GateLogHeaderCard({
-    super.key,
-    required this.onTapDate,
-    required this.onTapPlateNumber,
-    required this.onTapMemberName,
+    required this.onTapDate, required this.onTapPlateNumber, required this.onTapMemberName, super.key,
   });
   final VoidCallback onTapDate;
   final VoidCallback onTapPlateNumber;
@@ -17,17 +13,17 @@ class GateLogHeaderCard extends StatelessWidget {
     return Card(
       color: Colors.blue.shade200,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: Row(
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: onTapDate,
                 child: const Text(
-                  "วันที่ เวลา",
+                  'วันที่ เวลา',
                   style: TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -35,10 +31,10 @@ class GateLogHeaderCard extends StatelessWidget {
             ),
             const Expanded(
               child: Text(
-                "ประตู",
+                'ประตู',
                 style: TextStyle(
                   fontFamily: kDefaultFont,
-                  fontSize: 16.0,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -47,10 +43,10 @@ class GateLogHeaderCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: onTapPlateNumber,
                 child: const Text(
-                  "เลขจากเครื่องอ่าน",
+                  'เลขจากเครื่องอ่าน',
                   style: TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -60,10 +56,10 @@ class GateLogHeaderCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: onTapPlateNumber,
                 child: const Text(
-                  "ทะเบียน",
+                  'ทะเบียน',
                   style: TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -73,10 +69,10 @@ class GateLogHeaderCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: onTapMemberName,
                 child: const Text(
-                  "ชื่อสมาชิก",
+                  'ชื่อสมาชิก',
                   style: TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -86,10 +82,10 @@ class GateLogHeaderCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: onTapMemberName,
                 child: const Text(
-                  "ติดต่อ",
+                  'ติดต่อ',
                   style: TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

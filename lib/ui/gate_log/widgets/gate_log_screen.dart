@@ -1,6 +1,14 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/data/services/api/api_service.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/models/gate_log_result.dart';
+import 'package:carpark/providers/gate_logs_notifier.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/gate_log/widgets/gate_log_card.dart';
+import 'package:carpark/ui/gate_log/widgets/gate_log_header_card.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -12,22 +20,13 @@ import 'package:hooks_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../config/constants.dart';
-import '../../../data/services/api/api_service.dart';
-import '../../../injector/injector.dart';
-import '../../../models/gate_log_result.dart';
-import '../../../providers/gate_logs_notifier.dart';
-import '../../../rounting/routes.dart';
-import 'gate_log_card.dart';
-import 'gate_log_header_card.dart';
-
 final gateLogsProvider =
     StateNotifierProvider<GateLogsNotifier, List<GateLogResult>>((ref) {
       return GateLogsNotifier();
     });
 
-final filterProvider = StateProvider((ref) => "");
-final sortByProvider = StateProvider((ref) => "");
+final StateProvider<String> filterProvider = StateProvider((ref) => '');
+final StateProvider<String> sortByProvider = StateProvider((ref) => '');
 
 final filteredGateLogsProvider = Provider<List<GateLogResult>>((ref) {
   final filter = ref.watch(filterProvider);
@@ -48,36 +47,30 @@ final filteredGateLogsProvider = Provider<List<GateLogResult>>((ref) {
 
   if (sortBy.isNotEmpty) {
     switch (sortBy) {
-      case "date":
+      case 'date':
         filterGateLogs.sort((a, b) {
           return a.createdAt.compareTo(b.createdAt);
         });
-        break;
-      case "-date":
+      case '-date':
         filterGateLogs.sort((b, a) {
           return a.createdAt.compareTo(b.createdAt);
         });
-        break;
-      case "plateNumber":
+      case 'plateNumber':
         filterGateLogs.sort((a, b) {
           return a.plateNumber.compareTo(b.plateNumber);
         });
-        break;
-      case "-plateNumber":
+      case '-plateNumber':
         filterGateLogs.sort((b, a) {
           return a.plateNumber.compareTo(b.plateNumber);
         });
-        break;
-      case "memberName":
+      case 'memberName':
         filterGateLogs.sort((a, b) {
           return a.memberName.compareTo(b.memberName);
         });
-        break;
-      case "-memberName":
+      case '-memberName':
         filterGateLogs.sort((b, a) {
           return a.memberName.compareTo(b.memberName);
         });
-        break;
       default:
     }
   }
@@ -114,14 +107,14 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     super.dispose();
   }
 
-  void onSearchTextChanged(String text) async {
+  Future<void> onSearchTextChanged(String text) async {
     ref.read(filterProvider.notifier).state = text;
   }
 
   void sortBy(String fieldName) {
     final sortBy = ref.read(sortByProvider.notifier);
     sortBy.state == fieldName
-        ? sortBy.state = "-${sortBy.state}"
+        ? sortBy.state = '-${sortBy.state}'
         : sortBy.state = fieldName;
   }
 
@@ -186,7 +179,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                   style: kButton2Style,
                 ),
               ),
-              const SizedBox(width: 10.0),
+              const SizedBox(width: 10),
               OutlinedButton(
                 onPressed: () {
                   _selectDate(_dates);
@@ -195,19 +188,16 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
               ),
               Expanded(child: Container()),
               OutlinedButton(
-                onPressed: () {
-                  onPressedExportGateLog();
-                },
+                onPressed: onPressedExportGateLog,
                 child: const Text('Export to Excel', style: kButton2Style),
               ),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: TextField(
             controller: _searchController,
-            autofocus: false,
             autocorrect: false,
             onChanged: onSearchTextChanged,
             decoration: InputDecoration(
@@ -219,22 +209,22 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
                 },
                 child: const Icon(Icons.clear),
               ),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
         ),
         GateLogHeaderCard(
           onTapDate: () {
-            sortBy("date");
+            sortBy('date');
           },
           onTapPlateNumber: () {
-            sortBy("plateNumber");
+            sortBy('plateNumber');
           },
           onTapMemberName: () {
-            sortBy("memberName");
+            sortBy('memberName');
           },
         ),
         Expanded(
@@ -258,7 +248,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     } else {
       Alert(
         context: context,
-        title: "Gate Log",
+        title: 'Gate Log',
         content: Column(
           children: <Widget>[Image.network(gateLog.captureImageUrl())],
         ),
@@ -273,13 +263,13 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
     var currentRow = 0;
     final columnName = <CellValue>[
-      TextCellValue("createdAt"),
-      TextCellValue("gateName"),
-      TextCellValue("anpr"),
-      TextCellValue("plateNumber"),
-      TextCellValue("member_name"),
-      TextCellValue("visitor_member_name"),
-      TextCellValue("captureImage"),
+      TextCellValue('createdAt'),
+      TextCellValue('gateName'),
+      TextCellValue('anpr'),
+      TextCellValue('plateNumber'),
+      TextCellValue('member_name'),
+      TextCellValue('visitor_member_name'),
+      TextCellValue('captureImage'),
     ];
     sheetObject.insertRowIterables(columnName, currentRow);
     final cellStyle = CellStyle(
@@ -305,24 +295,24 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
         TextCellValue(m.visitorMemberName),
         TextCellValue(m.captureImageUrl()),
       ];
-      sheetObject.insertRowIterables(dataList, currentRow, startingColumn: 0);
+      sheetObject.insertRowIterables(dataList, currentRow);
     }
     return excel;
   }
 
-  void onPressedExportGateLog() async {
-    var fileName = "gate_log";
-    final date = DateFormat("_yyyy-MM-dd").format(_dates[0]!);
-    fileName = "$fileName$date";
+  Future<void> onPressedExportGateLog() async {
+    var fileName = 'gate_log';
+    final date = DateFormat('_yyyy-MM-dd').format(_dates[0]!);
+    fileName = '$fileName$date';
 
     if (_dates.length > 1) {
-      final dateTo = DateFormat("_yyyy-MM-dd").format(_dates[1]!);
-      fileName = "$fileName-$dateTo";
+      final dateTo = DateFormat('_yyyy-MM-dd').format(_dates[1]!);
+      fileName = '$fileName-$dateTo';
     }
 
     final filter = ref.read(filterProvider);
     if (filter.isNotEmpty) {
-      fileName = "$fileName-$filter";
+      fileName = '$fileName-$filter';
     }
 
     if (kIsWeb) {

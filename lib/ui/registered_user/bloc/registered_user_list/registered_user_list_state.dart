@@ -12,18 +12,18 @@ final class RegisteredUserListInitial extends RegisteredUserListState {}
 final class RegisteredUserListLoading extends RegisteredUserListState {}
 
 final class RegisteredUserListSuccess extends RegisteredUserListState {
-  final List<RegisteredUser> registeredUsers;
 
   const RegisteredUserListSuccess(this.registeredUsers);
+  final List<RegisteredUser> registeredUsers;
 
   @override
   List<Object> get props => [registeredUsers];
 }
 
 final class RegisteredUserListFailure extends RegisteredUserListState {
-  final String message;
 
   const RegisteredUserListFailure(this.message);
+  final String message;
 
   @override
   List<Object> get props => [message];

@@ -1,17 +1,16 @@
+import 'package:carpark/domain/models/registered_user/registered_user.dart';
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_create/registered_user_create_bloc.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_list/registered_user_list_bloc.dart';
+import 'package:carpark/ui/registered_user/bloc/registered_user_update/registered_user_update_bloc.dart';
+import 'package:carpark/ui/registered_user/widgets/page/registered_user_create.dart';
+import 'package:carpark/ui/registered_user/widgets/page/registered_user_update_screen.dart';
+import 'package:carpark/ui/registered_user/widgets/registered_user_list_header_widget.dart';
+import 'package:carpark/ui/registered_user/widgets/registered_user_list_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../domain/models/registered_user/registered_user.dart';
-import '../../../../injector/injector.dart';
-import '../../../../rounting/routes.dart';
-import '../../bloc/registered_user_create/registered_user_create_bloc.dart';
-import '../../bloc/registered_user_list/registered_user_list_bloc.dart';
-import '../../bloc/registered_user_update/registered_user_update_bloc.dart';
-import '../registered_user_list_header_widget.dart';
-import '../registered_user_list_row_widget.dart';
-import 'registered_user_create.dart';
-import 'registered_user_update_screen.dart';
 
 class RegisteredUserListScreen extends StatefulWidget {
   const RegisteredUserListScreen({super.key});
@@ -105,9 +104,8 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: TextField(
-              autofocus: false,
               autocorrect: false,
               controller: _searchController,
               onChanged: onSearchTextChanged,
@@ -120,16 +118,16 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
                   },
                   child: const Icon(Icons.clear),
                 ),
-                contentPadding: const EdgeInsets.all(20.0),
+                contentPadding: const EdgeInsets.all(20),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: IconButton(
             onPressed: () {
               _registeredUserListBloc.add(RegisteredUserCreating());

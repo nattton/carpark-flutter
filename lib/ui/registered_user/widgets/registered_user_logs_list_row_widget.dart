@@ -1,13 +1,10 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_log.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
-import '../../../domain/models/registered_user/registered_user_log.dart';
 
 class RegisteredUserLogsRowWidget extends StatelessWidget {
   const RegisteredUserLogsRowWidget({
-    super.key,
-    required this.log,
-    required this.onTap,
+    required this.log, required this.onTap, super.key,
   });
 
   final RegisteredUserLog log;
@@ -20,7 +17,7 @@ class RegisteredUserLogsRowWidget extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -28,7 +25,7 @@ class RegisteredUserLogsRowWidget extends StatelessWidget {
                   log.id.toString(),
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -37,7 +34,7 @@ class RegisteredUserLogsRowWidget extends StatelessWidget {
                   log.checkInTimeString,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -46,7 +43,7 @@ class RegisteredUserLogsRowWidget extends StatelessWidget {
                   log.checkOutTimeString,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -55,11 +52,11 @@ class RegisteredUserLogsRowWidget extends StatelessWidget {
                   log.duration,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
-              SizedBox(width: 30.0),
+              const SizedBox(width: 30),
             ],
           ),
         ),

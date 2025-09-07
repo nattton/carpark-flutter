@@ -4,13 +4,6 @@ part 'camera_model.g.dart';
 
 @JsonSerializable()
 class CameraModel {
-  final int id;
-  final String name;
-  final String ipAddress;
-  final String port;
-  final String username;
-  final String password;
-  final String path;
 
   CameraModel({
     required this.id,
@@ -24,6 +17,13 @@ class CameraModel {
 
   factory CameraModel.fromJson(Map<String, dynamic> json) =>
       _$CameraModelFromJson(json);
+  final int id;
+  final String name;
+  final String ipAddress;
+  final String port;
+  final String username;
+  final String password;
+  final String path;
 
   Map<String, dynamic> toJson() => _$CameraModelToJson(this);
 
@@ -46,6 +46,6 @@ class CameraModel {
   );
 
   String toUrl() {
-    return "rtsp://$username:$password@$ipAddress:$port$path";
+    return 'rtsp://$username:$password@$ipAddress:$port$path';
   }
 }

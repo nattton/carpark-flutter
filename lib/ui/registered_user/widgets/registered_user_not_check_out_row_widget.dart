@@ -1,13 +1,10 @@
+import 'package:carpark/config/constants.dart';
+import 'package:carpark/domain/models/registered_user/registered_user_log.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/constants.dart';
-import '../../../domain/models/registered_user/registered_user_log.dart';
 
 class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
   const RegisteredUserNotCheckOutRowWidget({
-    super.key,
-    required this.log,
-    required this.onTap,
+    required this.log, required this.onTap, super.key,
   });
 
   final RegisteredUserLog log;
@@ -20,7 +17,7 @@ class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
@@ -28,7 +25,7 @@ class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
                   log.registeredUser!.thaiName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -37,7 +34,7 @@ class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
                   log.registeredUser!.engName,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -46,7 +43,7 @@ class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
                   log.registeredUser!.telephone,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -55,7 +52,7 @@ class RegisteredUserNotCheckOutRowWidget extends StatelessWidget {
                   log.checkInTimeString,
                   style: const TextStyle(
                     fontFamily: kDefaultFont,
-                    fontSize: 16.0,
+                    fontSize: 16,
                   ),
                 ),
               ),

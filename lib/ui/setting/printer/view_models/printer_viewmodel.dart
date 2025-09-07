@@ -1,19 +1,12 @@
+import 'package:carpark/data/repositories/printer/printer_repository.dart';
+import 'package:carpark/utils/result.dart';
 import 'package:command_it/command_it.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
-import '../../../../data/repositories/printer/printer_repository.dart';
-import '../../../../utils/result.dart';
-
 @injectable
 class PrinterViewModel extends ChangeNotifier {
-  final PrinterRepository _printerRepository;
-  final _log = Logger('PrinterViewModel');
-
-  late Command<void, String?> getPrinterCommand;
-  late Command<String, Result<void>> updatePrinterCommand;
-  late Command<void, List<String>> getPrinterListCommand;
 
   PrinterViewModel({required PrinterRepository printerRepository})
     : _printerRepository = printerRepository {
@@ -29,7 +22,7 @@ class PrinterViewModel extends ChangeNotifier {
     );
 
     updatePrinterCommand = Command.createAsync<String, Result<void>>(
-      initialValue: Result.ok(null),
+      initialValue: const Result.ok(null),
       (printerName) async {
         final result = await _printerRepository.updatePrinter(printerName);
         if (result is Error<void>) {
@@ -43,8 +36,14 @@ class PrinterViewModel extends ChangeNotifier {
     getPrinterListCommand = Command.createAsyncNoParam(
       initialValue: const [],
       () async {
-        return await _printerRepository.getPrinterList();
+        return _printerRepository.getPrinterList();
       },
     );
   }
+  final PrinterRepository _printerRepository;
+  final _log = Logger('PrinterViewModel');
+
+  late Command<void, String?> getPrinterCommand;
+  late Command<String, Result<void>> updatePrinterCommand;
+  late Command<void, List<String>> getPrinterListCommand;
 }
