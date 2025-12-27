@@ -1,4 +1,5 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.35.3",
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "dart.flutterSdkPath": "/Users/nattapong/.puro/envs/stable/flutter",
+  "java.configuration.updateBuildConfiguration": "interactive",
+    "dart.sdkPath": "/Users/nattapong/.puro/envs/stable/flutter/bin/cache/dart-sdk"
 }

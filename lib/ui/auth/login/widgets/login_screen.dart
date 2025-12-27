@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     try {
-      widget.loginViewModel.loginCommand.execute((
+      widget.loginViewModel.loginCommand.run((
         _usernameController.text,
         _passwordController.text,
       ));

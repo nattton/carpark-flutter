@@ -28,7 +28,7 @@ class PrinterViewModel extends ChangeNotifier {
         if (result is Error<void>) {
           _log.warning('Update Printer name failed! ${result.error}');
         }
-        getPrinterCommand.execute();
+        getPrinterCommand.run();
         return result;
       },
     );
