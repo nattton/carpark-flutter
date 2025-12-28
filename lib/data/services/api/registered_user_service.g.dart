@@ -56,7 +56,7 @@ class _RegisteredUserService implements RegisteredUserService {
             : List.empty(),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -91,7 +91,7 @@ class _RegisteredUserService implements RegisteredUserService {
         (json) => RegisteredUserResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -127,7 +127,7 @@ class _RegisteredUserService implements RegisteredUserService {
         (json) => RegisteredUserResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -172,7 +172,7 @@ class _RegisteredUserService implements RegisteredUserService {
         (json) => RegisteredUserResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -209,7 +209,7 @@ class _RegisteredUserService implements RegisteredUserService {
         (json) => RegisteredUserResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -245,7 +245,7 @@ class _RegisteredUserService implements RegisteredUserService {
         (json) => RegisteredUserResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -281,7 +281,7 @@ class _RegisteredUserService implements RegisteredUserService {
         (json) => RegisteredUserResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -317,7 +317,7 @@ class _RegisteredUserService implements RegisteredUserService {
             RegisteredUserLogsResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -356,7 +356,7 @@ class _RegisteredUserService implements RegisteredUserService {
             ),
           );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
