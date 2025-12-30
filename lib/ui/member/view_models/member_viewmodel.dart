@@ -3,14 +3,13 @@ import 'package:carpark/domain/models/member/member_model.dart';
 import 'package:carpark/domain/models/member/vehicle_model.dart';
 import 'package:carpark/models/response_model.dart';
 import 'package:carpark/utils/result.dart';
-import 'package:command_it/command_it.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 @injectable
 class MemberViewModel extends ChangeNotifier {
-
   MemberViewModel({required MemberRepository memberRepository})
     : _memberRepository = memberRepository {
     createMemberCommand = Command.createAsync<MemberModel, Result<MemberModel>>(
@@ -73,15 +72,18 @@ class MemberViewModel extends ChangeNotifier {
       },
     );
 
-    deleteVehicleCommand = Command.createAsync(initialValue: const Result.ok(null), (
-      vehicleId,
-    ) async {
-      final result = await _memberRepository.deleteVehicle(vehicleId);
-      if (result is Error<ResponseModel>) {
-        _log.warning('Delete vehicle failed! ${result.error}');
-      }
-      return result;
-    });
+    deleteVehicleCommand = Command.createAsync(
+      initialValue: const Result.ok(null),
+      (
+        vehicleId,
+      ) async {
+        final result = await _memberRepository.deleteVehicle(vehicleId);
+        if (result is Error<ResponseModel>) {
+          _log.warning('Delete vehicle failed! ${result.error}');
+        }
+        return result;
+      },
+    );
   }
   final MemberRepository _memberRepository;
   final _log = Logger('MemberViewModel');

@@ -1,13 +1,12 @@
 import 'package:carpark/data/repositories/auth/auth_repository.dart';
 import 'package:carpark/utils/result.dart';
-import 'package:command_it/command_it.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 @injectable
 class LoginViewModel extends ChangeNotifier {
-
   LoginViewModel({required AuthRepository authRepository})
     : _authRepository = authRepository {
     loginCommand =

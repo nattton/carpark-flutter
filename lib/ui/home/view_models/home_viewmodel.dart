@@ -1,11 +1,10 @@
-import 'package:command_it/command_it.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 @injectable
 class HomeViewModel extends ChangeNotifier {
-
   HomeViewModel() {
     setTitleCommand = Command.createSyncNoResult((param) {
       _title = param;
