@@ -36,10 +36,10 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   void initState() {
     super.initState();
     if (!kIsWeb) {
-      printerViewModel.getPrinterListCommand.execute();
-      printerViewModel.getPrinterCommand.execute();
+      printerViewModel.getPrinterListCommand.run();
+      printerViewModel.getPrinterCommand.run();
     }
-    getCamera();
+    _getCameraList();
   }
 
   @override
@@ -130,7 +130,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     super.dispose();
   }
 
-  Future<void> getCamera() async {
+  Future<void> _getCameraList() async {
     await getIt<ApiService>()
         .getCameraList()
         .then((value) {
@@ -258,7 +258,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
         .updateCamera(cameraUpdate.id, cameraUpdate)
         .then((value) {
           GoRouter.of(context).pop();
-          getCamera();
+          _getCameraList();
         })
         .onError((error, stackTrace) {
           alertError(error.toString());

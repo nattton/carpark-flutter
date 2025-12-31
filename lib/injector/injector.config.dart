@@ -179,7 +179,7 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i1056.MemberListBloc(memberRepository: gh<_i379.MemberRepository>()),
     );
-    gh.factory<_i692.MemberViewModel>(
+    gh.singleton<_i692.MemberViewModel>(
       () =>
           _i692.MemberViewModel(memberRepository: gh<_i379.MemberRepository>()),
     );

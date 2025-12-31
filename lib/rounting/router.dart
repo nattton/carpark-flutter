@@ -7,7 +7,6 @@ import 'package:carpark/ui/auth/logout/view_models/logout_viewmodel.dart';
 import 'package:carpark/ui/home/view_models/home_viewmodel.dart';
 import 'package:carpark/ui/home/widgets/home_screen.dart';
 import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
-import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
 import 'package:carpark/ui/member/widgets/member_screen.dart';
 import 'package:carpark/ui/registered_user/widgets/page/registered_user_logs_screen.dart';
 import 'package:carpark/ui/visitor/widgets/visitor_detail_screen.dart';
@@ -41,9 +40,8 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     ),
     GoRoute(
       path: Routes.member,
-      pageBuilder: (context, state) => NoTransitionPage(
+      pageBuilder: (context, state) => const NoTransitionPage(
         child: MemberScreen(
-          memberViewModel: getIt<MemberViewModel>(),
           memberId: 0,
         ),
       ),
@@ -52,7 +50,6 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: '${Routes.member}/:memberId',
       pageBuilder: (context, state) => NoTransitionPage(
         child: MemberScreen(
-          memberViewModel: getIt<MemberViewModel>(),
           memberId: int.parse(state.pathParameters['memberId'] ?? '0'),
         ),
       ),

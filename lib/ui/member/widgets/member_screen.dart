@@ -1,11 +1,11 @@
 import 'package:carpark/config/constants.dart';
 import 'package:carpark/domain/models/member/member_model.dart';
 import 'package:carpark/domain/models/member/vehicle_model.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
 import 'package:carpark/ui/member/widgets/vehicle_header_card.dart';
 import 'package:carpark/ui/member/widgets/vehicle_list_card.dart';
-import 'package:carpark/utils/result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_it/flutter_it.dart';
@@ -13,38 +13,19 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class MemberScreen extends StatefulWidget {
+class MemberScreen extends WatchingStatefulWidget {
   const MemberScreen({
-    required this.memberViewModel,
     required this.memberId,
     super.key,
   });
 
-  final MemberViewModel memberViewModel;
   final int memberId;
   @override
   State<MemberScreen> createState() => _MemberScreenState();
 }
 
 class _MemberScreenState extends State<MemberScreen> {
-  MemberViewModel get memberViewModel => widget.memberViewModel;
-
-  ListenableSubscription? createMemberCommandSubscription;
-
-  ListenableSubscription? getMemberCommandSubscription;
-  ListenableSubscription? getMemberCommandErrorSubscription;
-
-  ListenableSubscription? updateMemberCommandSubscription;
-  ListenableSubscription? updateMemberCommandErrorSubscription;
-
-  ListenableSubscription? createVehicleCommandSubscription;
-  ListenableSubscription? createVehicleCommandErrorSubscription;
-
-  ListenableSubscription? updateVehicleCommandSubscription;
-  ListenableSubscription? updateVehicleCommandErrorSubscription;
-
-  ListenableSubscription? deleteVehicleCommandSubscription;
-  ListenableSubscription? deleteVehicleCommandErrorSubscription;
+  MemberViewModel get _memberViewModel => getIt<MemberViewModel>();
 
   final _nameController = TextEditingController();
   final _telController = TextEditingController();
@@ -63,142 +44,7 @@ class _MemberScreenState extends State<MemberScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.memberId > 0) {
-      memberViewModel.getMemberCommand.execute(widget.memberId);
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    getMemberCommandSubscription ??= memberViewModel.getMemberCommand.listen((
-      event,
-      state,
-    ) {
-      _nameController.text = event.name ?? '';
-      _telController.text = event.telephone ?? '';
-      _typeFieldKey.currentState?.didChange(event.type);
-      _statusFieldKey.currentState?.didChange(event.status);
-    });
-
-    createMemberCommandSubscription ??= memberViewModel.createMemberCommand
-        .listen((event, state) {
-          switch (event) {
-            case Ok<MemberModel>():
-              GoRouter.of(context)
-                ..pop()
-                ..push(Routes.memberWithId(event.value.id));
-            case Error<MemberModel>():
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง'),
-                ),
-              );
-          }
-        });
-
-    getMemberCommandErrorSubscription ??= memberViewModel
-        .getMemberCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
-          );
-          GoRouter.of(context).pop();
-        });
-
-    updateMemberCommandSubscription ??= memberViewModel.updateMemberCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-          );
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    updateMemberCommandErrorSubscription ??= memberViewModel
-        .updateMemberCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    createVehicleCommandSubscription ??= memberViewModel.createVehicleCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-          );
-          GoRouter.of(context).pop();
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    createVehicleCommandErrorSubscription ??= memberViewModel
-        .createVehicleCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    updateVehicleCommandSubscription ??= memberViewModel.updateVehicleCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-          );
-          GoRouter.of(context).pop();
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    updateVehicleCommandErrorSubscription ??= memberViewModel
-        .updateVehicleCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    deleteVehicleCommandSubscription ??= memberViewModel.deleteVehicleCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
-          GoRouter.of(context).pop();
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    deleteVehicleCommandErrorSubscription ??= memberViewModel
-        .deleteVehicleCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    super.didChangeDependencies();
+    _memberViewModel.getMemberCommand.run(widget.memberId);
   }
 
   @override
@@ -213,221 +59,356 @@ class _MemberScreenState extends State<MemberScreen> {
     _colorController.dispose();
     _telephoneController.dispose();
 
-    createMemberCommandSubscription?.cancel();
-    getMemberCommandSubscription?.cancel();
-    getMemberCommandErrorSubscription?.cancel();
-    updateMemberCommandSubscription?.cancel();
-    updateMemberCommandErrorSubscription?.cancel();
-    createVehicleCommandSubscription?.cancel();
-    createVehicleCommandErrorSubscription?.cancel();
-    updateVehicleCommandSubscription?.cancel();
-    updateVehicleCommandErrorSubscription?.cancel();
-    deleteVehicleCommandSubscription?.cancel();
-    deleteVehicleCommandErrorSubscription?.cancel();
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: memberViewModel.getMemberCommand.isExecuting,
-      builder: (context, isExecuting, _) {
-        if (isExecuting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Scaffold(
-          appBar: AppBar(title: const Text('แก้ไขข้อมูลสมาชิก')),
-          body: Column(
-            children: [
-              const SizedBox(height: 10),
-              ValueListenableBuilder(
-                valueListenable: memberViewModel.getMemberCommand,
-                builder: (context, member, _) {
-                  return Table(
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: FlexColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: <TableRow>[
-                      TableRow(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: TextField(
-                              controller: _nameController,
-                              autocorrect: false,
-                              keyboardType: TextInputType.name,
-                              decoration: InputDecoration(
-                                labelText: 'Name',
-                                suffixIcon: const Icon(Icons.account_circle),
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: TextField(
-                              controller: _telController,
-                              autocorrect: false,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                labelText: 'Tel.',
-                                suffixIcon: const Icon(Icons.phone),
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: FormBuilderRadioGroup<String>(
-                              key: _typeFieldKey,
-                              decoration: InputDecoration(
-                                labelText: 'Type',
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              initialValue: member.type,
-                              name: 'type',
-                              validator:
-                                  FormBuilderValidators.required<String>(),
-                              options: kMemberTypeList
-                                  .map(
-                                    (lang) =>
-                                        FormBuilderFieldOption(value: lang),
-                                  )
-                                  .toList(growable: false),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: FormBuilderRadioGroup<String>(
-                              key: _statusFieldKey,
-                              decoration: InputDecoration(
-                                labelText: 'Status',
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              initialValue: member.status,
-                              name: 'status',
-                              validator:
-                                  FormBuilderValidators.required<String>(),
-                              options: kStatusList
-                                  .map(
-                                    (lang) =>
-                                        FormBuilderFieldOption(value: lang),
-                                  )
-                                  .toList(growable: false),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              ),
-              if (widget.memberId > 0)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: _updateMember,
-                          child: const Text('บันทึกข้อมูล'),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green, // Background color
-                          ),
-                          onPressed: () => onPressedAdd(context),
-                          child: const Text('สร้างทะเบียนรถ'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              if (widget.memberId == 0)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: _createMember,
-                          child: const Text('สร้างข้อมูลสมาชิก'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              const VehicleHeaderCard(),
-              Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: memberViewModel.getMemberCommand,
-                  builder: (context, member, child) {
-                    return ListView.builder(
-                      itemCount: member.vehicles?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return VehicleListCard(
-                          vehicle: member.vehicles![index],
-                          onTap: () =>
-                              onPressedEdit(context, member.vehicles![index]),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
+  void _registerHandler() {
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.createMemberCommand,
+      handler: (context, value, cancel) async {
+        context.pop();
+        await context.push(Routes.memberWithId(value.id));
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) =>
+          viewModel.createMemberCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง',
+            ),
+          ),
+        );
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.getMemberCommand,
+      handler: (context, value, cancel) {
+        _nameController.text = value.name ?? '';
+        _telController.text = value.telephone ?? '';
+        _typeFieldKey.currentState?.didChange(value.type);
+        _statusFieldKey.currentState?.didChange(value.status);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.getMemberCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
+        );
+        GoRouter.of(context).pop();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.updateMemberCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.updateMemberCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
+          ),
+        );
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.createVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        GoRouter.of(context).pop();
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.createVehicleCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
+          ),
+        );
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.updateVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        GoRouter.of(context).pop();
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.updateVehicleCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
+          ),
+        );
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.deleteVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
+        GoRouter.of(context).pop();
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.deleteVehicleCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
           ),
         );
       },
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    _registerHandler();
+
+    final isRunning = watchValue(
+      (MemberViewModel viewModel) => viewModel.getMemberCommand.isRunning,
+    );
+
+    final member = watchValue(
+      (MemberViewModel viewModel) => viewModel.member,
+    );
+
+    if (isRunning) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('แก้ไขข้อมูลสมาชิก')),
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(),
+              1: FlexColumnWidth(),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: <TableRow>[
+              TableRow(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: TextField(
+                      controller: _nameController,
+                      autocorrect: false,
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        suffixIcon: const Icon(Icons.account_circle),
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: TextField(
+                      controller: _telController,
+                      autocorrect: false,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'Tel.',
+                        suffixIcon: const Icon(Icons.phone),
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FormBuilderRadioGroup<String>(
+                      key: _typeFieldKey,
+                      decoration: InputDecoration(
+                        labelText: 'Type',
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      initialValue: member.type,
+                      name: 'type',
+                      validator: FormBuilderValidators.required<String>(),
+                      options: kMemberTypeList
+                          .map(
+                            (lang) => FormBuilderFieldOption(value: lang),
+                          )
+                          .toList(growable: false),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(type: value);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FormBuilderRadioGroup<String>(
+                      key: _statusFieldKey,
+                      decoration: InputDecoration(
+                        labelText: 'Status',
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      initialValue: member.status,
+                      name: 'status',
+                      validator: FormBuilderValidators.required<String>(),
+                      options: kStatusList
+                          .map(
+                            (lang) => FormBuilderFieldOption(value: lang),
+                          )
+                          .toList(growable: false),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(status: value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          if (member.id > 0)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: _updateMember,
+                      child: const Text('บันทึกข้อมูล'),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green, // Background color
+                      ),
+                      onPressed: () => onPressedAdd(context),
+                      child: const Text('สร้างทะเบียนรถ'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          if (widget.memberId == 0)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: _createMember,
+                      child: const Text('สร้างข้อมูลสมาชิก'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          const VehicleHeaderCard(),
+          Expanded(
+            child: ListView.builder(
+              itemCount: member.vehicles?.length ?? 0,
+              itemBuilder: (context, index) {
+                return VehicleListCard(
+                  vehicle: member.vehicles![index],
+                  onTap: () => onPressedEdit(context, member.vehicles![index]),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _createMember() {
-    memberViewModel.createMemberCommand.execute(
+    _memberViewModel.createMemberCommand.run(
       MemberModel(
         id: 0,
         name: _nameController.text,
         telephone: _telController.text,
-        type: _typeFieldKey.currentState?.value,
-        status: _statusFieldKey.currentState?.value,
+        type: _memberViewModel.member.value.type,
+        status: _memberViewModel.member.value.status,
         vehicles: [],
       ),
     );
   }
 
   void _updateMember() {
-    memberViewModel.updateMemberCommand.execute(
+    _memberViewModel.updateMemberCommand.run(
       MemberModel(
-        id: memberViewModel.getMemberCommand.value.id,
+        id: _memberViewModel.member.value.id,
         name: _nameController.text,
         telephone: _telController.text,
-        type: _typeFieldKey.currentState?.value,
-        status: _statusFieldKey.currentState?.value,
+        type: _memberViewModel.member.value.type,
+        status: _memberViewModel.member.value.status,
       ),
     );
   }
@@ -696,7 +677,7 @@ class _MemberScreenState extends State<MemberScreen> {
       resemble: _resembleController.text,
     );
 
-    memberViewModel.createVehicleCommand.execute(vehicle);
+    _memberViewModel.createVehicleCommand.run(vehicle);
   }
 
   void updateVehicle(VehicleModel vehicle) {
@@ -711,7 +692,7 @@ class _MemberScreenState extends State<MemberScreen> {
       resemble: _resembleController.text,
     );
 
-    memberViewModel.updateVehicleCommand.execute(updateVehicle);
+    _memberViewModel.updateVehicleCommand.run(updateVehicle);
   }
 
   void alertDelete(VehicleModel vehicle) {
@@ -744,6 +725,6 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void deleteVehicle(VehicleModel vehicle) {
-    memberViewModel.deleteVehicleCommand.execute(vehicle.id);
+    _memberViewModel.deleteVehicleCommand.run(vehicle.id);
   }
 }

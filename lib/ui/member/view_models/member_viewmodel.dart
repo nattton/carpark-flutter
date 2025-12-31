@@ -8,27 +8,34 @@ import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
-@injectable
+@singleton
 class MemberViewModel extends ChangeNotifier {
   MemberViewModel({required MemberRepository memberRepository})
     : _memberRepository = memberRepository {
-    createMemberCommand = Command.createAsync<MemberModel, Result<MemberModel>>(
-      initialValue: Result.ok(MemberModel.empty()),
+    createMemberCommand = Command.createAsync<MemberModel, MemberModel>(
+      initialValue: MemberModel.empty(),
       (params) async {
         final result = await _memberRepository.createMember(params);
-        if (result is Error<MemberModel>) {
-          _log.warning('Create member failed! ${result.error}');
+        switch (result) {
+          case Ok<MemberModel>():
+            return result.value;
+          case Error<MemberModel>():
+            _log.warning('Create member failed! ${result.error}');
+            throw result.error;
         }
-        return result;
       },
     );
 
     getMemberCommand = Command.createAsync<int, MemberModel>(
       initialValue: MemberModel.empty(),
       (params) async {
+        if (params == 0) {
+          return MemberModel.empty();
+        }
         final result = await _memberRepository.getMember(params);
         switch (result) {
           case Ok<MemberModel>():
+            member.value = result.value;
             return result.value;
           case Error<MemberModel>():
             _log.warning('Get member failed! ${result.error}');
@@ -88,7 +95,10 @@ class MemberViewModel extends ChangeNotifier {
   final MemberRepository _memberRepository;
   final _log = Logger('MemberViewModel');
 
-  late Command<MemberModel, Result<MemberModel>> createMemberCommand;
+  final member = ValueNotifier<MemberModel>(
+    MemberModel.empty(),
+  );
+  late Command<MemberModel, MemberModel> createMemberCommand;
   late Command<int, MemberModel> getMemberCommand;
   late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
   late Command<VehicleModel, Result<ResponseModel>> createVehicleCommand;
