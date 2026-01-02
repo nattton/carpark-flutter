@@ -62,153 +62,8 @@ class _MemberScreenState extends State<MemberScreen> {
     super.dispose();
   }
 
-  void _registerHandler() {
-    registerHandler(
-      select: (MemberViewModel viewModel) => viewModel.createMemberCommand,
-      handler: (context, value, cancel) async {
-        context.pop();
-        await context.push(Routes.memberWithId(value.id));
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viewModel) =>
-          viewModel.createMemberCommand.errors,
-      handler: (context, error, cancel) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง',
-            ),
-          ),
-        );
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viewModel) => viewModel.getMemberCommand,
-      handler: (context, value, cancel) {
-        _nameController.text = value.name ?? '';
-        _telController.text = value.telephone ?? '';
-        _typeFieldKey.currentState?.didChange(value.type);
-        _statusFieldKey.currentState?.didChange(value.status);
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viewModel) => viewModel.getMemberCommand.errors,
-      handler: (context, error, cancel) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(
-          const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
-        );
-        GoRouter.of(context).pop();
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) => viweModel.updateMemberCommand,
-      handler: (context, value, cancel) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(
-          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-        );
-        _memberViewModel.getMemberCommand.run(widget.memberId);
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) =>
-          viweModel.updateMemberCommand.errors,
-      handler: (context, error, cancel) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-          ),
-        );
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) => viweModel.createVehicleCommand,
-      handler: (context, value, cancel) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(
-          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-        );
-        GoRouter.of(context).pop();
-        _memberViewModel.getMemberCommand.run(widget.memberId);
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) =>
-          viweModel.createVehicleCommand.errors,
-      handler: (context, error, cancel) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-          ),
-        );
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) => viweModel.updateVehicleCommand,
-      handler: (context, value, cancel) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(
-          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-        );
-        GoRouter.of(context).pop();
-        _memberViewModel.getMemberCommand.run(widget.memberId);
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) =>
-          viweModel.updateVehicleCommand.errors,
-      handler: (context, error, cancel) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-          ),
-        );
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) => viweModel.deleteVehicleCommand,
-      handler: (context, value, cancel) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
-        GoRouter.of(context).pop();
-        _memberViewModel.getMemberCommand.run(widget.memberId);
-      },
-    );
-
-    registerHandler(
-      select: (MemberViewModel viweModel) =>
-          viweModel.deleteVehicleCommand.errors,
-      handler: (context, error, cancel) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    _registerHandler();
-
     final isRunning = watchValue(
       (MemberViewModel viewModel) => viewModel.getMemberCommand.isRunning,
     );
@@ -216,6 +71,8 @@ class _MemberScreenState extends State<MemberScreen> {
     final member = watchValue(
       (MemberViewModel viewModel) => viewModel.member,
     );
+
+    _registerHandler();
 
     if (isRunning) {
       return const Center(child: CircularProgressIndicator());
@@ -384,6 +241,157 @@ class _MemberScreenState extends State<MemberScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _registerHandler() {
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.createMemberCommand,
+      handler: (context, value, cancel) async {
+        context.pop();
+        await context.push(Routes.memberWithId(value.id));
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) =>
+          viewModel.createMemberCommand.errors,
+      handler: _onCreateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.getMemberCommand,
+      handler: (context, value, cancel) {
+        _nameController.text = value.name ?? '';
+        _telController.text = value.telephone ?? '';
+        _typeFieldKey.currentState?.didChange(value.type);
+        _statusFieldKey.currentState?.didChange(value.status);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.getMemberCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
+        );
+        GoRouter.of(context).pop();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.updateMemberCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.updateMemberCommand.errors,
+      handler: _onUpdateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.createVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        GoRouter.of(context).pop();
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.createVehicleCommand.errors,
+      handler: _onCreateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.updateVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        GoRouter.of(context).pop();
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.updateVehicleCommand.errors,
+      handler: _onUpdateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.deleteVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
+        GoRouter.of(context).pop();
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.deleteVehicleCommand.errors,
+      handler: _onDeleteError,
+    );
+  }
+
+  void _onCreateError(
+    BuildContext context,
+    dynamic error,
+    void Function() cancel,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง',
+        ),
+      ),
+    );
+  }
+
+  void _onUpdateError(
+    BuildContext context,
+    dynamic error,
+    void Function() cancel,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง',
+        ),
+      ),
+    );
+  }
+
+  void _onDeleteError(
+    BuildContext context,
+    CommandError<int>? error,
+    void Function() cancel,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
       ),
     );
   }
