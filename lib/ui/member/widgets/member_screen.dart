@@ -1,668 +1,441 @@
 import 'package:carpark/config/constants.dart';
 import 'package:carpark/domain/models/member/member_model.dart';
 import 'package:carpark/domain/models/member/vehicle_model.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
+import 'package:carpark/ui/member/widgets/vehicle_form_widget.dart';
 import 'package:carpark/ui/member/widgets/vehicle_header_card.dart';
 import 'package:carpark/ui/member/widgets/vehicle_list_card.dart';
-import 'package:carpark/utils/result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:listen_it/listen_it.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class MemberScreen extends StatefulWidget {
+class MemberScreen extends WatchingStatefulWidget {
   const MemberScreen({
-    required this.memberViewModel,
     required this.memberId,
     super.key,
   });
 
-  final MemberViewModel memberViewModel;
   final int memberId;
   @override
   State<MemberScreen> createState() => _MemberScreenState();
 }
 
 class _MemberScreenState extends State<MemberScreen> {
-  MemberViewModel get memberViewModel => widget.memberViewModel;
-
-  ListenableSubscription? createMemberCommandSubscription;
-
-  ListenableSubscription? getMemberCommandSubscription;
-  ListenableSubscription? getMemberCommandErrorSubscription;
-
-  ListenableSubscription? updateMemberCommandSubscription;
-  ListenableSubscription? updateMemberCommandErrorSubscription;
-
-  ListenableSubscription? createVehicleCommandSubscription;
-  ListenableSubscription? createVehicleCommandErrorSubscription;
-
-  ListenableSubscription? updateVehicleCommandSubscription;
-  ListenableSubscription? updateVehicleCommandErrorSubscription;
-
-  ListenableSubscription? deleteVehicleCommandSubscription;
-  ListenableSubscription? deleteVehicleCommandErrorSubscription;
-
-  final _nameController = TextEditingController();
-  final _telController = TextEditingController();
-  final _typeFieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderRadioGroup<String>, String>>();
-  final _statusFieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderRadioGroup<String>, String>>();
-
-  final _plateNumberController = TextEditingController();
-  final _resembleController = TextEditingController();
-  final _plateProvinceController = TextEditingController();
-  final _brandController = TextEditingController();
-  final _colorController = TextEditingController();
-  final _telephoneController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.memberId > 0) {
-      memberViewModel.getMemberCommand.execute(widget.memberId);
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    getMemberCommandSubscription ??= memberViewModel.getMemberCommand.listen((
-      event,
-      state,
-    ) {
-      _nameController.text = event.name ?? '';
-      _telController.text = event.telephone ?? '';
-      _typeFieldKey.currentState?.didChange(event.type);
-      _statusFieldKey.currentState?.didChange(event.status);
-    });
-
-    createMemberCommandSubscription ??= memberViewModel.createMemberCommand
-        .listen((event, state) {
-          switch (event) {
-            case Ok<MemberModel>():
-              GoRouter.of(context)
-                ..pop()
-                ..push(Routes.memberWithId(event.value.id));
-            case Error<MemberModel>():
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง'),
-                ),
-              );
-          }
-        });
-
-    getMemberCommandErrorSubscription ??= memberViewModel
-        .getMemberCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
-          );
-          GoRouter.of(context).pop();
-        });
-
-    updateMemberCommandSubscription ??= memberViewModel.updateMemberCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-          );
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    updateMemberCommandErrorSubscription ??= memberViewModel
-        .updateMemberCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    createVehicleCommandSubscription ??= memberViewModel.createVehicleCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-          );
-          GoRouter.of(context).pop();
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    createVehicleCommandErrorSubscription ??= memberViewModel
-        .createVehicleCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    updateVehicleCommandSubscription ??= memberViewModel.updateVehicleCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
-            const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-          );
-          GoRouter.of(context).pop();
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    updateVehicleCommandErrorSubscription ??= memberViewModel
-        .updateVehicleCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    deleteVehicleCommandSubscription ??= memberViewModel.deleteVehicleCommand
-        .listen((event, state) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
-          GoRouter.of(context).pop();
-          memberViewModel.getMemberCommand.execute(widget.memberId);
-        });
-
-    deleteVehicleCommandErrorSubscription ??= memberViewModel
-        .deleteVehicleCommand
-        .errors
-        .where((error) => error != null)
-        .listen((event, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
-            ),
-          );
-        });
-
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _telController.dispose();
-
-    _plateNumberController.dispose();
-    _resembleController.dispose();
-    _plateProvinceController.dispose();
-    _brandController.dispose();
-    _colorController.dispose();
-    _telephoneController.dispose();
-
-    createMemberCommandSubscription?.cancel();
-    getMemberCommandSubscription?.cancel();
-    getMemberCommandErrorSubscription?.cancel();
-    updateMemberCommandSubscription?.cancel();
-    updateMemberCommandErrorSubscription?.cancel();
-    createVehicleCommandSubscription?.cancel();
-    createVehicleCommandErrorSubscription?.cancel();
-    updateVehicleCommandSubscription?.cancel();
-    updateVehicleCommandErrorSubscription?.cancel();
-    deleteVehicleCommandSubscription?.cancel();
-    deleteVehicleCommandErrorSubscription?.cancel();
-    super.dispose();
-  }
+  MemberViewModel get _memberViewModel => getIt<MemberViewModel>();
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: memberViewModel.getMemberCommand.isExecuting,
-      builder: (context, isExecuting, _) {
-        if (isExecuting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Scaffold(
-          appBar: AppBar(title: const Text('แก้ไขข้อมูลสมาชิก')),
-          body: Column(
-            children: [
-              const SizedBox(height: 10),
-              ValueListenableBuilder(
-                valueListenable: memberViewModel.getMemberCommand,
-                builder: (context, member, _) {
-                  return Table(
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: FlexColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: <TableRow>[
-                      TableRow(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: TextField(
-                              controller: _nameController,
-                              autocorrect: false,
-                              keyboardType: TextInputType.name,
-                              decoration: InputDecoration(
-                                labelText: 'Name',
-                                suffixIcon: const Icon(Icons.account_circle),
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: TextField(
-                              controller: _telController,
-                              autocorrect: false,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                labelText: 'Tel.',
-                                suffixIcon: const Icon(Icons.phone),
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: FormBuilderRadioGroup<String>(
-                              key: _typeFieldKey,
-                              decoration: InputDecoration(
-                                labelText: 'Type',
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              initialValue: member.type,
-                              name: 'type',
-                              validator:
-                                  FormBuilderValidators.required<String>(),
-                              options: kMemberTypeList
-                                  .map(
-                                    (lang) =>
-                                        FormBuilderFieldOption(value: lang),
-                                  )
-                                  .toList(growable: false),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: FormBuilderRadioGroup<String>(
-                              key: _statusFieldKey,
-                              decoration: InputDecoration(
-                                labelText: 'Status',
-                                contentPadding: const EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              initialValue: member.status,
-                              name: 'status',
-                              validator:
-                                  FormBuilderValidators.required<String>(),
-                              options: kStatusList
-                                  .map(
-                                    (lang) =>
-                                        FormBuilderFieldOption(value: lang),
-                                  )
-                                  .toList(growable: false),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              ),
-              if (widget.memberId > 0)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: _updateMember,
-                          child: const Text('บันทึกข้อมูล'),
+    // 1. One-time initialization
+    callOnce((_) => _memberViewModel.getMemberCommand.run(widget.memberId));
+
+    // 2. Register handlers
+    _registerHandler();
+
+    // 3. Watch reactive state
+    final isRunning = watchValue(
+      (MemberViewModel viewModel) => viewModel.getMemberCommand.isRunning,
+    );
+
+    final member = watchValue(
+      (MemberViewModel viewModel) => viewModel.member,
+    );
+
+    // 4. Build UI
+    if (isRunning) return const Center(child: CircularProgressIndicator());
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('แก้ไขข้อมูลสมาชิก')),
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(),
+              1: FlexColumnWidth(),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: <TableRow>[
+              TableRow(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: TextFormField(
+                      initialValue: member.name,
+                      autocorrect: false,
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        suffixIcon: const Icon(Icons.account_circle),
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green, // Background color
-                          ),
-                          onPressed: () => onPressedAdd(context),
-                          child: const Text('สร้างทะเบียนรถ'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              if (widget.memberId == 0)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: _createMember,
-                          child: const Text('สร้างข้อมูลสมาชิก'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              const VehicleHeaderCard(),
-              Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: memberViewModel.getMemberCommand,
-                  builder: (context, member, child) {
-                    return ListView.builder(
-                      itemCount: member.vehicles?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return VehicleListCard(
-                          vehicle: member.vehicles![index],
-                          onTap: () =>
-                              onPressedEdit(context, member.vehicles![index]),
-                        );
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(name: value);
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: TextFormField(
+                      initialValue: member.telephone,
+                      autocorrect: false,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'Tel.',
+                        suffixIcon: const Icon(Icons.phone),
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(telephone: value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FormBuilderRadioGroup<String>(
+                      decoration: InputDecoration(
+                        labelText: 'Type',
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      initialValue: member.type,
+                      name: 'type',
+                      validator: FormBuilderValidators.required<String>(),
+                      options: kMemberTypeList
+                          .map(
+                            (lang) => FormBuilderFieldOption(value: lang),
+                          )
+                          .toList(growable: false),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(type: value);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FormBuilderRadioGroup<String>(
+                      decoration: InputDecoration(
+                        labelText: 'Status',
+                        contentPadding: const EdgeInsets.all(20),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      initialValue: member.status,
+                      name: 'status',
+                      validator: FormBuilderValidators.required<String>(),
+                      options: kStatusList
+                          .map(
+                            (lang) => FormBuilderFieldOption(value: lang),
+                          )
+                          .toList(growable: false),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(status: value);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        );
+          if (member.id > 0)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: _updateMember,
+                      child: const Text('บันทึกข้อมูล'),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green, // Background color
+                      ),
+                      onPressed: () => _memberViewModel.newVehicleCommand.run(),
+                      child: const Text('สร้างทะเบียนรถ'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          if (widget.memberId == 0)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: _createMember,
+                      child: const Text('สร้างข้อมูลสมาชิก'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          const VehicleHeaderCard(),
+          Expanded(
+            child: ListView.builder(
+              itemCount: member.vehicles?.length ?? 0,
+              itemBuilder: (context, index) {
+                return VehicleListCard(
+                  vehicle: member.vehicles![index],
+                  onTap: () => _memberViewModel.editVehicleCommand.run(
+                    member.vehicles![index],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _registerHandler() {
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.createMemberCommand,
+      handler: (context, value, cancel) async {
+        context.pop();
+        await context.push(Routes.memberWithId(value.id));
       },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) =>
+          viewModel.createMemberCommand.errors,
+      handler: _onCreateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viewModel) => viewModel.getMemberCommand.errors,
+      handler: (context, error, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
+        );
+        GoRouter.of(context).pop();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.updateMemberCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        _memberViewModel.getMemberCommand.run(widget.memberId);
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.updateMemberCommand.errors,
+      handler: _onUpdateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.newVehicleCommand,
+      handler: (context, _, _) async {
+        await Alert(
+          context: context,
+          title: 'สร้างทะเบียนรถ',
+          content: const VehicleFormWidget(),
+          buttons: [
+            DialogButton(
+              onPressed: _memberViewModel.createVehicleCommand.run,
+              child: const Text(
+                'สร้าง',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ],
+        ).show();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.editVehicleCommand,
+      handler: (context, _, _) async {
+        await Alert(
+          context: context,
+          title: 'แก้ไขทะเบียนรถ',
+          content: const VehicleFormWidget(),
+          buttons: [
+            DialogButton(
+              onPressed: _memberViewModel.updateVehicleCommand.run,
+              child: const Text(
+                'บันทึก',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            DialogButton(
+              color: Colors.red,
+              onPressed: alertDelete,
+              child: const Text(
+                'ลบ',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ],
+        ).show();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.createVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        GoRouter.of(context).pop();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.createVehicleCommand.errors,
+      handler: _onCreateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.updateVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(
+          const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+        );
+        GoRouter.of(context).pop();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.updateVehicleCommand.errors,
+      handler: _onUpdateError,
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.deleteVehicleCommand,
+      handler: (context, value, cancel) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
+        GoRouter.of(context).pop();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) =>
+          viweModel.deleteVehicleCommand.errors,
+      handler: _onDeleteError,
+    );
+  }
+
+  void _onCreateError(
+    BuildContext context,
+    dynamic error,
+    void Function() cancel,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'ไม่สามารถสร้างข้อมูลได้ ลองใหม่อีกครั้ง',
+        ),
+      ),
+    );
+  }
+
+  void _onUpdateError(
+    BuildContext context,
+    dynamic error,
+    void Function() cancel,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง',
+        ),
+      ),
+    );
+  }
+
+  void _onDeleteError(
+    BuildContext context,
+    CommandError<int>? error,
+    void Function() cancel,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('ไม่สามารถลบข้อมูลได้ ลองใหม่อีกครั้ง'),
+      ),
     );
   }
 
   void _createMember() {
-    memberViewModel.createMemberCommand.execute(
+    _memberViewModel.createMemberCommand.run(
       MemberModel(
         id: 0,
-        name: _nameController.text,
-        telephone: _telController.text,
-        type: _typeFieldKey.currentState?.value,
-        status: _statusFieldKey.currentState?.value,
+        name: _memberViewModel.member.value.name,
+        telephone: _memberViewModel.member.value.telephone,
+        type: _memberViewModel.member.value.type,
+        status: _memberViewModel.member.value.status,
         vehicles: [],
       ),
     );
   }
 
   void _updateMember() {
-    memberViewModel.updateMemberCommand.execute(
+    _memberViewModel.updateMemberCommand.run(
       MemberModel(
-        id: memberViewModel.getMemberCommand.value.id,
-        name: _nameController.text,
-        telephone: _telController.text,
-        type: _typeFieldKey.currentState?.value,
-        status: _statusFieldKey.currentState?.value,
+        id: _memberViewModel.member.value.id,
+        name: _memberViewModel.member.value.name,
+        telephone: _memberViewModel.member.value.telephone,
+        type: _memberViewModel.member.value.type,
+        status: _memberViewModel.member.value.status,
       ),
     );
-  }
-
-  void onPressedAdd(BuildContext context) {
-    _plateNumberController.text = '';
-    _plateProvinceController.text = '';
-    _brandController.text = '';
-    _colorController.text = '';
-    _telephoneController.text = '';
-
-    Alert(
-      context: context,
-      title: 'สร้างทะเบียนรถ',
-      content: Column(
-        children: [
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateNumberController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียน',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _resembleController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียนที่คล้าย',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateProvinceController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'จังหวัด',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _brandController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'ยี่ห้อ',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _colorController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'สี',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _telephoneController,
-            autocorrect: false,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: 'โทร.',
-              suffixIcon: const Icon(Icons.phone),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ],
-      ),
-      buttons: [
-        DialogButton(
-          onPressed: createVehicle,
-          child: const Text(
-            'สร้าง',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ],
-    ).show();
-  }
-
-  void onPressedEdit(BuildContext context, VehicleModel vehicle) {
-    _plateNumberController.text = vehicle.plateNumber!;
-    _resembleController.text = vehicle.resemble!;
-    _plateProvinceController.text = vehicle.plateProvince!;
-    _brandController.text = vehicle.brand!;
-    _colorController.text = vehicle.color!;
-    _telephoneController.text = vehicle.telephone!;
-
-    Alert(
-      context: context,
-      title: 'แก้ไขทะเบียนรถ',
-      content: Column(
-        children: [
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateNumberController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียน',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _resembleController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียนที่คล้าย',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateProvinceController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'จังหวัด',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _brandController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'ยี่ห้อ',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _colorController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'สี',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _telephoneController,
-            autocorrect: false,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: 'โทร.',
-              suffixIcon: const Icon(Icons.phone),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ],
-      ),
-      buttons: [
-        DialogButton(
-          onPressed: () {
-            updateVehicle(vehicle);
-          },
-          child: const Text(
-            'บันทึก',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-        DialogButton(
-          color: Colors.red,
-          onPressed: () {
-            alertDelete(vehicle);
-          },
-          child: const Text(
-            'ลบ',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ],
-    ).show();
   }
 
   void alertError(String msg) {
@@ -685,37 +458,10 @@ class _MemberScreenState extends State<MemberScreen> {
     );
   }
 
-  void createVehicle() {
-    final vehicle = VehicleModel(
-      memberId: widget.memberId,
-      plateNumber: _plateNumberController.text,
-      plateProvince: _plateProvinceController.text,
-      brand: _brandController.text,
-      color: _colorController.text,
-      telephone: _telephoneController.text,
-      resemble: _resembleController.text,
-    );
-
-    memberViewModel.createVehicleCommand.execute(vehicle);
-  }
-
-  void updateVehicle(VehicleModel vehicle) {
-    final updateVehicle = VehicleModel(
-      id: vehicle.id,
-      memberId: widget.memberId,
-      plateNumber: _plateNumberController.text,
-      plateProvince: _plateProvinceController.text,
-      brand: _brandController.text,
-      color: _colorController.text,
-      telephone: _telephoneController.text,
-      resemble: _resembleController.text,
-    );
-
-    memberViewModel.updateVehicleCommand.execute(updateVehicle);
-  }
-
-  void alertDelete(VehicleModel vehicle) {
-    Alert(
+  Future<void> alertDelete() async {
+    final vehicle = _memberViewModel.vehicleEditing.value;
+    if (vehicle == null) return;
+    await Alert(
       context: context,
       type: AlertType.warning,
       title: 'ยืนยัน การลบทะเบียน',
@@ -744,6 +490,6 @@ class _MemberScreenState extends State<MemberScreen> {
   }
 
   void deleteVehicle(VehicleModel vehicle) {
-    memberViewModel.deleteVehicleCommand.execute(vehicle.id);
+    _memberViewModel.deleteVehicleCommand.run(vehicle.id);
   }
 }

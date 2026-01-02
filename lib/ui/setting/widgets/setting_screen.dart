@@ -36,10 +36,10 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   void initState() {
     super.initState();
     if (!kIsWeb) {
-      printerViewModel.getPrinterListCommand.execute();
-      printerViewModel.getPrinterCommand.execute();
+      printerViewModel.getPrinterListCommand.run();
+      printerViewModel.getPrinterCommand.run();
     }
-    getCamera();
+    _getCameraList();
   }
 
   @override
@@ -130,16 +130,16 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     super.dispose();
   }
 
-  Future<void> getCamera() async {
+  Future<void> _getCameraList() async {
     await getIt<ApiService>()
         .getCameraList()
         .then((value) {
           setState(() {
             cameraList = value;
           });
-          final camera = ref.read(cameraMapProvider);
+          final cameraMap = ref.read(cameraMapProvider);
           for (final cam in cameraList) {
-            camera[cam.name] = cam;
+            cameraMap[cam.name] = cam;
           }
         })
         .onError((error, stackTrace) {
@@ -247,7 +247,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   }
 
   void saveCamera(CameraModel camera) {
-    camera = camera.copyWith(
+    final cameraUpdate = camera.copyWith(
       ipAddress: _ipAddressController.text,
       port: _portController.text,
       username: _usernameController.text,
@@ -255,10 +255,10 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       path: _pathController.text,
     );
     getIt<ApiService>()
-        .updateCamera(camera.id, camera)
+        .updateCamera(cameraUpdate.id, cameraUpdate)
         .then((value) {
           GoRouter.of(context).pop();
-          getCamera();
+          _getCameraList();
         })
         .onError((error, stackTrace) {
           alertError(error.toString());

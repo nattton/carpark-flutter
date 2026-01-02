@@ -357,7 +357,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     icon: const Icon(Icons.exit_to_app),
                     onTap: (page, _) {
                       selectedPage('LOGOUT');
-                      logoutViewModel.logoutCommand.execute();
+                      logoutViewModel.logoutCommand.run();
                     },
                   ),
                 ],

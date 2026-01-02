@@ -1,9 +1,9 @@
 import 'package:carpark/config/constants.dart';
 import 'package:carpark/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:carpark/utils/result.dart';
-import 'package:command_it/command_it.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     try {
-      widget.loginViewModel.loginCommand.execute((
+      widget.loginViewModel.loginCommand.run((
         _usernameController.text,
         _passwordController.text,
       ));
