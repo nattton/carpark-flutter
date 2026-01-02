@@ -106,7 +106,7 @@ class MemberRepositoryRemote extends MemberRepository {
   Future<Result<ResponseModel>> updateVehicle(VehicleModel vehicle) async {
     try {
       final response = await _apiService.updateVehicle(
-        vehicle.memberId!,
+        vehicle.id!,
         UpdateVehicleRequest(
           id: vehicle.id,
           memberId: vehicle.memberId,

@@ -4,6 +4,7 @@ import 'package:carpark/domain/models/member/vehicle_model.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
+import 'package:carpark/ui/member/widgets/vehicle_form_widget.dart';
 import 'package:carpark/ui/member/widgets/vehicle_header_card.dart';
 import 'package:carpark/ui/member/widgets/vehicle_list_card.dart';
 import 'package:flutter/material.dart';
@@ -27,43 +28,15 @@ class MemberScreen extends WatchingStatefulWidget {
 class _MemberScreenState extends State<MemberScreen> {
   MemberViewModel get _memberViewModel => getIt<MemberViewModel>();
 
-  final _nameController = TextEditingController();
-  final _telController = TextEditingController();
-  final _typeFieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderRadioGroup<String>, String>>();
-  final _statusFieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderRadioGroup<String>, String>>();
-
-  final _plateNumberController = TextEditingController();
-  final _resembleController = TextEditingController();
-  final _plateProvinceController = TextEditingController();
-  final _brandController = TextEditingController();
-  final _colorController = TextEditingController();
-  final _telephoneController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _memberViewModel.getMemberCommand.run(widget.memberId);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _telController.dispose();
-
-    _plateNumberController.dispose();
-    _resembleController.dispose();
-    _plateProvinceController.dispose();
-    _brandController.dispose();
-    _colorController.dispose();
-    _telephoneController.dispose();
-
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    // 1. One-time initialization
+    callOnce((_) => _memberViewModel.getMemberCommand.run(widget.memberId));
+
+    // 2. Register handlers
+    _registerHandler();
+
+    // 3. Watch reactive state
     final isRunning = watchValue(
       (MemberViewModel viewModel) => viewModel.getMemberCommand.isRunning,
     );
@@ -72,11 +45,8 @@ class _MemberScreenState extends State<MemberScreen> {
       (MemberViewModel viewModel) => viewModel.member,
     );
 
-    _registerHandler();
-
-    if (isRunning) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    // 4. Build UI
+    if (isRunning) return const Center(child: CircularProgressIndicator());
 
     return Scaffold(
       appBar: AppBar(title: const Text('แก้ไขข้อมูลสมาชิก')),
@@ -94,8 +64,8 @@ class _MemberScreenState extends State<MemberScreen> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: TextField(
-                      controller: _nameController,
+                    child: TextFormField(
+                      initialValue: member.name,
                       autocorrect: false,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -106,12 +76,18 @@ class _MemberScreenState extends State<MemberScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(name: value);
+                      },
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: TextField(
-                      controller: _telController,
+                    child: TextFormField(
+                      initialValue: member.telephone,
                       autocorrect: false,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
@@ -122,6 +98,12 @@ class _MemberScreenState extends State<MemberScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+                      onChanged: (value) {
+                        _memberViewModel.member.value = _memberViewModel
+                            .member
+                            .value
+                            .copyWith(telephone: value);
+                      },
                     ),
                   ),
                 ],
@@ -131,7 +113,6 @@ class _MemberScreenState extends State<MemberScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: FormBuilderRadioGroup<String>(
-                      key: _typeFieldKey,
                       decoration: InputDecoration(
                         labelText: 'Type',
                         contentPadding: const EdgeInsets.all(20),
@@ -158,7 +139,6 @@ class _MemberScreenState extends State<MemberScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: FormBuilderRadioGroup<String>(
-                      key: _statusFieldKey,
                       decoration: InputDecoration(
                         labelText: 'Status',
                         contentPadding: const EdgeInsets.all(20),
@@ -206,7 +186,7 @@ class _MemberScreenState extends State<MemberScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green, // Background color
                       ),
-                      onPressed: () => onPressedAdd(context),
+                      onPressed: () => _memberViewModel.newVehicleCommand.run(),
                       child: const Text('สร้างทะเบียนรถ'),
                     ),
                   ),
@@ -235,7 +215,9 @@ class _MemberScreenState extends State<MemberScreen> {
               itemBuilder: (context, index) {
                 return VehicleListCard(
                   vehicle: member.vehicles![index],
-                  onTap: () => onPressedEdit(context, member.vehicles![index]),
+                  onTap: () => _memberViewModel.editVehicleCommand.run(
+                    member.vehicles![index],
+                  ),
                 );
               },
             ),
@@ -258,16 +240,6 @@ class _MemberScreenState extends State<MemberScreen> {
       select: (MemberViewModel viewModel) =>
           viewModel.createMemberCommand.errors,
       handler: _onCreateError,
-    );
-
-    registerHandler(
-      select: (MemberViewModel viewModel) => viewModel.getMemberCommand,
-      handler: (context, value, cancel) {
-        _nameController.text = value.name ?? '';
-        _telController.text = value.telephone ?? '';
-        _typeFieldKey.currentState?.didChange(value.type);
-        _statusFieldKey.currentState?.didChange(value.status);
-      },
     );
 
     registerHandler(
@@ -301,6 +273,54 @@ class _MemberScreenState extends State<MemberScreen> {
     );
 
     registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.newVehicleCommand,
+      handler: (context, _, _) async {
+        await Alert(
+          context: context,
+          title: 'สร้างทะเบียนรถ',
+          content: const VehicleFormWidget(),
+          buttons: [
+            DialogButton(
+              onPressed: _memberViewModel.createVehicleCommand.run,
+              child: const Text(
+                'สร้าง',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ],
+        ).show();
+      },
+    );
+
+    registerHandler(
+      select: (MemberViewModel viweModel) => viweModel.editVehicleCommand,
+      handler: (context, _, _) async {
+        await Alert(
+          context: context,
+          title: 'แก้ไขทะเบียนรถ',
+          content: const VehicleFormWidget(),
+          buttons: [
+            DialogButton(
+              onPressed: _memberViewModel.updateVehicleCommand.run,
+              child: const Text(
+                'บันทึก',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            DialogButton(
+              color: Colors.red,
+              onPressed: alertDelete,
+              child: const Text(
+                'ลบ',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ],
+        ).show();
+      },
+    );
+
+    registerHandler(
       select: (MemberViewModel viweModel) => viweModel.createVehicleCommand,
       handler: (context, value, cancel) {
         ScaffoldMessenger.of(
@@ -309,7 +329,6 @@ class _MemberScreenState extends State<MemberScreen> {
           const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
         );
         GoRouter.of(context).pop();
-        _memberViewModel.getMemberCommand.run(widget.memberId);
       },
     );
 
@@ -328,7 +347,6 @@ class _MemberScreenState extends State<MemberScreen> {
           const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
         );
         GoRouter.of(context).pop();
-        _memberViewModel.getMemberCommand.run(widget.memberId);
       },
     );
 
@@ -345,7 +363,6 @@ class _MemberScreenState extends State<MemberScreen> {
           context,
         ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
         GoRouter.of(context).pop();
-        _memberViewModel.getMemberCommand.run(widget.memberId);
       },
     );
 
@@ -400,8 +417,8 @@ class _MemberScreenState extends State<MemberScreen> {
     _memberViewModel.createMemberCommand.run(
       MemberModel(
         id: 0,
-        name: _nameController.text,
-        telephone: _telController.text,
+        name: _memberViewModel.member.value.name,
+        telephone: _memberViewModel.member.value.telephone,
         type: _memberViewModel.member.value.type,
         status: _memberViewModel.member.value.status,
         vehicles: [],
@@ -413,245 +430,12 @@ class _MemberScreenState extends State<MemberScreen> {
     _memberViewModel.updateMemberCommand.run(
       MemberModel(
         id: _memberViewModel.member.value.id,
-        name: _nameController.text,
-        telephone: _telController.text,
+        name: _memberViewModel.member.value.name,
+        telephone: _memberViewModel.member.value.telephone,
         type: _memberViewModel.member.value.type,
         status: _memberViewModel.member.value.status,
       ),
     );
-  }
-
-  void onPressedAdd(BuildContext context) {
-    _plateNumberController.text = '';
-    _plateProvinceController.text = '';
-    _brandController.text = '';
-    _colorController.text = '';
-    _telephoneController.text = '';
-
-    Alert(
-      context: context,
-      title: 'สร้างทะเบียนรถ',
-      content: Column(
-        children: [
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateNumberController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียน',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _resembleController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียนที่คล้าย',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateProvinceController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'จังหวัด',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _brandController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'ยี่ห้อ',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _colorController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'สี',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _telephoneController,
-            autocorrect: false,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: 'โทร.',
-              suffixIcon: const Icon(Icons.phone),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ],
-      ),
-      buttons: [
-        DialogButton(
-          onPressed: createVehicle,
-          child: const Text(
-            'สร้าง',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ],
-    ).show();
-  }
-
-  void onPressedEdit(BuildContext context, VehicleModel vehicle) {
-    _plateNumberController.text = vehicle.plateNumber!;
-    _resembleController.text = vehicle.resemble!;
-    _plateProvinceController.text = vehicle.plateProvince!;
-    _brandController.text = vehicle.brand!;
-    _colorController.text = vehicle.color!;
-    _telephoneController.text = vehicle.telephone!;
-
-    Alert(
-      context: context,
-      title: 'แก้ไขทะเบียนรถ',
-      content: Column(
-        children: [
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateNumberController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียน',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _resembleController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'เลขทะเบียนที่คล้าย',
-              suffixIcon: const Icon(Icons.text_format),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _plateProvinceController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'จังหวัด',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _brandController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'ยี่ห้อ',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _colorController,
-            autocorrect: false,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: 'สี',
-              suffixIcon: const Icon(Icons.text_fields),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _telephoneController,
-            autocorrect: false,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: 'โทร.',
-              suffixIcon: const Icon(Icons.phone),
-              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ],
-      ),
-      buttons: [
-        DialogButton(
-          onPressed: () {
-            updateVehicle(vehicle);
-          },
-          child: const Text(
-            'บันทึก',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-        DialogButton(
-          color: Colors.red,
-          onPressed: () {
-            alertDelete(vehicle);
-          },
-          child: const Text(
-            'ลบ',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ],
-    ).show();
   }
 
   void alertError(String msg) {
@@ -674,37 +458,10 @@ class _MemberScreenState extends State<MemberScreen> {
     );
   }
 
-  void createVehicle() {
-    final vehicle = VehicleModel(
-      memberId: widget.memberId,
-      plateNumber: _plateNumberController.text,
-      plateProvince: _plateProvinceController.text,
-      brand: _brandController.text,
-      color: _colorController.text,
-      telephone: _telephoneController.text,
-      resemble: _resembleController.text,
-    );
-
-    _memberViewModel.createVehicleCommand.run(vehicle);
-  }
-
-  void updateVehicle(VehicleModel vehicle) {
-    final updateVehicle = VehicleModel(
-      id: vehicle.id,
-      memberId: widget.memberId,
-      plateNumber: _plateNumberController.text,
-      plateProvince: _plateProvinceController.text,
-      brand: _brandController.text,
-      color: _colorController.text,
-      telephone: _telephoneController.text,
-      resemble: _resembleController.text,
-    );
-
-    _memberViewModel.updateVehicleCommand.run(updateVehicle);
-  }
-
-  void alertDelete(VehicleModel vehicle) {
-    Alert(
+  Future<void> alertDelete() async {
+    final vehicle = _memberViewModel.vehicleEditing.value;
+    if (vehicle == null) return;
+    await Alert(
       context: context,
       type: AlertType.warning,
       title: 'ยืนยัน การลบทะเบียน',

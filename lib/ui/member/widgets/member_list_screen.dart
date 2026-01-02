@@ -107,8 +107,9 @@ class _MemberListScreenState extends State<MemberListScreen> {
     _memberListBloc.add(FilterMemberList(text));
   }
 
-  void onPressedAddMember() {
-    context.push(Routes.member);
+  Future<void> onPressedAddMember() async {
+    await context.push(Routes.member);
+    _memberListBloc.add(LoadMemberList());
   }
 
   Excel generateExcel() {

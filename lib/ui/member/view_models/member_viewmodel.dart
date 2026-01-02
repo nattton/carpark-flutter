@@ -26,21 +26,26 @@ class MemberViewModel extends ChangeNotifier {
       },
     );
 
-    getMemberCommand = Command.createAsync<int, MemberModel>(
-      initialValue: MemberModel.empty(),
+    getMemberCommand = Command.createAsyncNoResult<int>(
       (params) async {
         if (params == 0) {
-          return MemberModel.empty();
+          member.value = MemberModel.empty();
+          return;
         }
         final result = await _memberRepository.getMember(params);
         switch (result) {
           case Ok<MemberModel>():
             member.value = result.value;
-            return result.value;
           case Error<MemberModel>():
             _log.warning('Get member failed! ${result.error}');
             throw result.error;
         }
+      },
+    );
+
+    reloadMemberCommand = Command.createAsyncNoParamNoResult(
+      () async {
+        getMemberCommand.run(member.value.id);
       },
     );
 
@@ -56,28 +61,51 @@ class MemberViewModel extends ChangeNotifier {
           },
         );
 
-    createVehicleCommand =
-        Command.createAsync<VehicleModel, Result<ResponseModel>>(
-          initialValue: const Result.ok(ResponseModel()),
-          (params) async {
-            final result = await _memberRepository.createVehicle(params);
-            if (result is Error<ResponseModel>) {
-              _log.warning('Create vehicle failed! ${result.error}');
-            }
-            return result;
-          },
-        );
+    newVehicleCommand = Command.createSyncNoParamNoResult(() {
+      vehicleEditing.value = VehicleModel(memberId: member.value.id);
+    });
 
-    updateVehicleCommand = Command.createAsync(
+    editVehicleCommand = Command.createSyncNoResult<VehicleModel>((params) {
+      vehicleEditing.value = params.copyWith(memberId: member.value.id);
+    });
+
+    createVehicleCommand = Command.createAsyncNoParam<Result<ResponseModel>>(
       initialValue: const Result.ok(ResponseModel()),
-      (params) async {
-        final result = await _memberRepository.updateVehicle(params);
+      () async {
+        final vehicle = vehicleEditing.value;
+        if (vehicle == null) {
+          return Result.error(Exception('vehicle is empty!'));
+        }
+
+        final result = await _memberRepository.createVehicle(
+          vehicle,
+        );
         if (result is Error<ResponseModel>) {
-          _log.warning('Update vehicle failed! ${result.error}');
+          _log.warning('Create vehicle failed! ${result.error}');
+        } else {
+          vehicleEditing.value = null;
         }
         return result;
       },
-    );
+    )..pipeToCommand(reloadMemberCommand);
+
+    updateVehicleCommand = Command.createAsyncNoParam<Result<ResponseModel>>(
+      initialValue: const Result.ok(ResponseModel()),
+      () async {
+        final vehicle = vehicleEditing.value;
+        if (vehicle == null) {
+          return Result.error(Exception('vehicle is empty!'));
+        }
+
+        final result = await _memberRepository.updateVehicle(vehicle);
+        if (result is Error<ResponseModel>) {
+          _log.warning('Update vehicle failed! ${result.error}');
+        } else {
+          vehicleEditing.value = null;
+        }
+        return result;
+      },
+    )..pipeToCommand(reloadMemberCommand);
 
     deleteVehicleCommand = Command.createAsync(
       initialValue: const Result.ok(null),
@@ -90,7 +118,7 @@ class MemberViewModel extends ChangeNotifier {
         }
         return result;
       },
-    );
+    )..pipeToCommand(reloadMemberCommand);
   }
   final MemberRepository _memberRepository;
   final _log = Logger('MemberViewModel');
@@ -98,10 +126,14 @@ class MemberViewModel extends ChangeNotifier {
   final member = ValueNotifier<MemberModel>(
     MemberModel.empty(),
   );
+  final vehicleEditing = ValueNotifier<VehicleModel?>(null);
   late Command<MemberModel, MemberModel> createMemberCommand;
-  late Command<int, MemberModel> getMemberCommand;
+  late Command<int, void> getMemberCommand;
+  late Command<void, void> reloadMemberCommand;
   late Command<MemberModel, Result<ResponseModel>> updateMemberCommand;
-  late Command<VehicleModel, Result<ResponseModel>> createVehicleCommand;
-  late Command<VehicleModel, Result<ResponseModel>> updateVehicleCommand;
+  late Command<void, void> newVehicleCommand;
+  late Command<VehicleModel, void> editVehicleCommand;
+  late Command<void, Result<ResponseModel>> createVehicleCommand;
+  late Command<void, Result<ResponseModel>> updateVehicleCommand;
   late Command<int, Result<void>> deleteVehicleCommand;
 }
