@@ -43,6 +43,7 @@ class LoginViewModel {
         }
         username.value = '';
         password.value = '';
+        obscurePassword.value = true;
         return result;
       },
     );
