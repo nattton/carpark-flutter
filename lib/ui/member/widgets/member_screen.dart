@@ -14,24 +14,19 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class MemberScreen extends WatchingStatefulWidget {
+class MemberScreen extends WatchingWidget {
   const MemberScreen({
     required this.memberId,
     super.key,
   });
 
   final int memberId;
-  @override
-  State<MemberScreen> createState() => _MemberScreenState();
-}
-
-class _MemberScreenState extends State<MemberScreen> {
   MemberViewModel get _memberViewModel => getIt<MemberViewModel>();
 
   @override
   Widget build(BuildContext context) {
     // 1. One-time initialization
-    callOnce((_) => _memberViewModel.getMemberCommand.run(widget.memberId));
+    callOnce((_) => _memberViewModel.getMemberCommand.run(memberId));
 
     // 2. Register handlers
     _registerHandler();
@@ -193,7 +188,7 @@ class _MemberScreenState extends State<MemberScreen> {
                 ),
               ],
             ),
-          if (widget.memberId == 0)
+          if (memberId == 0)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -250,7 +245,7 @@ class _MemberScreenState extends State<MemberScreen> {
         ).showSnackBar(
           const SnackBar(content: Text('ไม่สามารถดึงข้อมูลได้')),
         );
-        GoRouter.of(context).pop();
+        context.pop();
       },
     );
 
@@ -262,7 +257,7 @@ class _MemberScreenState extends State<MemberScreen> {
         ).showSnackBar(
           const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
         );
-        _memberViewModel.getMemberCommand.run(widget.memberId);
+        _memberViewModel.getMemberCommand.run(memberId);
       },
     );
 
@@ -309,7 +304,7 @@ class _MemberScreenState extends State<MemberScreen> {
             ),
             DialogButton(
               color: Colors.red,
-              onPressed: alertDelete,
+              onPressed: () => alertDelete(context),
               child: const Text(
                 'ลบ',
                 style: TextStyle(color: Colors.white, fontSize: 20),
@@ -346,7 +341,7 @@ class _MemberScreenState extends State<MemberScreen> {
         ).showSnackBar(
           const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
         );
-        GoRouter.of(context).pop();
+        context.pop();
       },
     );
 
@@ -362,7 +357,7 @@ class _MemberScreenState extends State<MemberScreen> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('ลบข้อมูลเรียบร้อย')));
-        GoRouter.of(context).pop();
+        context.pop();
       },
     );
 
@@ -438,27 +433,7 @@ class _MemberScreenState extends State<MemberScreen> {
     );
   }
 
-  void alertError(String msg) {
-    showDialog<Widget>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Alert Message'),
-          content: Text(msg),
-          actions: [
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> alertDelete() async {
+  Future<void> alertDelete(BuildContext context) async {
     final vehicle = _memberViewModel.vehicleEditing.value;
     if (vehicle == null) return;
     await Alert(

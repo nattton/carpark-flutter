@@ -1,7 +1,6 @@
 import 'package:carpark/data/repositories/auth/auth_repository.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
-import 'package:carpark/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:carpark/ui/auth/login/widgets/login_screen.dart';
 import 'package:carpark/ui/auth/logout/view_models/logout_viewmodel.dart';
 import 'package:carpark/ui/home/view_models/home_viewmodel.dart';
@@ -22,8 +21,8 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
   routes: [
     GoRoute(
       path: Routes.login,
-      pageBuilder: (context, state) => NoTransitionPage(
-        child: LoginScreen(loginViewModel: getIt<LoginViewModel>()),
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: LoginScreen(),
       ),
     ),
     GoRoute(
