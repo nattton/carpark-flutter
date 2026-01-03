@@ -169,7 +169,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i515.RegisteredUserServiceDataSource>(),
       ),
     );
-    gh.factory<_i1068.LoginViewModel>(
+    gh.singleton<_i1068.LoginViewModel>(
       () => _i1068.LoginViewModel(authRepository: gh<_i401.AuthRepository>()),
     );
     gh.factory<_i337.LogoutViewModel>(

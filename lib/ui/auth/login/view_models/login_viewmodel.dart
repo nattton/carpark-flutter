@@ -1,32 +1,58 @@
 import 'package:carpark/data/repositories/auth/auth_repository.dart';
 import 'package:carpark/utils/result.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
-@injectable
-class LoginViewModel extends ChangeNotifier {
+@singleton
+class LoginViewModel {
   LoginViewModel({required AuthRepository authRepository})
     : _authRepository = authRepository {
-    loginCommand =
-        Command.createAsync<(String username, String password), Result<void>>(
-          initialValue: const Result.ok(null),
-          (params) async {
-            final (username, password) = params;
-            final result = await _authRepository.login(
-              username: username,
-              password: password,
-            );
-            if (result is Error<void>) {
-              _log.warning('Login failed! ${result.error}');
-            }
-            return result;
-          },
+    loginCommand = Command.createAsyncNoParam<Result<void>>(
+      initialValue: const Result.ok(null),
+      () async {
+        final usernameValue = username.value;
+        final passwordValue = password.value;
+        if (usernameValue.isEmpty || passwordValue.isEmpty) {
+          throw Exception('Username and password are required');
+        }
+
+        if (usernameValue.length < 3 || passwordValue.length < 3) {
+          throw Exception(
+            'Username and password must be at least 3 characters',
+          );
+        }
+
+        final result = await _authRepository.login(
+          username: usernameValue,
+          password: passwordValue,
         );
+        if (result is Error<void>) {
+          _log.warning('Login failed! ${result.error}');
+          final error = result.error;
+          if (error is DioException) {
+            if (error.response?.data is Map) {
+              final res = error.response?.data as Map;
+              throw Exception(res['message']);
+            }
+            throw error;
+          }
+          throw result.error;
+        }
+        username.value = '';
+        password.value = '';
+        obscurePassword.value = true;
+        return result;
+      },
+    );
   }
   final AuthRepository _authRepository;
   final _log = Logger('LoginViewModel');
 
-  late Command<(String, String), Result<void>> loginCommand;
+  late Command<void, Result<void>> loginCommand;
+  final username = ValueNotifier<String>('');
+  final password = ValueNotifier<String>('');
+  final obscurePassword = ValueNotifier<bool>(true);
 }
