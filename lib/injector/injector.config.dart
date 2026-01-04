@@ -65,7 +65,10 @@ import '../features/gateway/domain/repository/id_card_service_repository.dart'
     as _i325;
 import '../ui/auth/login/view_models/login_viewmodel.dart' as _i1068;
 import '../ui/auth/logout/view_models/logout_viewmodel.dart' as _i337;
+import '../ui/gate_log/view_models/gate_log_viewmodel.dart' as _i63;
 import '../ui/home/view_models/home_viewmodel.dart' as _i152;
+import '../ui/home/view_models/late_gate_viewmodel.dart' as _i80;
+import '../ui/live_player/view_models/live_player_viewmodel.dart' as _i272;
 import '../ui/member/bloc/member_list/member_list_bloc.dart' as _i1056;
 import '../ui/member/view_models/member_viewmodel.dart' as _i692;
 import '../ui/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart'
@@ -107,8 +110,8 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferencesModule.sharedPreferences,
       preResolve: true,
     );
-    gh.factory<_i152.HomeViewModel>(() => _i152.HomeViewModel());
     gh.singleton<_i361.Dio>(() => dioModule.dio);
+    gh.singleton<_i152.HomeViewModel>(() => _i152.HomeViewModel());
     gh.singleton<_i401.AuthRepository>(
       () => _i860.AuthRepositoryDev(),
       registerFor: {_dev},
@@ -138,6 +141,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1028.IdCardServiceRepositoryImpl(
         gh<_i680.IdCardServiceDataSource>(),
       ),
+    );
+    gh.singleton<_i63.GateLogViewmodel>(
+      () => _i63.GateLogViewmodel(apiService: gh<_i552.ApiService>()),
+    );
+    gh.singleton<_i80.LastGateViewmodel>(
+      () => _i80.LastGateViewmodel(apiService: gh<_i552.ApiService>()),
+    );
+    gh.singleton<_i272.LivePlayerViewmodel>(
+      () => _i272.LivePlayerViewmodel(apiService: gh<_i552.ApiService>()),
     );
     gh.factory<_i379.MemberRepository>(
       () => _i155.MemberRepositoryRemote(apiService: gh<_i552.ApiService>()),
@@ -172,7 +184,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i1068.LoginViewModel>(
       () => _i1068.LoginViewModel(authRepository: gh<_i401.AuthRepository>()),
     );
-    gh.factory<_i337.LogoutViewModel>(
+    gh.singleton<_i337.LogoutViewModel>(
       () => _i337.LogoutViewModel(authRepository: gh<_i401.AuthRepository>()),
     );
     gh.factory<_i1056.MemberListBloc>(

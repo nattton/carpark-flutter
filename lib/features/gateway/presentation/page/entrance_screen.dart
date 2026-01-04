@@ -10,12 +10,14 @@ import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
 import 'package:carpark/features/gateway/domain/repository/id_card_service_repository.dart';
 import 'package:carpark/features/gateway/presentation/widget/entrance_card.dart';
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
-import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/rounting/routes.dart';
-import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/home/view_models/late_gate_viewmodel.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
+import 'package:carpark/ui/live_player/widgets/card_player_widget.dart';
+import 'package:carpark/ui/live_player/widgets/live_player_widget.dart';
 import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
 import 'package:carpark/ui/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
 import 'package:charset_converter/charset_converter.dart';
@@ -27,23 +29,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
 
 enum EntranceScreenLeftState { initial, visitor, checkIn }
 
-class EntranceScreen extends StatefulHookConsumerWidget {
+class EntranceScreen extends WatchingStatefulWidget {
   const EntranceScreen({super.key});
 
   @override
-  ConsumerState<EntranceScreen> createState() => _EntranceScreenState();
+  State<EntranceScreen> createState() => _EntranceScreenState();
 
   static Widget get page => MultiBlocProvider(
     providers: [
@@ -53,7 +54,7 @@ class EntranceScreen extends StatefulHookConsumerWidget {
   );
 }
 
-class _EntranceScreenState extends ConsumerState<EntranceScreen> {
+class _EntranceScreenState extends State<EntranceScreen> {
   final _log = Logger('EntranceScreen');
 
   PrinterRepository get _printerRepository => context.read<PrinterRepository>();
@@ -108,9 +109,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final gateLog = ref.watch(lastGateProvider).gateIn;
-    final gateLogOut = ref.watch(lastGateProvider).gateOut;
-    final player = ref.watch(cameraPlayerProvider);
+    final gateLogIn = watchValue(
+      (LastGateViewmodel viewModel) => viewModel.gateIn,
+    );
+
     return BlocListener<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
       listener: (context, state) {
         if (state is RegisteredUserCheckInSuccess) {
@@ -119,7 +121,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
           alertError(state.failure.message);
         }
       },
-      child: gateLog.id != 0
+      child: gateLogIn.id != 0
           ? Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -207,14 +209,11 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                       ],
                     ),
                   ),
-                  Expanded(
+                  const Expanded(
                     child: !kIsWeb
-                        ? LivePlayerSection(
-                            mainController: player.mainController,
-                            sideController: player.sideController,
-                          )
+                        ? LivePlayerWidget()
                         : Column(
-                            children: [ExitCard(gateLog: gateLogOut)],
+                            children: [ExitCard()],
                           ),
                   ),
                 ],
@@ -234,10 +233,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildViewer() {
-    final gateLog = ref.watch(lastGateProvider).gateIn;
+    final gateLogIn = getIt<LastGateViewmodel>().gateIn.value;
     return EntranceCard(
-      gateLog: gateLog,
-      onTapSelectGateLog: () => showVisitorFromSelect(gateLog),
+      gateLog: gateLogIn,
+      onTapSelectGateLog: () => showVisitorFromSelect(gateLogIn),
     );
   }
 
@@ -259,7 +258,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildVisitorForm() {
-    final player = ref.watch(cameraPlayerProvider);
     return Card(
       child: Container(
         padding: const EdgeInsets.all(6),
@@ -475,12 +473,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
             ),
             Visibility(
               visible: !_isReadDrivingLicence && !_isReadCard,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width / 2 - 60,
-                height:
-                    (MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0,
-                child: Video(controller: player.cardController, controls: null),
-              ),
+              child: const CardPlayerWidget(),
             ),
           ],
         ),
@@ -607,7 +600,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Future<List<int>> _generateTicket(VisitorModel visitor) async {
-    final gateLog = ref.watch(lastGateProvider).gateIn;
+    final gateLogIn = getIt<LastGateViewmodel>().gateIn.value;
     var bytes = <int>[];
     // Using default profile
     final profile = await CapabilityProfile.load();
@@ -641,14 +634,14 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
     );
 
     bytes += generator.textEncoded(
-      await charsetConvert('วันที่ : ${gateLog.dateFormat()}'),
+      await charsetConvert('วันที่ : ${gateLogIn.dateFormat()}'),
       styles: const PosStyles(
         height: PosTextSize.size2,
         width: PosTextSize.size2,
       ),
     );
     bytes += generator.textEncoded(
-      await charsetConvert('เวลา : ${gateLog.timeFormat()}'),
+      await charsetConvert('เวลา : ${gateLogIn.timeFormat()}'),
       styles: const PosStyles(
         height: PosTextSize.size2,
         width: PosTextSize.size2,
@@ -763,7 +756,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Future<void> addImageToVisitor(VisitorModel visitor) async {
-    final cameraPlayer = ref.watch(cameraPlayerProvider);
+    final cameraPlayer = getIt<LivePlayerViewmodel>();
     final cardImage = await _tempImage('card');
     final inSideImage = await _tempImage('in_side');
     final entranceImage = await _tempImage('entrance');

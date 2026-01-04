@@ -2,26 +2,25 @@ import 'package:carpark/config/constants.dart';
 import 'package:carpark/data/services/api/api_service.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/camera_model.dart';
-import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
 import 'package:carpark/ui/setting/printer/view_models/printer_viewmodel.dart';
 import 'package:carpark/ui/setting/widgets/camera_list_card.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class SettingScreen extends ConsumerStatefulWidget {
+class SettingScreen extends WatchingStatefulWidget {
   const SettingScreen({required this.printerViewModel, super.key});
   final PrinterViewModel printerViewModel;
 
   @override
-  ConsumerState<SettingScreen> createState() => _SettingScreenState();
+  State<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _SettingScreenState extends ConsumerState<SettingScreen> {
+class _SettingScreenState extends State<SettingScreen> {
   PrinterViewModel get printerViewModel => widget.printerViewModel;
-  List<CameraModel> cameraList = [];
   final _ipAddressController = TextEditingController();
   final _portController = TextEditingController();
   final _usernameController = TextEditingController();
@@ -39,11 +38,14 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       printerViewModel.getPrinterListCommand.run();
       printerViewModel.getPrinterCommand.run();
     }
-    _getCameraList();
+    getIt<LivePlayerViewmodel>().getCameraCommand.run();
   }
 
   @override
   Widget build(BuildContext context) {
+    final cameraList = watchValue(
+      (LivePlayerViewmodel viewModel) => viewModel.cameraList,
+    );
     return ListView.builder(
       itemCount: cameraList.length + 2,
       itemBuilder: (context, index) {
@@ -128,23 +130,6 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     _passwordController.dispose();
     _pathController.dispose();
     super.dispose();
-  }
-
-  Future<void> _getCameraList() async {
-    await getIt<ApiService>()
-        .getCameraList()
-        .then((value) {
-          setState(() {
-            cameraList = value;
-          });
-          final cameraMap = ref.read(cameraMapProvider);
-          for (final cam in cameraList) {
-            cameraMap[cam.name] = cam;
-          }
-        })
-        .onError((error, stackTrace) {
-          alertError(error.toString());
-        });
   }
 
   void onPressedRow(BuildContext context, CameraModel camera) {
@@ -258,7 +243,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
         .updateCamera(cameraUpdate.id, cameraUpdate)
         .then((value) {
           GoRouter.of(context).pop();
-          _getCameraList();
+          getIt<LivePlayerViewmodel>().getCameraCommand.run();
         })
         .onError((error, stackTrace) {
           alertError(error.toString());

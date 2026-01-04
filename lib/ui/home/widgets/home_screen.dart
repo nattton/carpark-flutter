@@ -3,15 +3,14 @@ import 'dart:io';
 
 import 'package:carpark/config/app_config_provider.dart';
 import 'package:carpark/config/constants.dart';
-import 'package:carpark/data/services/api/api_service.dart';
 import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart';
 import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
 import 'package:carpark/injector/injector.dart';
-import 'package:carpark/models/models.dart';
-import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/ui/auth/logout/view_models/logout_viewmodel.dart';
 import 'package:carpark/ui/gate_log/widgets/gate_log_screen.dart';
 import 'package:carpark/ui/home/view_models/home_viewmodel.dart';
+import 'package:carpark/ui/home/view_models/late_gate_viewmodel.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
 import 'package:carpark/ui/member/widgets/member_list_screen.dart';
 import 'package:carpark/ui/registered_user/widgets/page/registered_user_list_screen.dart';
 import 'package:carpark/ui/registered_user/widgets/page/registered_user_not_check_out_screen.dart';
@@ -23,43 +22,23 @@ import 'package:carpark/ui/visitor/widgets/visitor_screen.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:logging/logging.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-final lastGateProvider = StateNotifierProvider<LastGateNotifier, LastGate>(
-  (ref) => LastGateNotifier(
-    LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)),
-  ),
-);
-
-final cameraMapProvider = Provider<Map<String, CameraModel>>(
-  (ref) => <String, CameraModel>{},
-);
-
-final cameraPlayerProvider = Provider<CameraPlayer>(
-  (ref) => CameraPlayer.initialize(),
-);
-
-class HomeScreen extends StatefulHookConsumerWidget {
+class HomeScreen extends WatchingStatefulWidget {
   const HomeScreen({
-    required this.homeViewModel,
-    required this.logoutViewModel,
     super.key,
   });
 
-  final HomeViewModel homeViewModel;
-  final LogoutViewModel logoutViewModel;
-
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final _log = Logger('HomeScreen');
-  HomeViewModel get homeViewModel => widget.homeViewModel;
-  LogoutViewModel get logoutViewModel => widget.logoutViewModel;
+  HomeViewModel get homeViewModel => getIt<HomeViewModel>();
+  LogoutViewModel get logoutViewModel => getIt<LogoutViewModel>();
 
   late WebSocket channel;
 
@@ -72,11 +51,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> initWebSocketChannelConnection() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
     final channel = WebSocketChannel.connect(Uri.parse(getWsUrl()));
     channel.stream.listen((streamData) {
       _log.info(streamData);
-      lastGate.setFromJson(streamData as String);
+      getIt<LastGateViewmodel>().setLastGateFromJsonCommand.run(
+        streamData as String,
+      );
     });
   }
 
@@ -89,11 +69,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void broadcastNotifications() {
-    final lastGate = ref.read(lastGateProvider.notifier);
     channel.listen(
       (streamData) {
         _log.info(streamData);
-        lastGate.setFromJson(streamData as String);
+        getIt<LastGateViewmodel>().setLastGateFromJsonCommand.run(
+          streamData as String,
+        );
       },
       onDone: () {
         _log.info('conecting aborted');
@@ -129,19 +110,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       initWebSocketConnection();
     }
 
-    getLastGate();
-    getCameraList().then((value) {
-      if (!kIsWeb) {
-        final camera = value['ENTRANCE'];
-        final cameraSide = value['IN_SIDE'];
-        final cameraCard = value['CARD'];
-        ref.watch(cameraPlayerProvider)
-          ..setMainPlayer(camera!.toUrl())
-          ..setSidePlayer(cameraSide!.toUrl())
-          ..setCardPlayer(cameraCard!.toUrl());
-      }
-    });
-
     sideMenu.addListener((p0) {
       page.jumpToPage(p0);
     });
@@ -151,267 +119,210 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  Future<Map<String, CameraModel>> getCameraList() async {
-    final camera = ref.read(cameraMapProvider);
-    final data = await getIt<ApiService>().getCameraList();
-    for (final cam in data) {
-      camera[cam.name] = cam;
-    }
-    return camera;
-  }
-
-  Future<void> getLastGate() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    try {
-      final result = await getIt<ApiService>().getLastGate();
-      lastGate
-        ..setGateIn(result.gateIn)
-        ..setGateOut(result.gateOut);
-    } on Exception catch (e) {
-      alertError(e.toString());
-    }
-  }
-
-  Future<void> getLastGateIn() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    try {
-      final result = await getIt<ApiService>().getGateIn();
-      lastGate.setGateIn(result.gateLog);
-    } on Exception catch (e) {
-      alertError(e.toString());
-    }
-  }
-
-  Future<void> getLastGateOut() async {
-    final lastGate = ref.read(lastGateProvider.notifier);
-    try {
-      final result = await getIt<ApiService>().getGateOut();
-      lastGate.setGateOut(result.gateLog);
-    } on Exception catch (e) {
-      alertError(e.toString());
-    }
-  }
-
   void selectedPage(String page) {
-    final player = ref.read(cameraPlayerProvider);
-    final camera = ref.read(cameraMapProvider);
     switch (page) {
       case 'ENTRANCE':
-        getLastGateIn();
+        getIt<LastGateViewmodel>().getGateInCommand.run();
         if (!kIsWeb) {
-          final cam = camera['ENTRANCE'];
-          if (cam != null) {
-            player.setMainPlayer(cam.toUrl());
-          }
-          final cameraSide = camera['IN_SIDE'];
-          if (cameraSide != null) {
-            player.setSidePlayer(cameraSide.toUrl());
-          }
-          final cameraCard = camera['CARD'];
-          if (cameraCard != null) {
-            player.setCardPlayer(cameraCard.toUrl());
-          }
+          getIt<LivePlayerViewmodel>().playEntranceCommand.run();
         }
       case 'EXIT':
-        getLastGateOut();
+        getIt<LastGateViewmodel>().getGateOutCommand.run();
         if (!kIsWeb) {
-          final cam = camera['EXIT'];
-          if (cam != null) {
-            player.setMainPlayer(cam.toUrl());
-          }
-          final cameraSide = camera['OUT_SIDE'];
-          if (cameraSide != null) {
-            player.setSidePlayer(cameraSide.toUrl());
-          }
+          getIt<LivePlayerViewmodel>().playExitCommand.run();
         }
       default:
-        player.stopAll();
+        if (!kIsWeb) {
+          getIt<LivePlayerViewmodel>().stopAllCommand.run();
+        }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: homeViewModel,
-      builder: (context, _) {
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: kColorPrimary,
-            title: Text(
-              homeViewModel.title,
-              style: const TextStyle(color: Colors.white),
+    callOnce((_) => getIt<LastGateViewmodel>().getLastGateCommand.run());
+    if (!kIsWeb) {
+      callOnce((_) => getIt<LivePlayerViewmodel>().getCameraCommand.run());
+    }
+
+    final title = watchValue((HomeViewModel viewModel) => viewModel.title);
+
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: kColorPrimary,
+        title: Text(
+          title,
+          style: const TextStyle(color: Colors.white),
+        ),
+        automaticallyImplyLeading: false,
+      ),
+      body: Row(
+        children: [
+          SideMenu(
+            controller: sideMenu,
+            style: SideMenuStyle(
+              displayMode: SideMenuDisplayMode.compact,
+              openSideMenuWidth: 60,
+              compactSideMenuWidth: 60,
+              hoverColor: Colors.blue[100],
+              selectedColor: Colors.lightBlue,
+              selectedTitleTextStyle: const TextStyle(color: Colors.white),
+              selectedIconColor: Colors.white,
             ),
-            automaticallyImplyLeading: false,
-          ),
-          body: Row(
-            children: [
-              SideMenu(
-                controller: sideMenu,
-                style: SideMenuStyle(
-                  displayMode: SideMenuDisplayMode.compact,
-                  openSideMenuWidth: 60,
-                  compactSideMenuWidth: 60,
-                  hoverColor: Colors.blue[100],
-                  selectedColor: Colors.lightBlue,
-                  selectedTitleTextStyle: const TextStyle(color: Colors.white),
-                  selectedIconColor: Colors.white,
-                ),
-                items: [
-                  SideMenuItem(
-                    title: 'ทางเข้า',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('ทางเข้า');
-                      selectedPage('ENTRANCE');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.door_front_door_outlined),
-                    tooltipContent: 'ทางเข้า',
-                  ),
-                  SideMenuItem(
-                    title: 'ทางออก',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('ทางออก');
-                      selectedPage('EXIT');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.door_back_door_outlined),
-                    tooltipContent: 'ทางออก',
-                  ),
-                  SideMenuItem(
-                    title: 'ผู้ติดต่อ',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('รายชื่อผู้ติดต่อ');
-                      selectedPage('VISITOR');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.badge),
-                  ),
-                  SideMenuItem(
-                    title: 'บันทึกผู้ติดต่อลงทะเบียน',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('บันทึกผู้ติดต่อลงทะเบียน');
-                      selectedPage('REGISTERED_USER_NOT_CHECK_OUT');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.badge),
-                  ),
-                  SideMenuItem(
-                    title: 'บันทึกเข้า-ออก',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('บันทึกเข้า-ออก');
-                      selectedPage('LOG');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.commute),
-                  ),
-                  SideMenuItem(
-                    title: 'สมาชิก',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('รายชื่อสมาชิก');
-                      selectedPage('MEMBER');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.person_search),
-                  ),
-                  SideMenuItem(
-                    title: 'ผู้ติดต่อลงทะเบียน',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand(
-                        'รายชื่อผู้ติดต่อลงทะเบียน',
-                      );
-                      selectedPage('REGISTERED_USER');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.person_search),
-                  ),
-                  SideMenuItem(
-                    title: 'รายงาน',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('รายงาน');
-                      selectedPage('REPORT');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.summarize),
-                  ),
-                  SideMenuItem(
-                    title: 'ตั้งค่า',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('ตั้งค่า');
-                      selectedPage('SETTING');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.settings),
-                  ),
-                  SideMenuItem(
-                    title: 'ผู้ใช้งาน',
-                    onTap: (page, _) {
-                      homeViewModel.setTitleCommand('รายชื่อผู้ใช้งาน');
-                      selectedPage('USER');
-                      sideMenu.changePage(page);
-                    },
-                    icon: const Icon(Icons.supervisor_account_rounded),
-                  ),
-                  SideMenuItem(
-                    title: 'ออกโปรแกรม',
-                    icon: const Icon(Icons.exit_to_app),
-                    onTap: (page, _) {
-                      selectedPage('LOGOUT');
-                      logoutViewModel.logoutCommand.run();
-                    },
-                  ),
-                ],
+            items: [
+              SideMenuItem(
+                title: 'ทางเข้า',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('ทางเข้า');
+                  selectedPage('ENTRANCE');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.door_front_door_outlined),
+                tooltipContent: 'ทางเข้า',
               ),
-              Expanded(
-                child: PageView(
-                  controller: page,
-                  children: [
-                    ColoredBox(color: Colors.white, child: EntranceScreen.page),
-                    ColoredBox(color: Colors.white, child: ExitScreen.page),
-                    const ColoredBox(
-                      color: Colors.white,
-                      child: VisitorScreen(),
-                    ),
-                    ColoredBox(
-                      color: Colors.white,
-                      child: RegisteredUserNotCheckOutScreen.page,
-                    ),
-                    const ColoredBox(
-                      color: Colors.white,
-                      child: GateLogScreen(),
-                    ),
-                    const ColoredBox(
-                      color: Colors.white,
-                      child: MemberListScreen(),
-                    ),
-                    ColoredBox(
-                      color: Colors.white,
-                      child: RegisteredUserListScreen.page,
-                    ),
-                    const ColoredBox(
-                      color: Colors.white,
-                      child: ReportScreen(),
-                    ),
-                    ColoredBox(
-                      color: Colors.white,
-                      child: SettingScreen(
-                        printerViewModel: getIt<PrinterViewModel>(),
-                      ),
-                    ),
-                    const ColoredBox(color: Colors.white, child: UserScreen()),
-                    const ColoredBox(
-                      color: Colors.white,
-                      child: Center(
-                        child: Text('Exit', style: TextStyle(fontSize: 35)),
-                      ),
-                    ),
-                  ],
-                ),
+              SideMenuItem(
+                title: 'ทางออก',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('ทางออก');
+                  selectedPage('EXIT');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.door_back_door_outlined),
+                tooltipContent: 'ทางออก',
+              ),
+              SideMenuItem(
+                title: 'ผู้ติดต่อ',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('รายชื่อผู้ติดต่อ');
+                  selectedPage('VISITOR');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.badge),
+              ),
+              SideMenuItem(
+                title: 'บันทึกผู้ติดต่อลงทะเบียน',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('บันทึกผู้ติดต่อลงทะเบียน');
+                  selectedPage('REGISTERED_USER_NOT_CHECK_OUT');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.badge),
+              ),
+              SideMenuItem(
+                title: 'บันทึกเข้า-ออก',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('บันทึกเข้า-ออก');
+                  selectedPage('LOG');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.commute),
+              ),
+              SideMenuItem(
+                title: 'สมาชิก',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('รายชื่อสมาชิก');
+                  selectedPage('MEMBER');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.person_search),
+              ),
+              SideMenuItem(
+                title: 'ผู้ติดต่อลงทะเบียน',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand(
+                    'รายชื่อผู้ติดต่อลงทะเบียน',
+                  );
+                  selectedPage('REGISTERED_USER');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.person_search),
+              ),
+              SideMenuItem(
+                title: 'รายงาน',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('รายงาน');
+                  selectedPage('REPORT');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.summarize),
+              ),
+              SideMenuItem(
+                title: 'ตั้งค่า',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('ตั้งค่า');
+                  selectedPage('SETTING');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.settings),
+              ),
+              SideMenuItem(
+                title: 'ผู้ใช้งาน',
+                onTap: (page, _) {
+                  homeViewModel.setTitleCommand('รายชื่อผู้ใช้งาน');
+                  selectedPage('USER');
+                  sideMenu.changePage(page);
+                },
+                icon: const Icon(Icons.supervisor_account_rounded),
+              ),
+              SideMenuItem(
+                title: 'ออกโปรแกรม',
+                icon: const Icon(Icons.exit_to_app),
+                onTap: (page, _) {
+                  selectedPage('LOGOUT');
+                  logoutViewModel.logoutCommand.run();
+                },
               ),
             ],
           ),
-        );
-      },
+          Expanded(
+            child: PageView(
+              controller: page,
+              children: [
+                ColoredBox(color: Colors.white, child: EntranceScreen.page),
+                ColoredBox(color: Colors.white, child: ExitScreen.page),
+                const ColoredBox(
+                  color: Colors.white,
+                  child: VisitorScreen(),
+                ),
+                ColoredBox(
+                  color: Colors.white,
+                  child: RegisteredUserNotCheckOutScreen.page,
+                ),
+                const ColoredBox(
+                  color: Colors.white,
+                  child: GateLogScreen(),
+                ),
+                const ColoredBox(
+                  color: Colors.white,
+                  child: MemberListScreen(),
+                ),
+                ColoredBox(
+                  color: Colors.white,
+                  child: RegisteredUserListScreen.page,
+                ),
+                const ColoredBox(
+                  color: Colors.white,
+                  child: ReportScreen(),
+                ),
+                ColoredBox(
+                  color: Colors.white,
+                  child: SettingScreen(
+                    printerViewModel: getIt<PrinterViewModel>(),
+                  ),
+                ),
+                const ColoredBox(color: Colors.white, child: UserScreen()),
+                const ColoredBox(
+                  color: Colors.white,
+                  child: Center(
+                    child: Text('Exit', style: TextStyle(fontSize: 35)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

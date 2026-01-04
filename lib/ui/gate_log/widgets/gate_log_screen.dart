@@ -2,96 +2,35 @@ import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/config/constants.dart';
-import 'package:carpark/data/services/api/api_service.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_result.dart';
-import 'package:carpark/providers/gate_logs_notifier.dart';
 import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/gate_log/view_models/gate_log_viewmodel.dart';
 import 'package:carpark/ui/gate_log/widgets/gate_log_card.dart';
 import 'package:carpark/ui/gate_log/widgets/gate_log_header_card.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-final gateLogsProvider =
-    StateNotifierProvider<GateLogsNotifier, List<GateLogResult>>((ref) {
-      return GateLogsNotifier();
-    });
-
-final StateProvider<String> filterProvider = StateProvider((ref) => '');
-final StateProvider<String> sortByProvider = StateProvider((ref) => '');
-
-final filteredGateLogsProvider = Provider<List<GateLogResult>>((ref) {
-  final filter = ref.watch(filterProvider);
-  final sortBy = ref.watch(sortByProvider);
-  final gateLogs = ref.watch(gateLogsProvider);
-
-  var filterGateLogs = <GateLogResult>[];
-  if (filter.isEmpty) {
-    filterGateLogs = gateLogs;
-  }
-  if (filter.isEmpty) {
-    filterGateLogs = gateLogs;
-  }
-  filterGateLogs = gateLogs.where((gateLog) {
-    return gateLog.plateNumber.contains(filter) ||
-        gateLog.memberName.contains(filter);
-  }).toList();
-
-  if (sortBy.isNotEmpty) {
-    switch (sortBy) {
-      case 'date':
-        filterGateLogs.sort((a, b) {
-          return a.createdAt.compareTo(b.createdAt);
-        });
-      case '-date':
-        filterGateLogs.sort((b, a) {
-          return a.createdAt.compareTo(b.createdAt);
-        });
-      case 'plateNumber':
-        filterGateLogs.sort((a, b) {
-          return a.plateNumber.compareTo(b.plateNumber);
-        });
-      case '-plateNumber':
-        filterGateLogs.sort((b, a) {
-          return a.plateNumber.compareTo(b.plateNumber);
-        });
-      case 'memberName':
-        filterGateLogs.sort((a, b) {
-          return a.memberName.compareTo(b.memberName);
-        });
-      case '-memberName':
-        filterGateLogs.sort((b, a) {
-          return a.memberName.compareTo(b.memberName);
-        });
-      default:
-    }
-  }
-
-  return filterGateLogs;
-});
-
-class GateLogScreen extends ConsumerStatefulWidget {
+class GateLogScreen extends WatchingStatefulWidget {
   const GateLogScreen({super.key});
 
   @override
-  ConsumerState<GateLogScreen> createState() => _GateLogScreenState();
+  State<GateLogScreen> createState() => _GateLogScreenState();
 }
 
-class _GateLogScreenState extends ConsumerState<GateLogScreen> {
+class _GateLogScreenState extends State<GateLogScreen> {
   List<DateTime?> _dates = [DateTime.now()];
 
   final _searchController = TextEditingController();
 
   void _selectDate(List<DateTime?> newSelectedDate) {
-    getGateLogList(newSelectedDate);
+    getIt<GateLogViewmodel>().getGateLogsCommand.run(newSelectedDate);
   }
 
   @override
@@ -107,37 +46,11 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
     super.dispose();
   }
 
-  Future<void> onSearchTextChanged(String text) async {
-    ref.read(filterProvider.notifier).state = text;
-  }
-
   void sortBy(String fieldName) {
-    final sortBy = ref.read(sortByProvider.notifier);
-    sortBy.state == fieldName
-        ? sortBy.state = '-${sortBy.state}'
-        : sortBy.state = fieldName;
-  }
-
-  Future<void> getGateLogList(List<DateTime?> selectedDate) async {
-    EasyLoading.show(status: 'loading...');
-    final gateLogs = ref.read(gateLogsProvider.notifier);
-    if (selectedDate.isNotEmpty) {
-      final date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
-      var dateTo = date;
-      if (selectedDate.length > 1) {
-        dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
-      }
-      getIt<ApiService>()
-          .searchGateLog(date, dateTo)
-          .then((value) {
-            EasyLoading.dismiss();
-            gateLogs.setState(value);
-          })
-          .onError((error, stackTrace) {
-            EasyLoading.dismiss();
-            alertError(error.toString());
-          });
-    }
+    final sortBy = getIt<GateLogViewmodel>().sortBy.value;
+    getIt<GateLogViewmodel>().sortBy.value = sortBy == fieldName
+        ? '-$sortBy'
+        : fieldName;
   }
 
   void alertError(String msg) {
@@ -146,7 +59,9 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredGateLogs = ref.watch(filteredGateLogsProvider);
+    final filteredGateLogs = watchValue(
+      (GateLogViewmodel viewModel) => viewModel.filteredGateLogs,
+    );
     return Column(
       children: [
         Padding(
@@ -199,13 +114,14 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
           child: TextField(
             controller: _searchController,
             autocorrect: false,
-            onChanged: onSearchTextChanged,
+            onChanged: (value) =>
+                getIt<GateLogViewmodel>().filter.value = value,
             decoration: InputDecoration(
               labelText: 'Search',
               suffixIcon: GestureDetector(
                 onTap: () {
                   _searchController.clear();
-                  onSearchTextChanged('');
+                  getIt<GateLogViewmodel>().filter.value = '';
                 },
                 child: const Icon(Icons.clear),
               ),
@@ -257,7 +173,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
   }
 
   Excel generateExcel() {
-    final gateLogs = ref.read(filteredGateLogsProvider);
+    final gateLogs = getIt<GateLogViewmodel>().filteredGateLogs.value;
     final excel = Excel.createExcel();
     final sheetObject = excel['Sheet1'];
 
@@ -277,10 +193,15 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       bold: true,
     );
     for (var i = 0; i < columnName.length; i++) {
-      final cell = sheetObject.cell(
-        CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow),
-      );
-      cell.cellStyle = cellStyle;
+      sheetObject
+              .cell(
+                CellIndex.indexByColumnRow(
+                  columnIndex: i,
+                  rowIndex: currentRow,
+                ),
+              )
+              .cellStyle =
+          cellStyle;
     }
 
     for (var i = 0; i < gateLogs.length; i++) {
@@ -310,14 +231,14 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
       fileName = '$fileName-$dateTo';
     }
 
-    final filter = ref.read(filterProvider);
+    final filter = getIt<GateLogViewmodel>().filter.value;
+
     if (filter.isNotEmpty) {
       fileName = '$fileName-$filter';
     }
 
     if (kIsWeb) {
-      final excel = generateExcel();
-      excel.save(fileName: '$fileName.xlsx');
+      generateExcel().save(fileName: '$fileName.xlsx');
     } else {
       final outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Please select an output file:',
@@ -326,7 +247,7 @@ class _GateLogScreenState extends ConsumerState<GateLogScreen> {
 
       if (outputFile != null) {
         final file = File(outputFile);
-        file.writeAsBytes(generateExcel().encode()!);
+        await file.writeAsBytes(generateExcel().encode()!);
       }
     }
   }

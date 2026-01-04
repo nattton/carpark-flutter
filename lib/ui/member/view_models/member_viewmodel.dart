@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 @singleton
-class MemberViewModel extends ChangeNotifier {
+class MemberViewModel {
   MemberViewModel({required MemberRepository memberRepository})
     : _memberRepository = memberRepository {
     createMemberCommand = Command.createAsync<MemberModel, MemberModel>(
