@@ -65,6 +65,7 @@ import '../features/gateway/domain/repository/id_card_service_repository.dart'
     as _i325;
 import '../ui/auth/login/view_models/login_viewmodel.dart' as _i1068;
 import '../ui/auth/logout/view_models/logout_viewmodel.dart' as _i337;
+import '../ui/gate_log/view_models/gate_log_viewmodel.dart' as _i63;
 import '../ui/home/view_models/home_viewmodel.dart' as _i152;
 import '../ui/home/view_models/late_gate_viewmodel.dart' as _i80;
 import '../ui/live_player/view_models/live_player_viewmodel.dart' as _i272;
@@ -140,6 +141,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1028.IdCardServiceRepositoryImpl(
         gh<_i680.IdCardServiceDataSource>(),
       ),
+    );
+    gh.singleton<_i63.GateLogViewmodel>(
+      () => _i63.GateLogViewmodel(apiService: gh<_i552.ApiService>()),
     );
     gh.singleton<_i80.LastGateViewmodel>(
       () => _i80.LastGateViewmodel(apiService: gh<_i552.ApiService>()),
