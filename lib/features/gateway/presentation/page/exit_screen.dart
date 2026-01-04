@@ -4,12 +4,13 @@ import 'dart:io';
 import 'package:carpark/data/services/api/api_service.dart';
 import 'package:carpark/domain/models/registered_user/registered_user.dart';
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
-import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
+import 'package:carpark/ui/live_player/widgets/live_player_widget.dart';
 import 'package:carpark/ui/registered_user/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -56,7 +57,6 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   @override
   Widget build(BuildContext context) {
     final gateLog = ref.watch(lastGateProvider).gateOut;
-    final player = ref.watch(cameraPlayerProvider);
     return BlocListener<
       RegisteredUserCheckOutBloc,
       RegisteredUserCheckOutState
@@ -106,13 +106,8 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: !kIsWeb
-                        ? LivePlayerSection(
-                            mainController: player.mainController,
-                            sideController: player.sideController,
-                          )
-                        : const SizedBox(),
+                  const Expanded(
+                    child: !kIsWeb ? LivePlayerWidget() : SizedBox(),
                   ),
                 ],
               ),
@@ -152,7 +147,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
   }
 
   Future<void> addImageToVisitor(VisitorModel visitor) async {
-    final cameraPlayer = ref.read(cameraPlayerProvider);
+    final cameraPlayer = getIt<LivePlayerViewmodel>();
     final outSideImage = await _tempImage('out_side');
     final exitImage = await _tempImage('exit');
 

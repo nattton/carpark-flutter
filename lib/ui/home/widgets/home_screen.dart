@@ -8,10 +8,10 @@ import 'package:carpark/features/gateway/presentation/page/entrance_screen.dart'
 import 'package:carpark/features/gateway/presentation/page/exit_screen.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/models.dart';
-import 'package:carpark/providers/camera_player.dart';
 import 'package:carpark/ui/auth/logout/view_models/logout_viewmodel.dart';
 import 'package:carpark/ui/gate_log/widgets/gate_log_screen.dart';
 import 'package:carpark/ui/home/view_models/home_viewmodel.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
 import 'package:carpark/ui/member/widgets/member_list_screen.dart';
 import 'package:carpark/ui/registered_user/widgets/page/registered_user_list_screen.dart';
 import 'package:carpark/ui/registered_user/widgets/page/registered_user_not_check_out_screen.dart';
@@ -32,14 +32,6 @@ final lastGateProvider = StateNotifierProvider<LastGateNotifier, LastGate>(
   (ref) => LastGateNotifier(
     LastGate(gateIn: GateLogModel(0), gateOut: GateLogModel(0)),
   ),
-);
-
-final cameraMapProvider = Provider<Map<String, CameraModel>>(
-  (ref) => <String, CameraModel>{},
-);
-
-final cameraPlayerProvider = Provider<CameraPlayer>(
-  (ref) => CameraPlayer.initialize(),
 );
 
 class HomeScreen extends StatefulHookConsumerWidget {
@@ -130,17 +122,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     getLastGate();
-    getCameraList().then((value) {
-      if (!kIsWeb) {
-        final camera = value['ENTRANCE'];
-        final cameraSide = value['IN_SIDE'];
-        final cameraCard = value['CARD'];
-        ref.watch(cameraPlayerProvider)
-          ..setMainPlayer(camera!.toUrl())
-          ..setSidePlayer(cameraSide!.toUrl())
-          ..setCardPlayer(cameraCard!.toUrl());
-      }
-    });
+
+    if (!kIsWeb) {
+      getIt<LivePlayerViewmodel>().getCameraCommand.run();
+    }
 
     sideMenu.addListener((p0) {
       page.jumpToPage(p0);
@@ -149,15 +134,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void alertError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
-
-  Future<Map<String, CameraModel>> getCameraList() async {
-    final camera = ref.read(cameraMapProvider);
-    final data = await getIt<ApiService>().getCameraList();
-    for (final cam in data) {
-      camera[cam.name] = cam;
-    }
-    return camera;
   }
 
   Future<void> getLastGate() async {
@@ -193,39 +169,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void selectedPage(String page) {
-    final player = ref.read(cameraPlayerProvider);
-    final camera = ref.read(cameraMapProvider);
     switch (page) {
       case 'ENTRANCE':
         getLastGateIn();
         if (!kIsWeb) {
-          final cam = camera['ENTRANCE'];
-          if (cam != null) {
-            player.setMainPlayer(cam.toUrl());
-          }
-          final cameraSide = camera['IN_SIDE'];
-          if (cameraSide != null) {
-            player.setSidePlayer(cameraSide.toUrl());
-          }
-          final cameraCard = camera['CARD'];
-          if (cameraCard != null) {
-            player.setCardPlayer(cameraCard.toUrl());
-          }
+          getIt<LivePlayerViewmodel>().playEntranceCommand.run();
         }
       case 'EXIT':
         getLastGateOut();
         if (!kIsWeb) {
-          final cam = camera['EXIT'];
-          if (cam != null) {
-            player.setMainPlayer(cam.toUrl());
-          }
-          final cameraSide = camera['OUT_SIDE'];
-          if (cameraSide != null) {
-            player.setSidePlayer(cameraSide.toUrl());
-          }
+          getIt<LivePlayerViewmodel>().playExitCommand.run();
         }
       default:
-        player.stopAll();
+        if (!kIsWeb) {
+          getIt<LivePlayerViewmodel>().stopAllCommand.run();
+        }
     }
   }
 

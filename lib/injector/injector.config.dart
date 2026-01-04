@@ -66,6 +66,7 @@ import '../features/gateway/domain/repository/id_card_service_repository.dart'
 import '../ui/auth/login/view_models/login_viewmodel.dart' as _i1068;
 import '../ui/auth/logout/view_models/logout_viewmodel.dart' as _i337;
 import '../ui/home/view_models/home_viewmodel.dart' as _i152;
+import '../ui/live_player/view_models/live_player_viewmodel.dart' as _i272;
 import '../ui/member/bloc/member_list/member_list_bloc.dart' as _i1056;
 import '../ui/member/view_models/member_viewmodel.dart' as _i692;
 import '../ui/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart'
@@ -138,6 +139,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1028.IdCardServiceRepositoryImpl(
         gh<_i680.IdCardServiceDataSource>(),
       ),
+    );
+    gh.singleton<_i272.LivePlayerViewmodel>(
+      () => _i272.LivePlayerViewmodel(apiService: gh<_i552.ApiService>()),
     );
     gh.factory<_i379.MemberRepository>(
       () => _i155.MemberRepositoryRemote(apiService: gh<_i552.ApiService>()),

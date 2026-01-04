@@ -1,13 +1,12 @@
+import 'package:carpark/injector/injector.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
-class LivePlayerSection extends StatelessWidget {
-  const LivePlayerSection({
-    required this.mainController, required this.sideController, super.key,
+class LivePlayerWidget extends StatelessWidget {
+  const LivePlayerWidget({
+    super.key,
   });
-
-  final VideoController mainController;
-  final VideoController sideController;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +22,13 @@ class LivePlayerSection extends StatelessWidget {
         SizedBox(
           width: width,
           height: height,
-          child: Video(controller: mainController, controls: null),
+          child: Video(controller: getIt<LivePlayerViewmodel>().mainController),
         ),
         const SizedBox(height: 4),
         SizedBox(
           width: width,
           height: height,
-          child: Video(controller: sideController, controls: null),
+          child: Video(controller: getIt<LivePlayerViewmodel>().sideController),
         ),
       ],
     );

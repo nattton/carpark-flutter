@@ -10,12 +10,13 @@ import 'package:carpark/features/gateway/domain/entity/id_card_entity.dart';
 import 'package:carpark/features/gateway/domain/repository/id_card_service_repository.dart';
 import 'package:carpark/features/gateway/presentation/widget/entrance_card.dart';
 import 'package:carpark/features/gateway/presentation/widget/exit_card.dart';
-import 'package:carpark/features/gateway/presentation/widget/live_player_section.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/gate_log_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
+import 'package:carpark/ui/live_player/widgets/live_player_widget.dart';
 import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
 import 'package:carpark/ui/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
 import 'package:charset_converter/charset_converter.dart';
@@ -110,7 +111,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   Widget build(BuildContext context) {
     final gateLog = ref.watch(lastGateProvider).gateIn;
     final gateLogOut = ref.watch(lastGateProvider).gateOut;
-    final player = ref.watch(cameraPlayerProvider);
     return BlocListener<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
       listener: (context, state) {
         if (state is RegisteredUserCheckInSuccess) {
@@ -209,10 +209,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                   ),
                   Expanded(
                     child: !kIsWeb
-                        ? LivePlayerSection(
-                            mainController: player.mainController,
-                            sideController: player.sideController,
-                          )
+                        ? const LivePlayerWidget()
                         : Column(
                             children: [ExitCard(gateLog: gateLogOut)],
                           ),
@@ -259,7 +256,6 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Widget _buildVisitorForm() {
-    final player = ref.watch(cameraPlayerProvider);
     return Card(
       child: Container(
         padding: const EdgeInsets.all(6),
@@ -479,7 +475,10 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
                 width: MediaQuery.of(context).size.width / 2 - 60,
                 height:
                     (MediaQuery.of(context).size.width / 2 - 60) * 9.0 / 16.0,
-                child: Video(controller: player.cardController, controls: null),
+                child: Video(
+                  controller: getIt<LivePlayerViewmodel>().cardController,
+                  controls: null,
+                ),
               ),
             ),
           ],
@@ -763,7 +762,7 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> {
   }
 
   Future<void> addImageToVisitor(VisitorModel visitor) async {
-    final cameraPlayer = ref.watch(cameraPlayerProvider);
+    final cameraPlayer = getIt<LivePlayerViewmodel>();
     final cardImage = await _tempImage('card');
     final inSideImage = await _tempImage('in_side');
     final entranceImage = await _tempImage('entrance');
