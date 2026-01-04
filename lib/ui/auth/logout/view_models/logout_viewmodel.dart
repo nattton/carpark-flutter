@@ -5,7 +5,7 @@ import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
-@injectable
+@singleton
 class LogoutViewModel extends ChangeNotifier {
   LogoutViewModel({required AuthRepository authRepository})
     : _authRepository = authRepository {

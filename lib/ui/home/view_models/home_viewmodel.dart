@@ -3,19 +3,16 @@ import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
-@injectable
-class HomeViewModel extends ChangeNotifier {
+@singleton
+class HomeViewModel {
   HomeViewModel() {
     setTitleCommand = Command.createSyncNoResult((param) {
-      _title = param;
+      title.value = param;
       _log.info('setTitleCommand: $param');
-      notifyListeners();
     });
   }
   final _log = Logger('HomeViewModel');
-  String _title = 'Car Park';
+  final title = ValueNotifier<String>('Car Park');
 
   late Command<String, void> setTitleCommand;
-
-  String get title => _title;
 }

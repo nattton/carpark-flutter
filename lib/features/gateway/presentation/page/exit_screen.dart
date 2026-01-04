@@ -8,7 +8,7 @@ import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/checkout_model.dart';
 import 'package:carpark/models/visitor_model.dart';
 import 'package:carpark/rounting/routes.dart';
-import 'package:carpark/ui/home/widgets/home_screen.dart';
+import 'package:carpark/ui/home/view_models/late_gate_viewmodel.dart';
 import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
 import 'package:carpark/ui/live_player/widgets/live_player_widget.dart';
 import 'package:carpark/ui/registered_user/bloc/registered_user_check_out/registered_user_check_out_bloc.dart';
@@ -16,16 +16,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-class ExitScreen extends StatefulHookConsumerWidget {
+class ExitScreen extends WatchingStatefulWidget {
   const ExitScreen({super.key});
 
   @override
-  ConsumerState<ExitScreen> createState() => _ExitScreenState();
+  State<ExitScreen> createState() => _ExitScreenState();
 
   static Widget get page => MultiBlocProvider(
     providers: [
@@ -35,7 +35,7 @@ class ExitScreen extends StatefulHookConsumerWidget {
   );
 }
 
-class _ExitScreenState extends ConsumerState<ExitScreen> {
+class _ExitScreenState extends State<ExitScreen> {
   late RegisteredUserCheckOutBloc _registeredUserCheckOutBloc;
   final _barcodeController = TextEditingController();
   late FocusNode focusNode;
@@ -56,7 +56,9 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final gateLog = ref.watch(lastGateProvider).gateOut;
+    final gateLogOut = watchValue(
+      (LastGateViewmodel viewModel) => viewModel.gateOut,
+    );
     return BlocListener<
       RegisteredUserCheckOutBloc,
       RegisteredUserCheckOutState
@@ -68,7 +70,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
           alertError(state.failure.message);
         }
       },
-      child: gateLog.id != 0
+      child: gateLogOut.id != 0
           ? Padding(
               padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
               child: Row(
@@ -88,10 +90,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                                 onTap: checkout,
                                 child: const Icon(Icons.barcode_reader),
                               ),
-                              contentPadding: const EdgeInsets.fromLTRB(
-                                8,
-                                8,
-                                8,
+                              contentPadding: const EdgeInsets.all(
                                 8,
                               ),
                               border: OutlineInputBorder(
@@ -102,7 +101,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
                             focusNode: focusNode,
                           ),
                         ),
-                        ExitCard(gateLog: gateLog),
+                        const ExitCard(),
                       ],
                     ),
                   ),
@@ -181,7 +180,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
 
   Future<void> checkout() async {
     if (_barcodeController.text.isNotEmpty) {
-      final gateLog = ref.watch(lastGateProvider).gateOut;
+      final gateLogOut = getIt<LastGateViewmodel>().gateOut.value;
       final barcode = _barcodeController.text;
       _barcodeController.clear();
       focusNode.requestFocus();
@@ -192,7 +191,7 @@ class _ExitScreenState extends ConsumerState<ExitScreen> {
       } else {
         try {
           final visitor = await getIt<ApiService>().checkoutVisitor(
-            CheckoutModel(barcode: barcode, gateLogId: gateLog.id),
+            CheckoutModel(barcode: barcode, gateLogId: gateLogOut.id),
           );
 
           alertMessage('ลงเวลาออก ทะเบียน : ${visitor.plateNumber}');
