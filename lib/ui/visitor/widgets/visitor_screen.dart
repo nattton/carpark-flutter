@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/config/constants.dart';
-import 'package:carpark/data/services/api/api_service.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/models/visitor_model.dart';
-import 'package:carpark/providers/visitors_notifier.dart';
 import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/visitor/view_models/visitor_viewmodel.dart';
 import 'package:carpark/ui/visitor/widgets/visitor_header_card.dart';
 import 'package:carpark/ui/visitor/widgets/visitor_list_card.dart';
 import 'package:excel/excel.dart';
@@ -14,126 +13,30 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
 
-final visitorsProvider =
-    StateNotifierProvider<VisitorsNotifier, List<VisitorModel>>((ref) {
-      return VisitorsNotifier();
-    });
-
-final StateProvider<String> filterProvider = StateProvider((ref) => '');
-final StateProvider<String> sortByProvider = StateProvider((ref) => '');
-
-final filteredVisitorsProvider = Provider<List<VisitorModel>>((ref) {
-  final filter = ref.watch(filterProvider);
-  final sortBy = ref.watch(sortByProvider);
-  final visitors = ref.watch(visitorsProvider);
-  var filterVisitor = <VisitorModel>[];
-  if (filter.isEmpty) {
-    filterVisitor = visitors;
-  }
-  filterVisitor = visitors.where((visitor) {
-    return visitor.plateNumber!.contains(filter) ||
-        visitor.member!.name!.contains(filter);
-  }).toList();
-
-  if (sortBy.isNotEmpty) {
-    switch (sortBy) {
-      case 'date':
-        filterVisitor.sort((a, b) {
-          return a.createdAt!.compareTo(b.createdAt!);
-        });
-      case '-date':
-        filterVisitor.sort((b, a) {
-          return a.createdAt!.compareTo(b.createdAt!);
-        });
-      case 'exitTime':
-        filterVisitor.sort((a, b) {
-          return a.exitTime!.time!.compareTo(b.createdAt!);
-        });
-      case '-exitTime':
-        filterVisitor.sort((b, a) {
-          return a.exitTime!.time!.compareTo(b.createdAt!);
-        });
-      case 'plateNumber':
-        filterVisitor.sort((a, b) {
-          return a.plateNumber!.compareTo(b.plateNumber!);
-        });
-      case '-plateNumber':
-        filterVisitor.sort((b, a) {
-          return a.plateNumber!.compareTo(b.plateNumber!);
-        });
-      case 'memberName':
-        filterVisitor.sort((a, b) {
-          return a.member!.name!.compareTo(b.member!.name!);
-        });
-      case '-memberName':
-        filterVisitor.sort((b, a) {
-          return a.member!.name!.compareTo(b.member!.name!);
-        });
-      default:
-    }
-  }
-  return filterVisitor;
-});
-
-class VisitorScreen extends ConsumerStatefulWidget {
+class VisitorScreen extends WatchingStatefulWidget {
   const VisitorScreen({super.key});
 
   @override
-  ConsumerState<VisitorScreen> createState() => _VisitorScreenState();
+  State<VisitorScreen> createState() => _VisitorScreenState();
 }
 
-class _VisitorScreenState extends ConsumerState<VisitorScreen> {
+class _VisitorScreenState extends State<VisitorScreen> {
   List<DateTime?> _dates = [DateTime.now()];
   int _selectedCol = 0;
-  final _searchController = TextEditingController();
 
   void _selectDate(List<DateTime?> newSelectedDate) {
-    getVisitorList(newSelectedDate);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final now = DateTime.now();
-    _selectDate([DateTime(now.year, now.month, now.day)]);
-  }
-
-  Future<void> onSearchTextChanged(String text) async {
-    ref.read(filterProvider.notifier).state = text;
+    getIt<VisitorViewmodel>().getVisitorsCommand.run(newSelectedDate);
   }
 
   void sortBy(String fieldName) {
-    final sortBy = ref.read(sortByProvider.notifier);
-    sortBy.state == fieldName
-        ? sortBy.state = '-${sortBy.state}'
-        : sortBy.state = fieldName;
-  }
-
-  Future<void> getVisitorList(List<DateTime?> selectedDate) async {
-    EasyLoading.show(status: 'loading...');
-    final visitors = ref.read(visitorsProvider.notifier);
-    if (selectedDate.isNotEmpty) {
-      final date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
-      var dateTo = date;
-      if (selectedDate.length > 1) {
-        dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
-      }
-      getIt<ApiService>()
-          .listVisitor(date, dateTo)
-          .then((value) {
-            EasyLoading.dismiss();
-            visitors.setState(value);
-          })
-          .onError((error, stackTrace) {
-            EasyLoading.dismiss();
-            alertError(error.toString());
-          });
-    }
+    final sortBy = getIt<VisitorViewmodel>().sortBy.value;
+    getIt<VisitorViewmodel>().sortBy.value = sortBy == fieldName
+        ? '-$sortBy'
+        : fieldName;
   }
 
   void alertError(String msg) {
@@ -142,7 +45,29 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredVisitors = ref.watch(filteredVisitorsProvider);
+    final searchController = createOnce(TextEditingController.new);
+
+    callOnce((_) {
+      final now = DateTime.now();
+      _selectDate([DateTime(now.year, now.month, now.day)]);
+    });
+
+    registerHandler(
+      select: (VisitorViewmodel viewModel) =>
+          viewModel.getVisitorsCommand.isRunning,
+      handler: (context, isRunning, cancel) async {
+        if (isRunning) {
+          await EasyLoading.show();
+        } else {
+          await EasyLoading.dismiss();
+        }
+      },
+    );
+
+    final filteredVisitors = watchValue(
+      (VisitorViewmodel viewModel) => viewModel.filteredVisitors,
+    );
+
     return Column(
       children: [
         Padding(
@@ -193,15 +118,16 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
         Padding(
           padding: const EdgeInsets.all(8),
           child: TextField(
-            controller: _searchController,
+            controller: searchController,
             autocorrect: false,
-            onChanged: onSearchTextChanged,
+            onChanged: (value) =>
+                getIt<VisitorViewmodel>().filter.value = value,
             decoration: InputDecoration(
               labelText: 'Search',
               suffixIcon: GestureDetector(
                 onTap: () {
-                  _searchController.clear();
-                  onSearchTextChanged('');
+                  searchController.clear();
+                  getIt<VisitorViewmodel>().filter.value = '';
                 },
                 child: const Icon(Icons.clear),
               ),
@@ -251,7 +177,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
   }
 
   Excel generateExcel() {
-    final visitors = ref.read(filteredVisitorsProvider);
+    final visitors = getIt<VisitorViewmodel>().filteredVisitors.value;
     final excel = Excel.createExcel();
     final sheetObject = excel['Sheet1'];
 
@@ -334,7 +260,7 @@ class _VisitorScreenState extends ConsumerState<VisitorScreen> {
       fileName = '$fileName-$dateTo';
     }
 
-    final filter = ref.read(filterProvider);
+    final filter = getIt<VisitorViewmodel>().filter.value;
     if (filter.isNotEmpty) {
       fileName = '$fileName-$filter';
     }

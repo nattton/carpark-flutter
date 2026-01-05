@@ -27,23 +27,8 @@ class GateLogScreen extends WatchingStatefulWidget {
 class _GateLogScreenState extends State<GateLogScreen> {
   List<DateTime?> _dates = [DateTime.now()];
 
-  final _searchController = TextEditingController();
-
   void _selectDate(List<DateTime?> newSelectedDate) {
     getIt<GateLogViewmodel>().getGateLogsCommand.run(newSelectedDate);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final now = DateTime.now();
-    _selectDate([DateTime(now.year, now.month, now.day)]);
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 
   void sortBy(String fieldName) {
@@ -59,6 +44,13 @@ class _GateLogScreenState extends State<GateLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final searchController = createOnce(TextEditingController.new);
+
+    callOnce((_) {
+      final now = DateTime.now();
+      _selectDate([DateTime(now.year, now.month, now.day)]);
+    });
+
     final filteredGateLogs = watchValue(
       (GateLogViewmodel viewModel) => viewModel.filteredGateLogs,
     );
@@ -112,7 +104,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
         Padding(
           padding: const EdgeInsets.all(8),
           child: TextField(
-            controller: _searchController,
+            controller: searchController,
             autocorrect: false,
             onChanged: (value) =>
                 getIt<GateLogViewmodel>().filter.value = value,
@@ -120,7 +112,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
               labelText: 'Search',
               suffixIcon: GestureDetector(
                 onTap: () {
-                  _searchController.clear();
+                  searchController.clear();
                   getIt<GateLogViewmodel>().filter.value = '';
                 },
                 child: const Icon(Icons.clear),

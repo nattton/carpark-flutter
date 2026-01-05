@@ -86,6 +86,7 @@ import '../ui/registered_user/bloc/registered_user_not_check_out/registered_user
 import '../ui/registered_user/bloc/registered_user_update/registered_user_update_bloc.dart'
     as _i497;
 import '../ui/setting/printer/view_models/printer_viewmodel.dart' as _i151;
+import '../ui/visitor/view_models/visitor_viewmodel.dart' as _i234;
 import 'injector.dart' as _i811;
 
 const String _dev = 'dev';
@@ -129,17 +130,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i313.IdCardService>(
       () => idCardServiceModule.create(gh<_i361.Dio>()),
     );
-    gh.factory<_i680.IdCardServiceDataSource>(
-      () => _i440.IdCardServiceDataSourceImpl(gh<_i313.IdCardService>()),
+    gh.factory<_i379.MemberRepository>(
+      () => _i155.MemberRepositoryRemote(apiService: gh<_i552.ApiService>()),
+      registerFor: {_prod},
     );
-    gh.factory<_i515.RegisteredUserServiceDataSource>(
-      () => _i122.RegisteredUserServiceDataSourceImpl(
-        gh<_i217.RegisteredUserService>(),
-      ),
-    );
-    gh.factory<_i325.IdCardServiceRepository>(
-      () => _i1028.IdCardServiceRepositoryImpl(
-        gh<_i680.IdCardServiceDataSource>(),
+    gh.singleton<_i413.PrinterRepository>(
+      () => _i228.PrinterRepositoryLocal(
+        sharedPreferencesService: gh<_i375.SharedPreferencesService>(),
       ),
     );
     gh.singleton<_i63.GateLogViewmodel>(
@@ -151,17 +148,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i272.LivePlayerViewmodel>(
       () => _i272.LivePlayerViewmodel(apiService: gh<_i552.ApiService>()),
     );
-    gh.factory<_i379.MemberRepository>(
-      () => _i155.MemberRepositoryRemote(apiService: gh<_i552.ApiService>()),
-      registerFor: {_prod},
+    gh.singleton<_i234.VisitorViewmodel>(
+      () => _i234.VisitorViewmodel(apiService: gh<_i552.ApiService>()),
     );
-    gh.factory<_i744.ReadIdCardUsecase>(
-      () => _i744.ReadIdCardUsecase(gh<_i325.IdCardServiceRepository>()),
-    );
-    gh.singleton<_i413.PrinterRepository>(
-      () => _i228.PrinterRepositoryLocal(
-        sharedPreferencesService: gh<_i375.SharedPreferencesService>(),
-      ),
+    gh.factory<_i680.IdCardServiceDataSource>(
+      () => _i440.IdCardServiceDataSourceImpl(gh<_i313.IdCardService>()),
     );
     gh.singleton<_i401.AuthRepository>(
       () => _i399.AuthRepositoryRemote(
@@ -171,9 +162,9 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_prod},
     );
-    gh.factory<_i151.PrinterViewModel>(
-      () => _i151.PrinterViewModel(
-        printerRepository: gh<_i413.PrinterRepository>(),
+    gh.factory<_i515.RegisteredUserServiceDataSource>(
+      () => _i122.RegisteredUserServiceDataSourceImpl(
+        gh<_i217.RegisteredUserService>(),
       ),
     );
     gh.factory<_i184.RegisteredUserServiceRepository>(
@@ -187,13 +178,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i337.LogoutViewModel>(
       () => _i337.LogoutViewModel(authRepository: gh<_i401.AuthRepository>()),
     );
+    gh.singleton<_i692.MemberViewModel>(
+      () =>
+          _i692.MemberViewModel(memberRepository: gh<_i379.MemberRepository>()),
+    );
     gh.factory<_i1056.MemberListBloc>(
       () =>
           _i1056.MemberListBloc(memberRepository: gh<_i379.MemberRepository>()),
     );
-    gh.singleton<_i692.MemberViewModel>(
-      () =>
-          _i692.MemberViewModel(memberRepository: gh<_i379.MemberRepository>()),
+    gh.factory<_i151.PrinterViewModel>(
+      () => _i151.PrinterViewModel(
+        printerRepository: gh<_i413.PrinterRepository>(),
+      ),
     );
     gh.factory<_i975.GetRegisteredUserLogNotCheckOutResponseUsecase>(
       () => _i975.GetRegisteredUserLogNotCheckOutResponseUsecase(
@@ -245,9 +241,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i184.RegisteredUserServiceRepository>(),
       ),
     );
-    gh.factory<_i64.RegisteredUserNotCheckOutBloc>(
-      () => _i64.RegisteredUserNotCheckOutBloc(
-        gh<_i975.GetRegisteredUserLogNotCheckOutResponseUsecase>(),
+    gh.factory<_i499.RegisteredUserCheckOutBloc>(
+      () => _i499.RegisteredUserCheckOutBloc(
+        gh<_i809.RegisteredUserCheckOutUsecase>(),
+      ),
+    );
+    gh.factory<_i497.RegisteredUserUpdateBloc>(
+      () => _i497.RegisteredUserUpdateBloc(
+        gh<_i619.RegisteredUserGetUsecase>(),
+        gh<_i113.RegisteredUserUpdateUsecase>(),
+      ),
+    );
+    gh.factory<_i325.IdCardServiceRepository>(
+      () => _i1028.IdCardServiceRepositoryImpl(
+        gh<_i680.IdCardServiceDataSource>(),
       ),
     );
     gh.factory<_i680.RegisteredUserCheckInBloc>(
@@ -255,30 +262,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i541.RegisteredUserCheckInUsecase>(),
       ),
     );
-    gh.factory<_i485.RegisteredUserListBloc>(
-      () =>
-          _i485.RegisteredUserListBloc(gh<_i1020.RegisteredUserListUsecase>()),
-    );
-    gh.factory<_i56.RegisteredUserCreateBloc>(
-      () => _i56.RegisteredUserCreateBloc(
-        gh<_i300.RegisteredUserCreateUsecase>(),
-        gh<_i744.ReadIdCardUsecase>(),
-        gh<_i322.RegisteredUserAddPhotoUsecase>(),
-      ),
-    );
-    gh.factory<_i499.RegisteredUserCheckOutBloc>(
-      () => _i499.RegisteredUserCheckOutBloc(
-        gh<_i809.RegisteredUserCheckOutUsecase>(),
+    gh.factory<_i64.RegisteredUserNotCheckOutBloc>(
+      () => _i64.RegisteredUserNotCheckOutBloc(
+        gh<_i975.GetRegisteredUserLogNotCheckOutResponseUsecase>(),
       ),
     );
     gh.factory<_i492.RegisteredUserLogsBloc>(
       () =>
           _i492.RegisteredUserLogsBloc(gh<_i68.GetRegisteredUserLogsUsecase>()),
     );
-    gh.factory<_i497.RegisteredUserUpdateBloc>(
-      () => _i497.RegisteredUserUpdateBloc(
-        gh<_i619.RegisteredUserGetUsecase>(),
-        gh<_i113.RegisteredUserUpdateUsecase>(),
+    gh.factory<_i485.RegisteredUserListBloc>(
+      () =>
+          _i485.RegisteredUserListBloc(gh<_i1020.RegisteredUserListUsecase>()),
+    );
+    gh.factory<_i744.ReadIdCardUsecase>(
+      () => _i744.ReadIdCardUsecase(gh<_i325.IdCardServiceRepository>()),
+    );
+    gh.factory<_i56.RegisteredUserCreateBloc>(
+      () => _i56.RegisteredUserCreateBloc(
+        gh<_i300.RegisteredUserCreateUsecase>(),
+        gh<_i744.ReadIdCardUsecase>(),
+        gh<_i322.RegisteredUserAddPhotoUsecase>(),
       ),
     );
     return this;

@@ -4,6 +4,7 @@ import 'package:carpark/ui/auth/login/widgets/login_button.dart';
 import 'package:carpark/ui/auth/login/widgets/login_password_field.dart';
 import 'package:carpark/ui/auth/login/widgets/login_username_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_it/flutter_it.dart';
 
 class LoginScreen extends WatchingWidget {
@@ -11,6 +12,17 @@ class LoginScreen extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
+    registerHandler(
+      select: (LoginViewModel viewModel) => viewModel.loginCommand.isRunning,
+      handler: (context, isRunning, cancel) async {
+        if (isRunning) {
+          await EasyLoading.show();
+        } else {
+          await EasyLoading.dismiss();
+        }
+      },
+    );
+
     registerHandler(
       select: (LoginViewModel viewModel) => viewModel.loginCommand,
       handler: (context, value, cancel) {
@@ -30,16 +42,6 @@ class LoginScreen extends WatchingWidget {
         );
       },
     );
-
-    final isRunning = watchValue(
-      (LoginViewModel viewModel) => viewModel.loginCommand.isRunning,
-    );
-
-    if (isRunning) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
 
     return Scaffold(
       body: SingleChildScrollView(
