@@ -6,24 +6,23 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 @singleton
-class GateLogViewmodel {
-  GateLogViewmodel({required ApiService apiService}) : _apiService = apiService;
-  final _log = Logger('GateLogViewmodel');
+class VisitorViewmodel {
+  VisitorViewmodel({required ApiService apiService}) : _apiService = apiService;
+  final _log = Logger('VisitorViewmodel');
   final ApiService _apiService;
-
-  late final Command<List<GateLogResult>, List<GateLogResult>> gateLogsCommand =
-      Command.createSync<List<GateLogResult>, List<GateLogResult>>(
+  late final Command<List<VisitorModel>, List<VisitorModel>> visitorsCommand =
+      Command.createSync<List<VisitorModel>, List<VisitorModel>>(
         initialValue: [],
-        (gateLogs) => gateLogs,
+        (visitors) => visitors,
       );
-  late final Command<List<GateLogResult>, List<GateLogResult>>
-  filteredGateLogsCommand =
-      Command.createSync<List<GateLogResult>, List<GateLogResult>>(
+  late final Command<List<VisitorModel>, List<VisitorModel>>
+  filteredVisitorsCommand =
+      Command.createSync<List<VisitorModel>, List<VisitorModel>>(
         initialValue: [],
-        (gateLogs) => gateLogs,
+        (visitors) => visitors,
       );
 
-  late final Command<List<DateTime?>, void> getGateLogsCommand =
+  late final Command<List<DateTime?>, void> getVisitorsCommand =
       Command.createAsyncNoResult((selectedDate) async {
         if (selectedDate.isNotEmpty) {
           final date = DateFormat('yyyy-MM-dd').format(selectedDate[0]!);
@@ -32,11 +31,11 @@ class GateLogViewmodel {
             dateTo = DateFormat('yyyy-MM-dd').format(selectedDate[1]!);
           }
           try {
-            final gateLogs = await _apiService.searchGateLog(date, dateTo);
-            gateLogsCommand(gateLogs);
+            final visitors = await _apiService.listVisitor(date, dateTo);
+            visitorsCommand(visitors);
             filterUpdatedCommand();
           } catch (error) {
-            _log.warning('getGateLogsCommand failed! $error');
+            _log.warning('getVisitorsCommand failed! $error');
             rethrow;
           }
         }
@@ -44,47 +43,54 @@ class GateLogViewmodel {
 
   late final Command<void, void> filterUpdatedCommand =
       Command.createSyncNoParamNoResult(() {
-        var filterGateLogs = <GateLogResult>[];
+        var filterVisitors = <VisitorModel>[];
         final filter = filterChangedCommand.value;
         final sortBy = sortByChangedCommand.value;
-        filterGateLogs = filter.isEmpty
-            ? gateLogsCommand.value
-            : gateLogsCommand.value.where((gateLog) {
-                return gateLog.plateNumber.contains(filter) ||
-                    gateLog.memberName.contains(filter);
+        filterVisitors = filter.isEmpty
+            ? visitorsCommand.value
+            : visitorsCommand.value.where((visitor) {
+                return visitor.plateNumber!.contains(filter) ||
+                    visitor.member!.name!.contains(filter);
               }).toList();
 
         if (sortBy.isNotEmpty) {
           switch (sortBy) {
             case 'date':
-              filterGateLogs.sort((a, b) {
-                return a.createdAt.compareTo(b.createdAt);
+              filterVisitors.sort((a, b) {
+                return a.createdAt!.compareTo(b.createdAt!);
               });
             case '-date':
-              filterGateLogs.sort((b, a) {
-                return a.createdAt.compareTo(b.createdAt);
+              filterVisitors.sort((b, a) {
+                return a.createdAt!.compareTo(b.createdAt!);
+              });
+            case 'exitTime':
+              filterVisitors.sort((a, b) {
+                return a.exitTime!.time!.compareTo(b.createdAt!);
+              });
+            case '-exitTime':
+              filterVisitors.sort((b, a) {
+                return a.exitTime!.time!.compareTo(b.createdAt!);
               });
             case 'plateNumber':
-              filterGateLogs.sort((a, b) {
-                return a.plateNumber.compareTo(b.plateNumber);
+              filterVisitors.sort((a, b) {
+                return a.plateNumber!.compareTo(b.plateNumber!);
               });
             case '-plateNumber':
-              filterGateLogs.sort((b, a) {
-                return a.plateNumber.compareTo(b.plateNumber);
+              filterVisitors.sort((b, a) {
+                return a.plateNumber!.compareTo(b.plateNumber!);
               });
             case 'memberName':
-              filterGateLogs.sort((a, b) {
-                return a.memberName.compareTo(b.memberName);
+              filterVisitors.sort((a, b) {
+                return a.member!.name!.compareTo(b.member!.name!);
               });
             case '-memberName':
-              filterGateLogs.sort((b, a) {
-                return a.memberName.compareTo(b.memberName);
+              filterVisitors.sort((b, a) {
+                return a.member!.name!.compareTo(b.member!.name!);
               });
-            default:
           }
         }
 
-        filteredGateLogsCommand(filterGateLogs);
+        filteredVisitorsCommand(filterVisitors);
       });
 
   late final Command<String, String> filterChangedCommand =

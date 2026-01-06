@@ -12,6 +12,7 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -27,30 +28,12 @@ class GateLogScreen extends WatchingStatefulWidget {
 class _GateLogScreenState extends State<GateLogScreen> {
   List<DateTime?> _dates = [DateTime.now()];
 
-  final _searchController = TextEditingController();
-
   void _selectDate(List<DateTime?> newSelectedDate) {
     getIt<GateLogViewmodel>().getGateLogsCommand.run(newSelectedDate);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    final now = DateTime.now();
-    _selectDate([DateTime(now.year, now.month, now.day)]);
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   void sortBy(String fieldName) {
-    final sortBy = getIt<GateLogViewmodel>().sortBy.value;
-    getIt<GateLogViewmodel>().sortBy.value = sortBy == fieldName
-        ? '-$sortBy'
-        : fieldName;
+    getIt<GateLogViewmodel>().sortByChangedCommand(fieldName);
   }
 
   void alertError(String msg) {
@@ -59,8 +42,27 @@ class _GateLogScreenState extends State<GateLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final searchController = createOnce(TextEditingController.new);
+
+    callOnce((_) {
+      final now = DateTime.now();
+      _selectDate([DateTime(now.year, now.month, now.day)]);
+    });
+
+    registerHandler(
+      select: (GateLogViewmodel viewModel) =>
+          viewModel.getGateLogsCommand.isRunning,
+      handler: (context, isRunning, cancel) async {
+        if (isRunning) {
+          await EasyLoading.show();
+        } else {
+          await EasyLoading.dismiss();
+        }
+      },
+    );
+
     final filteredGateLogs = watchValue(
-      (GateLogViewmodel viewModel) => viewModel.filteredGateLogs,
+      (GateLogViewmodel viewModel) => viewModel.filteredGateLogsCommand,
     );
     return Column(
       children: [
@@ -112,16 +114,16 @@ class _GateLogScreenState extends State<GateLogScreen> {
         Padding(
           padding: const EdgeInsets.all(8),
           child: TextField(
-            controller: _searchController,
+            controller: searchController,
             autocorrect: false,
             onChanged: (value) =>
-                getIt<GateLogViewmodel>().filter.value = value,
+                getIt<GateLogViewmodel>().filterChangedCommand.run(value),
             decoration: InputDecoration(
               labelText: 'Search',
               suffixIcon: GestureDetector(
                 onTap: () {
-                  _searchController.clear();
-                  getIt<GateLogViewmodel>().filter.value = '';
+                  searchController.clear();
+                  getIt<GateLogViewmodel>().filterChangedCommand.run('');
                 },
                 child: const Icon(Icons.clear),
               ),
@@ -173,7 +175,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
   }
 
   Excel generateExcel() {
-    final gateLogs = getIt<GateLogViewmodel>().filteredGateLogs.value;
+    final gateLogs = getIt<GateLogViewmodel>().filteredGateLogsCommand.value;
     final excel = Excel.createExcel();
     final sheetObject = excel['Sheet1'];
 
@@ -231,7 +233,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
       fileName = '$fileName-$dateTo';
     }
 
-    final filter = getIt<GateLogViewmodel>().filter.value;
+    final filter = getIt<GateLogViewmodel>().filterChangedCommand.value;
 
     if (filter.isNotEmpty) {
       fileName = '$fileName-$filter';

@@ -11,7 +11,7 @@ class LoginUsernameField extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final username = watchValue(
-      (LoginViewModel viewModel) => viewModel.username,
+      (LoginViewModel viewModel) => viewModel.usernameChangedCommand,
     );
     return TextFormField(
       initialValue: username,
@@ -27,7 +27,8 @@ class LoginUsernameField extends WatchingWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      onChanged: (value) => getIt<LoginViewModel>().username.value = value,
+      onChanged: (value) =>
+          getIt<LoginViewModel>().usernameChangedCommand(value),
     );
   }
 }
