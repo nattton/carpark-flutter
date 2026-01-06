@@ -12,6 +12,7 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -48,8 +49,20 @@ class _GateLogScreenState extends State<GateLogScreen> {
       _selectDate([DateTime(now.year, now.month, now.day)]);
     });
 
+    registerHandler(
+      select: (GateLogViewmodel viewModel) =>
+          viewModel.getGateLogsCommand.isRunning,
+      handler: (context, isRunning, cancel) async {
+        if (isRunning) {
+          await EasyLoading.show();
+        } else {
+          await EasyLoading.dismiss();
+        }
+      },
+    );
+
     final filteredGateLogs = watchValue(
-      (GateLogViewmodel viewModel) => viewModel.filteredGateLogs,
+      (GateLogViewmodel viewModel) => viewModel.filteredGateLogsCommand,
     );
     return Column(
       children: [
@@ -162,7 +175,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
   }
 
   Excel generateExcel() {
-    final gateLogs = getIt<GateLogViewmodel>().filteredGateLogs.value;
+    final gateLogs = getIt<GateLogViewmodel>().filteredGateLogsCommand.value;
     final excel = Excel.createExcel();
     final sheetObject = excel['Sheet1'];
 
