@@ -62,7 +62,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
     );
 
     final filteredVisitors = watchValue(
-      (VisitorViewmodel viewModel) => viewModel.filteredVisitors,
+      (VisitorViewmodel viewModel) => viewModel.filteredVisitorsCommand,
     );
 
     return Column(
@@ -174,7 +174,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
   }
 
   Excel generateExcel() {
-    final visitors = getIt<VisitorViewmodel>().filteredVisitors.value;
+    final visitors = getIt<VisitorViewmodel>().filteredVisitorsCommand.value;
     final excel = Excel.createExcel();
     final sheetObject = excel['Sheet1'];
 

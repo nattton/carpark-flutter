@@ -14,17 +14,13 @@ class GateLogViewmodel {
   late final Command<List<GateLogResult>, List<GateLogResult>> gateLogsCommand =
       Command.createSync<List<GateLogResult>, List<GateLogResult>>(
         initialValue: [],
-        (gateLogs) {
-          return gateLogs;
-        },
+        (gateLogs) => gateLogs,
       );
   late final Command<List<GateLogResult>, List<GateLogResult>>
   filteredGateLogsCommand =
       Command.createSync<List<GateLogResult>, List<GateLogResult>>(
         initialValue: [],
-        (gateLogs) {
-          return gateLogs;
-        },
+        (gateLogs) => gateLogs,
       );
 
   late final Command<List<DateTime?>, void> getGateLogsCommand =
