@@ -26,18 +26,19 @@ class VisitorViewmodel {
         }
       }
 
-      filterCommand = Command.createSyncNoParamNoResult(() {
+      filterUpdatedCommand = Command.createSyncNoParamNoResult(() {
         var filterVisitors = <VisitorModel>[];
-
-        filterVisitors = filter.value.isEmpty
+        final filter = filterChangedCommand.value;
+        final sortBy = sortByChangedCommand.value;
+        filterVisitors = filter.isEmpty
             ? visitors.value
             : visitors.value.where((visitor) {
-                return visitor.plateNumber!.contains(filter.value) ||
-                    visitor.member!.name!.contains(filter.value);
+                return visitor.plateNumber!.contains(filter) ||
+                    visitor.member!.name!.contains(filter);
               }).toList();
 
-        if (sortBy.value.isNotEmpty) {
-          switch (sortBy.value) {
+        if (sortBy.isNotEmpty) {
+          switch (sortBy) {
             case 'date':
               filterVisitors.sort((a, b) {
                 return a.createdAt!.compareTo(b.createdAt!);
@@ -76,14 +77,37 @@ class VisitorViewmodel {
         filteredVisitors.value = [...filterVisitors];
       });
     });
+
+    filterChangedCommand =
+        Command.createSync<String, String>(
+            initialValue: '',
+            (s) => s,
+          )
+          ..debounce(
+            const Duration(milliseconds: 500),
+          )
+          ..listen((_, _) => filterUpdatedCommand());
+
+    sortByChangedCommand = Command.createSync<String, String>(
+      initialValue: '',
+      (fieldName) {
+        final sortBy = sortByChangedCommand.value;
+        if (sortBy == fieldName) {
+          return '-$sortBy';
+        } else {
+          return fieldName;
+        }
+      },
+    )..listen((_, _) => filterUpdatedCommand());
   }
+
   final _log = Logger('VisitorViewmodel');
   final ApiService _apiService;
   final filteredVisitors = ValueNotifier<List<VisitorModel>>([]);
   late final visitors = ValueNotifier<List<VisitorModel>>([]);
-  late final filter = ValueNotifier<String>('')..pipeToCommand(filterCommand);
-  late final sortBy = ValueNotifier<String>('')..pipeToCommand(filterCommand);
 
   late Command<List<DateTime?>, void> getVisitorsCommand;
-  late Command<void, void> filterCommand;
+  late Command<void, void> filterUpdatedCommand;
+  late final Command<String, String> filterChangedCommand;
+  late final Command<String, String> sortByChangedCommand;
 }

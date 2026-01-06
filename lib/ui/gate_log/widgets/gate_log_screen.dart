@@ -32,10 +32,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
   }
 
   void sortBy(String fieldName) {
-    final sortBy = getIt<GateLogViewmodel>().sortBy.value;
-    getIt<GateLogViewmodel>().sortBy.value = sortBy == fieldName
-        ? '-$sortBy'
-        : fieldName;
+    getIt<GateLogViewmodel>().sortByChangedCommand(fieldName);
   }
 
   void alertError(String msg) {
@@ -107,13 +104,13 @@ class _GateLogScreenState extends State<GateLogScreen> {
             controller: searchController,
             autocorrect: false,
             onChanged: (value) =>
-                getIt<GateLogViewmodel>().filter.value = value,
+                getIt<GateLogViewmodel>().filterChangedCommand.run(value),
             decoration: InputDecoration(
               labelText: 'Search',
               suffixIcon: GestureDetector(
                 onTap: () {
                   searchController.clear();
-                  getIt<GateLogViewmodel>().filter.value = '';
+                  getIt<GateLogViewmodel>().filterChangedCommand.run('');
                 },
                 child: const Icon(Icons.clear),
               ),
@@ -223,7 +220,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
       fileName = '$fileName-$dateTo';
     }
 
-    final filter = getIt<GateLogViewmodel>().filter.value;
+    final filter = getIt<GateLogViewmodel>().filterChangedCommand.value;
 
     if (filter.isNotEmpty) {
       fileName = '$fileName-$filter';

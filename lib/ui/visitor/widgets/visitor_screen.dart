@@ -33,10 +33,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
   }
 
   void sortBy(String fieldName) {
-    final sortBy = getIt<VisitorViewmodel>().sortBy.value;
-    getIt<VisitorViewmodel>().sortBy.value = sortBy == fieldName
-        ? '-$sortBy'
-        : fieldName;
+    getIt<VisitorViewmodel>().sortByChangedCommand.run(fieldName);
   }
 
   void alertError(String msg) {
@@ -121,13 +118,13 @@ class _VisitorScreenState extends State<VisitorScreen> {
             controller: searchController,
             autocorrect: false,
             onChanged: (value) =>
-                getIt<VisitorViewmodel>().filter.value = value,
+                getIt<VisitorViewmodel>().filterChangedCommand(value),
             decoration: InputDecoration(
               labelText: 'Search',
               suffixIcon: GestureDetector(
                 onTap: () {
                   searchController.clear();
-                  getIt<VisitorViewmodel>().filter.value = '';
+                  getIt<VisitorViewmodel>().filterChangedCommand('');
                 },
                 child: const Icon(Icons.clear),
               ),
@@ -260,7 +257,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
       fileName = '$fileName-$dateTo';
     }
 
-    final filter = getIt<VisitorViewmodel>().filter.value;
+    final filter = getIt<VisitorViewmodel>().filterChangedCommand.value;
     if (filter.isNotEmpty) {
       fileName = '$fileName-$filter';
     }

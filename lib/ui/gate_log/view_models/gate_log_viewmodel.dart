@@ -26,18 +26,19 @@ class GateLogViewmodel {
         }
       }
 
-      filterCommand = Command.createSyncNoParamNoResult(() {
+      filterUpdatedCommand = Command.createSyncNoParamNoResult(() {
         var filterGateLogs = <GateLogResult>[];
-
-        filterGateLogs = filter.value.isEmpty
+        final filter = filterChangedCommand.value;
+        final sortBy = sortByChangedCommand.value;
+        filterGateLogs = filter.isEmpty
             ? gateLogs.value
             : gateLogs.value.where((gateLog) {
-                return gateLog.plateNumber.contains(filter.value) ||
-                    gateLog.memberName.contains(filter.value);
+                return gateLog.plateNumber.contains(filter) ||
+                    gateLog.memberName.contains(filter);
               }).toList();
 
-        if (sortBy.value.isNotEmpty) {
-          switch (sortBy.value) {
+        if (sortBy.isNotEmpty) {
+          switch (sortBy) {
             case 'date':
               filterGateLogs.sort((a, b) {
                 return a.createdAt.compareTo(b.createdAt);
@@ -69,14 +70,36 @@ class GateLogViewmodel {
         filteredGateLogs.value = [...filterGateLogs];
       });
     });
+
+    filterChangedCommand =
+        Command.createSync<String, String>(
+            initialValue: '',
+            (s) => s,
+          )
+          ..debounce(
+            const Duration(milliseconds: 500),
+          )
+          ..listen((_, _) => filterUpdatedCommand());
+
+    sortByChangedCommand = Command.createSync<String, String>(
+      initialValue: '',
+      (fieldName) {
+        final sortBy = sortByChangedCommand.value;
+        if (sortBy == fieldName) {
+          return '-$sortBy';
+        } else {
+          return fieldName;
+        }
+      },
+    )..listen((_, _) => filterUpdatedCommand());
   }
   final _log = Logger('GateLogViewmodel');
   final ApiService _apiService;
   final filteredGateLogs = ValueNotifier<List<GateLogResult>>([]);
   late final gateLogs = ValueNotifier<List<GateLogResult>>([]);
-  late final filter = ValueNotifier<String>('')..pipeToCommand(filterCommand);
-  late final sortBy = ValueNotifier<String>('')..pipeToCommand(filterCommand);
 
   late Command<List<DateTime?>, void> getGateLogsCommand;
-  late Command<void, void> filterCommand;
+  late Command<void, void> filterUpdatedCommand;
+  late final Command<String, String> filterChangedCommand;
+  late final Command<String, String> sortByChangedCommand;
 }
