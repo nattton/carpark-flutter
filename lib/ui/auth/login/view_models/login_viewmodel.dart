@@ -1,7 +1,6 @@
 import 'package:carpark/data/repositories/auth/auth_repository.dart';
 import 'package:carpark/utils/result.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -13,8 +12,8 @@ class LoginViewModel {
     loginCommand = Command.createAsyncNoParam<Result<void>>(
       initialValue: const Result.ok(null),
       () async {
-        final usernameValue = username.value;
-        final passwordValue = password.value;
+        final usernameValue = usernameChangedCommand.value;
+        final passwordValue = passwordChangedCommand.value;
         if (usernameValue.isEmpty || passwordValue.isEmpty) {
           throw Exception('Username and password are required');
         }
@@ -41,9 +40,9 @@ class LoginViewModel {
           }
           throw result.error;
         }
-        username.value = '';
-        password.value = '';
-        obscurePassword.value = true;
+        usernameChangedCommand('');
+        passwordChangedCommand('');
+        obscurePasswordChangedCommand(true);
         return result;
       },
     );
@@ -52,7 +51,19 @@ class LoginViewModel {
   final _log = Logger('LoginViewModel');
 
   late Command<void, Result<void>> loginCommand;
-  final username = ValueNotifier<String>('');
-  final password = ValueNotifier<String>('');
-  final obscurePassword = ValueNotifier<bool>(true);
+  late final Command<String, String> usernameChangedCommand =
+      Command.createSync<String, String>(
+        initialValue: '',
+        (s) => s,
+      );
+  late final Command<String, String> passwordChangedCommand =
+      Command.createSync<String, String>(
+        initialValue: '',
+        (s) => s,
+      );
+  late final Command<bool, bool> obscurePasswordChangedCommand =
+      Command.createSync<bool, bool>(
+        initialValue: true,
+        (s) => s,
+      );
 }
