@@ -1,6 +1,5 @@
 import 'package:carpark/config/constants.dart';
-import 'package:carpark/domain/models/member/member_model.dart';
-import 'package:carpark/domain/models/member/vehicle_model.dart';
+import 'package:carpark/data/repositories/member/member_repository.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
@@ -21,12 +20,18 @@ class MemberScreen extends WatchingWidget {
   });
 
   final int memberId;
-  MemberViewModel get _memberViewModel => getIt<MemberViewModel>();
 
   @override
   Widget build(BuildContext context) {
+    pushScope(
+      init: (di) => di.registerSingleton<MemberViewModel>(
+        MemberViewModel(memberRepository: getIt<MemberRepository>()),
+      ),
+    );
     // 1. One-time initialization
-    callOnce((_) => _memberViewModel.getMemberCommand.run(memberId));
+    callOnce((_) {
+      getIt<MemberViewModel>().getMemberCommand.run(memberId);
+    });
 
     // 2. Register handlers
     _registerHandler();
@@ -36,8 +41,8 @@ class MemberScreen extends WatchingWidget {
       (MemberViewModel viewModel) => viewModel.getMemberCommand.isRunning,
     );
 
-    final member = watchValue(
-      (MemberViewModel viewModel) => viewModel.member,
+    final memberIdCommand = watchValue(
+      (MemberViewModel viewModel) => viewModel.memberIdCommand,
     );
 
     // 4. Build UI
@@ -54,114 +59,34 @@ class MemberScreen extends WatchingWidget {
               1: FlexColumnWidth(),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: <TableRow>[
+            children: const <TableRow>[
               TableRow(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      initialValue: member.name,
-                      autocorrect: false,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        suffixIcon: const Icon(Icons.account_circle),
-                        contentPadding: const EdgeInsets.all(20),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        _memberViewModel.member.value = _memberViewModel
-                            .member
-                            .value
-                            .copyWith(name: value);
-                      },
-                    ),
+                    padding: EdgeInsets.all(8),
+                    child: MemberNameFieldWidget(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      initialValue: member.telephone,
-                      autocorrect: false,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Tel.',
-                        suffixIcon: const Icon(Icons.phone),
-                        contentPadding: const EdgeInsets.all(20),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        _memberViewModel.member.value = _memberViewModel
-                            .member
-                            .value
-                            .copyWith(telephone: value);
-                      },
-                    ),
+                    padding: EdgeInsets.all(8),
+                    child: MemberTelephoneFieldWidget(),
                   ),
                 ],
               ),
               TableRow(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: FormBuilderRadioGroup<String>(
-                      decoration: InputDecoration(
-                        labelText: 'Type',
-                        contentPadding: const EdgeInsets.all(20),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      initialValue: member.type,
-                      name: 'type',
-                      validator: FormBuilderValidators.required<String>(),
-                      options: kMemberTypeList
-                          .map(
-                            (lang) => FormBuilderFieldOption(value: lang),
-                          )
-                          .toList(growable: false),
-                      onChanged: (value) {
-                        _memberViewModel.member.value = _memberViewModel
-                            .member
-                            .value
-                            .copyWith(type: value);
-                      },
-                    ),
+                    padding: EdgeInsets.all(8),
+                    child: MemberTypeRadioWidget(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: FormBuilderRadioGroup<String>(
-                      decoration: InputDecoration(
-                        labelText: 'Status',
-                        contentPadding: const EdgeInsets.all(20),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      initialValue: member.status,
-                      name: 'status',
-                      validator: FormBuilderValidators.required<String>(),
-                      options: kStatusList
-                          .map(
-                            (lang) => FormBuilderFieldOption(value: lang),
-                          )
-                          .toList(growable: false),
-                      onChanged: (value) {
-                        _memberViewModel.member.value = _memberViewModel
-                            .member
-                            .value
-                            .copyWith(status: value);
-                      },
-                    ),
+                    padding: EdgeInsets.all(8),
+                    child: MemberStatusRadioWidget(),
                   ),
                 ],
               ),
             ],
           ),
-          if (member.id > 0)
+          if (memberIdCommand > 0)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -169,7 +94,8 @@ class MemberScreen extends WatchingWidget {
                   padding: const EdgeInsets.all(8),
                   child: Center(
                     child: ElevatedButton(
-                      onPressed: _updateMember,
+                      onPressed:
+                          getIt<MemberViewModel>().updateMemberCommand.run,
                       child: const Text('บันทึกข้อมูล'),
                     ),
                   ),
@@ -181,14 +107,14 @@ class MemberScreen extends WatchingWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green, // Background color
                       ),
-                      onPressed: () => _memberViewModel.newVehicleCommand.run(),
+                      onPressed: getIt<MemberViewModel>().newVehicleCommand.run,
                       child: const Text('สร้างทะเบียนรถ'),
                     ),
                   ),
                 ),
               ],
             ),
-          if (memberId == 0)
+          if (memberIdCommand == 0)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -196,7 +122,8 @@ class MemberScreen extends WatchingWidget {
                   padding: const EdgeInsets.all(8),
                   child: Center(
                     child: ElevatedButton(
-                      onPressed: _createMember,
+                      onPressed:
+                          getIt<MemberViewModel>().createMemberCommand.run,
                       child: const Text('สร้างข้อมูลสมาชิก'),
                     ),
                   ),
@@ -204,18 +131,8 @@ class MemberScreen extends WatchingWidget {
               ],
             ),
           const VehicleHeaderCard(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: member.vehicles?.length ?? 0,
-              itemBuilder: (context, index) {
-                return VehicleListCard(
-                  vehicle: member.vehicles![index],
-                  onTap: () => _memberViewModel.editVehicleCommand.run(
-                    member.vehicles![index],
-                  ),
-                );
-              },
-            ),
+          const Expanded(
+            child: VehiclesListViewWidget(),
           ),
         ],
       ),
@@ -257,7 +174,7 @@ class MemberScreen extends WatchingWidget {
         ).showSnackBar(
           const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
         );
-        _memberViewModel.getMemberCommand.run(memberId);
+        getIt<MemberViewModel>().getMemberCommand.run(memberId);
       },
     );
 
@@ -276,7 +193,7 @@ class MemberScreen extends WatchingWidget {
           content: const VehicleFormWidget(),
           buttons: [
             DialogButton(
-              onPressed: _memberViewModel.createVehicleCommand.run,
+              onPressed: getIt<MemberViewModel>().createVehicleCommand.run,
               child: const Text(
                 'สร้าง',
                 style: TextStyle(color: Colors.white, fontSize: 20),
@@ -296,7 +213,7 @@ class MemberScreen extends WatchingWidget {
           content: const VehicleFormWidget(),
           buttons: [
             DialogButton(
-              onPressed: _memberViewModel.updateVehicleCommand.run,
+              onPressed: getIt<MemberViewModel>().updateVehicleCommand.run,
               child: const Text(
                 'บันทึก',
                 style: TextStyle(color: Colors.white, fontSize: 20),
@@ -408,33 +325,8 @@ class MemberScreen extends WatchingWidget {
     );
   }
 
-  void _createMember() {
-    _memberViewModel.createMemberCommand.run(
-      MemberModel(
-        id: 0,
-        name: _memberViewModel.member.value.name,
-        telephone: _memberViewModel.member.value.telephone,
-        type: _memberViewModel.member.value.type,
-        status: _memberViewModel.member.value.status,
-        vehicles: [],
-      ),
-    );
-  }
-
-  void _updateMember() {
-    _memberViewModel.updateMemberCommand.run(
-      MemberModel(
-        id: _memberViewModel.member.value.id,
-        name: _memberViewModel.member.value.name,
-        telephone: _memberViewModel.member.value.telephone,
-        type: _memberViewModel.member.value.type,
-        status: _memberViewModel.member.value.status,
-      ),
-    );
-  }
-
   Future<void> alertDelete(BuildContext context) async {
-    final vehicle = _memberViewModel.vehicleEditing.value;
+    final vehicle = getIt<MemberViewModel>().vehicleEditing.value;
     if (vehicle == null) return;
     await Alert(
       context: context,
@@ -446,7 +338,7 @@ class MemberScreen extends WatchingWidget {
           color: Colors.red,
           onPressed: () {
             GoRouter.of(context).pop();
-            deleteVehicle(vehicle);
+            getIt<MemberViewModel>().deleteVehicleCommand.run(vehicle.id);
           },
           child: const Text(
             'ลบ',
@@ -463,8 +355,148 @@ class MemberScreen extends WatchingWidget {
       ],
     ).show();
   }
+}
 
-  void deleteVehicle(VehicleModel vehicle) {
-    _memberViewModel.deleteVehicleCommand.run(vehicle.id);
+class MemberNameFieldWidget extends WatchingWidget {
+  const MemberNameFieldWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final name = watchValue(
+      (MemberViewModel viewModel) => viewModel.nameCommand,
+    );
+    return TextFormField(
+      initialValue: name,
+      autocorrect: false,
+      keyboardType: TextInputType.name,
+      decoration: InputDecoration(
+        labelText: 'Name',
+        suffixIcon: const Icon(Icons.account_circle),
+        contentPadding: const EdgeInsets.all(20),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      onChanged: (value) {
+        getIt<MemberViewModel>().nameCommand(value);
+      },
+    );
+  }
+}
+
+class MemberTelephoneFieldWidget extends WatchingWidget {
+  const MemberTelephoneFieldWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final telephone = watchValue(
+      (MemberViewModel viewModel) => viewModel.telephoneCommand,
+    );
+    return TextFormField(
+      initialValue: telephone,
+      autocorrect: false,
+      keyboardType: TextInputType.phone,
+      decoration: InputDecoration(
+        labelText: 'Tel.',
+        suffixIcon: const Icon(Icons.phone),
+        contentPadding: const EdgeInsets.all(20),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      onChanged: (value) {
+        getIt<MemberViewModel>().telephoneCommand(value);
+      },
+    );
+  }
+}
+
+class MemberTypeRadioWidget extends WatchingWidget {
+  const MemberTypeRadioWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final memberType = watchValue(
+      (MemberViewModel viewModel) => viewModel.typeCommand,
+    );
+    return FormBuilderRadioGroup<String>(
+      decoration: InputDecoration(
+        labelText: 'Type',
+        contentPadding: const EdgeInsets.all(20),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      initialValue: memberType,
+      name: 'type',
+      validator: FormBuilderValidators.required<String>(),
+      options: kMemberTypeList
+          .map(
+            (lang) => FormBuilderFieldOption(value: lang),
+          )
+          .toList(growable: false),
+      onChanged: (value) => getIt<MemberViewModel>().typeCommand(value),
+    );
+  }
+}
+
+class MemberStatusRadioWidget extends WatchingWidget {
+  const MemberStatusRadioWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final status = watchValue(
+      (MemberViewModel viewModel) => viewModel.statusCommand,
+    );
+    return FormBuilderRadioGroup<String>(
+      decoration: InputDecoration(
+        labelText: 'Status',
+        contentPadding: const EdgeInsets.all(20),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      initialValue: status,
+      name: 'status',
+      validator: FormBuilderValidators.required<String>(),
+      options: kStatusList
+          .map(
+            (lang) => FormBuilderFieldOption(value: lang),
+          )
+          .toList(growable: false),
+      onChanged: (value) => getIt<MemberViewModel>().statusCommand(value),
+    );
+  }
+}
+
+class VehiclesListViewWidget extends WatchingWidget {
+  const VehiclesListViewWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final vehicles = watchValue(
+      (MemberViewModel viewModel) => viewModel.vehiclesCommand,
+    );
+    return ListView.builder(
+      itemCount: vehicles.length,
+      itemBuilder: (context, index) {
+        return VehicleListCard(
+          vehicle: vehicles[index],
+          onTap: () => getIt<MemberViewModel>().editVehicleCommand.run(
+            vehicles[index],
+          ),
+        );
+      },
+    );
   }
 }
