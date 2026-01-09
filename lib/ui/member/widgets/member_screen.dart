@@ -2,6 +2,7 @@ import 'package:carpark/config/constants.dart';
 import 'package:carpark/data/repositories/member/member_repository.dart';
 import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
+import 'package:carpark/ui/member/view_models/member_list_viewmodel.dart';
 import 'package:carpark/ui/member/view_models/member_viewmodel.dart';
 import 'package:carpark/ui/member/widgets/vehicle_form_widget.dart';
 import 'package:carpark/ui/member/widgets/vehicle_header_card.dart';
@@ -27,6 +28,7 @@ class MemberScreen extends WatchingWidget {
       init: (di) => di.registerSingleton<MemberViewModel>(
         MemberViewModel(memberRepository: getIt<MemberRepository>()),
       ),
+      dispose: getIt<MemberListViewModel>().getMemberListCommand.call,
     );
     // 1. One-time initialization
     callOnce((_) {

@@ -1,42 +1,47 @@
 import 'dart:io';
 
-import 'package:carpark/domain/models/member/member_model.dart';
+import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
-import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/ui/member/view_models/member_list_viewmodel.dart';
 import 'package:carpark/ui/member/widgets/member_header_card.dart';
-import 'package:carpark/ui/member/widgets/member_list_card.dart';
+import 'package:carpark/ui/member/widgets/member_list_view.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class MemberListScreen extends StatefulWidget {
+class MemberListScreen extends WatchingWidget {
   const MemberListScreen({super.key});
 
   @override
-  State<MemberListScreen> createState() => _MemberListScreenState();
-}
-
-class _MemberListScreenState extends State<MemberListScreen> {
-  late MemberListBloc _memberListBloc;
-  final _filterController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    _memberListBloc = context.read<MemberListBloc>();
-    _memberListBloc.add(LoadMemberList());
-  }
-
-  @override
-  void dispose() {
-    _filterController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    callOnce((_) => getIt<MemberListViewModel>().getMemberListCommand());
+
+    final filterController = createOnce(TextEditingController.new);
+
+    registerHandler(
+      select: (MemberListViewModel viewModel) =>
+          viewModel.getMemberListCommand.isRunning,
+      handler: (context, isRunning, cancel) async {
+        if (isRunning) {
+          await EasyLoading.show();
+        } else {
+          await EasyLoading.dismiss();
+        }
+      },
+    );
+
+    registerHandler(
+      select: (MemberListViewModel viewModel) =>
+          viewModel.goMemberScreenCommand,
+      handler: (context, memberId, _) async {
+        await context.push(Routes.memberWithId(memberId));
+      },
+    );
+
     return Column(
       children: [
         Row(
@@ -45,15 +50,16 @@ class _MemberListScreenState extends State<MemberListScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: TextField(
-                  controller: _filterController,
+                  controller: filterController,
                   autocorrect: false,
-                  onChanged: onSearchTextChanged,
+                  onChanged: (value) =>
+                      getIt<MemberListViewModel>().filterChangedCommand(value),
                   decoration: InputDecoration(
                     labelText: 'Search',
                     suffixIcon: GestureDetector(
                       onTap: () {
-                        _filterController.clear();
-                        onSearchTextChanged('');
+                        filterController.clear();
+                        getIt<MemberListViewModel>().filterChangedCommand('');
                       },
                       child: const Icon(Icons.clear),
                     ),
@@ -66,7 +72,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
               ),
             ),
             IconButton(
-              onPressed: onPressedAddMember,
+              onPressed:
+                  getIt<MemberListViewModel>().goMemberScreenCommand.call,
               icon: const Icon(Icons.person_add),
               tooltip: 'สร้างสมาชิกใหม่',
             ),
@@ -78,42 +85,15 @@ class _MemberListScreenState extends State<MemberListScreen> {
           ],
         ),
         const MemberHeaderCard(),
-        BlocSelector<MemberListBloc, MemberListState, List<MemberModel>>(
-          selector: (state) => state.filteredMembers,
-          builder: (context, filteredMembers) {
-            return Expanded(
-              child: ListView.builder(
-                itemCount: filteredMembers.length,
-                itemBuilder: (context, index) {
-                  return MemberListCard(
-                    member: filteredMembers[index],
-                    onTap: () => onPressedRow(context, filteredMembers[index]),
-                  );
-                },
-              ),
-            );
-          },
+        const Expanded(
+          child: MemberListView(),
         ),
       ],
     );
   }
 
-  Future<void> onPressedRow(BuildContext context, MemberModel member) async {
-    await context.push(Routes.memberWithId(member.id));
-    _memberListBloc.add(LoadMemberList());
-  }
-
-  Future<void> onSearchTextChanged(String text) async {
-    _memberListBloc.add(FilterMemberList(text));
-  }
-
-  Future<void> onPressedAddMember() async {
-    await context.push(Routes.member);
-    _memberListBloc.add(LoadMemberList());
-  }
-
   Excel generateExcel() {
-    final members = _memberListBloc.state.members;
+    final members = getIt<MemberListViewModel>().memberListCommand.value;
     final excel = Excel.createExcel();
     final sheetObject = excel['Sheet1'];
 
