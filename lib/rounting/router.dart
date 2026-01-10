@@ -3,12 +3,10 @@ import 'package:carpark/injector/injector.dart';
 import 'package:carpark/rounting/routes.dart';
 import 'package:carpark/ui/auth/login/widgets/login_screen.dart';
 import 'package:carpark/ui/home/widgets/home_screen.dart';
-import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
 import 'package:carpark/ui/member/widgets/member_screen.dart';
 import 'package:carpark/ui/registered_user/widgets/page/registered_user_logs_screen.dart';
 import 'package:carpark/ui/visitor/widgets/visitor_detail_screen.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
@@ -25,11 +23,8 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     ),
     GoRoute(
       path: Routes.home,
-      pageBuilder: (context, state) => NoTransitionPage(
-        child: BlocProvider(
-          create: (context) => getIt<MemberListBloc>(),
-          child: const HomeScreen(),
-        ),
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: HomeScreen(),
       ),
     ),
     GoRoute(
