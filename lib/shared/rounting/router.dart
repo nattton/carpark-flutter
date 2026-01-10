@@ -1,0 +1,81 @@
+import 'package:carpark/features/auth/login/widgets/login_screen.dart';
+import 'package:carpark/features/home/widgets/home_screen.dart';
+import 'package:carpark/features/member/widgets/member_screen.dart';
+import 'package:carpark/features/registered_user/widgets/page/registered_user_logs_screen.dart';
+import 'package:carpark/features/visitor/widgets/visitor_detail_screen.dart';
+import 'package:carpark/shared/injector/injector.dart';
+import 'package:carpark/shared/repositories/auth/auth_repository.dart';
+import 'package:carpark/shared/rounting/routes.dart';
+import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+
+GoRouter router(AuthRepository authRepository) => GoRouter(
+  initialLocation: Routes.home,
+  debugLogDiagnostics: true,
+  redirect: _redirect,
+  refreshListenable: authRepository,
+  routes: [
+    GoRoute(
+      path: Routes.login,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: LoginScreen(),
+      ),
+    ),
+    GoRoute(
+      path: Routes.home,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: HomeScreen(),
+      ),
+    ),
+    GoRoute(
+      path: Routes.member,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: MemberScreen(
+          memberId: 0,
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '${Routes.member}/:memberId',
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: MemberScreen(
+          memberId: int.parse(state.pathParameters['memberId'] ?? '0'),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '${Routes.visitorDetail}/:visitorId',
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: VisitorDetailScreen(
+          visitorId: int.parse(state.pathParameters['visitorId'] ?? '0'),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '${Routes.registeredUserLogs}/:userId',
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: RegisteredUserLogsScreen.page(
+          userId: int.parse(state.pathParameters['userId'] ?? '0'),
+        ),
+      ),
+    ),
+  ],
+);
+
+Future<String?> _redirect(BuildContext context, GoRouterState state) async {
+  // if the user is not logged in, they need to login
+  final loggedIn = await getIt<AuthRepository>().isAuthenticated;
+  final loggingIn = state.matchedLocation == Routes.login;
+  if (!loggedIn) {
+    return Routes.login;
+  }
+
+  // if the user is logged in but still on the login page, send them to
+  // the home page
+  if (loggingIn) {
+    return Routes.home;
+  }
+
+  // no need to redirect at all
+  return null;
+}

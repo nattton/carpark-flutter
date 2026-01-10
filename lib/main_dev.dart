@@ -1,5 +1,5 @@
-import 'package:carpark/injector/injector.dart';
 import 'package:carpark/my_app.dart';
+import 'package:carpark/shared/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:media_kit/media_kit.dart';
