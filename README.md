@@ -59,6 +59,9 @@ All platforms are built from the same Flutter codebase.
 - Navigation and routing
 - State management
 - Multi-platform build support
+- **Automatic license plate recognition (LPR/ANPR) for vehicle check-in and check-out**
+- ID card reader integration for visitor check-in / check-out
+- Automatic ticket printing for visitor entry and exit
 
 ---
 
