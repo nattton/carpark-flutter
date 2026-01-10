@@ -18,7 +18,7 @@ import 'package:carpark/ui/home/view_models/late_gate_viewmodel.dart';
 import 'package:carpark/ui/live_player/view_models/live_player_viewmodel.dart';
 import 'package:carpark/ui/live_player/widgets/card_player_widget.dart';
 import 'package:carpark/ui/live_player/widgets/live_player_widget.dart';
-import 'package:carpark/ui/member/bloc/member_list/member_list_bloc.dart';
+import 'package:carpark/ui/member/view_models/member_list_viewmodel.dart';
 import 'package:carpark/ui/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:dio/dio.dart';
@@ -87,10 +87,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
   @override
   void initState() {
-    super.initState();
-    context.read<MemberListBloc>().add(LoadMemberList());
     _registeredUserCheckInBloc = context.read<RegisteredUserCheckInBloc>();
     focusNode = FocusNode();
+    super.initState();
   }
 
   @override
@@ -109,6 +108,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    callOnce((_) => getIt<MemberListViewModel>().getMemberListCommand());
+
     final gateLogIn = watchValue(
       (LastGateViewmodel viewModel) => viewModel.gateIn,
     );
@@ -817,7 +818,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
   }
 
   Widget _buildSearchMember() {
-    final members = context.read<MemberListBloc>().state.members;
+    final members = getIt<MemberListViewModel>().memberListCommand.value;
     return Autocomplete<MemberModel>(
       initialValue:
           _selectedMember != null && _selectedMember!.status == 'overdue'

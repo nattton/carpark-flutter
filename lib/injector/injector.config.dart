@@ -69,7 +69,6 @@ import '../ui/gate_log/view_models/gate_log_viewmodel.dart' as _i63;
 import '../ui/home/view_models/home_viewmodel.dart' as _i152;
 import '../ui/home/view_models/late_gate_viewmodel.dart' as _i80;
 import '../ui/live_player/view_models/live_player_viewmodel.dart' as _i272;
-import '../ui/member/bloc/member_list/member_list_bloc.dart' as _i1056;
 import '../ui/member/view_models/member_list_viewmodel.dart' as _i883;
 import '../ui/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart'
     as _i680;
@@ -182,10 +181,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i883.MemberListViewModel(
         memberRepository: gh<_i379.MemberRepository>(),
       ),
-    );
-    gh.factory<_i1056.MemberListBloc>(
-      () =>
-          _i1056.MemberListBloc(memberRepository: gh<_i379.MemberRepository>()),
     );
     gh.factory<_i151.PrinterViewModel>(
       () => _i151.PrinterViewModel(
