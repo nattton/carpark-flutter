@@ -115,10 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void alertError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
-
   void selectedPage(String page) {
     switch (page) {
       case 'ENTRANCE':
@@ -279,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: PageView(
               controller: page,
               children: [
-                ColoredBox(color: Colors.white, child: EntranceScreen.page),
+                const ColoredBox(color: Colors.white, child: EntranceScreen()),
                 ColoredBox(color: Colors.white, child: ExitScreen.page),
                 const ColoredBox(
                   color: Colors.white,

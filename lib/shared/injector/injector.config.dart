@@ -22,8 +22,6 @@ import '../../features/home/view_models/late_gate_viewmodel.dart' as _i195;
 import '../../features/live_player/view_models/live_player_viewmodel.dart'
     as _i183;
 import '../../features/member/view_models/member_list_viewmodel.dart' as _i733;
-import '../../features/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart'
-    as _i115;
 import '../../features/registered_user/bloc/registered_user_check_out/registered_user_check_out_bloc.dart'
     as _i989;
 import '../../features/registered_user/bloc/registered_user_create/registered_user_create_bloc.dart'
@@ -48,8 +46,6 @@ import '../../features/registered_user/use_cases/read_id_card_usecase.dart'
     as _i728;
 import '../../features/registered_user/use_cases/registered_user_add_photo_usecase.dart'
     as _i64;
-import '../../features/registered_user/use_cases/registered_user_check_in_usecase.dart'
-    as _i752;
 import '../../features/registered_user/use_cases/registered_user_check_out_usecase.dart'
     as _i118;
 import '../../features/registered_user/use_cases/registered_user_create_usecase.dart'
@@ -212,11 +208,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i568.RegisteredUserServiceRepository>(),
       ),
     );
-    gh.factory<_i752.RegisteredUserCheckInUsecase>(
-      () => _i752.RegisteredUserCheckInUsecase(
-        gh<_i568.RegisteredUserServiceRepository>(),
-      ),
-    );
     gh.factory<_i118.RegisteredUserCheckOutUsecase>(
       () => _i118.RegisteredUserCheckOutUsecase(
         gh<_i568.RegisteredUserServiceRepository>(),
@@ -257,11 +248,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i353.RegisteredUserCreateUsecase>(),
         gh<_i728.ReadIdCardUsecase>(),
         gh<_i64.RegisteredUserAddPhotoUsecase>(),
-      ),
-    );
-    gh.factory<_i115.RegisteredUserCheckInBloc>(
-      () => _i115.RegisteredUserCheckInBloc(
-        gh<_i752.RegisteredUserCheckInUsecase>(),
       ),
     );
     gh.factory<_i1070.RegisteredUserLogsBloc>(

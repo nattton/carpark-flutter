@@ -9,8 +9,7 @@ import 'package:carpark/features/live_player/widgets/card_player_widget.dart';
 import 'package:carpark/features/live_player/widgets/live_player_widget.dart';
 import 'package:carpark/features/member/models/member_model.dart';
 import 'package:carpark/features/member/view_models/member_list_viewmodel.dart';
-import 'package:carpark/features/registered_user/bloc/registered_user_check_in/registered_user_check_in_bloc.dart';
-import 'package:carpark/features/registered_user/models/registered_user.dart';
+import 'package:carpark/features/registered_user_check_in/registered_user_check_in.dart';
 import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/models/gate_log_model.dart';
@@ -18,7 +17,6 @@ import 'package:carpark/shared/models/visitor_model.dart';
 import 'package:carpark/shared/repositories/card_reader/entity/id_card_entity.dart';
 import 'package:carpark/shared/repositories/card_reader/id_card_service_repository.dart';
 import 'package:carpark/shared/repositories/printer/printer_repository.dart';
-import 'package:carpark/shared/rounting/routes.dart';
 import 'package:carpark/shared/services/api/api_service.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:dio/dio.dart';
@@ -38,20 +36,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
 
-enum EntranceScreenLeftState { initial, visitor, checkIn }
+enum EntranceScreenLeftState { initial, visitor }
 
 class EntranceScreen extends WatchingStatefulWidget {
   const EntranceScreen({super.key});
 
   @override
   State<EntranceScreen> createState() => _EntranceScreenState();
-
-  static Widget get page => MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (context) => getIt<RegisteredUserCheckInBloc>()),
-    ],
-    child: const EntranceScreen(),
-  );
 }
 
 class _EntranceScreenState extends State<EntranceScreen> {
@@ -59,7 +50,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
   PrinterRepository get _printerRepository => context.read<PrinterRepository>();
 
-  late RegisteredUserCheckInBloc _registeredUserCheckInBloc;
   late FocusNode focusNode;
 
   EntranceScreenLeftState _leftState = EntranceScreenLeftState.initial;
@@ -87,7 +77,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
   @override
   void initState() {
-    _registeredUserCheckInBloc = context.read<RegisteredUserCheckInBloc>();
     focusNode = FocusNode();
     super.initState();
   }
@@ -114,123 +103,78 @@ class _EntranceScreenState extends State<EntranceScreen> {
       (LastGateViewmodel viewModel) => viewModel.gateIn,
     );
 
-    return BlocListener<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
-      listener: (context, state) {
-        if (state is RegisteredUserCheckInSuccess) {
-          alertCheckIn(state.registeredUser);
-        } else if (state is RegisteredUserCheckInFailure) {
-          alertError(state.failure.message);
-        }
-      },
-      child: gateLogIn.id != 0
-          ? Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8,
-                                top: 8,
-                                right: 8,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _barcodeController,
-                                      autofocus: true,
-                                      autocorrect: false,
-                                      keyboardType: TextInputType.text,
-                                      decoration: InputDecoration(
-                                        suffixIcon: GestureDetector(
-                                          onTap: _onBarcodeSubmitted,
-                                          child: const Icon(
-                                            Icons.barcode_reader,
-                                          ),
-                                        ),
-                                        contentPadding: const EdgeInsets.all(
-                                          8,
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            0,
-                                          ),
-                                        ),
-                                      ),
-                                      onSubmitted: (value) =>
-                                          _onBarcodeSubmitted(),
-                                      focusNode: focusNode,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child:
-                                        _leftState ==
-                                            EntranceScreenLeftState.visitor
-                                        ? ElevatedButton(
-                                            onPressed: openVisitior,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors
-                                                  .red, // Background color
-                                            ),
-                                            child: const Text(
-                                              'ยกเลิก',
-                                              style: kButtonStyle,
-                                            ),
-                                          )
-                                        : ElevatedButton(
-                                            onPressed: showVisitorFromEmpty,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  kColorButtonPrimary,
-                                            ),
-                                            child: const Text(
-                                              'สร้างผู้ติดต่อ',
-                                              style: kButtonStyle,
-                                            ),
-                                          ),
-                                  ),
-                                ],
-                              ),
+    return gateLogIn.id != 0
+        ? Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8,
+                              top: 8,
+                              right: 8,
                             ),
-                          ],
-                        ),
-                        switch (_leftState) {
-                          EntranceScreenLeftState.visitor =>
-                            _buildVisitorForm(),
-                          EntranceScreenLeftState.checkIn =>
-                            _buildCheckInForm(),
-                          _ => _buildViewer(),
-                        },
-                      ],
-                    ),
-                  ),
-                  const Expanded(
-                    child: !kIsWeb
-                        ? LivePlayerWidget()
-                        : Column(
-                            children: [ExitCard()],
+                            child: Row(
+                              children: [
+                                const Expanded(
+                                  child: RegisteredUserCheckInWidget(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child:
+                                      _leftState ==
+                                          EntranceScreenLeftState.visitor
+                                      ? ElevatedButton(
+                                          onPressed: openVisitior,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.red, // Background color
+                                          ),
+                                          child: const Text(
+                                            'ยกเลิก',
+                                            style: kButtonStyle,
+                                          ),
+                                        )
+                                      : ElevatedButton(
+                                          onPressed: showVisitorFromEmpty,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                kColorButtonPrimary,
+                                          ),
+                                          child: const Text(
+                                            'สร้างผู้ติดต่อ',
+                                            style: kButtonStyle,
+                                          ),
+                                        ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                      switch (_leftState) {
+                        EntranceScreenLeftState.visitor => _buildVisitorForm(),
+                        _ => _buildViewer(),
+                      },
+                    ],
                   ),
-                ],
-              ),
-            )
-          : Container(),
-    );
-  }
-
-  void _onBarcodeSubmitted() {
-    final barcode = _barcodeController.text;
-    _barcodeController.clear();
-    focusNode.requestFocus();
-    _registeredUserCheckInBloc.add(
-      PostRegisteredUserCheckInEvent(generatedId: barcode),
-    );
+                ),
+                const Expanded(
+                  child: !kIsWeb
+                      ? LivePlayerWidget()
+                      : Column(
+                          children: [ExitCard()],
+                        ),
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 
   Widget _buildViewer() {
@@ -238,23 +182,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
     return EntranceCard(
       gateLog: gateLogIn,
       onTapSelectGateLog: () => showVisitorFromSelect(gateLogIn),
-    );
-  }
-
-  Widget _buildCheckInForm() {
-    return BlocBuilder<RegisteredUserCheckInBloc, RegisteredUserCheckInState>(
-      builder: (context, state) {
-        switch (state) {
-          case RegisteredUserCheckInInitial():
-            return const SizedBox();
-          case RegisteredUserCheckInLoading():
-            return const Center(child: CircularProgressIndicator());
-          case RegisteredUserCheckInSuccess():
-            return const SizedBox();
-          case RegisteredUserCheckInFailure():
-            return Center(child: Text(state.failure.message));
-        }
-      },
     );
   }
 
@@ -908,36 +835,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 context.pop();
               },
               child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void alertCheckIn(RegisteredUser registeredUser) {
-    showDialog<Widget>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Check In'),
-          content: Text('ลงเวลาเข้าโดย ${registeredUser.thaiName}'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context
-                  ..pop()
-                  ..push(
-                    Routes.registeredUserLogsWithId(registeredUser.id),
-                  );
-              },
-              child: const Text('ดูประวัติการเข้าใช้งาน'),
-            ),
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('ปิด'),
             ),
           ],
         );

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
-class Failure {
+class Failure implements Exception {
   Failure([this.message = 'An unexpected error occurred,']);
   Failure.fromException(Object e)
     : message = (e is DioException)
@@ -22,4 +22,9 @@ class Failure {
   }
 
   String toJson() => json.encode(toMap());
+
+  @override
+  String toString() {
+    return message;
+  }
 }
