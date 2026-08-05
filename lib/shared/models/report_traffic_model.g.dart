@@ -10,8 +10,8 @@ ReportTrafficModel _$ReportTrafficModelFromJson(Map<String, dynamic> json) =>
     ReportTrafficModel(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      vehicleId: (json['vehicle_id'] as num).toInt(),
-      plateNumber: json['plate_number'] as String,
+      vehicleId: (json['vehicleId'] as num).toInt(),
+      plateNumber: json['plateNumber'] as String,
       traffic: (json['traffic'] as num).toInt(),
     );
 
@@ -19,7 +19,7 @@ Map<String, dynamic> _$ReportTrafficModelToJson(ReportTrafficModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'vehicle_id': instance.vehicleId,
-      'plate_number': instance.plateNumber,
+      'vehicleId': instance.vehicleId,
+      'plateNumber': instance.plateNumber,
       'traffic': instance.traffic,
     };

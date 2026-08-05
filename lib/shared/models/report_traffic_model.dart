@@ -2,9 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'report_traffic_model.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 class ReportTrafficModel {
-
   ReportTrafficModel({
     required this.id,
     required this.name,
