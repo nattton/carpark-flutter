@@ -78,6 +78,8 @@ class _EntranceScreenState extends State<EntranceScreen> {
   @override
   void initState() {
     focusNode = FocusNode();
+    getIt<MemberListViewModel>().getMemberListCommand();
+    getIt<LivePlayerViewmodel>().getCameraCommand.run();
     super.initState();
   }
 
@@ -97,8 +99,6 @@ class _EntranceScreenState extends State<EntranceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    callOnce((_) => getIt<MemberListViewModel>().getMemberListCommand());
-
     final gateLogIn = watchValue(
       (LastGateViewmodel viewModel) => viewModel.gateIn,
     );

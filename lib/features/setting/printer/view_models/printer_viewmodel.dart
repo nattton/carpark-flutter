@@ -7,8 +7,7 @@ import 'package:logging/logging.dart';
 
 @injectable
 class PrinterViewModel extends ChangeNotifier {
-  PrinterViewModel({required PrinterRepository printerRepository})
-    : _printerRepository = printerRepository {
+  PrinterViewModel({required this._printerRepository}) {
     getPrinterCommand = Command.createAsyncNoParam<String?>(
       initialValue: null,
       () async {
