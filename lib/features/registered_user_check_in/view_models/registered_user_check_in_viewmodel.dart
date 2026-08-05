@@ -21,8 +21,8 @@ class CheckInInvalidException implements Exception {
 
 class RegisteredUserCheckInViewmodel {
   RegisteredUserCheckInViewmodel({
-    required this._repository,
-  });
+    required RegisteredUserServiceRepository repository,
+  }) : _repository = repository;
   final _log = Logger('MemberListViewModel');
   final RegisteredUserServiceRepository _repository;
 

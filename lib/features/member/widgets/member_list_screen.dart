@@ -161,14 +161,14 @@ class MemberListScreen extends WatchingWidget {
 
   Future<void> onPressedExportMember() async {
     final dateTime = DateFormat('yyyy-MM-dd_HH-mm').format(DateTime.now());
-    final outputFile = await FilePicker.platform.saveFile(
+    final outputFile = await FilePicker.saveFile(
       dialogTitle: 'Please select an output file:',
       fileName: 'member_list_$dateTime.xlsx',
     );
 
     if (outputFile != null) {
       final file = File(outputFile);
-      file.writeAsBytes(generateExcel().encode()!);
+      await file.writeAsBytes(generateExcel().encode()!);
     }
   }
 }

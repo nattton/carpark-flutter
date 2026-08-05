@@ -7,7 +7,7 @@ import 'package:logging/logging.dart';
 
 @singleton
 class VisitorViewmodel {
-  VisitorViewmodel({required this._apiService});
+  VisitorViewmodel({required ApiService apiService}) : _apiService = apiService;
   final _log = Logger('VisitorViewmodel');
   final ApiService _apiService;
   late final Command<List<VisitorModel>, List<VisitorModel>> visitorsCommand =

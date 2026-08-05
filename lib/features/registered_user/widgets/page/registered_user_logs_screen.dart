@@ -155,7 +155,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                       '${user.idCard}_${user.thaiName}_${user.engName}.png'
                           .replaceAll(' ', '_');
 
-                  final outputFile = await FilePicker.platform.saveFile(
+                  final outputFile = await FilePicker.saveFile(
                     dialogTitle: 'Please select an output file:',
                     fileName: filename,
                   );
@@ -168,7 +168,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
                     ).toImageData(878);
                     if (qrBytes != null) {
                       final buffer = qrBytes.buffer;
-                      file.writeAsBytes(
+                      await file.writeAsBytes(
                         buffer.asUint8List(
                           qrBytes.offsetInBytes,
                           qrBytes.lengthInBytes,

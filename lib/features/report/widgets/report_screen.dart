@@ -168,7 +168,7 @@ class _ReportScreenState extends State<ReportScreen> {
     if (kIsWeb) {
       excel.save(fileName: filename);
     } else {
-      final outputFile = await FilePicker.platform.saveFile(
+      final outputFile = await FilePicker.saveFile(
         dialogTitle: 'Please select an output file:',
         fileName: filename,
       );

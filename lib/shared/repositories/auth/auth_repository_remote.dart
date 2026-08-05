@@ -13,10 +13,12 @@ const String authorizationHeader = 'Authorization';
 @Singleton(as: AuthRepository)
 class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
-    required this._dio,
+    required Dio dio,
     required ApiService apiService,
-    required this._sharedPreferencesService,
-  }) : _apiService = apiService;
+    required SharedPreferencesService sharedPreferencesService,
+  }) : _dio = dio,
+       _apiService = apiService,
+       _sharedPreferencesService = sharedPreferencesService;
 
   final Dio _dio;
   final ApiService _apiService;
