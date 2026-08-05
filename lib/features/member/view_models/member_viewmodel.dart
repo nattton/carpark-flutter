@@ -8,8 +8,7 @@ import 'package:flutter_it/flutter_it.dart';
 import 'package:logging/logging.dart';
 
 class MemberViewModel {
-  MemberViewModel({required MemberRepository memberRepository})
-    : _memberRepository = memberRepository;
+  MemberViewModel({required this._memberRepository});
   final MemberRepository _memberRepository;
   final _log = Logger('MemberViewModel');
 

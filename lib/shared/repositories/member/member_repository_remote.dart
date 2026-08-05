@@ -11,8 +11,7 @@ import 'package:injectable/injectable.dart';
 @prod
 @Injectable(as: MemberRepository)
 class MemberRepositoryRemote extends MemberRepository {
-  MemberRepositoryRemote({required ApiService apiService})
-    : _apiService = apiService;
+  MemberRepositoryRemote({required this._apiService});
 
   final ApiService _apiService;
 

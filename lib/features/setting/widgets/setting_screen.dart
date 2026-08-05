@@ -80,11 +80,11 @@ class _SettingScreenState extends State<SettingScreen> {
                             height: 2,
                             color: Colors.deepPurpleAccent,
                           ),
-                          onChanged: (String? value) {
+                          onChanged: (value) {
                             printerViewModel.updatePrinterCommand(value);
                           },
                           items: printerList.map<DropdownMenuItem<String>>((
-                            String value,
+                            value,
                           ) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -132,14 +132,14 @@ class _SettingScreenState extends State<SettingScreen> {
     super.dispose();
   }
 
-  void onPressedRow(BuildContext context, CameraModel camera) {
+  Future<void> onPressedRow(BuildContext context, CameraModel camera) async {
     _ipAddressController.text = camera.ipAddress;
     _portController.text = camera.port;
     _usernameController.text = camera.username;
     _passwordController.text = camera.password;
     _pathController.text = camera.path;
 
-    Alert(
+    await Alert(
       context: context,
       title: 'Camera : ${camera.name}',
       content: Column(
@@ -219,8 +219,8 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       buttons: [
         DialogButton(
-          onPressed: () {
-            saveCamera(camera);
+          onPressed: () async {
+            await saveCamera(camera);
           },
           child: const Text(
             'Save',
@@ -231,7 +231,7 @@ class _SettingScreenState extends State<SettingScreen> {
     ).show();
   }
 
-  void saveCamera(CameraModel camera) {
+  Future<void> saveCamera(CameraModel camera) async {
     final cameraUpdate = camera.copyWith(
       ipAddress: _ipAddressController.text,
       port: _portController.text,
@@ -239,9 +239,10 @@ class _SettingScreenState extends State<SettingScreen> {
       password: _passwordController.text,
       path: _pathController.text,
     );
-    getIt<ApiService>()
+    await getIt<ApiService>()
         .updateCamera(cameraUpdate.id, cameraUpdate)
         .then((value) {
+          if (!mounted) return;
           GoRouter.of(context).pop();
           getIt<LivePlayerViewmodel>().getCameraCommand.run();
         })
