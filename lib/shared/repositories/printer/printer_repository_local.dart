@@ -8,8 +8,8 @@ import 'package:thermal_printer/thermal_printer.dart';
 @Singleton(as: PrinterRepository)
 class PrinterRepositoryLocal extends PrinterRepository {
   PrinterRepositoryLocal({
-    required this._sharedPreferencesService,
-  });
+    required SharedPreferencesService sharedPreferencesService,
+  }) : _sharedPreferencesService = sharedPreferencesService;
 
   final SharedPreferencesService _sharedPreferencesService;
 

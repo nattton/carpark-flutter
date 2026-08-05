@@ -110,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
       initWebSocketConnection();
     }
 
-    sideMenu.addListener((p0) {
-      page.jumpToPage(p0);
+    sideMenu.addListener(() {
+      page.jumpToPage(sideMenu.currentIndex);
     });
   }
 
@@ -157,13 +157,13 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SideMenu(
             controller: sideMenu,
-            style: SideMenuStyle(
+            theme: const SideMenuThemeData(
               displayMode: SideMenuDisplayMode.compact,
-              openSideMenuWidth: 60,
-              compactSideMenuWidth: 60,
-              hoverColor: Colors.blue[100],
+              openWidth: 60,
+              compactWidth: 60,
+              hoverColor: Colors.blue,
               selectedColor: Colors.lightBlue,
-              selectedTitleTextStyle: const TextStyle(color: Colors.white),
+              selectedTitleStyle: TextStyle(color: Colors.white),
               selectedIconColor: Colors.white,
             ),
             items: [
@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('ทางเข้า');
                   selectedPage('ENTRANCE');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.door_front_door_outlined),
                 tooltipContent: 'ทางเข้า',
@@ -182,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('ทางออก');
                   selectedPage('EXIT');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.door_back_door_outlined),
                 tooltipContent: 'ทางออก',
@@ -192,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('รายชื่อผู้ติดต่อ');
                   selectedPage('VISITOR');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.badge),
               ),
@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('บันทึกผู้ติดต่อลงทะเบียน');
                   selectedPage('REGISTERED_USER_NOT_CHECK_OUT');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.badge),
               ),
@@ -210,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('บันทึกเข้า-ออก');
                   selectedPage('LOG');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.commute),
               ),
@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('รายชื่อสมาชิก');
                   selectedPage('MEMBER');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.person_search),
               ),
@@ -230,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     'รายชื่อผู้ติดต่อลงทะเบียน',
                   );
                   selectedPage('REGISTERED_USER');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.person_search),
               ),
@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('รายงาน');
                   selectedPage('REPORT');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.summarize),
               ),
@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('ตั้งค่า');
                   selectedPage('SETTING');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.settings),
               ),
@@ -257,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (page, _) {
                   homeViewModel.setTitleCommand('รายชื่อผู้ใช้งาน');
                   selectedPage('USER');
-                  sideMenu.changePage(page);
+                  sideMenu.goTo(page);
                 },
                 icon: const Icon(Icons.supervisor_account_rounded),
               ),

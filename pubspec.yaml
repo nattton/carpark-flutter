@@ -10,22 +10,22 @@ dependencies:
   archive: ^3.6.1
   async: ^2.11.0
   cached_network_image: ^3.4.1
-  calendar_date_picker2: ^2.0.1
+  calendar_date_picker2: ^3.0.0
   charset_converter: ^2.3.0
-  csv: ^6.0.0
+  csv: ^8.0.0
   cupertino_icons: ^1.0.8
   dio: ^5.7.0
-  dropdown_button2: ^2.3.9
+  dropdown_button2: ^3.1.0
   duration: ^4.0.3
-  easy_sidemenu: ^0.7.1
+  easy_sidemenu: ^1.0.0
   equatable: ^2.0.7
   excel: ^4.0.6
-  file_picker: ^10.1.2
-  file_saver: ^0.3.1
+  file_picker: ^11.0.3
+  file_saver: ^0.4.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.0.0
-  flutter_easyloading: ^3.0.5
+  flutter_easyloading: ^4.0.2
   flutter_esc_pos_utils: ^1.0.1
   flutter_form_builder: ^10.0.1
   flutter_it: ^2.1.1
@@ -34,7 +34,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   go_router: ^17.0.1
   image: ^4.3.0
-  injectable: ^2.5.0
+  injectable: ^3.0.0
   intl: ^0.20.2
   json_annotation: ^4.9.0
   jwt_decode: ^0.3.1
@@ -48,7 +48,7 @@ dependencies:
   qr_flutter: ^4.1.0
   retrofit: ^4.9.0
   rflutter_alert: ^2.0.7
-  searchfield: ^1.2.2
+  searchfield: ^2.0.0
   shared_preferences: ^2.3.5
   substring_highlight: ^1.0.33
   thermal_printer: ^1.0.5
@@ -62,7 +62,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^3.1.0
-  injectable_generator: ^2.6.2
+  injectable_generator: ^3.0.2
   json_serializable: ^6.9.0
   retrofit_generator: ^10.2.1
   very_good_analysis: ^10.0.0

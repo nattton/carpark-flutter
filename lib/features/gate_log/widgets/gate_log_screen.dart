@@ -160,11 +160,11 @@ class _GateLogScreenState extends State<GateLogScreen> {
     );
   }
 
-  void viewDetail(GateLogResult gateLog) {
+  Future<void> viewDetail(GateLogResult gateLog) async {
     if (gateLog.visitorMemberId > 0) {
-      context.push(Routes.visitorWithId(gateLog.visitorId));
+      await context.push(Routes.visitorWithId(gateLog.visitorId));
     } else {
-      Alert(
+      await Alert(
         context: context,
         title: 'Gate Log',
         content: Column(
@@ -242,7 +242,7 @@ class _GateLogScreenState extends State<GateLogScreen> {
     if (kIsWeb) {
       generateExcel().save(fileName: '$fileName.xlsx');
     } else {
-      final outputFile = await FilePicker.platform.saveFile(
+      final outputFile = await FilePicker.saveFile(
         dialogTitle: 'Please select an output file:',
         fileName: '$fileName.xlsx',
       );

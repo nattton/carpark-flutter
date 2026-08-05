@@ -141,10 +141,10 @@ packages:
     dependency: "direct main"
     description:
       name: calendar_date_picker2
-      sha256: "9c9b5586fb512bf1181d7f3a6273bffa9e65a4e16689902e112771e7d71d063b"
+      sha256: d6ea697c7fc0eebc64c62ad2ac6232a8c38795010bd8466b687bfebcbbdd872e
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "3.0.0"
   characters:
     dependency: transitive
     description:
@@ -253,10 +253,10 @@ packages:
     dependency: "direct main"
     description:
       name: csv
-      sha256: c6aa2679b2a18cb57652920f674488d89712efaf4d3fdf2e537215b35fc19d6c
+      sha256: "2e0a52fb729f2faacd19c9c0c954ff450bba37aa8ab999410309e2342e7013a2"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "8.0.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -309,10 +309,10 @@ packages:
     dependency: "direct main"
     description:
       name: dropdown_button2
-      sha256: b0fe8d49a030315e9eef6c7ac84ca964250155a6224d491c1365061bc974a9e1
+      sha256: "24f5b775483a9b3c508092766798c10e3f23127e66b3f4a305b5bfb59ff1debc"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.9"
+    version: "3.1.0"
   duration:
     dependency: "direct main"
     description:
@@ -325,10 +325,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_sidemenu
-      sha256: "91f9d8d4466d11de0397a22568ab4e15335635fe86836ef14dbc5dd571fb6963"
+      sha256: d9b3a385c14f4680968d7b76af8269b4193f89c41c0f554690cb0e0283e3986c
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.1"
+    version: "1.0.0"
   enum_to_string:
     dependency: transitive
     description:
@@ -381,18 +381,18 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "57d9a1dd5063f85fa3107fb42d1faffda52fdc948cefd5fe5ea85267a5fc7343"
+      sha256: "29cc1fdb20613876cc7afc529738c1c0f11a9ca159b010edad0c566ac330847e"
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.10"
+    version: "11.0.3"
   file_saver:
     dependency: "direct main"
     description:
       name: file_saver
-      sha256: "9d93db09bd4da9e43238f9dd485360fc51a5c138eea5ef5f407ec56e58079ac0"
+      sha256: "68c9a085d9bb4546e0a31d1e583a48d7c17a6987d538788ea064f0043b1fc02d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.1"
+    version: "0.4.0"
   fixnum:
     dependency: transitive
     description:
@@ -426,10 +426,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_easyloading
-      sha256: ba21a3c883544e582f9cc455a4a0907556714e1e9cf0eababfcb600da191d17c
+      sha256: "764e83a3537c8bf00353750ec90cf42967949c47225d222277c218ca5f200ae8"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.5"
+    version: "4.0.2"
   flutter_esc_pos_utils:
     dependency: "direct main"
     description:
@@ -641,18 +641,18 @@ packages:
     dependency: "direct main"
     description:
       name: injectable
-      sha256: "32b36a9d87f18662bee0b1951b81f47a01f2bf28cd6ea94f60bc5453c7bf598c"
+      sha256: "1da6399509e44ddb0d8a4a35291d7122c4efb5c625a9d733bf5e48d4a72e379e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.7.1+4"
+    version: "3.0.0"
   injectable_generator:
     dependency: "direct dev"
     description:
       name: injectable_generator
-      sha256: fcc0d1edcef2c863dec846b0dec27cb2390d9e9b62e61da5cfc2b9a06b9533c2
+      sha256: "433ad4d94837ff187803b2bf04c6707db6fad8d245f1d693e2e34053bc07ec28"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.1"
+    version: "3.0.2"
   intl:
     dependency: "direct main"
     description:
@@ -1161,10 +1161,10 @@ packages:
     dependency: "direct main"
     description:
       name: searchfield
-      sha256: "9834d251b1e60a7ac5eaef8d832c11e914c18f01958ddba044c9269ff9ad9ad8"
+      sha256: "09231f4b86c78e2ae03c1ce83b0a9facd44b2ffa8fd9208175a97736092742ba"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "2.0.0"
   shared_preferences:
     dependency: "direct main"
     description:

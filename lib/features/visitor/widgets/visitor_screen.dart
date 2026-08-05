@@ -263,17 +263,16 @@ class _VisitorScreenState extends State<VisitorScreen> {
     }
 
     if (kIsWeb) {
-      final excel = generateExcel();
-      excel.save(fileName: '$fileName.xlsx');
+      generateExcel().save(fileName: '$fileName.xlsx');
     } else {
-      final outputFile = await FilePicker.platform.saveFile(
+      final outputFile = await FilePicker.saveFile(
         dialogTitle: 'Please select an output file:',
         fileName: '$fileName.xlsx',
       );
 
       if (outputFile != null) {
         final file = File(outputFile);
-        file.writeAsBytes(generateExcel().encode()!);
+        await file.writeAsBytes(generateExcel().encode()!);
       }
     }
   }
