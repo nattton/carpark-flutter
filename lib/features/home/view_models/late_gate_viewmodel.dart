@@ -9,7 +9,8 @@ import 'package:logging/logging.dart';
 
 @singleton
 class LastGateViewmodel {
-  LastGateViewmodel({required this._apiService}) {
+  LastGateViewmodel({required ApiService apiService})
+    : _apiService = apiService {
     getLastGateCommand = Command.createAsyncNoParamNoResult(
       () async {
         try {
