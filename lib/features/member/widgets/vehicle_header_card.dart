@@ -1,5 +1,5 @@
 import 'package:carpark/shared/config/constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VehicleHeaderCard extends StatelessWidget {
   const VehicleHeaderCard({super.key});

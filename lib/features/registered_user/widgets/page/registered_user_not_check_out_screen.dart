@@ -1,12 +1,12 @@
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_not_check_out/registered_user_not_check_out_bloc.dart';
 import 'package:carpark/features/registered_user/models/registered_user_log.dart';
 import 'package:carpark/features/registered_user/widgets/registered_user_not_check_out_header_widget.dart';
 import 'package:carpark/features/registered_user/widgets/registered_user_not_check_out_row_widget.dart';
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/rounting/routes.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RegisteredUserNotCheckOutScreen extends StatefulWidget {
   const RegisteredUserNotCheckOutScreen({super.key});
@@ -15,7 +15,7 @@ class RegisteredUserNotCheckOutScreen extends StatefulWidget {
   State<RegisteredUserNotCheckOutScreen> createState() =>
       _RegisteredUserNotCheckOutScreenState();
 
-  static Widget get page => BlocProvider(
+  static Widget get page => BlocSignalProvider(
     create: (context) =>
         getIt<RegisteredUserNotCheckOutBloc>()
           ..add(GetRegisteredUserNotCheckOut()),
@@ -27,7 +27,7 @@ class _RegisteredUserNotCheckOutScreenState
     extends State<RegisteredUserNotCheckOutScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<
+    return BlocSignalBuilder<
       RegisteredUserNotCheckOutBloc,
       RegisteredUserNotCheckOutState
     >(
@@ -36,7 +36,9 @@ class _RegisteredUserNotCheckOutScreenState
           case RegisteredUserNotCheckOutLoading():
             return const Center(child: CircularProgressIndicator());
           case RegisteredUserNotCheckOutLoaded(:final registeredUserLog):
-            return _buildRegisteredUserNotCheckOutList(registeredUserLog);
+            return RegisteredUserNotCheckOutListWidget(
+              registeredUserLog: registeredUserLog,
+            );
           case RegisteredUserNotCheckOutError(:final failure):
             return Center(child: Text(failure.message));
           default:
@@ -45,10 +47,18 @@ class _RegisteredUserNotCheckOutScreenState
       },
     );
   }
+}
 
-  Widget _buildRegisteredUserNotCheckOutList(
-    List<RegisteredUserLog> registeredUserLog,
-  ) {
+class RegisteredUserNotCheckOutListWidget extends StatelessWidget {
+  const RegisteredUserNotCheckOutListWidget({
+    required this.registeredUserLog,
+    super.key,
+  });
+
+  final List<RegisteredUserLog> registeredUserLog;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         const RegisteredUserNotCheckOutHeaderWidget(),
@@ -58,8 +68,8 @@ class _RegisteredUserNotCheckOutScreenState
             itemBuilder: (context, index) {
               return RegisteredUserNotCheckOutRowWidget(
                 log: registeredUserLog[index],
-                onTap: () {
-                  context.push(
+                onTap: () async {
+                  await context.push(
                     Routes.registeredUserLogsWithId(
                       registeredUserLog[index].registeredUser!.id,
                     ),

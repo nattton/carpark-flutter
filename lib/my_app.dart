@@ -2,8 +2,8 @@ import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/repositories/auth/auth_repository.dart';
 import 'package:carpark/shared/rounting/router.dart';
 import 'package:carpark/shared/ui/scroll_behavior.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

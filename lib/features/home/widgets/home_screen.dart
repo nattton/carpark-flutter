@@ -21,9 +21,9 @@ import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class HomeScreen extends WatchingStatefulWidget {

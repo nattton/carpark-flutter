@@ -1,6 +1,6 @@
 import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/models/visitor_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VisitorListCard extends StatelessWidget {
   const VisitorListCard({

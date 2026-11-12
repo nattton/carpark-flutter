@@ -21,9 +21,7 @@ import 'package:carpark/shared/services/api/api_service.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -32,6 +30,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:thermal_printer/thermal_printer.dart';
@@ -47,8 +46,6 @@ class EntranceScreen extends WatchingStatefulWidget {
 
 class _EntranceScreenState extends State<EntranceScreen> {
   final _log = Logger('EntranceScreen');
-
-  PrinterRepository get _printerRepository => context.read<PrinterRepository>();
 
   late FocusNode focusNode;
 
@@ -167,9 +164,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
                 const Expanded(
                   child: !kIsWeb
                       ? LivePlayerWidget()
-                      : Column(
-                          children: [ExitCard()],
-                        ),
+                      : Column(children: [ExitCard()]),
                 ),
               ],
             ),
@@ -409,7 +404,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     );
   }
 
-  void showVisitorFromSelect(GateLogModel gateLog) {
+  Future<void> showVisitorFromSelect(GateLogModel gateLog) async {
     _selectedMember = null;
     _plateNumberController.text = gateLog.plateNumber!;
     _selectedGateLogId = gateLog.id;
@@ -417,14 +412,14 @@ class _EntranceScreenState extends State<EntranceScreen> {
       _selectedMember = gateLog.member;
     }
 
-    openVisitior();
+    await openVisitior();
   }
 
-  void showVisitorFromEmpty() {
+  Future<void> showVisitorFromEmpty() async {
     _selectedMember = null;
     _plateNumberController.clear();
     _selectedGateLogId = 0;
-    openVisitior();
+    await openVisitior();
   }
 
   Future<void> openVisitior() async {
@@ -503,9 +498,9 @@ class _EntranceScreenState extends State<EntranceScreen> {
     _isReadCard = true;
     final card = await getIt<IdCardServiceRepository>().readIdCard();
     await card.fold(
-      (l) {
+      (l) async {
         alertError(l.message);
-        EasyLoading.dismiss();
+        await EasyLoading.dismiss();
       },
       (r) async {
         _idCardModel = r.data;
@@ -709,7 +704,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
         'card',
         cardImage,
       );
-      cardImage.delete();
+      await cardImage.delete();
     }
     if (await inSideImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
@@ -717,7 +712,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
         'in_side',
         inSideImage,
       );
-      inSideImage.delete();
+      await inSideImage.delete();
     }
     if (await entranceImage.exists()) {
       await getIt<ApiService>().addImageToVisitor(
@@ -734,7 +729,7 @@ class _EntranceScreenState extends State<EntranceScreen> {
     await printerManager.connect(
       type: PrinterType.usb,
       model: UsbPrinterInput(
-        name: await _printerRepository.printerName,
+        name: await getIt<PrinterRepository>().printerName,
       ),
     );
     await printerManager.send(

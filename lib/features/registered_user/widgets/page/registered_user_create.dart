@@ -1,15 +1,15 @@
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/rounting/routes.dart';
 import 'package:carpark/shared/services/api/model/registered_user/create_registered_user_request.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RegisteredUserCreate extends StatefulWidget {
   const RegisteredUserCreate({super.key});
@@ -32,6 +32,12 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
   final TextEditingController _expiredDateController = TextEditingController();
 
   @override
+  void initState() {
+    _registeredUserCreateBloc = context.read<RegisteredUserCreateBloc>();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _idCardController.dispose();
     _thaiNameController.dispose();
@@ -47,9 +53,11 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
 
   @override
   Widget build(BuildContext context) {
-    _registeredUserCreateBloc = context.read<RegisteredUserCreateBloc>();
-    return BlocConsumer<RegisteredUserCreateBloc, RegisteredUserCreateState>(
-      listener: (context, state) {
+    return BlocSignalConsumer<
+      RegisteredUserCreateBloc,
+      RegisteredUserCreateState
+    >(
+      listener: (context, state) async {
         switch (state.status) {
           case RegisteredUserCreateStatus.initial:
           case RegisteredUserCreateStatus.savingPhoto:
@@ -58,34 +66,44 @@ class _RegisteredUserCreateState extends State<RegisteredUserCreate> {
             break;
           case RegisteredUserCreateStatus.reading:
           case RegisteredUserCreateStatus.creating:
-            EasyLoading.show();
+            await EasyLoading.show();
           case RegisteredUserCreateStatus.readSuccess:
-            EasyLoading.dismiss();
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('อ่านบัตรสำเร็จ')));
+            await EasyLoading.dismiss();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('อ่านบัตรสำเร็จ')));
+            }
           case RegisteredUserCreateStatus.createSuccess:
-            EasyLoading.dismiss();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
-            );
-            context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
-            context.push(Routes.registeredUserLogsWithId(state.id));
+            await EasyLoading.dismiss();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('สร้างผู้ใช้งานสำเร็จ')),
+              );
+              context.read<RegisteredUserListBloc>().add(
+                GetRegisteredUserList(),
+              );
+              await context.push(Routes.registeredUserLogsWithId(state.id));
+            }
           case RegisteredUserCreateStatus.savePhotoSuccess:
-            EasyLoading.dismiss();
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('บันทึกภาพสำเร็จ')));
+            await EasyLoading.dismiss();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('บันทึกภาพสำเร็จ')));
+            }
           case RegisteredUserCreateStatus.readFailure:
           case RegisteredUserCreateStatus.createFailure:
           case RegisteredUserCreateStatus.savePhotoFailure:
           case RegisteredUserCreateStatus.failure:
-            EasyLoading.dismiss();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            await EasyLoading.dismiss();
+            if (context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
         }
       },
       builder: (context, state) {

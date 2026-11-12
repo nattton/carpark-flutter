@@ -1,3 +1,4 @@
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_create/registered_user_create_bloc.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_update/registered_user_update_bloc.dart';
@@ -8,9 +9,8 @@ import 'package:carpark/features/registered_user/widgets/registered_user_list_he
 import 'package:carpark/features/registered_user/widgets/registered_user_list_row_widget.dart';
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/rounting/routes.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RegisteredUserListScreen extends StatefulWidget {
   const RegisteredUserListScreen({super.key});
@@ -19,22 +19,17 @@ class RegisteredUserListScreen extends StatefulWidget {
   State<RegisteredUserListScreen> createState() =>
       _RegisteredUserListScreenState();
 
-  static Widget get page => MultiBlocProvider(
-    providers: [
-      BlocProvider<RegisteredUserListBloc>(
-        create: (context) =>
-            getIt<RegisteredUserListBloc>()..add(GetRegisteredUserList()),
-      ),
-      BlocProvider<RegisteredUserCreateBloc>(
-        create: (context) =>
-            getIt<RegisteredUserCreateBloc>()
-              ..add(InitialCreateRegisteredUser()),
-      ),
-      BlocProvider<RegisteredUserUpdateBloc>(
+  static Widget get page => BlocSignalProvider<RegisteredUserListBloc>(
+    create: (context) =>
+        getIt<RegisteredUserListBloc>()..add(GetRegisteredUserList()),
+    child: BlocSignalProvider<RegisteredUserCreateBloc>(
+      create: (context) =>
+          getIt<RegisteredUserCreateBloc>()..add(InitialCreateRegisteredUser()),
+      child: BlocSignalProvider<RegisteredUserUpdateBloc>(
         create: (context) => getIt<RegisteredUserUpdateBloc>(),
+        child: const RegisteredUserListScreen(),
       ),
-    ],
-    child: const RegisteredUserListScreen(),
+    ),
   );
 }
 
@@ -58,7 +53,7 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RegisteredUserListBloc, RegisteredUserListState>(
+    return BlocSignalBuilder<RegisteredUserListBloc, RegisteredUserListState>(
       builder: (context, state) {
         switch (state) {
           case RegisteredUserListCreating():
@@ -146,8 +141,8 @@ class _RegisteredUserListScreenState extends State<RegisteredUserListScreen> {
       itemBuilder: (context, index) {
         return RegisteredUserRowWidget(
           user: registeredUsers[index],
-          onTapViewLogs: () {
-            context.push(
+          onTapViewLogs: () async {
+            await context.push(
               Routes.registeredUserLogsWithId(registeredUsers[index].id),
             );
           },

@@ -3,13 +3,12 @@ import 'package:carpark/features/member/models/vehicle_model.dart';
 import 'package:carpark/shared/models/response_model.dart';
 import 'package:carpark/shared/repositories/member/member_repository.dart';
 import 'package:carpark/shared/utils/result.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MemberViewModel {
-  MemberViewModel({required MemberRepository memberRepository})
-    : _memberRepository = memberRepository;
+  MemberViewModel({required this._memberRepository});
   final MemberRepository _memberRepository;
   final _log = Logger('MemberViewModel');
 

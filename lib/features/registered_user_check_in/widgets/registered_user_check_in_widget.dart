@@ -3,9 +3,9 @@ import 'package:carpark/features/registered_user_check_in/registered_user_check_
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/repositories/registered_user/registered_user_service_repository.dart';
 import 'package:carpark/shared/rounting/routes.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RegisteredUserCheckInWidget extends WatchingWidget {
   const RegisteredUserCheckInWidget({super.key});

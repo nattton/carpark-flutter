@@ -9,8 +9,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 @singleton
 class LivePlayerViewmodel {
-  LivePlayerViewmodel({required ApiService apiService})
-    : _apiService = apiService {
+  LivePlayerViewmodel({required this._apiService}) {
     playEntranceCommand = Command.createAsyncNoParamNoResult(
       () async {
         final cameraMain = cameraMap.value['ENTRANCE'];

@@ -1,12 +1,10 @@
 import 'package:carpark/features/auth/login/view_models/login_viewmodel.dart';
 import 'package:carpark/shared/injector/injector.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LoginPasswordField extends WatchingWidget {
-  const LoginPasswordField({
-    super.key,
-  });
+  const LoginPasswordField({super.key});
   @override
   Widget build(BuildContext context) {
     final password = watchValue(
@@ -30,12 +28,8 @@ class LoginPasswordField extends WatchingWidget {
           },
           child: const Icon(Icons.lock),
         ),
-        contentPadding: const EdgeInsets.all(
-          20,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        contentPadding: const EdgeInsets.all(20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onChanged: (value) =>
           getIt<LoginViewModel>().passwordChangedCommand(value),

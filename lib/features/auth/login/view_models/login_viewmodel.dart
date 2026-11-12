@@ -7,8 +7,7 @@ import 'package:logging/logging.dart';
 
 @singleton
 class LoginViewModel {
-  LoginViewModel({required AuthRepository authRepository})
-    : _authRepository = authRepository;
+  LoginViewModel({required this._authRepository});
   final AuthRepository _authRepository;
   final _log = Logger('LoginViewModel');
 

@@ -7,8 +7,7 @@ import 'package:logging/logging.dart';
 
 @singleton
 class MemberListViewModel {
-  MemberListViewModel({required MemberRepository memberRepository})
-    : _memberRepository = memberRepository;
+  MemberListViewModel({required this._memberRepository});
   final MemberRepository _memberRepository;
   final _log = Logger('MemberListViewModel');
 

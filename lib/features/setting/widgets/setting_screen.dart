@@ -6,9 +6,9 @@ import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/models/camera_model.dart';
 import 'package:carpark/shared/services/api/api_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SettingScreen extends WatchingStatefulWidget {

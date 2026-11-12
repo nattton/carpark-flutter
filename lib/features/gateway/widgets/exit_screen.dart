@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:carpark/features/gateway/widgets/exit_card.dart';
 import 'package:carpark/features/home/view_models/late_gate_viewmodel.dart';
 import 'package:carpark/features/live_player/view_models/live_player_viewmodel.dart';
@@ -14,10 +15,9 @@ import 'package:carpark/shared/rounting/routes.dart';
 import 'package:carpark/shared/services/api/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,10 +27,8 @@ class ExitScreen extends WatchingStatefulWidget {
   @override
   State<ExitScreen> createState() => _ExitScreenState();
 
-  static Widget get page => MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (context) => getIt<RegisteredUserCheckOutBloc>()),
-    ],
+  static Widget get page => BlocSignalProvider(
+    create: (context) => getIt<RegisteredUserCheckOutBloc>(),
     child: const ExitScreen(),
   );
 }
@@ -59,7 +57,7 @@ class _ExitScreenState extends State<ExitScreen> {
     final gateLogOut = watchValue(
       (LastGateViewmodel viewModel) => viewModel.gateOut,
     );
-    return BlocListener<
+    return BlocSignalListener<
       RegisteredUserCheckOutBloc,
       RegisteredUserCheckOutState
     >(

@@ -7,7 +7,7 @@ import 'package:logging/logging.dart';
 
 @singleton
 class GateLogViewmodel {
-  GateLogViewmodel({required ApiService apiService}) : _apiService = apiService;
+  GateLogViewmodel({required this._apiService});
   final _log = Logger('GateLogViewmodel');
   final ApiService _apiService;
 

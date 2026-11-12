@@ -1,7 +1,7 @@
 import 'package:carpark/my_app.dart';
 import 'package:carpark/shared/injector/injector.dart';
-import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:media_kit/media_kit.dart';
 
 Future<void> main() async {

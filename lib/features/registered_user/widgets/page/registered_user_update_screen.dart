@@ -1,13 +1,13 @@
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_list/registered_user_list_bloc.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_update/registered_user_update_bloc.dart';
 import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/services/api/model/registered_user/update_registered_user_request.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RegisteredUserUpdateScreen extends StatefulWidget {
   const RegisteredUserUpdateScreen({super.key});
@@ -32,6 +32,12 @@ class _RegisteredUserUpdateScreenState
   final TextEditingController _expiredDateController = TextEditingController();
 
   @override
+  void initState() {
+    _bloc = context.read<RegisteredUserUpdateBloc>();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _idCardController.dispose();
     _thaiNameController.dispose();
@@ -47,9 +53,11 @@ class _RegisteredUserUpdateScreenState
 
   @override
   Widget build(BuildContext context) {
-    _bloc = context.read<RegisteredUserUpdateBloc>();
-    return BlocConsumer<RegisteredUserUpdateBloc, RegisteredUserUpdateState>(
-      listener: (context, state) {
+    return BlocSignalConsumer<
+      RegisteredUserUpdateBloc,
+      RegisteredUserUpdateState
+    >(
+      listener: (context, state) async {
         switch (state.status) {
           case RegisteredUserUpdateStatus.initial:
           case RegisteredUserUpdateStatus.selectingExpiredDate:
@@ -58,22 +66,28 @@ class _RegisteredUserUpdateScreenState
             break;
           case RegisteredUserUpdateStatus.loading:
           case RegisteredUserUpdateStatus.updating:
-            EasyLoading.show();
+            await EasyLoading.show();
           case RegisteredUserUpdateStatus.loadSuccess:
-            EasyLoading.dismiss();
+            await EasyLoading.dismiss();
           case RegisteredUserUpdateStatus.updateSuccess:
-            EasyLoading.dismiss();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('อัพเดทผู้ใช้งานสำเร็จ')),
-            );
-            context.read<RegisteredUserListBloc>().add(GetRegisteredUserList());
+            await EasyLoading.dismiss();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('อัพเดทผู้ใช้งานสำเร็จ')),
+              );
+              context.read<RegisteredUserListBloc>().add(
+                GetRegisteredUserList(),
+              );
+            }
           case RegisteredUserUpdateStatus.loadFailure:
           case RegisteredUserUpdateStatus.updateFailure:
           case RegisteredUserUpdateStatus.failure:
-            EasyLoading.dismiss();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            await EasyLoading.dismiss();
+            if (context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
         }
       },
       builder: (context, state) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:carpark/features/registered_user/use_cases/read_id_card_usecase.dart';
 import 'package:carpark/features/registered_user/use_cases/registered_user_add_photo_usecase.dart';
 import 'package:carpark/features/registered_user/use_cases/registered_user_create_usecase.dart';
@@ -8,7 +9,6 @@ import 'package:carpark/shared/services/api/model/registered_user/create_registe
 import 'package:carpark/shared/utils/usecase.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,12 +18,12 @@ part 'registered_user_create_state.dart';
 
 @Injectable()
 class RegisteredUserCreateBloc
-    extends Bloc<RegisteredUserCreateEvent, RegisteredUserCreateState> {
+    extends BlocSignal<RegisteredUserCreateEvent, RegisteredUserCreateState> {
   RegisteredUserCreateBloc(
     this.usercase,
     this.readIdCardUsecase,
     this.addPhotoUsecase,
-  ) : super(const RegisteredUserCreateState()) {
+  ) : super(initialState: const RegisteredUserCreateState()) {
     on<InitialCreateRegisteredUser>(_onInitial);
     on<ReadIdCard>(_readIdCard);
     on<SavePhoto>(_savePhoto);
@@ -36,10 +36,10 @@ class RegisteredUserCreateBloc
 
   Future<void> _onInitial(
     InitialCreateRegisteredUser event,
-    Emitter<RegisteredUserCreateState> emit,
+    void Function(RegisteredUserCreateState) emit,
   ) async {
     emit(
-      state.copyWith(
+      stateValue.copyWith(
         status: RegisteredUserCreateStatus.initial,
         id: 0,
         idCard: '',
@@ -58,19 +58,19 @@ class RegisteredUserCreateBloc
 
   Future<void> _readIdCard(
     ReadIdCard event,
-    Emitter<RegisteredUserCreateState> emit,
+    void Function(RegisteredUserCreateState) emit,
   ) async {
-    emit(state.copyWith(status: RegisteredUserCreateStatus.reading));
+    emit(stateValue.copyWith(status: RegisteredUserCreateStatus.reading));
     final idCardResponse = await readIdCardUsecase.call(NoParams());
     idCardResponse.fold(
       (l) => emit(
-        state.copyWith(
+        stateValue.copyWith(
           status: RegisteredUserCreateStatus.readFailure,
           message: l.message,
         ),
       ),
       (r) => emit(
-        state.copyWith(
+        stateValue.copyWith(
           status: RegisteredUserCreateStatus.readSuccess,
           idCard: r.id,
           engName: r.engName,
@@ -86,21 +86,21 @@ class RegisteredUserCreateBloc
 
   Future<void> _createRegisteredUser(
     CreateRegisteredUser event,
-    Emitter<RegisteredUserCreateState> emit,
+    void Function(RegisteredUserCreateState) emit,
   ) async {
-    emit(state.copyWith(status: RegisteredUserCreateStatus.creating));
+    emit(stateValue.copyWith(status: RegisteredUserCreateStatus.creating));
     try {
       final registeredUser = await usercase.call(event.request);
       registeredUser.fold(
         (l) => emit(
-          state.copyWith(
+          stateValue.copyWith(
             status: RegisteredUserCreateStatus.createFailure,
             message: l.message,
           ),
         ),
         (r) {
           emit(
-            state.copyWith(
+            stateValue.copyWith(
               status: RegisteredUserCreateStatus.createSuccess,
               id: r.id,
               idCard: r.idCard,
@@ -119,7 +119,7 @@ class RegisteredUserCreateBloc
       );
     } catch (e) {
       emit(
-        state.copyWith(
+        stateValue.copyWith(
           status: RegisteredUserCreateStatus.createFailure,
           message: e.toString(),
         ),
@@ -129,22 +129,24 @@ class RegisteredUserCreateBloc
 
   Future<void> _savePhoto(
     SavePhoto event,
-    Emitter<RegisteredUserCreateState> emit,
+    void Function(RegisteredUserCreateState) emit,
   ) async {
-    if (state.photoUrl.isNotEmpty) {
-      emit(state.copyWith(status: RegisteredUserCreateStatus.savingPhoto));
+    if (stateValue.photoUrl.isNotEmpty) {
+      emit(stateValue.copyWith(status: RegisteredUserCreateStatus.savingPhoto));
       try {
-        final photoFile = await _tempImage(state.idCard);
-        await Dio().download(state.photoUrl, photoFile.path);
+        final photoFile = await _tempImage(stateValue.idCard);
+        await Dio().download(stateValue.photoUrl, photoFile.path);
         await addPhotoUsecase.call(
-          AddPhotoRegisteredUserParam(id: state.id, photo: photoFile),
+          AddPhotoRegisteredUserParam(id: stateValue.id, photo: photoFile),
         );
         emit(
-          state.copyWith(status: RegisteredUserCreateStatus.savePhotoSuccess),
+          stateValue.copyWith(
+            status: RegisteredUserCreateStatus.savePhotoSuccess,
+          ),
         );
       } catch (e) {
         emit(
-          state.copyWith(
+          stateValue.copyWith(
             status: RegisteredUserCreateStatus.savePhotoFailure,
             message: e.toString(),
           ),
@@ -161,13 +163,15 @@ class RegisteredUserCreateBloc
 
   Future<void> _selectExpiredDate(
     SelectExpiredDate event,
-    Emitter<RegisteredUserCreateState> emit,
+    void Function(RegisteredUserCreateState) emit,
   ) async {
     emit(
-      state.copyWith(status: RegisteredUserCreateStatus.selectingExpiredDate),
+      stateValue.copyWith(
+        status: RegisteredUserCreateStatus.selectingExpiredDate,
+      ),
     );
     emit(
-      state.copyWith(
+      stateValue.copyWith(
         status: RegisteredUserCreateStatus.selectExpiredDateSuccess,
         expiredDate: _formatDate(event.expiredDates[0]!),
       ),

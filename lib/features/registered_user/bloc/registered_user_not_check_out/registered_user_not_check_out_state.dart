@@ -1,5 +1,6 @@
 part of 'registered_user_not_check_out_bloc.dart';
 
+@immutable
 sealed class RegisteredUserNotCheckOutState extends Equatable {
   const RegisteredUserNotCheckOutState();
 
@@ -15,14 +16,18 @@ final class RegisteredUserNotCheckOutLoading
 
 final class RegisteredUserNotCheckOutLoaded
     extends RegisteredUserNotCheckOutState {
-
   const RegisteredUserNotCheckOutLoaded(this.registeredUserLog);
   final List<RegisteredUserLog> registeredUserLog;
+
+  @override
+  List<Object> get props => [registeredUserLog];
 }
 
 final class RegisteredUserNotCheckOutError
     extends RegisteredUserNotCheckOutState {
-
   const RegisteredUserNotCheckOutError(this.failure);
   final Failure failure;
+
+  @override
+  List<Object> get props => [failure];
 }

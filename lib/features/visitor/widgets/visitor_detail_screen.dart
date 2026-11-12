@@ -2,8 +2,8 @@ import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:carpark/shared/models/visitor_model.dart';
 import 'package:carpark/shared/services/api/api_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VisitorDetailScreen extends StatefulWidget {
   const VisitorDetailScreen({required this.visitorId, super.key});

@@ -3,9 +3,9 @@ import 'package:carpark/features/auth/login/widgets/login_button.dart';
 import 'package:carpark/features/auth/login/widgets/login_password_field.dart';
 import 'package:carpark/features/auth/login/widgets/login_username_field.dart';
 import 'package:carpark/shared/config/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_it/flutter_it.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LoginScreen extends WatchingWidget {
   const LoginScreen({super.key});

@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carpark/features/home/view_models/late_gate_viewmodel.dart';
 import 'package:carpark/shared/config/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ExitCard extends WatchingWidget {
   const ExitCard({super.key});

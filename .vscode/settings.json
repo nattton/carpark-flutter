@@ -1,5 +1,6 @@
 {
   "dart.flutterSdkPath": "/Users/nattapong/.puro/envs/stable/flutter",
   "java.configuration.updateBuildConfiguration": "interactive",
-    "dart.sdkPath": "/Users/nattapong/.puro/envs/stable/flutter/bin/cache/dart-sdk"
+  "dart.sdkPath": "/Users/nattapong/.puro/envs/stable/flutter/bin/cache/dart-sdk",
+  "robotcode.disableExtension": true
 }

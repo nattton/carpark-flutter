@@ -1,6 +1,6 @@
 import 'package:carpark/features/registered_user/models/registered_user_log.dart';
 import 'package:carpark/shared/config/constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RegisteredUserLogsRowWidget extends StatelessWidget {
   const RegisteredUserLogsRowWidget({

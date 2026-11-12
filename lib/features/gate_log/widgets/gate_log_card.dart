@@ -1,6 +1,6 @@
 import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/models/gate_log_result.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class GateLogCard extends StatelessWidget {
   const GateLogCard({required this.gateLog, required this.onTap, super.key});

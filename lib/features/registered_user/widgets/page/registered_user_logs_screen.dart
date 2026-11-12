@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:carpark/features/registered_user/bloc/registered_user_logs/registered_user_logs_bloc.dart';
 import 'package:carpark/features/registered_user/models/registered_user.dart';
 import 'package:carpark/features/registered_user/models/registered_user_log.dart';
@@ -8,8 +9,7 @@ import 'package:carpark/features/registered_user/widgets/registered_user_logs_li
 import 'package:carpark/shared/config/constants.dart';
 import 'package:carpark/shared/injector/injector.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class RegisteredUserLogsScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class RegisteredUserLogsScreen extends StatefulWidget {
   State<RegisteredUserLogsScreen> createState() =>
       _RegisteredUserLogsScreenState();
 
-  static Widget page({required int userId}) => BlocProvider(
+  static Widget page({required int userId}) => BlocSignalProvider(
     create: (context) =>
         getIt<RegisteredUserLogsBloc>()
           ..add(GetRegisteredUserLogs(userId: userId)),
@@ -32,7 +32,7 @@ class _RegisteredUserLogsScreenState extends State<RegisteredUserLogsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Registered User Logs')),
-      body: BlocBuilder<RegisteredUserLogsBloc, RegisteredUserLogsState>(
+      body: BlocSignalBuilder<RegisteredUserLogsBloc, RegisteredUserLogsState>(
         builder: (context, state) {
           switch (state) {
             case RegisteredUserLogsInitial():

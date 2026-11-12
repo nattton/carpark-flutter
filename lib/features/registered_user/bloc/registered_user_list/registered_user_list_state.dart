@@ -1,5 +1,6 @@
 part of 'registered_user_list_bloc.dart';
 
+@immutable
 sealed class RegisteredUserListState extends Equatable {
   const RegisteredUserListState();
 
@@ -12,7 +13,6 @@ final class RegisteredUserListInitial extends RegisteredUserListState {}
 final class RegisteredUserListLoading extends RegisteredUserListState {}
 
 final class RegisteredUserListSuccess extends RegisteredUserListState {
-
   const RegisteredUserListSuccess(this.registeredUsers);
   final List<RegisteredUser> registeredUsers;
 
@@ -21,7 +21,6 @@ final class RegisteredUserListSuccess extends RegisteredUserListState {
 }
 
 final class RegisteredUserListFailure extends RegisteredUserListState {
-
   const RegisteredUserListFailure(this.message);
   final String message;
 
