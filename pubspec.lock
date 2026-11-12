@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.1.0"
-  analyzer_buffer:
-    dependency: transitive
-    description:
-      name: analyzer_buffer
-      sha256: f890a2e708e38fbf4238ad2f9fd3d506538acdddb0cd8eb2c3e8c7bd17784b57
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.4"
   ansicolor:
     dependency: transitive
     description:
@@ -57,22 +49,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.1"
-  bloc_signals:
-    dependency: transitive
-    description:
-      name: bloc_signals
-      sha256: "3802dbaaf22c3f36263ef8e584ce06bd8fd24348233426ce24dd817ea1ccb59d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.7.0"
-  bloc_signals_flutter:
-    dependency: "direct main"
-    description:
-      name: bloc_signals_flutter
-      sha256: f0d7b553bf56b93499bbb80f9bc4683c21c8dbc31177556f081fe1bc03e0637d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -517,30 +493,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "11.3.0"
-  fpdart:
-    dependency: "direct main"
-    description:
-      name: fpdart
-      sha256: f8e9d0989ba293946673e382c59ac513e30cb6746a9452df195f29e3357a73d4
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
-  freezed:
-    dependency: "direct dev"
-    description:
-      name: freezed
-      sha256: cb910646cb09265d49077b63b600ef1f5a718c1d6031836432237ddeabae1b12
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.3"
-  freezed_annotation:
-    dependency: "direct main"
-    description:
-      name: freezed_annotation
-      sha256: "7294967ff0a6d98638e7acb774aac3af2550777accd8149c90af5b014e6d44d8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -1077,14 +1029,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.3"
-  preact_signals:
-    dependency: transitive
-    description:
-      name: preact_signals
-      sha256: "18f45e7f91a4dfad8bd0138efa6b85770bb25e13278b863fdaafd28a56579b16"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   protobuf:
     dependency: transitive
     description:
@@ -1277,22 +1221,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  signals_core:
-    dependency: transitive
-    description:
-      name: signals_core
-      sha256: "04d7ccb0265264191a4e2666050031129f47c2bbf4ac3f31f6586889a9903b62"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
-  signals_flutter:
-    dependency: transitive
-    description:
-      name: signals_flutter
-      sha256: f0285fd2f98d720724df879c258dc41725f260f8e5b1184655ef64ba679197ad
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.1.0"
   sky_engine:
     dependency: transitive
     description: flutter

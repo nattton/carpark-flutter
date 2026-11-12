@@ -1,6 +1,9 @@
 analyzer:
+  enable-experiment:
+    - primary-constructors
   errors:
     avoid_types_on_closure_parameters: ignore
+    included_file_warning: ignore
   exclude:
     - build/**
     - android/**
@@ -9,8 +12,13 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.config.dart"
 include: package:very_good_analysis/analysis_options.yaml
 
 linter:
   rules:
     public_member_api_docs: false
+    lines_longer_than_80_chars: false
+    prefer_initializing_formals: false

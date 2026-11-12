@@ -1,12 +1,12 @@
-import 'package:carpark/shared/injector/injector.dart';
-import 'package:carpark/shared/repositories/auth/auth_repository.dart';
-import 'package:carpark/shared/rounting/router.dart';
-import 'package:carpark/shared/ui/scroll_behavior.dart';
+import 'package:carpark/config/injector.dart';
+import 'package:carpark/data/repositories/auth/auth_repository.dart';
+import 'package:carpark/routing/router.dart';
+import 'package:carpark/ui/core/scroll_behavior.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
